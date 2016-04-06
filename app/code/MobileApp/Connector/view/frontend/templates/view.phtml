@@ -1,0 +1,30 @@
+<?php
+/**
+ * Connector template for separate item
+ *
+ */
+
+/**
+ * @var $this MobileApp\Connector\Block\View
+ * @see MobileApp\Connector\Block\View
+ */
+?>
+<?php $_connectorItem = $this->getConnector(); ?>
+    <div class="connector_item_subtitle">
+        <?php echo $this->formatDate($_connectorItem->getPublishedAt()) ?> |
+        <?php echo $this->escapeHtml($_connectorItem->getAuthor()) ?>
+    </div>
+
+<div class="connector_item_view">
+    <?php if ($imageUrl = $this->getImageUrl($_connectorItem, 400)): ?>
+       <p><img src="<?php echo $imageUrl ?>" alt="<?php echo $this->escapeHtml($_connectorItem->getTitle()) ?>" /></p>
+    <?php endif; ?>
+
+    <div class="connector_item_content"><?php echo $_connectorItem->getContent() ?></div>
+
+    <div class="pager">
+        <a href="<?php echo $this->getBackUrl() ?>">
+            <?php echo __('Return to list') ?>
+        </a>
+    </div>
+</div>

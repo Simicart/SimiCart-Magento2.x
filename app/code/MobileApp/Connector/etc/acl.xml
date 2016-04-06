@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+    <acl>
+        <resources>
+            <resource id="MobileApp_Adminhtml::admin">
+                <resource id="MobileApp_Connector::connector" title="Connector" sortOrder="40">
+                    <resource id="MobileApp_Connector::manage" title="Connector Module" sortOrder="10">
+						<resource id="MobileApp_Connector::save" title="Save Connector" sortOrder="10" />
+                        <resource id="MobileApp_Connector::news_delete" title="Delete Connector" sortOrder="20" />
+					</resource>
+                </resource>
+                <resource id="MobileApp_Adminhtml::stores">
+                    <resource id="MobileApp_Adminhtml::stores_settings">
+                        <resource id="MobileApp_Adminhtml::config">
+                            <resource id="MobileApp_Connector::config_connector" title="Connector Section" sortOrder="50" />
+                        </resource>
+                    </resource>
+                </resource>
+            </resource>
+        </resources>
+    </acl>
+</config>

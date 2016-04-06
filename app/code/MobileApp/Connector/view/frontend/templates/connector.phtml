@@ -1,0 +1,26 @@
+<?php $_connector = $this->getCollection(); ?>
+<?php if ($_connector->getSize()): ?>
+<div class="connector_list_view">
+    <?php foreach ($_connector as $connectorItem): ?>
+        <div id="item_<?php echo $connectorItem->getId() ?>" class="connector_list_item">
+            <h2>
+                <a href="<?php echo $this->getItemUrl($connectorItem) ?>">
+                    <?php echo $this->escapeHtml($connectorItem->getTitle()) ?>
+                </a>
+            </h2>
+
+            <div class="connector_item_subtitle">
+                <?php echo $this->formatDate($connectorItem->getPublishedAt()) ?> |
+                <?php echo $this->escapeHtml($connectorItem->getAuthor()) ?>
+            </div>
+
+            <?php if ($imageUrl = $this->getImageUrl($connectorItem, 100)): ?>
+               <p><img src="<?php echo $imageUrl ?>" alt="<?php echo $this->escapeHtml($connectorItem->getTitle()); ?>" /></p>
+            <?php endif; ?>
+        </div>
+    <?php endforeach; ?>
+</div>
+<?php echo $this->getPager() ?>
+<?php else: ?>
+    <div class="message info empty"><span><?php echo __('You have no Connector.'); ?></span></div>
+<?php endif ?>

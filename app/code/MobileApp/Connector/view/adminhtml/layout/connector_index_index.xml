@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <body>
+        <referenceContainer name="content">
+            <block class="MobileApp\Connector\Block\Adminhtml\Connector\Key" name="admin.connector.key" template="MobileApp_Connector::connector/key.phtml"/>
+            <block class="MobileApp\Connector\Block\Adminhtml\Connector" name="admin.connector.grid"/>
+        </referenceContainer>
+        <referenceContainer name="page.main.actions">
+            <block class="Magento\Backend\Block\Store\Switcher" name="category.store.switcher" template="Magento_Backend::store/switcher.phtml">
+            </block>
+        </referenceContainer>
+    </body>
+</page>
