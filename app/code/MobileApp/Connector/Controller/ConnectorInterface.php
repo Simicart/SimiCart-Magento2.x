@@ -6,4 +6,5 @@ use Magento\Framework\App\ActionInterface;
 
 interface ConnectorInterface extends ActionInterface
 {
+  
 }
