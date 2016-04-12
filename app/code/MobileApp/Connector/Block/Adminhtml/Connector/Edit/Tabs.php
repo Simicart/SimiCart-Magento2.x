@@ -14,6 +14,24 @@ class Tabs extends \Magento\Backend\Block\Widget\Tabs
         parent::_construct();
         $this->setId('page_tabs');
         $this->setDestElementId('edit_form');
-        $this->setTitle(__('Connector Information'));
+        $this->setTitle(__('Mobile App Information'));
+    }
+
+    /**
+     * Prepare Layout
+     *
+     * @return $this
+     */
+    protected function _prepareLayout()
+    {
+        $this->addTab(
+            'connector',
+            [
+                'label' => __('Manage Plugins'),
+                'url' => $this->getUrl('connector/*/pluginlist', ['_current' => true]),
+                'class' => 'ajax'
+            ]
+        );
+        return parent::_prepareLayout();
     }
 }

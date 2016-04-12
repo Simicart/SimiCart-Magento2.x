@@ -4,41 +4,36 @@ namespace MobileApp\Connector\Block\Adminhtml\Connector\Edit\Tab;
 /**
  * connector edit form main tab
  */
-class Content extends \Magento\Backend\Block\Widget\Form\Generic implements
+class Pem extends \Magento\Backend\Block\Widget\Form\Generic implements
     \Magento\Backend\Block\Widget\Tab\TabInterface
 {
-    /**
-     * @var \Magento\Cms\Model\Wysiwyg\Config
-     */
-    protected $_wysiwygConfig;
-
     /**
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Data\FormFactory $formFactory
-     * @param \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig
      * @param array $data
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Framework\Data\FormFactory $formFactory,
-        \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig,
         array $data = []
     ) {
-        $this->_wysiwygConfig = $wysiwygConfig;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
     /**
-     * Prepare form
+     * Initialise form fields
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     protected function _prepareForm()
     {
-        /** @var $model MobileApp\ConnectorModel\Connector */
-        $model = $this->_coreRegistry->registry('connector');
+        /** @var \Magento\Framework\Data\Form $form */
+        $form = $this->_formFactory->create(['data' => ['html_id_prefix' => 'connector_image_']]);
+
+        $model = $this->_coreRegistry->registry('app');
 
         /*
          * Checking if user have permissions to save information
@@ -49,40 +44,28 @@ class Content extends \Magento\Backend\Block\Widget\Form\Generic implements
             $isElementDisabled = true;
         }
 
-        /** @var \Magento\Framework\Data\Form $form */
-        $form = $this->_formFactory->create();
-
-        $form->setHtmlIdPrefix('connector_content_');
-
-        $fieldset = $form->addFieldset(
-            'content_fieldset',
-            ['legend' => __('Content'), 'class' => 'fieldset-wide']
+        $layoutFieldset = $form->addFieldset(
+            'pem_fieldset',
+            ['legend' => __('Upload PEM file'), 'class' => 'fieldset-wide', 'disabled' => $isElementDisabled]
         );
 
-        $wysiwygConfig = $this->_wysiwygConfig->getConfig(['tab_id' => $this->getTabId()]);
-
-        $contentField = $fieldset->addField(
-            'content',
-            'editor',
+        $layoutFieldset->addField(
+            'image',
+            'file',
             [
-                'name' => 'content',
-                'style' => 'height:36em;',
-                'required' => true,
+                'name' => 'image',
+                'label' => __('Upload PEM file'),
+                'title' => __('Upload PEM file'),
+                'required'  => false,
                 'disabled' => $isElementDisabled,
-                'config' => $wysiwygConfig
+                'note' => 'PEM file has been uploaded . It use to send notification to IOS',
             ]
         );
 
-        // Setting custom renderer for content field to remove label column
-        $renderer = $this->getLayout()->createBlock(
-            'Magento\Backend\Block\Widget\Form\Renderer\Fieldset\Element'
-        )->setTemplate(
-            'Magento_Cms::page/edit/form/renderer/content.phtml'
-        );
-        $contentField->setRenderer($renderer);
+        $this->_eventManager->dispatch('adminhtml_connector_edit_tab_pem_prepare_form', ['form' => $form]);
 
-        $this->_eventManager->dispatch('adminhtml_connector_edit_tab_content_prepare_form', ['form' => $form]);
         $form->setValues($model->getData());
+
         $this->setForm($form);
 
         return parent::_prepareForm();
@@ -95,7 +78,7 @@ class Content extends \Magento\Backend\Block\Widget\Form\Generic implements
      */
     public function getTabLabel()
     {
-        return __('Content');
+        return __('Upload PEM file');
     }
 
     /**
@@ -105,13 +88,11 @@ class Content extends \Magento\Backend\Block\Widget\Form\Generic implements
      */
     public function getTabTitle()
     {
-        return __('Content');
+        return __('Upload PEM file');
     }
 
     /**
-     * Returns status flag about this tab can be shown or not
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function canShowTab()
     {
@@ -119,9 +100,7 @@ class Content extends \Magento\Backend\Block\Widget\Form\Generic implements
     }
 
     /**
-     * Returns status flag about this tab hidden or not
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isHidden()
     {

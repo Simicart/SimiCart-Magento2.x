@@ -22,66 +22,6 @@ class InstallSchema implements InstallSchemaInterface
         $installer->startSetup();
 
         /**
-         * Creating table mobileapp_connector
-         */
-//        $table = $installer->getConnection()->newTable(
-//            $installer->getTable('mobileapp_connector')
-//        )->addColumn(
-//            'connector_id',
-//            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-//            null,
-//            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-//            'Entity Id'
-//        )->addColumn(
-//            'title',
-//            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-//            255,
-//            ['nullable' => true],
-//            'News Title'
-//        )->addColumn(
-//            'author',
-//            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-//            255,
-//            ['nullable' => true, 'default' => null],
-//            'Author'
-//        )->addColumn(
-//            'content',
-//            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-//            '2M',
-//            ['nullable' => true, 'default' => null],
-//            'Content'
-//        )->addColumn(
-//            'image',
-//            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-//            null,
-//            ['nullable' => true, 'default' => null],
-//            'Connector image media path'
-//        )->addColumn(
-//            'created_at',
-//            \Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
-//            null,
-//            ['nullable' => false],
-//            'Created At'
-//        )->addColumn(
-//            'published_at',
-//            \Magento\Framework\DB\Ddl\Table::TYPE_DATE,
-//            null,
-//            ['nullable' => true, 'default' => null],
-//            'World publish date'
-//        )->addIndex(
-//            $installer->getIdxName(
-//                'mobileapp_connector',
-//                ['published_at'],
-//                \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_INDEX
-//            ),
-//            ['published_at'],
-//            ['type' => \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_INDEX]
-//        )->setComment(
-//            'Connector item'
-//        );
-//        $installer->getConnection()->createTable($table);
-
-        /**
          * Creating table connector key
          */
         $table_key_name = $installer->getTable('connector_key');

@@ -68,14 +68,14 @@ class Edit extends \Magento\Backend\App\Action
     public function execute()
     {
         // 1. Get ID and create model
-        $id = $this->getRequest()->getParam('connector_id');
-        $model = $this->_objectManager->create('MobileApp\Connector\Model\Connector');
+        $id = $this->getRequest()->getParam('app_id');
+        $model = $this->_objectManager->create('MobileApp\Connector\Model\App');
 
         // 2. Initial checking
         if ($id) {
             $model->load($id);
             if (!$model->getId()) {
-                $this->messageManager->addError(__('This connector no longer exists.'));
+                $this->messageManager->addError(__('This app no longer exists.'));
 				/** \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
                 $resultRedirect = $this->resultRedirectFactory->create();
                 return $resultRedirect->setPath('*/*/');
@@ -89,18 +89,18 @@ class Edit extends \Magento\Backend\App\Action
         }
 
         // 4. Register model to use later in blocks
-        $this->_coreRegistry->register('connector', $model);
+        $this->_coreRegistry->register('app', $model);
 
         // 5. Build edit form
 		/** @var \Magento\Backend\Model\View\Result\Page $resultPage */
         $resultPage = $this->_initAction();
         $resultPage->addBreadcrumb(
-            $id ? __('Edit Connector') : __('New Connector'),
-            $id ? __('Edit Connector') : __('New Connector')
+            $id ? __('Edit Connector') : __('New Mobile App'),
+            $id ? __('Edit Connector') : __('New Mobile App')
         );
         $resultPage->getConfig()->getTitle()->prepend(__('Connector'));
         $resultPage->getConfig()->getTitle()
-            ->prepend($model->getId() ? $model->getTitle() : __('New Connector'));
+            ->prepend($model->getId() ? $model->getId() : __('New Connector'));
         return $resultPage;
     }
 }

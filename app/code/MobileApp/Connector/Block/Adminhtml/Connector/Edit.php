@@ -35,14 +35,14 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      */
     protected function _construct()
     {
-        $this->_objectId = 'connector_id';
+        $this->_objectId = 'app_id';
         $this->_blockGroup = 'MobileApp_Connector';
         $this->_controller = 'adminhtml_connector';
 
         parent::_construct();
 
         if ($this->_isAllowedAction('MobileApp_Connector::save')) {
-            $this->buttonList->update('save', 'label', __('Save Connector'));
+            $this->buttonList->update('save', 'label', __('Save'));
             $this->buttonList->add(
                 'saveandcontinue',
                 [
@@ -61,7 +61,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         }
 
         if ($this->_isAllowedAction('MobileApp_Connector::connector_delete')) {
-            $this->buttonList->update('delete', 'label', __('Delete Connector'));
+            $this->buttonList->update('delete', 'label', __('Delete'));
         } else {
             $this->buttonList->remove('delete');
         }
@@ -74,10 +74,10 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      */
     public function getHeaderText()
     {
-        if ($this->_coreRegistry->registry('connector')->getId()) {
-            return __("Edit Connector '%1'", $this->escapeHtml($this->_coreRegistry->registry('connector')->getTitle()));
+        if ($this->_coreRegistry->registry('app')->getId()) {
+            return __("Edit Mobile App '%1'", $this->escapeHtml($this->_coreRegistry->registry('app')->getId()));
         } else {
-            return __('New Connector');
+            return __('New Mobile App');
         }
     }
 

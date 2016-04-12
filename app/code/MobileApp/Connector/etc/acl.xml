@@ -7,6 +7,7 @@
                     <resource id="MobileApp_Connector::manage" title="Connector Module" sortOrder="10">
 						<resource id="MobileApp_Connector::save" title="Save Connector" sortOrder="10" />
                         <resource id="MobileApp_Connector::news_delete" title="Delete Connector" sortOrder="20" />
+                        <resource id="MobileApp_Connector::saveKey" title="Save Key App" sortOrder="30" />
 					</resource>
                 </resource>
                 <resource id="MobileApp_Adminhtml::stores">

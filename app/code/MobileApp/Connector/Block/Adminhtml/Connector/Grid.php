@@ -7,14 +7,22 @@ namespace MobileApp\Connector\Block\Adminhtml\Connector;
 class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
 {
     /**
-     * @var \MobileApp\Connector\Model\ResourceModel\Connector\CollectionFactory
+     * @var \MobileApp\Connector\Model\ResourceModel\App\CollectionFactory
      */
     protected $_collectionFactory;
 
     /**
-     * @var \MobileApp\Connector\Model\Connector
+     * @var \MobileApp\Connector\Model\App
      */
-    protected $_connector;
+    protected $_app;
+
+    /**
+     * @var \Magento\Framework\Module\Manager
+     */
+    protected $moduleManager;
+
+    /** @var \MobileApp\Connector\Helper\Website */
+    protected $_websiteHelper;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
@@ -27,12 +35,16 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Backend\Helper\Data $backendHelper,
-        \MobileApp\Connector\Model\Connector $connector,
-        \MobileApp\Connector\Model\ResourceModel\Connector\CollectionFactory $collectionFactory,
+        \MobileApp\Connector\Model\App $app,
+        \MobileApp\Connector\Model\ResourceModel\App\CollectionFactory $collectionFactory,
+        \Magento\Framework\Module\Manager $moduleManager,
+        \MobileApp\Connector\Helper\Website $websiteHelper,
         array $data = []
     ) {
         $this->_collectionFactory = $collectionFactory;
-        $this->_connector = $connector;
+        $this->_app = $app;
+        $this->moduleManager = $moduleManager;
+        $this->_websiteHelper = $websiteHelper;
         parent::__construct($context, $backendHelper, $data);
     }
 
@@ -42,11 +54,12 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     protected function _construct()
     {
         parent::_construct();
-        $this->setId('connectorGrid');
-        $this->setDefaultSort('connector_id');
+        $this->setId('appGrid');
+        $this->setDefaultSort('app_id');
         $this->setDefaultDir('DESC');
         $this->setUseAjax(true);
         $this->setSaveParametersInSession(true);
+        $this->setFilterVisibility(false);
     }
 
     /**
@@ -56,8 +69,12 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     protected function _prepareCollection()
     {
+        $webId = $this->getWebsiteIdFromUrl();
         $collection = $this->_collectionFactory->create();
-        /* @var $collection \MobileApp\Connector\Model\ResourceModel\Connector\Collection */
+        /* @var $collection \MobileApp\Connector\Model\ResourceModel\App\Collection */
+        $collection->addFieldToFilter('website_id', array('eq' => $webId));
+        $collection->addFieldToFilter('device_id', array('neq' => 2));
+
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -70,35 +87,14 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     protected function _prepareColumns()
     {
-        $this->addColumn('connector_id', [
-            'header'    => __('ID'),
-            'index'     => 'connector_id',
+        $this->addColumn('device_id', [
+            'header'    => __('Device'),
+            'index'     => 'device_id',
+            'width' => '80px',
+            'filter' => false,
+            'sortable' => false,
+            'renderer'  => '\MobileApp\Connector\Block\Adminhtml\Renderer\Connector\Grid\Device',
         ]);
-        
-        $this->addColumn('title', ['header' => __('Title'), 'index' => 'title']);
-        $this->addColumn('author', ['header' => __('Author'), 'index' => 'author']);
-        
-        $this->addColumn(
-            'published_at',
-            [
-                'header' => __('Published On'),
-                'index' => 'published_at',
-                'type' => 'date',
-                'header_css_class' => 'col-date',
-                'column_css_class' => 'col-date'
-            ]
-        );
-        
-        $this->addColumn(
-            'created_at',
-            [
-                'header' => __('Created'),
-                'index' => 'created_at',
-                'type' => 'datetime',
-                'header_css_class' => 'col-date',
-                'column_css_class' => 'col-date'
-            ]
-        );
         
         $this->addColumn(
             'action',
@@ -113,7 +109,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
                             'base' => '*/*/edit',
                             'params' => ['store' => $this->getRequest()->getParam('store')]
                         ],
-                        'field' => 'connector_id'
+                        'field' => 'app_id'
                     ]
                 ],
                 'sortable' => false,
@@ -134,7 +130,13 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function getRowUrl($row)
     {
-        return $this->getUrl('*/*/edit', ['connector_id' => $row->getId()]);
+        $webId = $this->getWebsiteIdFromUrl();
+        return $this->getUrl('*/*/edit', [
+            'id' => $row->getId(),
+            'store' => $this->getRequest()->getParam('store'),
+            'device_id' => $row->getDeviceId(),
+            'website_id' => $webId,
+        ]);
     }
 
     /**
@@ -145,5 +147,12 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getGridUrl()
     {
         return $this->getUrl('*/*/grid', ['_current' => true]);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getWebsiteIdFromUrl(){
+        return $this->_websiteHelper->getWebsiteIdFromUrl();
     }
 }

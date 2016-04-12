@@ -5,7 +5,7 @@ namespace MobileApp\Connector\Block\Adminhtml\Connector;
  * Admin Connector page
  *
  */
-class Key extends \Magento\Framework\View\Element\Template
+class Website extends \Magento\Framework\View\Element\Template
 {
     /**
      * @var \MobileApp\Connector\Model\Connector
@@ -16,39 +16,31 @@ class Key extends \Magento\Framework\View\Element\Template
     /** @var \MobileApp\Connector\Helper\Website */
     protected $_websiteHelper;
 
-    /**
-     * @var \Magento\Framework\Data\Form\FormKey
-     */
-    protected $formKey;
-
     public function __construct(
         \Magento\Framework\View\Element\Template\Context $context,
         \Magento\Store\Model\ResourceModel\Website\CollectionFactory $websiteFactory,
         \MobileApp\Connector\Helper\Website $websiteHelper,
-        \Magento\Framework\Data\Form\FormKey $formKey,
         array $data = []
     ) {
         $this->_websiteFactory = $websiteFactory;
         $this->_websiteHelper = $websiteHelper;
-        $this->formKey = $formKey;
         parent::__construct($context, $data);
     }
 
     /**
-     * Get form key
-     *
-     * @return string
+     * @return \Magento\Store\Model\ResourceModel\Website\Collection
      */
-    public function getFormKey()
+    public function getWebsiteCollection()
     {
-        return $this->formKey->getFormKey();
+        $collection = $this->_websiteFactory->create();
+        return $collection;
     }
 
     /**
      * @return string
      */
     public function getFormUrl(){
-        return $this->getUrl('*/*/saveKey');
+        return $this->getUrl('*/*/');
     }
 
     /**
@@ -59,5 +51,3 @@ class Key extends \Magento\Framework\View\Element\Template
     }
 
 }
-
-

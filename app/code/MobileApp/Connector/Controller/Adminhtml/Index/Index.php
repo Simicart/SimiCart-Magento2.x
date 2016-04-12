@@ -46,13 +46,13 @@ class Index extends \Magento\Backend\App\Action
         $resultPage->setActiveMenu(
             'MobileApp_Connector::connector_manage'
         )->addBreadcrumb(
-            __('Connector'),
-            __('Connector')
+            __('App Management'),
+            __('App Management')
         )->addBreadcrumb(
             __('Manage Connector'),
             __('Manage Connector')
         );
-        $resultPage->getConfig()->getTitle()->prepend(__('Connector'));
+        $resultPage->getConfig()->getTitle()->prepend(__('App Management'));
         return $resultPage;
     }
 }

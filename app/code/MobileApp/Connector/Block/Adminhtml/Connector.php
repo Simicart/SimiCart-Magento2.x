@@ -19,11 +19,12 @@ class Connector extends \Magento\Backend\Block\Widget\Grid\Container
         $this->_headerText = __('Connector');
         $this->_addButtonLabel = __('Add New Connector');
         parent::_construct();
-        if ($this->_isAllowedAction('MobileApp_Connector::save')) {
-            $this->buttonList->update('add', 'label', __('Add New Connector'));
-        } else {
-            $this->buttonList->remove('add');
-        }
+        $this->buttonList->remove('add');
+//        if ($this->_isAllowedAction('MobileApp_Connector::save')) {
+//            $this->buttonList->update('add', 'label', __('Add New Connector'));
+//        } else {
+//            $this->buttonList->remove('add');
+//        }
     }
     
     /**

@@ -4,7 +4,7 @@ namespace MobileApp\Connector\Block\Adminhtml\Connector\Edit\Tab;
 /**
  * @SuppressWarnings(PHPMD.DepthOfInheritance)
  */
-class Image extends \Magento\Backend\Block\Widget\Form\Generic implements
+class Category extends \Magento\Backend\Block\Widget\Form\Generic implements
     \Magento\Backend\Block\Widget\Tab\TabInterface
 {
 
@@ -34,7 +34,7 @@ class Image extends \Magento\Backend\Block\Widget\Form\Generic implements
         /** @var \Magento\Framework\Data\Form $form */
         $form = $this->_formFactory->create(['data' => ['html_id_prefix' => 'connector_image_']]);
 
-        $model = $this->_coreRegistry->registry('connector');
+        $model = $this->_coreRegistry->registry('app');
 
         /*
          * Checking if user have permissions to save information
@@ -44,21 +44,20 @@ class Image extends \Magento\Backend\Block\Widget\Form\Generic implements
         } else {
             $isElementDisabled = true;
         }
-        
+
         $layoutFieldset = $form->addFieldset(
-            'image_fieldset',
-            ['legend' => __('Image Thumbnail'), 'class' => 'fieldset-wide', 'disabled' => $isElementDisabled]
+            'category_fieldset',
+            ['legend' => __('Categories displayed on App'), 'class' => 'fieldset-wide', 'disabled' => $isElementDisabled]
         );
 
-        $layoutFieldset->addField(
-            'image',
-            'image',
+        $field = $layoutFieldset->addField(
+            'category_ids',
+            '\Magento\Catalog\Block\Adminhtml\Product\Helper\Form\Category',
             [
-                'name' => 'image',
-                'label' => __('Image'),
-                'title' => __('Image'),
+                'name' => 'category_ids',
+                'label' => __('Categories'),
+                'title' => __('Categories'),
                 'required'  => false,
-                'disabled' => $isElementDisabled
             ]
         );
 
@@ -78,7 +77,7 @@ class Image extends \Magento\Backend\Block\Widget\Form\Generic implements
      */
     public function getTabLabel()
     {
-        return __('Image Thumbnail');
+        return __('Manage Categories');
     }
 
     /**
@@ -88,7 +87,7 @@ class Image extends \Magento\Backend\Block\Widget\Form\Generic implements
      */
     public function getTabTitle()
     {
-        return __('Image Thumbnail');
+        return __('Manage Categories');
     }
 
     /**
@@ -125,6 +124,6 @@ class Image extends \Magento\Backend\Block\Widget\Form\Generic implements
      */
     protected function _getAdditionalElementTypes()
     {
-        return ['image' => 'MobileApp\Connector\Block\Adminhtml\Form\Element\Image'];
+//        return ['image' => 'MobileApp\Connector\Block\Adminhtml\Form\Element\Image'];
     }
 }
