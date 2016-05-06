@@ -8,6 +8,11 @@ class Pem extends \Magento\Backend\Block\Widget\Form\Generic implements
     \Magento\Backend\Block\Widget\Tab\TabInterface
 {
     /**
+     * @var helper
+     */
+    protected $_dataHelper;
+
+    /**
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Data\FormFactory $formFactory
@@ -17,8 +22,11 @@ class Pem extends \Magento\Backend\Block\Widget\Form\Generic implements
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Framework\Data\FormFactory $formFactory,
+        \MobileApp\Connector\Helper\Data $dataHelper,
         array $data = []
     ) {
+
+        $this->_dataHelper = $dataHelper;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
@@ -49,16 +57,22 @@ class Pem extends \Magento\Backend\Block\Widget\Form\Generic implements
             ['legend' => __('Upload PEM file'), 'class' => 'fieldset-wide', 'disabled' => $isElementDisabled]
         );
 
+        if($this->_dataHelper->isPEMFileExist()){
+            $note = 'PEM file has been uploaded . It use to send notification to IOS';
+        } else {
+            $note = 'PEM file hasn\'t been uploaded. Please upload it!';
+        }
+
         $layoutFieldset->addField(
-            'image',
+            'pem',
             'file',
             [
-                'name' => 'image',
+                'name' => 'pem',
                 'label' => __('Upload PEM file'),
                 'title' => __('Upload PEM file'),
                 'required'  => false,
                 'disabled' => $isElementDisabled,
-                'note' => 'PEM file has been uploaded . It use to send notification to IOS',
+                'note' => $note,
             ]
         );
 

@@ -21,7 +21,9 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     protected $moduleManager;
 
-    /** @var \MobileApp\Connector\Helper\Website */
+    /**
+     * @var \MobileApp\Connector\Helper\Website
+     **/
     protected $_websiteHelper;
 
     /**
@@ -71,8 +73,8 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         $webId = $this->getWebsiteIdFromUrl();
         $collection = $this->_collectionFactory->create();
-        /* @var $collection \MobileApp\Connector\Model\ResourceModel\App\Collection */
-        $collection->addFieldToFilter('website_id', array('eq' => $webId));
+
+        $collection->addFieldToFilter('website_id',$webId);
         $collection->addFieldToFilter('device_id', array('neq' => 2));
 
         $this->setCollection($collection);
@@ -104,18 +106,19 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
                 'getter' => 'getId',
                 'actions' => [
                     [
-                        'caption' => __('Edit'),
-                        'url' => [
-                            'base' => '*/*/edit',
-                            'params' => ['store' => $this->getRequest()->getParam('store')]
-                        ],
-                        'field' => 'app_id'
+//                        'caption' => __('Edit'),
+//                        'url' => [
+//                            'base' => '*/*/edit',
+//                            'params' => ['store' => $this->getRequest()->getParam('store')]
+//                        ],
+//                        'field' => 'app_id'
                     ]
                 ],
                 'sortable' => false,
                 'filter' => false,
                 'header_css_class' => 'col-action',
-                'column_css_class' => 'col-action'
+                'column_css_class' => 'col-action',
+                'renderer'  => '\MobileApp\Connector\Block\Adminhtml\Renderer\Connector\Grid\Edit',
             ]
         );
 

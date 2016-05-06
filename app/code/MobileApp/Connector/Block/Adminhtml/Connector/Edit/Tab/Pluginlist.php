@@ -60,7 +60,7 @@ class Pluginlist extends \Magento\Backend\Block\Widget\Grid\Extended
     protected function _prepareCollection()
     {
         $device_id = $this->getRequest()->getParam('device_id');
-        $website_id = $this->getRequest()->getParam('website');
+        $website_id = $this->getRequest()->getParam('website_id');
 
         $collection = $this->_pluginCollectionFactory->create();
         $collection->addFieldToFilter('website_id', array('eq' => $website_id));
@@ -122,7 +122,7 @@ class Pluginlist extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function getGridUrl()
     {
-//        return $this->getUrl('connector/*/product', ['_current' => true]);
+        return $this->getUrl('*/*/pluginlist', ['_current' => true]);
     }
 
 }

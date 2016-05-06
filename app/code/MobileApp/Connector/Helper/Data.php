@@ -80,6 +80,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     const IPAD_NAME = 'iPad';
 
+    /**
+     * @path android key
+     */
+    const PATH_ANDROID_KEY_CONFIG = 'connector/android_key';
+
+    /**
+     * @path android sendid
+     */
+    const PATH_ANDROID_SENDID_CONFIG = 'connector/android_sendid';
+
 
     /**
      * Array of image size limitation
@@ -145,6 +155,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     protected $_designFactory;
 
     /**
+     * @var \MobileApp\Connector\Model\Connector
+     */
+    protected $_configStorageWriteFactory;
+
+    /**
+     * @var \MobileApp\Connector\Model\Connector
+     */
+    protected $_scopeConfig;
+
+    /**
      * @param \Magento\Framework\App\Helper\Context $context
      */
     public function __construct(
@@ -159,7 +179,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Framework\Image\Factory $imageFactory,
         \Magento\Store\Model\ResourceModel\Website\CollectionFactory $websiteCollectionFactory,
         \MobileApp\Connector\Model\AppFactory $appFactory,
-        \MobileApp\Connector\Model\DesignFactory $designFactory
+        \MobileApp\Connector\Model\DesignFactory $designFactory,
+        \Magento\Framework\App\Config\Storage\WriterInterface $configStorageWriteFactory,
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
     ) {
         $this->_scopeConfig = $scopeConfig;
         $this->filesystem = $filesystem;
@@ -172,6 +194,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $this->_websiteCollectionFactory = $websiteCollectionFactory;
         $this->_appFactory = $appFactory;
         $this->_designFactory = $designFactory;
+        $this->_configStorageWriteFactory = $configStorageWriteFactory;
+        $this->_scopeConfig = $scopeConfig;
         parent::__construct($context);
     }
 
@@ -487,5 +511,121 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         }
     }
 
+    /**** PEM FILE ****/
+    /**
+     * @return string
+     */
+    public function getDirPEMfile() {
+        $path = $this->filesystem->getDirectoryRead(
+            DirectoryList::MEDIA
+        )->getAbsolutePath() . 'simi' . '/' . 'simicart'. '/' . 'pem'. '/' . 'ios'. '/' . 'push.pem';
+        return $path;
+    }
 
+    /**
+     * @return string
+     */
+    public function getDirPEMPassfile() {
+        $path = $this->filesystem->getDirectoryRead(
+                DirectoryList::MEDIA
+            )->getAbsolutePath() . 'simi' . '/' . 'simicart'. '/' . 'pem'. '/' . 'ios'. '/' . 'pass_pem.config';
+        return $path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPEMfile() {
+        return $this->_storeManager->getStore()->getBaseUrl(
+            \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+        ) . 'simi/simicart/pem/ios/';
+    }
+
+    /**
+     * Return the base media directory for Connector Item images
+     *
+     * @return string
+     */
+    public
+    function getBaseDirPEM()
+    {
+        $path = $this->filesystem->getDirectoryRead(
+            DirectoryList::MEDIA
+        )->getAbsolutePath() . 'simi' . '/' . 'simicart' . '/' . 'pem' . '/' . 'ios';
+        return $path;
+    }
+
+    public function isPEMFileExist(){
+        $path = $this->getDirPEMfile();
+        if (file_exists($path)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @param $pem
+     */
+    public function savePem($scope) {
+        $path = $this->getDirPEMfile();
+        if (file_exists($path)) {
+            $this->deletePem($path);
+        }
+
+        $adapter = $this->httpFactory->create();
+        $uploader = $this->_fileUploaderFactory->create(['fileId' => $scope]);
+        $uploader->setAllowRenameFiles(true);
+        $uploader->setFilesDispersion(false);
+        $path = $this->getBaseDirPEM();
+
+        if ($uploader->save($path, 'push.pem')) {
+            return $uploader->getUploadedFileName();
+        }
+
+        return false;
+    }
+
+    /**
+     * @param $path
+     */
+    public function deletePem($path) {
+        try {
+            unlink($path);
+        } catch (Exception $e) {
+            Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+        }
+    }
+    /**** END PEM FILE ****/
+
+    /**
+     * @param $android_key
+     * @param $android_sendid
+     */
+    public function saveAndroidConfigData($android_key, $android_sendid){
+        $this->_configStorageWriteFactory->save(self::PATH_ANDROID_KEY_CONFIG, $android_key);
+        $this->_configStorageWriteFactory->save(self::PATH_ANDROID_SENDID_CONFIG, $android_sendid);
+    }
+
+    /**
+     * @param $path
+     * @return mixed
+     */
+    public function getConfig($path){
+        return $this->_scopeConfig->getValue($path);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAndroidKeyConfig(){
+        return $this->getConfig(self::PATH_ANDROID_KEY_CONFIG);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAndroidSendIdConfig(){
+        return $this->getConfig(self::PATH_ANDROID_SENDID_CONFIG);
+    }
 }

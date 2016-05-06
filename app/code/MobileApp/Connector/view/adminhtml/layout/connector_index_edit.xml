@@ -3,6 +3,7 @@
     <head>
         <css src="jquery/fileUploader/css/jquery.fileupload-ui.css"/>
         <css src="Magento_Catalog::catalog/category-selector.css"/>
+        <css src="MobileApp_Connector::css/main.css"/>
     </head>
     <update handle="editor"/>
     <body>
@@ -12,16 +13,16 @@
         </referenceContainer>
         <referenceContainer name="left">
             <block class="MobileApp\Connector\Block\Adminhtml\Connector\Edit\Tabs" name="connector_edit_tabs">
-                <block class="MobileApp\Connector\Block\Adminhtml\Connector\Edit\Tab\Category" name="connector_edit_tab_category"/>
-                <block class="MobileApp\Connector\Block\Adminhtml\Connector\Edit\Tab\Pem" name="connector_edit_tab_pem"/>
-                <action method="addTab">
-                    <argument name="name" xsi:type="string">category_section</argument>
-                    <argument name="block" xsi:type="string">connector_edit_tab_category</argument>
-                </action>
-                <action method="addTab">
-                    <argument name="name" xsi:type="string">pem_section</argument>
-                    <argument name="block" xsi:type="string">connector_edit_tab_pem</argument>
-                </action>
+                <!--<block class="MobileApp\Connector\Block\Adminhtml\Connector\Edit\Tab\Category" name="connector_edit_tab_category"/>-->
+                <!--<block class="MobileApp\Connector\Block\Adminhtml\Connector\Edit\Tab\Pem" name="connector_edit_tab_pem"/>-->
+                <!--<action method="addTab">-->
+                    <!--<argument name="name" xsi:type="string">category_section</argument>-->
+                    <!--<argument name="block" xsi:type="string">connector_edit_tab_category</argument>-->
+                <!--</action>-->
+                <!--<action method="addTab">-->
+                    <!--<argument name="name" xsi:type="string">pem_section</argument>-->
+                    <!--<argument name="block" xsi:type="string">connector_edit_tab_pem</argument>-->
+                <!--</action>-->
             </block>
         </referenceContainer>
         <referenceContainer name="js">

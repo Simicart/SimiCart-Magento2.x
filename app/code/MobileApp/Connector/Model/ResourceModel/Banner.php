@@ -16,4 +16,5 @@ class Banner extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     {
         $this->_init('connector_banner', 'banner_id');
     }
+
 }

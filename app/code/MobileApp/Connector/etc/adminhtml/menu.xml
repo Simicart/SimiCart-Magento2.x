@@ -9,13 +9,17 @@
 
         <add id="MobileApp_Connector::connector_settings" title="Connector Settings" module="MobileApp_Connector" sortOrder="10" parent="MobileApp_Connector::connector" resource="MobileApp_Connector::connector_settings"/>
 
-        <add id="MobileApp_Connector::app" title="App" module="MobileApp_Connector" sortOrder="10" parent="MobileApp_Connector::connector_settings" action="connector/index/" resource="MobileApp_Connector::manage"/>
+        <add id="MobileApp_Connector::app" title="Apps" module="MobileApp_Connector" sortOrder="10" parent="MobileApp_Connector::connector_settings" action="connector/index/" resource="MobileApp_Connector::app"/>
+
+        <add id="MobileApp_Connector::app_transactions" title="App Transactions" module="MobileApp_Connector" sortOrder="30" parent="MobileApp_Connector::connector_settings" action="connector/transactions/" resource="MobileApp_Connector::manage"/>
+
+        <add id="MobileApp_Connector::settings" title="Settings" module="MobileApp_Connector" sortOrder="40" parent="MobileApp_Connector::connector_settings" resource="MobileApp_Connector::configuration" action="adminhtml/system_config/edit/section/mobileapp"/>
+
 
         <!--<add id="MobileApp_Connector::promote_app" title="Promote App" module="MobileApp_Connector" sortOrder="30" parent="MobileApp_Connector::connector_settings" action="mobileapp/index/" resource="MobileApp_Connector::manage"/>-->
 
         <!--<add id="MobileApp_Connector::app_transaction" title="App Transactions" module="MobileApp_Connector" sortOrder="40" parent="MobileApp_Connector::connector_settings" action="mobileapp/index/" resource="MobileApp_Connector::manage"/>-->
 
-        <add id="MobileApp_Connector::general_settings" title="General Settings" module="MobileApp_Connector" sortOrder="50" parent="MobileApp_Connector::connector_settings" action="connector/index/" resource="MobileApp_Connector::manage"/>
 
         <!--<add id="MobileApp_Connector::notifications" title="Notifications" module="MobileApp_Connector" sortOrder="20" parent="MobileApp_Connector::mobileapp" action="mobileapp/index/" resource="MobileApp_Connector::manage"/>-->
 
@@ -28,7 +32,7 @@
 
         <add id="MobileApp_Connector::default_themes" title="Default Themes" module="MobileApp_Connector" sortOrder="30" parent="MobileApp_Connector::connector" resource="MobileApp_Connector::themes"/>
 
-        <add id="MobileApp_Connector::banner" title="Banners" module="MobileApp_Connector" sortOrder="10" parent="MobileApp_Connector::default_themes" action="mobileapp/index/" resource="MobileApp_Connector::manage"/>
+        <add id="MobileApp_Connector::banner" title="Banners" module="MobileApp_Connector" sortOrder="10" parent="MobileApp_Connector::default_themes" action="connector/banner/" resource="MobileApp_Connector::manage"/>
 
         <!--<add id="MobileApp_Connector::home_category" title="Home Category" module="MobileApp_Connector" sortOrder="10" parent="MobileApp_Connector::default_themes" action="mobileapp/index/" resource="MobileApp_Connector::manage"/>-->
 

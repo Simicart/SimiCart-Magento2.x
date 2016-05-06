@@ -560,6 +560,31 @@ class UpgradeSchema implements UpgradeSchemaInterface
             // end create table connector cms
 
 //            }
+        } else if (version_compare($context->getVersion(), '1.0.3') < 0){
+            /**
+             * Creating table connector cms
+             */
+            $table_app_transactions_name =  $setup->getTable('connector_appreport_transactions');
+            if ($setup->getConnection()->isTableExists($table_app_transactions_name) == true) {
+                $setup->getConnection()->dropTable($setup->getConnection()->getTableName('connector_appreport_transactions'));
+            }
+            $table_app_transactions = $setup->getConnection()->newTable(
+                $table_app_transactions_name
+            )->addColumn(
+                'transaction_id',
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                null,
+                ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                'Transaction ID'
+            )->addColumn(
+                'order_id',
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                null,
+                ['nullable' => false],
+                'Order Id'
+            );
+            $setup->getConnection()->createTable($table_app_transactions);
+            // end create table connector cms
         }
 
         $setup->endSetup();

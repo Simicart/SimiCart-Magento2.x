@@ -20,3 +20,13 @@
 #connector-key-form .key-input input {
     width: 100%;
 }
+
+#edit_form .mage-suggest{
+    margin: 0 0 6px;
+    padding: 3px;
+    width: 67.999999997%;
+}
+
+#edit_form .mage-suggest:after{
+content: '\e013';
+}

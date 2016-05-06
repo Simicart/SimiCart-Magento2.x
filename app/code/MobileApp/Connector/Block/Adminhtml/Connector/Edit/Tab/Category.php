@@ -116,7 +116,7 @@ class Category extends \Magento\Backend\Block\Widget\Form\Generic implements
     {
         return $this->_authorization->isAllowed($resourceId);
     }
-    
+
     /**
      * Return predefined additional element types
      *

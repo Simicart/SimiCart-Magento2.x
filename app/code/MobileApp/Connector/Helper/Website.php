@@ -51,9 +51,16 @@ class Website extends \Magento\Framework\App\Helper\AbstractHelper
             return $this->getDefaultWebsite()->getId();
     }
 
+    /**
+     * @return \Magento\Framework\DataObject|\Magento\Store\Api\Data\WebsiteInterface[]
+     */
     public function getDefaultWebsite()
     {
         $website = $this->_websiteRepositoryFactory->create()->getDefault();
         return $website;
+    }
+
+    public function getWebsiteCollection(){
+        return $this->_websiteFactory->create();
     }
 }

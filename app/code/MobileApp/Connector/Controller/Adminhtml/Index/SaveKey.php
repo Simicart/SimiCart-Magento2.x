@@ -40,66 +40,35 @@ class SaveKey extends \Magento\Backend\App\Action
     {
         $data = $this->getRequest()->getPostValue();
 
-        var_dump($data);exit;
         if ($data) {
             $data = $this->dataProcessor->filter($data);
-
-            exit;
-            $model = $this->_objectManager->create('MobileApp\Connector\Model\Connector');
-
-            $id = $this->getRequest()->getParam('connector_id');
-            if ($id) {
-                $model->load($id);
-            }
-            
-            // save image data and remove from data array
-            if (isset($data['image'])) {
-                $imageData = $data['image'];
-                unset($data['image']);
-            } else {
-                $imageData = array();
-            }
-
-            $model->addData($data);
-
-            if (!$this->dataProcessor->validate($data)) {
-                $this->_redirect('*/*/edit', ['connector_id' => $model->getId(), '_current' => true]);
-                return;
-            }
+            $key = $data['key_app'];
+            $websiteId = $data['website_id'];
 
             try {
-                $imageHelper = $this->_objectManager->get('MobileApp\Connector\Helper\Data');
+                $modelApi = $this->_objectManager->create('MobileApp\Connector\Model\Simicart\Api');
+                $modelApp = $this->_objectManager->create('MobileApp\Connector\Model\App');
+                $modelPlugin = $this->_objectManager->create('MobileApp\Connector\Model\Plugin');
+                $modelKey = $this->_objectManager->create('MobileApp\Connector\Model\Key');
 
-                if (isset($imageData['delete']) && $model->getImage()) {
-                    $imageHelper->removeImage($model->getImage());
-                    $model->setImage(null);
+                $app_list = $modelApi->getListApp($key);
+
+                if ($app_list->status == "FAIL") {
+                    $modelApp->deleteList($websiteId);
+                    $modelPlugin->deleteList($websiteId);
+                    $modelKey->setKey($key, $websiteId);
+                    $this->messageManager->addError(__('Authorize secret key is incorrect'));
+                } else {
+                    $modelApp->saveList($app_list, $websiteId);
+                    $modelPlugin->deleteList($websiteId);
+                    $modelPlugin->saveList($app_list, $websiteId);
+                    $modelKey->setKey($key, $websiteId);
+
+                    $this->messageManager->addSuccess(__('Authorize secret key is correct'));
                 }
-                
-                $imageFile = $imageHelper->uploadImage('image');
-                if ($imageFile) {
-                    $model->setImage($imageFile);
-                }
-                
-                $model->save();
-                $this->messageManager->addSuccess(__('The Data has been saved.'));
-                $this->_objectManager->get('Magento\Backend\Model\Session')->setFormData(false);
-                if ($this->getRequest()->getParam('back')) {
-                    $this->_redirect('*/*/edit', ['connector_id' => $model->getId(), '_current' => true]);
-                    return;
-                }
-                $this->_redirect('*/*/');
-                return;
-            } catch (\Magento\Framework\Model\Exception $e) {
+            } catch (Exception $e) {
                 $this->messageManager->addError($e->getMessage());
-            } catch (\RuntimeException $e) {
-                $this->messageManager->addError($e->getMessage());
-            } catch (\Exception $e) {
-                $this->messageManager->addException($e, __('Something went wrong while saving the data.'));
             }
-
-            $this->_getSession()->setFormData($data);
-            $this->_redirect('*/*/edit', ['connector_id' => $this->getRequest()->getParam('connector_id')]);
-            return;
         }
         $this->_redirect('*/*/');
     }
