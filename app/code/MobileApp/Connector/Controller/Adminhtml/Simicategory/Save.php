@@ -1,6 +1,6 @@
 <?php
 
-namespace MobileApp\Connector\Controller\Adminhtml\Banner;
+namespace MobileApp\Connector\Controller\Adminhtml\Simicategory;
 
 use Magento\Backend\App\Action;
 
@@ -15,7 +15,10 @@ class Save extends \Magento\Backend\App\Action
      * @param Action\Context $context
      * @param PostDataProcessor $dataProcessor
      */
-    public function __construct(Action\Context $context, PostDataProcessor $dataProcessor)
+    public function __construct(
+        Action\Context $context,
+        PostDataProcessor $dataProcessor
+    )
     {
         $this->dataProcessor = $dataProcessor;
         parent::__construct($context);
@@ -26,7 +29,7 @@ class Save extends \Magento\Backend\App\Action
      */
     protected function _isAllowed()
     {
-        return $this->_authorization->isAllowed('MobileApp_Connector::banner_save');
+        return $this->_authorization->isAllowed('MobileApp_Connector::simicategory_save');
     }
 
     /**
@@ -39,32 +42,37 @@ class Save extends \Magento\Backend\App\Action
         $data = $this->getRequest()->getPostValue();
         if ($data) {
             $data = $this->dataProcessor->filter($data);
-            $model = $this->_objectManager->create('MobileApp\Connector\Model\Banner');
+            $model = $this->_objectManager->create('MobileApp\Connector\Model\Simicategory');
 
-            $id = $this->getRequest()->getParam('banner_id');
+            $id = $this->getRequest()->getParam('simicategory_id');
             if ($id) {
                 $model->load($id);
             }
-            if(isset($data['new_category_parent']))
+            if(isset($data['new_category_parent'])){
                 $data['category_id'] = $data['new_category_parent'];
+                $cat = $this->_objectManager->create('Magento\Catalog\Model\Category')->load($data['category_id']);
+                if($cat->getId()){
+                    $data['simicategory_name'] = $cat->getName();
+                }
+            }
 
-            $is_delete_banner = isset($data['banner_name']['delete']) ? $data['banner_name']['delete'] : false;
-            $data['banner_name'] = isset($data['banner_name']['value']) ? $data['banner_name']['value'] : '';
+            $is_delete_simicategory = isset($data['simicategory_filename']['delete']) ? $data['simicategory_filename']['delete'] : false;
+            $data['simicategory_filename'] = isset($data['simicategory_filename']['value']) ? $data['simicategory_filename']['value'] : '';
             $model->addData($data);
 
             if (!$this->dataProcessor->validate($data)) {
-                $this->_redirect('*/*/edit', ['banner_id' => $model->getId(), '_current' => true]);
+                $this->_redirect('*/*/edit', ['simicategory_id' => $model->getId(), '_current' => true]);
                 return;
             }
 
             try {
                 $imageHelper = $this->_objectManager->get('MobileApp\Connector\Helper\Data');
-                if ($is_delete_banner && $model->getBannerName()) {
-                    $model->setBannerName('');
+                if ($is_delete_simicategory && $model->getSimicategoryFilename()) {
+                    $model->setSimicategoryFilename('');
                 } else {
-                    $imageFile = $imageHelper->uploadImage('banner_name','banner');
+                    $imageFile = $imageHelper->uploadImage('simicategory_filename','simicategory');
                     if ($imageFile) {
-                        $model->setBannerName($imageFile);
+                        $model->setSimicategoryFilename($imageFile);
                     }
                 }
 
@@ -72,7 +80,7 @@ class Save extends \Magento\Backend\App\Action
                 $this->messageManager->addSuccess(__('The Data has been saved.'));
                 $this->_objectManager->get('Magento\Backend\Model\Session')->setFormData(false);
                 if ($this->getRequest()->getParam('back')) {
-                    $this->_redirect('*/*/edit', ['banner_id' => $model->getId(), '_current' => true]);
+                    $this->_redirect('*/*/edit', ['simicategory_id' => $model->getId(), '_current' => true]);
                     return;
                 }
                 $this->_redirect('*/*/');
@@ -86,7 +94,7 @@ class Save extends \Magento\Backend\App\Action
             }
 
             $this->_getSession()->setFormData($data);
-            $this->_redirect('*/*/edit', ['banner_id' => $this->getRequest()->getParam('banner_id')]);
+            $this->_redirect('*/*/edit', ['simicategory_id' => $this->getRequest()->getParam('simicategory_id')]);
             return;
         }
         $this->_redirect('*/*/');

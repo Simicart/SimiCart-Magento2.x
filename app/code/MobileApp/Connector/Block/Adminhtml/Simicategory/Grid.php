@@ -1,5 +1,5 @@
 <?php
-namespace MobileApp\Connector\Block\Adminhtml\Banner;
+namespace MobileApp\Connector\Block\Adminhtml\Simicategory;
 
 /**
  * Adminhtml Connector grid
@@ -7,12 +7,12 @@ namespace MobileApp\Connector\Block\Adminhtml\Banner;
 class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
 {
     /**
-     * @var \MobileApp\Connector\Model\Banner
+     * @var \MobileApp\Connector\Model\Simicategory
      */
-    protected $_bannerFactory;
+    protected $_simicategoryFactory;
 
     /**
-     * @var \MobileApp\Connector\Model\ResourceModel\Banner\CollectionFactory
+     * @var \MobileApp\Connector\Model\ResourceModel\Simicategory\CollectionFactory
      */
     protected $_collectionFactory;
 
@@ -42,8 +42,8 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Backend\Helper\Data $backendHelper,
-        \MobileApp\Connector\Model\BannerFactory $bannerFactory,
-        \MobileApp\Connector\Model\ResourceModel\Banner\CollectionFactory $collectionFactory,
+        \MobileApp\Connector\Model\SimicategoryFactory $simicategoryFactory,
+        \MobileApp\Connector\Model\ResourceModel\Simicategory\CollectionFactory $collectionFactory,
         \Magento\Framework\Module\Manager $moduleManager,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \MobileApp\Connector\Helper\Website $websiteHelper,
@@ -53,7 +53,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->_collectionFactory = $collectionFactory;
         $this->moduleManager = $moduleManager;
         $this->_resource = $resourceConnection;
-        $this->_bannerFactory = $bannerFactory;
+        $this->_simicategoryFactory = $simicategoryFactory;
         $this->_websiteHelper = $websiteHelper;
         parent::__construct($context, $backendHelper, $data);
     }
@@ -64,8 +64,8 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     protected function _construct()
     {
         parent::_construct();
-        $this->setId('bannerGrid');
-        $this->setDefaultSort('banner_id');
+        $this->setId('simicategoryGrid');
+        $this->setDefaultSort('simicategory_id');
         $this->setDefaultDir('DESC');
         $this->setUseAjax(true);
         $this->setSaveParametersInSession(true);
@@ -93,35 +93,28 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     protected function _prepareColumns()
     {
-        $this->addColumn('banner_id', [
+        $this->addColumn('simicategory_id', [
             'header' => __('ID'),
-            'index' => 'banner_id',
+            'index' => 'simicategory_id',
         ]);
 
-        $this->addColumn('banner_title', [
-            'header' => __('Title'),
-            'index' => 'banner_title',
-        ]);
-
-        $this->addColumn('type', [
-            'type' => 'options',
-            'header' => __('Direct viewers to'),
-            'index' => 'type',
-            'options' => $this->_bannerFactory->create()->toOptionTypeHash(),
+        $this->addColumn('simicategory_name', [
+            'header' => __('Category Name'),
+            'index' => 'simicategory_name',
         ]);
 
         $this->addColumn('website_id', [
             'type' => 'options',
             'header' => __('Website'),
             'index' => 'website_id',
-            'options' => $this->_bannerFactory->create()->toOptionWebsiteHash(),
+            'options' => $this->_simicategoryFactory->create()->toOptionWebsiteHash(),
         ]);
 
         $this->addColumn('status', [
             'type' => 'options',
             'header' => __('Status'),
             'index' => 'status',
-            'options' => $this->_bannerFactory->create()->toOptionStatusHash(),
+            'options' => $this->_simicategoryFactory->create()->toOptionStatusHash(),
         ]);
 
         $this->addColumn(
@@ -137,7 +130,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
                             'base' => '*/*/edit',
                             'params' => ['store' => $this->getRequest()->getParam('store')]
                         ],
-                        'field' => 'banner_id'
+                        'field' => 'simicategory_id'
                     ]
                 ],
                 'sortable' => false,
@@ -159,7 +152,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/edit', [
-            'banner_id' => $row->getId()
+            'simicategory_id' => $row->getId()
         ]);
     }
 

@@ -1,5 +1,5 @@
 <?php
-namespace MobileApp\Connector\Block\Adminhtml\Banner\Edit;
+namespace MobileApp\Connector\Block\Adminhtml\Simicategory\Edit;
 
 /**
  * Admin connector left menu
@@ -14,7 +14,7 @@ class Tabs extends \Magento\Backend\Block\Widget\Tabs
         parent::_construct();
         $this->setId('page_tabs');
         $this->setDestElementId('edit_form');
-        $this->setTitle(__('Banner Information'));
+        $this->setTitle(__('Simicategory Information'));
     }
 
 }

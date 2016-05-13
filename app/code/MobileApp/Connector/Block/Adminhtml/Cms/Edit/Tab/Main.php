@@ -1,5 +1,5 @@
 <?php
-namespace MobileApp\Connector\Block\Adminhtml\Banner\Edit\Tab;
+namespace MobileApp\Connector\Block\Adminhtml\Cms\Edit\Tab;
 
 /**
  * Cms page edit form main tab
@@ -17,9 +17,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
     protected $_websiteHelper;
 
     /**
-     * @var \MobileApp\Connector\Model\Banner
+     * @var \MobileApp\Connector\Model\Cms
      */
-    protected $_bannerFactory;
+    protected $_cmsFactory;
 
     /**
      * @var \Magento\Framework\Json\EncoderInterface
@@ -30,6 +30,11 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @var \Magento\Catalog\Model\CategoryFactory
      */
     protected $_categoryFactory;
+
+    /**
+     * @var \Magento\Cms\Model\Wysiwyg\ConfigFactory
+     */
+    protected $_wysiwygConfig;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
@@ -44,18 +49,19 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         \Magento\Framework\Data\FormFactory $formFactory,
         \Magento\Store\Model\System\Store $systemStore,
         \MobileApp\Connector\Helper\Website $websiteHelper,
-        \MobileApp\Connector\Model\BannerFactory $bannerFactory,
-
+        \MobileApp\Connector\Model\CmsFactory $cmsFactory,
+        \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig,
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         array $data = []
     )
     {
-        $this->_bannerFactory = $bannerFactory;
+        $this->_cmsFactory = $cmsFactory;
         $this->_websiteHelper = $websiteHelper;
         $this->_systemStore = $systemStore;
         $this->_jsonEncoder = $jsonEncoder;
         $this->_categoryFactory = $categoryFactory;
+        $this->_wysiwygConfig = $wysiwygConfig;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
@@ -67,12 +73,12 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
     protected function _prepareForm()
     {
         /* @var $model \Magento\Cms\Model\Page */
-        $model = $this->_coreRegistry->registry('banner');
+        $model = $this->_coreRegistry->registry('cms');
 
         /*
          * Checking if user have permissions to save information
          */
-        if ($this->_isAllowedAction('MobileApp_Connector::banner_save')) {
+        if ($this->_isAllowedAction('MobileApp_Connector::cms_save')) {
             $isElementDisabled = false;
         } else {
             $isElementDisabled = true;
@@ -84,12 +90,11 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $form->setHtmlIdPrefix('');
         $htmlIdPrefix = $form->getHtmlIdPrefix();
 
-        $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Banner Information')]);
+        $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Cms Information')]);
 
         $new_category_parent = false;
         if ($model->getId()) {
-            $fieldset->addField('banner_id', 'hidden', ['name' => 'banner_id']);
-            $new_category_parent = $model->getData('category_id');
+            $fieldset->addField('cms_id', 'hidden', ['name' => 'cms_id']);
         }
 
         $fieldset->addField(
@@ -101,15 +106,15 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'title' => __('Website'),
                 'required' => true,
                 'disabled' => $isElementDisabled,
-                'options' => $this->_bannerFactory->create()->toOptionWebsiteHash(),
+                'options' => $this->_cmsFactory->create()->toOptionWebsiteHash(),
             ]
         );
 
         $fieldset->addField(
-            'banner_title',
+            'cms_title',
             'text',
             [
-                'name' => 'banner_title',
+                'name' => 'cms_title',
                 'label' => __('Title'),
                 'title' => __('Title'),
                 'required' => true,
@@ -118,90 +123,61 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-            'banner_name',
+            'cms_image',
             'image',
             [
-                'name' => 'banner_name',
-                'label' => __('Image (width:640px, height:180px)'),
-                'title' => __('Image (width:640px, height:180px)'),
+                'name' => 'cms_image',
+                'label' => __('Image (width:64px, height:64px)'),
+                'title' => __('Image (width:64px, height:64px)'),
                 'required' => false,
                 'disabled' => $isElementDisabled
             ]
         );
 
         $fieldset->addField(
-            'status',
+            'cms_status',
             'select',
             [
-                'name' => 'status',
+                'name' => 'cms_status',
                 'label' => __('Status'),
                 'title' => __('Status'),
                 'required' => false,
                 'disabled' => $isElementDisabled,
-                'options' => $this->_bannerFactory->create()->toOptionStatusHash(),
+                'options' => $this->_cmsFactory->create()->toOptionStatusHash(),
             ]
         );
 
         $fieldset->addField(
-            'type',
-            'select',
+            'cms_content',
+            'editor',
             [
-                'name' => 'type',
-                'label' => __('Direct viewers to'),
-                'title' => __('Direct viewers to'),
+                'name' => 'cms_content',
+                'label' => __('Content'),
+                'title' => __('Content'),
                 'required' => true,
+                'style' => 'height: 500px',
                 'disabled' => $isElementDisabled,
-                'options' => $this->_bannerFactory->create()->toOptionTypeHash(),
-                'onchange' => 'changeType(this.value)',
+                'config' => $this->_wysiwygConfig->getConfig()
             ]
         );
 
-        /* product + category + url */
-        $fieldset->addField(
-            'product_id',
-            'text',
-            [
-                'name' => 'product_id',
-                'label' => __('Product ID'),
-                'title' => __('Product ID'),
-                'required' => true,
-                'disabled' => $isElementDisabled,
-                'after_element_html' => '<a href="#" title="Show Product Grid" onclick="toogleProduct();return false;"><img id="show_product_grid" src="'.$this->getViewFileUrl('MobileApp_Connector::images/arrow_down.png').'" title="" /></a>'.$this->getLayout()->createBlock('MobileApp\Connector\Block\Adminhtml\Banner\Edit\Tab\Productgrid')->toHtml()
-            ]
-        );
-
-        $fieldset->addField(
-            'new_category_parent',
-            'select',
-            [
-                'label' => __('Categories'),
-                'title' => __('Categories'),
-                'required' => true,
-                'class' => 'validate-parent-category',
-                'name' => 'new_category_parent',
-                'options' => $this->_getParentCategoryOptions($new_category_parent),
-            ]
-        );
-
-        $fieldset->addField(
-            'banner_url',
-            'textarea',
-            [
-                'name' => 'banner_url',
-                'label' => __('Url'),
-                'title' => __('Url'),
-                'required' => true,
-                'disabled' => $isElementDisabled,
-            ]
-        );
-        /* product + category + url */
-
-        $this->_eventManager->dispatch('adminhtml_banner_edit_tab_main_prepare_form', ['form' => $form]);
+        $this->_eventManager->dispatch('adminhtml_cms_edit_tab_main_prepare_form', ['form' => $form]);
 
         $form->setValues($model->getData());
         $this->setForm($form);
 
         return parent::_prepareForm();
+    }
+
+    /**
+     * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
+     * @return mixed
+     */
+    protected function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element)
+    {
+        $element->setWysiwyg(true);
+        $element->setConfig($this->_wysiwygConfig->getConfig($element));
+        return parent::_getElementHtml($element);
     }
 
     /**
@@ -242,7 +218,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      */
     public function getTabLabel()
     {
-        return __('Banner Information');
+        return __('Cms Information');
     }
 
     /**
@@ -252,7 +228,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      */
     public function getTabTitle()
     {
-        return __('Banner Information');
+        return __('Cms Information');
     }
 
     /**

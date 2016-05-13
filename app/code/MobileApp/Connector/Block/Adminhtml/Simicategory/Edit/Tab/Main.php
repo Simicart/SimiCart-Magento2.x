@@ -1,5 +1,5 @@
 <?php
-namespace MobileApp\Connector\Block\Adminhtml\Banner\Edit\Tab;
+namespace MobileApp\Connector\Block\Adminhtml\Simicategory\Edit\Tab;
 
 /**
  * Cms page edit form main tab
@@ -17,9 +17,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
     protected $_websiteHelper;
 
     /**
-     * @var \MobileApp\Connector\Model\Banner
+     * @var \MobileApp\Connector\Model\Simicategory
      */
-    protected $_bannerFactory;
+    protected $_simicategoryFactory;
 
     /**
      * @var \Magento\Framework\Json\EncoderInterface
@@ -44,14 +44,14 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         \Magento\Framework\Data\FormFactory $formFactory,
         \Magento\Store\Model\System\Store $systemStore,
         \MobileApp\Connector\Helper\Website $websiteHelper,
-        \MobileApp\Connector\Model\BannerFactory $bannerFactory,
+        \MobileApp\Connector\Model\SimicategoryFactory $simicategoryFactory,
 
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         array $data = []
     )
     {
-        $this->_bannerFactory = $bannerFactory;
+        $this->_simicategoryFactory = $simicategoryFactory;
         $this->_websiteHelper = $websiteHelper;
         $this->_systemStore = $systemStore;
         $this->_jsonEncoder = $jsonEncoder;
@@ -67,12 +67,12 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
     protected function _prepareForm()
     {
         /* @var $model \Magento\Cms\Model\Page */
-        $model = $this->_coreRegistry->registry('banner');
+        $model = $this->_coreRegistry->registry('simicategory');
 
         /*
          * Checking if user have permissions to save information
          */
-        if ($this->_isAllowedAction('MobileApp_Connector::banner_save')) {
+        if ($this->_isAllowedAction('MobileApp_Connector::simicategory_save')) {
             $isElementDisabled = false;
         } else {
             $isElementDisabled = true;
@@ -84,11 +84,11 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $form->setHtmlIdPrefix('');
         $htmlIdPrefix = $form->getHtmlIdPrefix();
 
-        $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Banner Information')]);
+        $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Simicategory Information')]);
 
         $new_category_parent = false;
         if ($model->getId()) {
-            $fieldset->addField('banner_id', 'hidden', ['name' => 'banner_id']);
+            $fieldset->addField('simicategory_id', 'hidden', ['name' => 'simicategory_id']);
             $new_category_parent = $model->getData('category_id');
         }
 
@@ -101,72 +101,19 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'title' => __('Website'),
                 'required' => true,
                 'disabled' => $isElementDisabled,
-                'options' => $this->_bannerFactory->create()->toOptionWebsiteHash(),
+                'options' => $this->_simicategoryFactory->create()->toOptionWebsiteHash(),
             ]
         );
 
         $fieldset->addField(
-            'banner_title',
-            'text',
-            [
-                'name' => 'banner_title',
-                'label' => __('Title'),
-                'title' => __('Title'),
-                'required' => true,
-                'disabled' => $isElementDisabled
-            ]
-        );
-
-        $fieldset->addField(
-            'banner_name',
+            'simicategory_filename',
             'image',
             [
-                'name' => 'banner_name',
-                'label' => __('Image (width:640px, height:180px)'),
-                'title' => __('Image (width:640px, height:180px)'),
-                'required' => false,
+                'name' => 'simicategory_filename',
+                'label' => __('Image (width:220px, height:220px)'),
+                'title' => __('Image (width:220px, height:220px)'),
+                'required' => true,
                 'disabled' => $isElementDisabled
-            ]
-        );
-
-        $fieldset->addField(
-            'status',
-            'select',
-            [
-                'name' => 'status',
-                'label' => __('Status'),
-                'title' => __('Status'),
-                'required' => false,
-                'disabled' => $isElementDisabled,
-                'options' => $this->_bannerFactory->create()->toOptionStatusHash(),
-            ]
-        );
-
-        $fieldset->addField(
-            'type',
-            'select',
-            [
-                'name' => 'type',
-                'label' => __('Direct viewers to'),
-                'title' => __('Direct viewers to'),
-                'required' => true,
-                'disabled' => $isElementDisabled,
-                'options' => $this->_bannerFactory->create()->toOptionTypeHash(),
-                'onchange' => 'changeType(this.value)',
-            ]
-        );
-
-        /* product + category + url */
-        $fieldset->addField(
-            'product_id',
-            'text',
-            [
-                'name' => 'product_id',
-                'label' => __('Product ID'),
-                'title' => __('Product ID'),
-                'required' => true,
-                'disabled' => $isElementDisabled,
-                'after_element_html' => '<a href="#" title="Show Product Grid" onclick="toogleProduct();return false;"><img id="show_product_grid" src="'.$this->getViewFileUrl('MobileApp_Connector::images/arrow_down.png').'" title="" /></a>'.$this->getLayout()->createBlock('MobileApp\Connector\Block\Adminhtml\Banner\Edit\Tab\Productgrid')->toHtml()
             ]
         );
 
@@ -184,19 +131,19 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-            'banner_url',
-            'textarea',
+            'status',
+            'select',
             [
-                'name' => 'banner_url',
-                'label' => __('Url'),
-                'title' => __('Url'),
-                'required' => true,
+                'name' => 'status',
+                'label' => __('Status'),
+                'title' => __('Status'),
+                'required' => false,
                 'disabled' => $isElementDisabled,
+                'options' => $this->_simicategoryFactory->create()->toOptionStatusHash(),
             ]
         );
-        /* product + category + url */
 
-        $this->_eventManager->dispatch('adminhtml_banner_edit_tab_main_prepare_form', ['form' => $form]);
+        $this->_eventManager->dispatch('adminhtml_simicategory_edit_tab_main_prepare_form', ['form' => $form]);
 
         $form->setValues($model->getData());
         $this->setForm($form);
@@ -242,7 +189,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      */
     public function getTabLabel()
     {
-        return __('Banner Information');
+        return __('Simicategory Information');
     }
 
     /**
@@ -252,7 +199,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      */
     public function getTabTitle()
     {
-        return __('Banner Information');
+        return __('Simicategory Information');
     }
 
     /**

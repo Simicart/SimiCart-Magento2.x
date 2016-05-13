@@ -585,6 +585,55 @@ class UpgradeSchema implements UpgradeSchemaInterface
             );
             $setup->getConnection()->createTable($table_app_transactions);
             // end create table connector cms
+        }  else if (version_compare($context->getVersion(), '1.0.4') < 0){
+            /**
+             * Creating table connector design
+             */
+            $table_simicategory_name =  $setup->getTable('connector_simicategory');
+            if ($setup->getConnection()->isTableExists($table_simicategory_name) == true) {
+                $setup->getConnection()->dropTable($setup->getConnection()->getTableName('connector_simicategory'));
+            }
+            $table_simicategory = $setup->getConnection()->newTable(
+                $table_simicategory_name
+            )->addColumn(
+                'simicategory_id',
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                null,
+                ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                'SimiCategory Id'
+            )->addColumn(
+                'simicategory_name',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'SimiCategory Name'
+            )->addColumn(
+                'simicategory_filename',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => false],
+                'SimiCategory Filename'
+            )->addColumn(
+                'status',
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                null,
+                ['nullable' => false],
+                'Status'
+            )->addColumn(
+                'website_id',
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                null,
+                ['nullable' => false],
+                'Website Id'
+            )->addColumn(
+                'category_id',
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                null,
+                ['nullable' => false],
+                'Category'
+            );
+            $setup->getConnection()->createTable($table_simicategory);
+            // end create table connector design
         }
 
         $setup->endSetup();

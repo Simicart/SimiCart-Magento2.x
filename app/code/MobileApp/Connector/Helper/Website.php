@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Connector data helper
+ * Connector website helper
  */
 namespace MobileApp\Connector\Helper;
 

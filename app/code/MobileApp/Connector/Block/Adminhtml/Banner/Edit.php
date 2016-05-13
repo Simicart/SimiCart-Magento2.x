@@ -23,7 +23,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         \Magento\Backend\Block\Widget\Context $context,
         \Magento\Framework\Registry $registry,
         array $data = []
-    ) {
+    )
+    {
         $this->_coreRegistry = $registry;
         parent::__construct($context, $data);
     }
@@ -111,6 +112,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      */
     protected function _prepareLayout()
     {
+        $arrow_down_img = $this->getViewFileUrl('MobileApp_Connector::images/arrow_down.png');
+        $arrow_up_img = $this->getViewFileUrl('MobileApp_Connector::images/arrow_up.png');
+
         $this->_formScripts[] = "
             function toggleEditor() {
                 if (tinyMCE.getInstanceById('page_content') == null) {
@@ -121,8 +125,43 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
             };
 
             document.addEventListener('DOMContentLoaded', function(){
+
+                // event change Type
                 changeType();
+
+                // default: hidden product grid
+                document.getElementById('product_grid').style.display = 'none';
+
             }, false);
+
+            document.body.addEventListener('click', function(e){
+                var product_grid_trs = document.querySelectorAll('#product_grid_table tbody tr');
+                var trElement;
+                var radioArray = [];
+                for (var i = 0, j = 0; i < product_grid_trs.length; i++) {
+                    trElement = product_grid_trs.item(i);
+                    trElement.addEventListener('click', function(e){
+                        var rd = this.getElementsByTagName('input')[0];
+                        rd.checked = true;
+                        document.getElementById('product_id').value = rd.value;
+                        return false;
+                    });
+                }
+
+            }, false);
+
+            function toogleProduct(){
+                var product_grid = document.getElementById('product_grid');
+                var product_choose_img = document.getElementById('show_product_grid');
+
+                if(product_grid.style.display == 'none'){
+                    product_grid.style.display = 'block';
+                    product_choose_img.src = '$arrow_up_img';
+                } else {
+                    product_grid.style.display = 'none';
+                    product_choose_img.src = '$arrow_down_img';
+                }
+            }
 
             function changeType(){
                 var banner_type = document.getElementById('type').value;

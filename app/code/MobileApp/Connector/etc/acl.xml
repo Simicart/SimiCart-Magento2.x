@@ -15,6 +15,14 @@
                         <resource id="MobileApp_Connector::banner_save" title="Save Banner" sortOrder="10" />
                         <resource id="MobileApp_Connector::banner_delete" title="Delete Banner" sortOrder="20" />
                     </resource>
+                    <resource id="MobileApp_Connector::cms" title="Cms" sortOrder="20">
+                        <resource id="MobileApp_Connector::cms_save" title="Save Cms" sortOrder="10" />
+                        <resource id="MobileApp_Connector::cms_delete" title="Delete Cms" sortOrder="20" />
+                    </resource>
+                    <resource id="MobileApp_Connector::simicategory" title="Simicategory" sortOrder="30">
+                        <resource id="MobileApp_Connector::simicategory_save" title="Save Simicategory" sortOrder="10" />
+                        <resource id="MobileApp_Connector::simicategory_delete" title="Delete Simicategory" sortOrder="20" />
+                    </resource>
                 </resource>
                 <resource id="MobileApp_Adminhtml::stores">
                     <resource id="MobileApp_Adminhtml::stores_settings">

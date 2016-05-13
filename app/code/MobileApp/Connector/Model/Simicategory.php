@@ -8,7 +8,7 @@ namespace MobileApp\Connector\Model;
  * @method \MobileApp\Connector\Model\Resource\Page _getResource()
  * @method \MobileApp\Connector\Model\Resource\Page getResource()
  */
-class Cms extends \Magento\Framework\Model\AbstractModel
+class Simicategory extends \Magento\Framework\Model\AbstractModel
 {
     /**
      * @var \MobileApp\Connector\Helper\Website
@@ -30,8 +30,8 @@ class Cms extends \Magento\Framework\Model\AbstractModel
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
-        \MobileApp\Connector\Model\ResourceModel\Cms $resource,
-        \MobileApp\Connector\Model\ResourceModel\Cms\Collection $resourceCollection,
+        \MobileApp\Connector\Model\ResourceModel\Simicategory $resource,
+        \MobileApp\Connector\Model\ResourceModel\Simicategory\Collection $resourceCollection,
         \MobileApp\Connector\Helper\Website $websiteHelper
     )
     {
@@ -53,7 +53,7 @@ class Cms extends \Magento\Framework\Model\AbstractModel
      */
     protected function _construct()
     {
-        $this->_init('MobileApp\Connector\Model\ResourceModel\Cms');
+        $this->_init('MobileApp\Connector\Model\ResourceModel\Simicategory');
     }
 
     /**

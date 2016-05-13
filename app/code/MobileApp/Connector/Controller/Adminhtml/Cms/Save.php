@@ -1,6 +1,6 @@
 <?php
 
-namespace MobileApp\Connector\Controller\Adminhtml\Banner;
+namespace MobileApp\Connector\Controller\Adminhtml\Cms;
 
 use Magento\Backend\App\Action;
 
@@ -26,7 +26,7 @@ class Save extends \Magento\Backend\App\Action
      */
     protected function _isAllowed()
     {
-        return $this->_authorization->isAllowed('MobileApp_Connector::banner_save');
+        return $this->_authorization->isAllowed('MobileApp_Connector::cms_save');
     }
 
     /**
@@ -39,32 +39,30 @@ class Save extends \Magento\Backend\App\Action
         $data = $this->getRequest()->getPostValue();
         if ($data) {
             $data = $this->dataProcessor->filter($data);
-            $model = $this->_objectManager->create('MobileApp\Connector\Model\Banner');
+            $model = $this->_objectManager->create('MobileApp\Connector\Model\Cms');
 
-            $id = $this->getRequest()->getParam('banner_id');
+            $id = $this->getRequest()->getParam('cms_id');
             if ($id) {
                 $model->load($id);
             }
-            if(isset($data['new_category_parent']))
-                $data['category_id'] = $data['new_category_parent'];
 
-            $is_delete_banner = isset($data['banner_name']['delete']) ? $data['banner_name']['delete'] : false;
-            $data['banner_name'] = isset($data['banner_name']['value']) ? $data['banner_name']['value'] : '';
+            $is_delete_banner = isset($data['cms_image']['delete']) ? $data['cms_image']['delete'] : false;
+            $data['cms_image'] = isset($data['cms_image']['value']) ? $data['cms_image']['value'] : '';
             $model->addData($data);
 
             if (!$this->dataProcessor->validate($data)) {
-                $this->_redirect('*/*/edit', ['banner_id' => $model->getId(), '_current' => true]);
+                $this->_redirect('*/*/edit', ['cms_id' => $model->getId(), '_current' => true]);
                 return;
             }
 
             try {
                 $imageHelper = $this->_objectManager->get('MobileApp\Connector\Helper\Data');
-                if ($is_delete_banner && $model->getBannerName()) {
-                    $model->setBannerName('');
+                if ($is_delete_banner && $model->getCmsImage()) {
+                    $model->setCmsImage('');
                 } else {
-                    $imageFile = $imageHelper->uploadImage('banner_name','banner');
+                    $imageFile = $imageHelper->uploadImage('cms_image','cms');
                     if ($imageFile) {
-                        $model->setBannerName($imageFile);
+                        $model->setCmsImage($imageFile);
                     }
                 }
 
@@ -72,7 +70,7 @@ class Save extends \Magento\Backend\App\Action
                 $this->messageManager->addSuccess(__('The Data has been saved.'));
                 $this->_objectManager->get('Magento\Backend\Model\Session')->setFormData(false);
                 if ($this->getRequest()->getParam('back')) {
-                    $this->_redirect('*/*/edit', ['banner_id' => $model->getId(), '_current' => true]);
+                    $this->_redirect('*/*/edit', ['cms_id' => $model->getId(), '_current' => true]);
                     return;
                 }
                 $this->_redirect('*/*/');
@@ -86,7 +84,7 @@ class Save extends \Magento\Backend\App\Action
             }
 
             $this->_getSession()->setFormData($data);
-            $this->_redirect('*/*/edit', ['banner_id' => $this->getRequest()->getParam('banner_id')]);
+            $this->_redirect('*/*/edit', ['cms_id' => $this->getRequest()->getParam('cms_id')]);
             return;
         }
         $this->_redirect('*/*/');

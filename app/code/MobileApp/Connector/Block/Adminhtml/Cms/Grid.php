@@ -1,5 +1,5 @@
 <?php
-namespace MobileApp\Connector\Block\Adminhtml\Banner;
+namespace MobileApp\Connector\Block\Adminhtml\Cms;
 
 /**
  * Adminhtml Connector grid
@@ -7,12 +7,12 @@ namespace MobileApp\Connector\Block\Adminhtml\Banner;
 class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
 {
     /**
-     * @var \MobileApp\Connector\Model\Banner
+     * @var \MobileApp\Connector\Model\Cms
      */
-    protected $_bannerFactory;
+    protected $_cmsFactory;
 
     /**
-     * @var \MobileApp\Connector\Model\ResourceModel\Banner\CollectionFactory
+     * @var \MobileApp\Connector\Model\ResourceModel\Cms\CollectionFactory
      */
     protected $_collectionFactory;
 
@@ -42,8 +42,8 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Backend\Helper\Data $backendHelper,
-        \MobileApp\Connector\Model\BannerFactory $bannerFactory,
-        \MobileApp\Connector\Model\ResourceModel\Banner\CollectionFactory $collectionFactory,
+        \MobileApp\Connector\Model\CmsFactory $cmsFactory,
+        \MobileApp\Connector\Model\ResourceModel\Cms\CollectionFactory $collectionFactory,
         \Magento\Framework\Module\Manager $moduleManager,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \MobileApp\Connector\Helper\Website $websiteHelper,
@@ -53,7 +53,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->_collectionFactory = $collectionFactory;
         $this->moduleManager = $moduleManager;
         $this->_resource = $resourceConnection;
-        $this->_bannerFactory = $bannerFactory;
+        $this->_cmsFactory = $cmsFactory;
         $this->_websiteHelper = $websiteHelper;
         parent::__construct($context, $backendHelper, $data);
     }
@@ -64,8 +64,8 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     protected function _construct()
     {
         parent::_construct();
-        $this->setId('bannerGrid');
-        $this->setDefaultSort('banner_id');
+        $this->setId('cmsGrid');
+        $this->setDefaultSort('cms_id');
         $this->setDefaultDir('DESC');
         $this->setUseAjax(true);
         $this->setSaveParametersInSession(true);
@@ -93,35 +93,28 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     protected function _prepareColumns()
     {
-        $this->addColumn('banner_id', [
+        $this->addColumn('cms_id', [
             'header' => __('ID'),
-            'index' => 'banner_id',
+            'index' => 'cms_id',
         ]);
 
-        $this->addColumn('banner_title', [
+        $this->addColumn('cms_title', [
             'header' => __('Title'),
-            'index' => 'banner_title',
-        ]);
-
-        $this->addColumn('type', [
-            'type' => 'options',
-            'header' => __('Direct viewers to'),
-            'index' => 'type',
-            'options' => $this->_bannerFactory->create()->toOptionTypeHash(),
+            'index' => 'cms_title',
         ]);
 
         $this->addColumn('website_id', [
             'type' => 'options',
             'header' => __('Website'),
             'index' => 'website_id',
-            'options' => $this->_bannerFactory->create()->toOptionWebsiteHash(),
+            'options' => $this->_cmsFactory->create()->toOptionWebsiteHash(),
         ]);
 
-        $this->addColumn('status', [
+        $this->addColumn('cms_status', [
             'type' => 'options',
             'header' => __('Status'),
-            'index' => 'status',
-            'options' => $this->_bannerFactory->create()->toOptionStatusHash(),
+            'index' => 'cms_status',
+            'options' => $this->_cmsFactory->create()->toOptionStatusHash(),
         ]);
 
         $this->addColumn(
@@ -137,7 +130,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
                             'base' => '*/*/edit',
                             'params' => ['store' => $this->getRequest()->getParam('store')]
                         ],
-                        'field' => 'banner_id'
+                        'field' => 'cms_id'
                     ]
                 ],
                 'sortable' => false,
@@ -159,7 +152,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/edit', [
-            'banner_id' => $row->getId()
+            'cms_id' => $row->getId()
         ]);
     }
 

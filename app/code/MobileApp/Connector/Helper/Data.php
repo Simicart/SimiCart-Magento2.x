@@ -165,6 +165,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     protected $_scopeConfig;
 
     /**
+     * @var \Magento\Framework\Message\ManagerInterface
+     */
+    protected $messageManager;
+
+    /**
      * @param \Magento\Framework\App\Helper\Context $context
      */
     public function __construct(
@@ -181,7 +186,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \MobileApp\Connector\Model\AppFactory $appFactory,
         \MobileApp\Connector\Model\DesignFactory $designFactory,
         \Magento\Framework\App\Config\Storage\WriterInterface $configStorageWriteFactory,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+        \Magento\Framework\Message\ManagerInterface $messageManager
     ) {
         $this->_scopeConfig = $scopeConfig;
         $this->filesystem = $filesystem;
@@ -196,6 +202,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $this->_designFactory = $designFactory;
         $this->_configStorageWriteFactory = $configStorageWriteFactory;
         $this->_scopeConfig = $scopeConfig;
+        $this->messageManager = $messageManager;
         parent::__construct($context);
     }
 
@@ -272,7 +279,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @return bool|string
      */
     public
-    function uploadImage($scope)
+    function uploadImage($scope, $folder = '')
     {
         $adapter = $this->httpFactory->create();
         $adapter->addValidator(new \Zend_Validate_File_ImageSize($this->_imageSize));
@@ -292,8 +299,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $uploader->setFilesDispersion(false);
             $uploader->setAllowCreateFolders(true);
 
-            if ($uploader->save($this->getBaseDir())) {
-                return 'Connector/' . $uploader->getUploadedFileName();
+            if ($uploader->save($this->getBaseDir($folder))) {
+                if($folder != '')
+                    return 'Connector/' . $folder .'/'. $uploader->getUploadedFileName();
+                else
+                    return 'Connector/' . $uploader->getUploadedFileName();
             }
         }
         return false;
@@ -305,11 +315,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @return string
      */
     public
-    function getBaseDir()
+    function getBaseDir($folder)
     {
         $path = $this->filesystem->getDirectoryRead(
             DirectoryList::MEDIA
         )->getAbsolutePath(self::MEDIA_PATH);
+
+        if($folder != ''){
+            $path = $path .'/'. $folder;
+        }
+
         return $path;
     }
 
@@ -593,7 +608,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         try {
             unlink($path);
         } catch (Exception $e) {
-            Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+            $this->messageManager->addError($e->getMessage());
         }
     }
     /**** END PEM FILE ****/

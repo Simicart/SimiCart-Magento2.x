@@ -4,20 +4,18 @@
         <css src="jquery/fileUploader/css/jquery.fileupload-ui.css"/>
         <css src="Magento_Catalog::catalog/category-selector.css"/>
         <css src="MobileApp_Connector::css/main.css"/>
-        <css src="MobileApp_Connector::css/banner.css"/>
     </head>
     <update handle="editor"/>
     <body>
         <referenceContainer name="content">
-            <block class="MobileApp\Connector\Block\Adminhtml\Banner\Edit" name="banner.edit"/>
-            <block class="Magento\Catalog\Block\Adminhtml\Product\Edit\NewCategory" name="new-category" template="Magento_Catalog::catalog/product/edit/category/new/form.phtml"/>
+            <block class="MobileApp\Connector\Block\Adminhtml\Cms\Edit" name="cms.edit"/>
         </referenceContainer>
         <referenceContainer name="left">
-            <block class="MobileApp\Connector\Block\Adminhtml\Banner\Edit\Tabs" name="banner_edit_tabs">
-                <block class="MobileApp\Connector\Block\Adminhtml\Banner\Edit\Tab\Main" name="banner_edit_tab_main"/>
+            <block class="MobileApp\Connector\Block\Adminhtml\Cms\Edit\Tabs" name="cms_edit_tabs">
+                <block class="MobileApp\Connector\Block\Adminhtml\Cms\Edit\Tab\Main" name="cms_edit_tab_main"/>
                 <action method="addTab">
                     <argument name="name" xsi:type="string">main_section</argument>
-                    <argument name="block" xsi:type="string">banner_edit_tab_main</argument>
+                    <argument name="block" xsi:type="string">cms_edit_tab_main</argument>
                 </action>
             </block>
         </referenceContainer>

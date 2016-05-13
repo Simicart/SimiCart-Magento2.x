@@ -1,6 +1,6 @@
 <?php
 
-namespace MobileApp\Connector\Controller\Adminhtml\Banner;
+namespace MobileApp\Connector\Controller\Adminhtml\Simicategory;
 
 class Delete extends \Magento\Backend\App\Action
 {
@@ -9,7 +9,7 @@ class Delete extends \Magento\Backend\App\Action
      */
     protected function _isAllowed()
     {
-        return $this->_authorization->isAllowed('MobileApp_Connector::banner_delete');
+        return $this->_authorization->isAllowed('MobileApp_Connector::simicategory_delete');
     }
 
     /**
@@ -20,14 +20,14 @@ class Delete extends \Magento\Backend\App\Action
     public function execute()
     {
         // check if we know what should be deleted
-        $id = $this->getRequest()->getParam('banner_id');
+        $id = $this->getRequest()->getParam('simicategory_id');
 		/** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($id) {
             $title = "";
             try {
                 // init model and delete
-                $model = $this->_objectManager->create('MobileApp\Connector\Model\Banner');
+                $model = $this->_objectManager->create('MobileApp\Connector\Model\Simicategory');
                 $model->load($id);
                 $title = $model->getTitle();
                 $model->delete();
@@ -39,7 +39,7 @@ class Delete extends \Magento\Backend\App\Action
                 // display error message
                 $this->messageManager->addError($e->getMessage());
                 // go back to edit form
-                return $resultRedirect->setPath('*/*/edit', ['banner_id' => $id]);
+                return $resultRedirect->setPath('*/*/edit', ['simicategory_id' => $id]);
             }
         }
         // display error message
