@@ -4,41 +4,45 @@ namespace MobileApp\Connector\Block\Adminhtml\Connector\Edit\Tab;
 /**
  * connector edit form main tab
  */
-class Content extends \Magento\Backend\Block\Widget\Form\Generic implements
+class Android extends \Magento\Backend\Block\Widget\Form\Generic implements
     \Magento\Backend\Block\Widget\Tab\TabInterface
 {
     /**
-     * @var \Magento\Cms\Model\Wysiwyg\Config
+     * @var data helper
      */
-    protected $_wysiwygConfig;
+    protected $_dataHelper;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Framework\Registry $registry
      * @param \Magento\Framework\Data\FormFactory $formFactory
-     * @param \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig
      * @param array $data
      */
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Framework\Data\FormFactory $formFactory,
-        \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig,
+        \MobileApp\Connector\Helper\Data $dataHelper,
         array $data = []
     ) {
-        $this->_wysiwygConfig = $wysiwygConfig;
+        $this->_dataHelper = $dataHelper;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
     /**
-     * Prepare form
+     * Initialise form fields
      *
      * @return $this
+     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
     protected function _prepareForm()
     {
-        /** @var $model MobileApp\ConnectorModel\Connector */
-        $model = $this->_coreRegistry->registry('connector');
+        /** @var \Magento\Framework\Data\Form $form */
+        $form = $this->_formFactory->create(['data' => ['html_id_prefix' => 'connector_image_']]);
+
+        $model = $this->_coreRegistry->registry('app');
+        $model->setData('android_key',$this->_dataHelper->getAndroidKeyConfig());
+        $model->setData('android_sendid',$this->_dataHelper->getAndroidSendIdConfig());
 
         /*
          * Checking if user have permissions to save information
@@ -49,40 +53,39 @@ class Content extends \Magento\Backend\Block\Widget\Form\Generic implements
             $isElementDisabled = true;
         }
 
-        /** @var \Magento\Framework\Data\Form $form */
-        $form = $this->_formFactory->create();
-
-        $form->setHtmlIdPrefix('connector_content_');
-
-        $fieldset = $form->addFieldset(
-            'content_fieldset',
-            ['legend' => __('Content'), 'class' => 'fieldset-wide']
+        $layoutFieldset = $form->addFieldset(
+            'pem_fieldset',
+            ['legend' => __('Key app for Notification'), 'class' => 'fieldset-wide', 'disabled' => $isElementDisabled]
         );
 
-        $wysiwygConfig = $this->_wysiwygConfig->getConfig(['tab_id' => $this->getTabId()]);
-
-        $contentField = $fieldset->addField(
-            'content',
-            'editor',
+        $layoutFieldset->addField(
+            'android_key',
+            'password',
             [
-                'name' => 'content',
-                'style' => 'height:36em;',
-                'required' => true,
+                'name' => 'android_key',
+                'label' => __('Google Cloud Messaging API Key'),
+                'required'  => false,
                 'disabled' => $isElementDisabled,
-                'config' => $wysiwygConfig
+                'note' => 'Key to send Notification Android. <br>You can use SimiCart API Key is AIzaSyAi4qYNCgQ13VPDRtE_GYa0Bw7ZH-Ix5NU',
             ]
         );
 
-        // Setting custom renderer for content field to remove label column
-        $renderer = $this->getLayout()->createBlock(
-            'Magento\Backend\Block\Widget\Form\Renderer\Fieldset\Element'
-        )->setTemplate(
-            'Magento_Cms::page/edit/form/renderer/content.phtml'
+        $layoutFieldset->addField(
+            'android_sendid',
+            'password',
+            [
+                'name' => 'android_sendid',
+                'label' => __('Google Cloud Messaging Sender ID'),
+                'required'  => false,
+                'disabled' => $isElementDisabled,
+                'note' => 'Id to send Notification Android. <br>You can use SimiCart Sender ID is 518903118242',
+            ]
         );
-        $contentField->setRenderer($renderer);
 
-        $this->_eventManager->dispatch('adminhtml_connector_edit_tab_content_prepare_form', ['form' => $form]);
+        $this->_eventManager->dispatch('adminhtml_connector_edit_tab_pem_prepare_form', ['form' => $form]);
+
         $form->setValues($model->getData());
+
         $this->setForm($form);
 
         return parent::_prepareForm();
@@ -95,7 +98,7 @@ class Content extends \Magento\Backend\Block\Widget\Form\Generic implements
      */
     public function getTabLabel()
     {
-        return __('Content');
+        return __('Upload PEM file');
     }
 
     /**
@@ -105,13 +108,11 @@ class Content extends \Magento\Backend\Block\Widget\Form\Generic implements
      */
     public function getTabTitle()
     {
-        return __('Content');
+        return __('Upload PEM file');
     }
 
     /**
-     * Returns status flag about this tab can be shown or not
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function canShowTab()
     {
@@ -119,9 +120,7 @@ class Content extends \Magento\Backend\Block\Widget\Form\Generic implements
     }
 
     /**
-     * Returns status flag about this tab hidden or not
-     *
-     * @return bool
+     * {@inheritdoc}
      */
     public function isHidden()
     {

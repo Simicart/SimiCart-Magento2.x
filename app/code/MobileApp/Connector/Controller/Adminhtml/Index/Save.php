@@ -39,46 +39,53 @@ class Save extends \Magento\Backend\App\Action
         $data = $this->getRequest()->getPostValue();
         if ($data) {
             $data = $this->dataProcessor->filter($data);
-            $model = $this->_objectManager->create('MobileApp\Connector\Model\Connector');
+            $device_id = $data['device_id'];
+            $web_id = $data['website_id'];
 
-            $id = $this->getRequest()->getParam('connector_id');
+
+            $model = $this->_objectManager->create('MobileApp\Connector\Model\App');
+            $id = $this->getRequest()->getParam('id');
             if ($id) {
                 $model->load($id);
             }
-            
-            // save image data and remove from data array
-            if (isset($data['image'])) {
-                $imageData = $data['image'];
-                unset($data['image']);
-            } else {
-                $imageData = array();
+
+            if(isset($data['category_ids'])){
+                $categories = implode(',', array_unique($data['category_ids']));
+                $model->saveCategories($web_id, $categories);
             }
 
-            $model->addData($data);
-
             if (!$this->dataProcessor->validate($data)) {
-                $this->_redirect('*/*/edit', ['connector_id' => $model->getId(), '_current' => true]);
+                $this->_redirect('*/*/edit', [
+                    'id' => $model->getId(),
+                    '_current' => true,
+                    'device_id' => $device_id,
+                    'website_id' => $web_id,
+                ]);
                 return;
             }
 
             try {
-                $imageHelper = $this->_objectManager->get('MobileApp\Connector\Helper\Data');
+                $dataHelper = $this->_objectManager->get('MobileApp\Connector\Helper\Data');
 
-                if (isset($imageData['delete']) && $model->getImage()) {
-                    $imageHelper->removeImage($model->getImage());
-                    $model->setImage(null);
+                // check pem file for iOs
+                if (isset($_FILES['pem']) && isset($_FILES['pem']['name']) && strlen($_FILES['pem']['name'])) {
+                    $dataHelper->savePem($_FILES['pem']);
                 }
-                
-                $imageFile = $imageHelper->uploadImage('image');
-                if ($imageFile) {
-                    $model->setImage($imageFile);
+                // check Androi key
+                if (isset($data['android_key']) && $data['android_key']) {
+                    $dataHelper->saveAndroidConfigData($data['android_key'], $data['android_sendid']);
                 }
-                
+
                 $model->save();
                 $this->messageManager->addSuccess(__('The Data has been saved.'));
                 $this->_objectManager->get('Magento\Backend\Model\Session')->setFormData(false);
                 if ($this->getRequest()->getParam('back')) {
-                    $this->_redirect('*/*/edit', ['connector_id' => $model->getId(), '_current' => true]);
+                    $this->_redirect('*/*/edit', [
+                        'id' => $model->getId(),
+                        '_current' => true,
+                        'device_id' => $device_id,
+                        'website_id' => $web_id,
+                    ]);
                     return;
                 }
                 $this->_redirect('*/*/');
@@ -88,11 +95,17 @@ class Save extends \Magento\Backend\App\Action
             } catch (\RuntimeException $e) {
                 $this->messageManager->addError($e->getMessage());
             } catch (\Exception $e) {
+                var_dump($e->getMessage());exit;
                 $this->messageManager->addException($e, __('Something went wrong while saving the data.'));
             }
 
             $this->_getSession()->setFormData($data);
-            $this->_redirect('*/*/edit', ['connector_id' => $this->getRequest()->getParam('connector_id')]);
+            $this->_redirect('*/*/edit', [
+                'id' => $model->getId(),
+                '_current' => true,
+                'device_id' => $model->getDeviceId(),
+                'website_id' => $model->getWebsiteId(),
+            ]);
             return;
         }
         $this->_redirect('*/*/');

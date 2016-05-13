@@ -1,17 +1,76 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
-        <section id="connector" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+        <!-- Add new Tab -->
+        <tab id="mobileapp" translate="label" sortOrder="1000">
+            <label>MobileApp</label>
+        </tab>
+        <section id="mobileapp" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
             <label>Connector</label>
-            <tab>general</tab>
-            <resource>MobileApp_Connector::config_connector</resource>
+            <tab>mobileapp</tab>
+            <resource>MobileApp_MobileApp::config_mobileapp</resource>
             <group id="view" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Connector View Settings</label>
+                <label>MobileApp View Settings</label>
                 <field id="enabled" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Enable Connector On Frontend</label>
-                    <source_model>Magento\Backend\Model\Config\Source\Yesno</source_model>
+                    <label>Enable MobileApp On Frontend</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="is_show_price_zero" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show option price if it's $0.00?</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="is_show_all_product" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show "All Products" link in Category?</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="cms_shipping_condition" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show CMS content in product detail</label>
+                    <comment>Please enter its CMS ID SimiCart Connector/CMS</comment>
+                </field>
+                <field id="is_reload_payment_method" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Update order review when select payment method</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="show_product_type" translate="label" type="select" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>View products default</label>
+                    <source_model>MobileApp\Connector\Model\Config\Source\ViewType</source_model>
+                </field>
+                <field id="rtl_country" translate="label" type="multiselect" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Use RTL language</label>
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
+            </group>
+        </section>
+        <section id="mobileapp_spotproducts" translate="label" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Spot Products</label>
+            <tab>mobileapp</tab>
+            <resource>MobileApp_MobileApp::config_mobileapp</resource>
+            <group id="spot" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Choose Products To Show On App</label>
+                <field id="enabled" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable MobileApp On Frontend</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="best_sellers" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Best Seller</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="most_viewed" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Most Viewed</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="newly_updated" translate="label" type="select" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Newly Updated</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="recently_updated" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Recently Added</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+
             </group>
         </section>
     </system>

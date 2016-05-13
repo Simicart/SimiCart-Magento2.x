@@ -1,0 +1,22 @@
+
+<?php $_connector = $this->getCollection(); ?>
+<?php if (sizeof($_connector)): ?>
+<div class="connector_list_view">
+    <?php foreach ($_connector as $connectorItem): ?>
+        <div id="item_<?php echo $connectorItem->getId() ?>" class="connector_list_item">
+            <h2>
+                <a href="<?php echo $this->getItemUrl($connectorItem) ?>">
+                    <?php echo $this->escapeHtml($connectorItem->getAppName()) ?>
+                </a>
+            </h2>
+
+            <div class="connector_item_subtitle">
+                <?php echo $this->escapeHtml($connectorItem->getDeviceId()) ?>
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div>
+<?php echo $this->getPager() ?>
+<?php else: ?>
+    <div class="message info empty"><span><?php echo __('You have no App.'); ?></span></div>
+<?php endif ?>

@@ -1,0 +1,15 @@
+.admin__scope-old #edit_form #product_id{
+    width: 92%;
+}
+
+.admin__scope-old .admin__field-control label{
+    display: inline;
+}
+
+.admin__scope-old .admin__field-control label img#show_product_grid{
+    width: 28px;
+    height: 28px;
+    vertical-align: middle;
+    margin-left: 8px;
+}
+

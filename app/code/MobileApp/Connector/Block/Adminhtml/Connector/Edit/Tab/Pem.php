@@ -2,11 +2,15 @@
 namespace MobileApp\Connector\Block\Adminhtml\Connector\Edit\Tab;
 
 /**
- * @SuppressWarnings(PHPMD.DepthOfInheritance)
+ * connector edit form main tab
  */
-class Image extends \Magento\Backend\Block\Widget\Form\Generic implements
+class Pem extends \Magento\Backend\Block\Widget\Form\Generic implements
     \Magento\Backend\Block\Widget\Tab\TabInterface
 {
+    /**
+     * @var helper
+     */
+    protected $_dataHelper;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
@@ -18,8 +22,11 @@ class Image extends \Magento\Backend\Block\Widget\Form\Generic implements
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Framework\Registry $registry,
         \Magento\Framework\Data\FormFactory $formFactory,
+        \MobileApp\Connector\Helper\Data $dataHelper,
         array $data = []
     ) {
+
+        $this->_dataHelper = $dataHelper;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
@@ -34,7 +41,7 @@ class Image extends \Magento\Backend\Block\Widget\Form\Generic implements
         /** @var \Magento\Framework\Data\Form $form */
         $form = $this->_formFactory->create(['data' => ['html_id_prefix' => 'connector_image_']]);
 
-        $model = $this->_coreRegistry->registry('connector');
+        $model = $this->_coreRegistry->registry('app');
 
         /*
          * Checking if user have permissions to save information
@@ -44,25 +51,32 @@ class Image extends \Magento\Backend\Block\Widget\Form\Generic implements
         } else {
             $isElementDisabled = true;
         }
-        
+
         $layoutFieldset = $form->addFieldset(
-            'image_fieldset',
-            ['legend' => __('Image Thumbnail'), 'class' => 'fieldset-wide', 'disabled' => $isElementDisabled]
+            'pem_fieldset',
+            ['legend' => __('Upload PEM file'), 'class' => 'fieldset-wide', 'disabled' => $isElementDisabled]
         );
 
+        if($this->_dataHelper->isPEMFileExist()){
+            $note = 'PEM file has been uploaded . It use to send notification to IOS';
+        } else {
+            $note = 'PEM file hasn\'t been uploaded. Please upload it!';
+        }
+
         $layoutFieldset->addField(
-            'image',
-            'image',
+            'pem',
+            'file',
             [
-                'name' => 'image',
-                'label' => __('Image'),
-                'title' => __('Image'),
+                'name' => 'pem',
+                'label' => __('Upload PEM file'),
+                'title' => __('Upload PEM file'),
                 'required'  => false,
-                'disabled' => $isElementDisabled
+                'disabled' => $isElementDisabled,
+                'note' => $note,
             ]
         );
 
-        $this->_eventManager->dispatch('adminhtml_connector_edit_tab_image_prepare_form', ['form' => $form]);
+        $this->_eventManager->dispatch('adminhtml_connector_edit_tab_pem_prepare_form', ['form' => $form]);
 
         $form->setValues($model->getData());
 
@@ -78,7 +92,7 @@ class Image extends \Magento\Backend\Block\Widget\Form\Generic implements
      */
     public function getTabLabel()
     {
-        return __('Image Thumbnail');
+        return __('Upload PEM file');
     }
 
     /**
@@ -88,7 +102,7 @@ class Image extends \Magento\Backend\Block\Widget\Form\Generic implements
      */
     public function getTabTitle()
     {
-        return __('Image Thumbnail');
+        return __('Upload PEM file');
     }
 
     /**
@@ -116,15 +130,5 @@ class Image extends \Magento\Backend\Block\Widget\Form\Generic implements
     protected function _isAllowedAction($resourceId)
     {
         return $this->_authorization->isAllowed($resourceId);
-    }
-    
-    /**
-     * Return predefined additional element types
-     *
-     * @return array
-     */
-    protected function _getAdditionalElementTypes()
-    {
-        return ['image' => 'MobileApp\Connector\Block\Adminhtml\Form\Element\Image'];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace MobileApp\Connector\Controller\Adminhtml\Index;
+namespace MobileApp\Connector\Controller\Adminhtml\Banner;
 
 class NewAction extends \Magento\Backend\App\Action
 {
@@ -26,7 +26,7 @@ class NewAction extends \Magento\Backend\App\Action
      */
     protected function _isAllowed()
     {
-        return $this->_authorization->isAllowed('MobileApp_Connector::save');
+        return $this->_authorization->isAllowed('MobileApp_Connector::banner_save');
     }
 
     /**

@@ -1,11 +1,18 @@
 <div class="page-main-actions">
-    <div class="store-switcher store-view">
-        <form method="post" action="#" id="connector-key">
-            <div class="actions dropdown closable">
-                <label><span class="store-switcher-label">Secret Key: </span></label>
-                <input id="connector-key" name="title" value="" title="Connector Key" type="text" class=" input-text admin__control-text required-entry _required" aria-required="true">
-                <button type="submit" name="submit" value="Submit" class="primary">Submit</button>
+    <div class="connector-key">
+        <form method="post" action="<?php echo $this->getFormUrl();?>" id="connector-key-form">
+            <input name="form_key" type="hidden" value="<?php echo $this->getFormKey();?>" />
+            <label class="key-label"><span class="store-switcher-label"><?php /* @escapeNotVerified */ echo __('Secret Key'); ?> <em>*</em></span></label>
+            <div class="key-input key-element">
+                <input id="connector-key" name="key_app" value="" title="Key App" type="password" class=" input-text admin__control-text required-entry" aria-required="true">
+                <input type="hidden" name="website_id" value="<?php echo $this->getWebsiteIdFromUrl();?>" />
             </div>
+            <div class="key-submit key-element">
+                <button type="submit" name="submit" value="Submit" class="primary"><?php /* @escapeNotVerified */ echo __('Submit'); ?></button>
+
+                <p class="note" id="note_key_app"><span><?php /* @escapeNotVerified */ echo __('Enter the secret key you got from'); ?><a href="https://www.simicart.com/usermanagement/configuration" target="_blank"> <?php /* @escapeNotVerified */ echo __('App Management'); ?></a> <?php /* @escapeNotVerified */ echo __('section in SimiCart'); ?></span></p>
+            </div>
+
         </form>
     </div>
 
@@ -15,7 +22,7 @@
             'mage/mage'
         ], function($){
 
-            var dataForm = $('#connector-key');
+            var dataForm = $('#connector-key-form');
             var ignore = null;
 
             dataForm.mage('validation', {
