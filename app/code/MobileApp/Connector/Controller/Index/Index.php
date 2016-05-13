@@ -40,10 +40,10 @@ class Index extends \Magento\Framework\App\Action\Action
             if ($currentPage < 1) {
                 $currentPage = 1;
             }
-            
+
             $listBlock->setCurrentPage($currentPage);
         }
-        
+
         /** @var \Magento\Framework\View\Result\Page $resultPage */
         $resultPage = $this->resultPageFactory->create();
         return $resultPage;
