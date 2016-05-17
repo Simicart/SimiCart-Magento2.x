@@ -2,21 +2,11 @@
 
 namespace MobileApp\Connector\Controller\Catalog;
 
-use Magento\Framework\AuthorizationInterface;
-use Magento\Framework\Exception\AuthorizationException;
-use Magento\Framework\Webapi\ErrorProcessor;
-use Magento\Framework\Webapi\Request;
-use Magento\Framework\Webapi\ServiceInputProcessor;
-use Magento\Framework\Webapi\ServiceOutputProcessor;
 use Magento\Framework\Webapi\Rest\Request as RestRequest;
 use Magento\Framework\Webapi\Rest\Response as RestResponse;
-use Magento\Framework\Webapi\Rest\Response\FieldsFilter;
 use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
-use Magento\Webapi\Controller\Rest\ParamsOverrider;
 use Magento\Webapi\Controller\Rest\Router;
-use Magento\Webapi\Controller\Rest\Router\Route;
-use Magento\Webapi\Model\Rest\Swagger\Generator;
 
 class Products extends \MobileApp\Connector\Controller\Connector
 {
@@ -37,12 +27,10 @@ class Products extends \MobileApp\Connector\Controller\Connector
                 ->addAttributeToFilter('status', 1)
                 ->setVisibility([3, 4])
                 ->addFinalPrice();
-        //echo $collection->getSelect();die();
 
         $collection = $this->_paging($collection, $params);
         $collection = $this->_sort($collection, $params);
         $collection = $this->_filter($collection, $params);
-        //$collection->load();
 
         $outputData = $this->_getData($collection, $params);
 
@@ -206,7 +194,6 @@ class Products extends \MobileApp\Connector\Controller\Connector
                 ];
             }
         }
-
 
         $priceRanges = $this->_getPriceRanges($collection);
         $filters = [];
