@@ -1,6 +1,6 @@
 <?php
 
-namespace MobileApp\Connector\Controller\Adminhtml\Simicategory;
+namespace MobileApp\Connector\Controller\Adminhtml\History;
 
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
@@ -31,7 +31,7 @@ class Index extends \Magento\Backend\App\Action
      */
     protected function _isAllowed()
     {
-        return $this->_authorization->isAllowed('MobileApp_Connector::simicategory_save');
+        return $this->_authorization->isAllowed('MobileApp_Connector::history_save');
     }
 
     /**
@@ -46,13 +46,13 @@ class Index extends \Magento\Backend\App\Action
         $resultPage->setActiveMenu(
             'MobileApp_Connector::connector_manage'
         )->addBreadcrumb(
-            __('Simicategory'),
-            __('Simicategory')
+            __('History'),
+            __('History')
         )->addBreadcrumb(
-            __('Manage Simicategory'),
-            __('Manage Simicategory')
+            __('Manage History'),
+            __('Manage History')
         );
-        $resultPage->getConfig()->getTitle()->prepend(__('Simicategory'));
+        $resultPage->getConfig()->getTitle()->prepend(__('History'));
         return $resultPage;
     }
 }

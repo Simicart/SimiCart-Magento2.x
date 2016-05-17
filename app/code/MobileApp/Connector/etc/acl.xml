@@ -23,6 +23,10 @@
                         <resource id="MobileApp_Connector::simicategory_save" title="Save Simicategory" sortOrder="10" />
                         <resource id="MobileApp_Connector::simicategory_delete" title="Delete Simicategory" sortOrder="20" />
                     </resource>
+                    <resource id="MobileApp_Connector::history" title="History" sortOrder="40">
+                        <resource id="MobileApp_Connector::history_save" title="Save History" sortOrder="10" />
+                        <resource id="MobileApp_Connector::history_delete" title="Delete History" sortOrder="20" />
+                    </resource>
                 </resource>
                 <resource id="MobileApp_Adminhtml::stores">
                     <resource id="MobileApp_Adminhtml::stores_settings">

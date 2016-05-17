@@ -7,7 +7,7 @@
         </tab>
         <section id="mobileapp" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
-            <label>Connector</label>
+            <label>General Configuration</label>
             <tab>mobileapp</tab>
             <resource>MobileApp_MobileApp::config_mobileapp</resource>
             <group id="view" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -43,9 +43,9 @@
                 </field>
             </group>
         </section>
-        <section id="mobileapp_spotproducts" translate="label" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+        <section id="mobileapp_spotproducts" translate="label" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
-            <label>Spot Products</label>
+            <label>Spot Product Configuration</label>
             <tab>mobileapp</tab>
             <resource>MobileApp_MobileApp::config_mobileapp</resource>
             <group id="spot" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -70,7 +70,27 @@
                     <label>Recently Added</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-
+            </group>
+        </section>
+        <section id="mobileapp_notifications" translate="label" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Notification Configuration</label>
+            <tab>mobileapp</tab>
+            <resource>MobileApp_MobileApp::config_mobileapp</resource>
+            <group id="spot" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Notification</label>
+                <field id="product_price_changed" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Send notification to all users when price of product is changed</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="new_product" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Send notification to all users when there's a new product</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="purchasing" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Send notification to a customer when he/she finish purchasing</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
             </group>
         </section>
     </system>

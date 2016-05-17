@@ -36,6 +36,10 @@
 
                 <add id="MobileApp_Connector::spotproducts" title="Spot Products" module="MobileApp_Connector" sortOrder="40" parent="MobileApp_Connector::default_themes" resource="MobileApp_Connector::configuration" action="adminhtml/system_config/edit/section/mobileapp_spotproducts"/>
 
+            <add id="MobileApp_Connector::notification" title="Notification" module="MobileApp_Connector" sortOrder="40" parent="MobileApp_Connector::connector" resource="MobileApp_Connector::notification"/>
+
+                <add id="MobileApp_Connector::history" title="History" module="MobileApp_Connector" sortOrder="10" parent="MobileApp_Connector::notification" action="connector/history/" resource="MobileApp_Connector::manage"/>
+
         <!--<add id="MobileApp_Connector::home_category" title="Home Category" module="MobileApp_Connector" sortOrder="10" parent="MobileApp_Connector::default_themes" action="mobileapp/index/" resource="MobileApp_Connector::manage"/>-->
 
         <!--<add id="MobileApp_Connector::cms" title="CMS" module="MobileApp_Connector" sortOrder="10" parent="MobileApp_Connector::default_themes" action="mobileapp/index/" resource="MobileApp_Connector::manage"/>-->
