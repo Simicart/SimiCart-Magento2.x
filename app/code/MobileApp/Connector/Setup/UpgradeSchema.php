@@ -587,7 +587,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             // end create table connector cms
         }  else if (version_compare($context->getVersion(), '1.0.4') < 0){
             /**
-             * Creating table connector design
+             * Creating table simicategory
              */
             $table_simicategory_name =  $setup->getTable('connector_simicategory');
             if ($setup->getConnection()->isTableExists($table_simicategory_name) == true) {
@@ -633,7 +633,213 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 'Category'
             );
             $setup->getConnection()->createTable($table_simicategory);
-            // end create table connector design
+            // end create table simicategory
+        } else if (version_compare($context->getVersion(), '1.0.5') < 0){
+            /**
+             * update device table
+             */
+            $setup->getConnection()
+                ->addColumn(
+                    $setup->getTable('connector_device'),
+                    'is_demo',
+                    [
+                        'type' => \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                        'unsigned' => true,
+                        'nullable' => false,
+                        'default' => 3,
+                        'comment' => 'Is Demo'
+                    ]
+                );
+
+            $setup->getConnection()
+                ->addColumn(
+                    $setup->getTable('connector_device'),
+                    'user_email',
+                    [
+                        'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                        'unsigned' => true,
+                        'nullable' => false,
+                        'default' => '',
+                        'comment' => 'User Email'
+                    ]
+                );
+            // end update device table
+
+            /**
+             * Creating notice history table
+             */
+            $table_notice_history_name =  $setup->getTable('connector_notice_history');
+            if ($setup->getConnection()->isTableExists($table_notice_history_name) == true) {
+                $setup->getConnection()->dropTable($setup->getConnection()->getTableName('connector_notice_history'));
+            }
+            $table_notice_history = $setup->getConnection()->newTable(
+                $table_notice_history_name
+            )->addColumn(
+                'history_id',
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                null,
+                ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                'History ID'
+            )->addColumn(
+                'notice_title',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Notice Title'
+            )->addColumn(
+                'notice_url',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => false],
+                'Notice Url'
+            )->addColumn(
+                'notice_content',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                null,
+                ['nullable' => false],
+                'notice_content'
+            )->addColumn(
+                'notice_sanbox',
+                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                null,
+                ['nullable' => false],
+                'Notice Sanbox'
+            )->addColumn(
+                'notice_content',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                null,
+                ['nullable' => false],
+                'notice_content'
+            )->addColumn(
+                'website_id',
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                null,
+                ['nullable' => false],
+                'Website Id'
+            )->addColumn(
+                'device_id',
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                null,
+                ['nullable' => false],
+                'Device ID'
+            )->addColumn(
+                'type',
+                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                null,
+                ['nullable' => false],
+                'Type'
+            )->addColumn(
+                'category_id',
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                null,
+                ['nullable' => false],
+                'Category Id'
+            )->addColumn(
+                'product_id',
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                null,
+                ['nullable' => false],
+                'Product ID'
+            )->addColumn(
+                'notice_content',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                null,
+                ['nullable' => false],
+                'notice_content'
+            )->addColumn(
+                'image_url',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                null,
+                ['nullable' => false],
+                'Image Url'
+            )->addColumn(
+                'location',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                null,
+                ['nullable' => false],
+                'Location'
+            )->addColumn(
+                'distance',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                null,
+                ['nullable' => false],
+                'Distance'
+            )->addColumn(
+                'address',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                null,
+                ['nullable' => false],
+                'Address'
+            )->addColumn(
+                'city',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                null,
+                ['nullable' => false],
+                'City'
+            )->addColumn(
+                'country',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                null,
+                ['nullable' => false],
+                'Country'
+            )->addColumn(
+                'zipcode',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                null,
+                ['nullable' => false],
+                'Zipcode'
+            )->addColumn(
+                'state',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                null,
+                ['nullable' => false],
+                'State'
+            )->addColumn(
+                'devices_pushed',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                null,
+                ['nullable' => false],
+                'Devices Pushed'
+            )->addColumn(
+                'show_popup',
+                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                null,
+                ['nullable' => false],
+                'Show Popup'
+            )->addColumn(
+                'notice_type',
+                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                null,
+                ['nullable' => false],
+                'Notice Type'
+            )->addColumn(
+                'status',
+                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                null,
+                ['nullable' => false],
+                'Status'
+            )->addColumn(
+                'created_time',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
+                null,
+                ['nullable' => false],
+                'Created Time'
+            );
+            $setup->getConnection()->createTable($table_notice_history);
+            // end create table simicategory
+        } else if(version_compare($context->getVersion(), '1.0.6') < 0){
+            $setup->getConnection()
+                ->addColumn(
+                    $setup->getTable('connector_device'),
+                    'user_email',
+                    [
+                        'type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                        'unsigned' => true,
+                        'nullable' => false,
+                        'default' => '',
+                        'comment' => 'User Email'
+                    ]
+                );
         }
 
         $setup->endSetup();
