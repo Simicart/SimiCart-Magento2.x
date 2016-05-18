@@ -13,24 +13,21 @@ class Categories extends \MobileApp\Connector\Controller\Connector
         $collection = $this->_objectManager->create('MobileApp\Connector\Model\ResourceModel\Simicategory\Collection')
             ->addFieldToFilter('status', 1);
 
-        $banners = [];
+        $categories = [];
         foreach($collection as $item){
             $category = $this->_objectManager
                 ->create('Magento\Catalog\Model\Category')
                 ->load($item->getCategoryId());
 
-            $banners[] = [
-                'image_path' => $this->_getImageUrl($item->getBannerName()),
-                'url' => $item->getBannerUrl(),
-                'type' => $item->getType(),
-                'categoryID' => $item->getCategoryId(),
-                'categoryName' => $category->getName(),
-                'productID' => $item->getProductId(),
+            $categories[] = [
+                'images' => [$this->_getImageUrl($item->getSimicategoryFilename())],
+                'category_id' => $item->getCategoryId(),
+                'category_name' => $item->getSimicategoryName(),
                 'has_child' => $category->hasChildren()
             ];
         }
 
-        $outputData = ['data' => $banners, 'status' => 'SUCCESS', 'message' => ['SUCCESS']];
+        $outputData = ['data' => $categories, 'status' => 'SUCCESS', 'message' => ['SUCCESS']];
 
         /** @param \Magento\Framework\Controller\Result\Json $result */
         $result = $this->resultJsonFactory->create();

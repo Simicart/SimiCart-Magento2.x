@@ -374,7 +374,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 ['nullable' => true],
                 'Device Token'
             )->addColumn(
-                'plaform_id',
+                'platform_id',
                 \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
                 null,
                 ['nullable' => false],
