@@ -585,7 +585,7 @@ class UpgradeSchema implements UpgradeSchemaInterface
             );
             $setup->getConnection()->createTable($table_app_transactions);
             // end create table connector cms
-        }  else if (version_compare($context->getVersion(), '1.0.4') < 0){
+        }  else if (version_compare($context->getVersion(), '1.0.5') < 0){
             /**
              * Creating table simicategory
              */
