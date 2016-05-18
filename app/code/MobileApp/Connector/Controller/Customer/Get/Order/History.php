@@ -13,8 +13,7 @@ class History extends \MobileApp\Connector\Controller\Connector
         $this->_serviceClassName = 'Magento\Sales\Api\OrderRepositoryInterface';
         $this->_serviceMethodName = 'getList';
 
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
 
         $session = $this->_objectManager->get('Magento\Customer\Model\Session');
         $customerId = $session->getCustomer()->getId();

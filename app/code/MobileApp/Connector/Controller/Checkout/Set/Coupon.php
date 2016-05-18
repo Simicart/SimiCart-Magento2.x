@@ -31,8 +31,7 @@ class Coupon extends \MobileApp\Connector\Controller\Checkout\Checkout
      */
     protected function _setCoupon($cartId){
         $serviceClassName = 'Magento\Quote\Api\CouponManagementInterface';
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
         $couponCode = $params['coupon_code'];
         $serviceMethodName = ($couponCode)?'set':'remove';
 

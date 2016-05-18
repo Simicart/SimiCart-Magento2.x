@@ -12,9 +12,7 @@ class Address extends \MobileApp\Connector\Controller\Customer\Customer
     {
         $this->_serviceClassName = 'Magento\Customer\Api\AddressRepositoryInterface';
         $this->_serviceMethodName = 'save';
-
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
 
         $session = $this->_objectManager->get('Magento\Customer\Model\Session');
         $customerId = $session->getCustomer()->getId();

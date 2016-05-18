@@ -12,8 +12,7 @@ class Register extends \MobileApp\Connector\Controller\Customer\Customer
     {
         $this->_serviceClassName = 'Magento\Customer\Api\AccountManagementInterface';
         $this->_serviceMethodName = 'createAccount';
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
 
         $customerData = $this->_parseCustomerName($params['user_name']);
         $customerData['email'] = $params['user_email'];

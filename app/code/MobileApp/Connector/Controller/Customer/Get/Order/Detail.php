@@ -12,9 +12,7 @@ class Detail extends \MobileApp\Connector\Controller\Connector
     {
         $this->_serviceClassName = 'Magento\Sales\Api\OrderRepositoryInterface';
         $this->_serviceMethodName = 'get';
-
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
 
         $this->_params = ['id' => $params['order_id']];
         return parent::execute();

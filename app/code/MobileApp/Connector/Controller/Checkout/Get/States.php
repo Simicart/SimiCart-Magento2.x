@@ -13,8 +13,7 @@ class States extends \MobileApp\Connector\Controller\Connector
         $this->_serviceClassName = 'Magento\Directory\Api\CountryInformationAcquirerInterface';
         $this->_serviceMethodName = 'getCountryInfo';
 
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
 
         $this->_params = ['countryId' => $params['country_code']];
         return parent::execute();

@@ -14,8 +14,7 @@ class Categories extends \MobileApp\Connector\Controller\Connector
         $this->_serviceClassName = 'Magento\Catalog\Api\CategoryManagementInterface';
         $this->_serviceMethodName = 'getTree';
 
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
 
         $categoryId = isset($params['category_id'])?$params['category_id']:self::ROOT_CATEGORY;
         $this->_params = ['category_id' => $categoryId];

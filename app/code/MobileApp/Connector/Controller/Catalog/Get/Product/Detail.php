@@ -13,8 +13,7 @@ class Detail extends \MobileApp\Connector\Controller\Connector
         $this->_serviceClassName = 'Magento\Catalog\Api\ProductRepositoryInterface';
         $this->_serviceMethodName = 'get';
 
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
 
         $sku = isset($params['product_id'])?$params['product_id']:null;
         $this->_params = ['sku' => $sku];

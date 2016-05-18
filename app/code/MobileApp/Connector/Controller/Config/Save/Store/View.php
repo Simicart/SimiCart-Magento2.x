@@ -10,8 +10,7 @@ class View extends \MobileApp\Connector\Controller\Connector
      */
     public function execute()
     {
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
         if(isset($params['store_id'])){
             $store = $this->storeManager->getStore($params['store_id']);
             $this->storeManager->setCurrentStore($store->getCode());

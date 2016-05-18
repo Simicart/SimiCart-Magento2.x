@@ -13,8 +13,7 @@ class Method extends \MobileApp\Connector\Controller\Connector
         $this->_serviceClassName = 'Magento\Quote\Api\CartTotalManagementInterface';
         $this->_serviceMethodName = 'collectTotals';
 
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
 
         $cart = $this->_objectManager->get('Magento\Checkout\Model\Cart');
         $quoteId = $cart->getQuote()->getId();

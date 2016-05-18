@@ -9,8 +9,7 @@ class Review extends \MobileApp\Connector\Controller\Connector
      * @return void
      */
     public function execute() {
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
 
         $productId = $this->_objectManager->create('\Magento\Catalog\Model\Product')
             ->getIdBySku($params['product_id']);

@@ -77,6 +77,7 @@ class Connector extends \Magento\Framework\App\Action\Action
         $this->resultJsonFactory = $resultJsonFactory;
         $this->resource = $resource;
         $this->dateTime = $dateTime;
+        $this->_params = $this->_getParams();
         parent::__construct($context);
     }
 
@@ -88,9 +89,7 @@ class Connector extends \Magento\Framework\App\Action\Action
     {
         $serviceClassName = $this->_serviceClassName;
         $serviceMethodName = $this->_serviceMethodName;
-        $params = $this->_params;
-
-        $outputData = $this->getOutputData($params, $serviceClassName, $serviceMethodName);
+        $outputData = $this->getOutputData($this->_params, $serviceClassName, $serviceMethodName);
         $outputData = $this->_formatData($outputData);
 
         /** @param \Magento\Framework\Controller\Result\Json $result */
@@ -151,6 +150,17 @@ class Connector extends \Magento\Framework\App\Action\Action
      */
     protected function _formatData($data){
         return $data;
+    }
+
+    /*
+     * Get params from request
+     *
+     */
+
+    protected function _getParams(){
+        $data = $this->getRequest()->getParam('data');
+        $params = $data?json_decode($data, true):[];
+        return $params;
     }
 
     /*

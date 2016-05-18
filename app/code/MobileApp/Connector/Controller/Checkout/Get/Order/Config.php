@@ -13,8 +13,7 @@ class Config extends \MobileApp\Connector\Controller\Checkout\Checkout
         $this->_serviceClassName = 'Magento\Checkout\Api\ShippingInformationManagementInterface';
         $this->_serviceMethodName = 'saveAddressInformation';
 
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
 
         $cart = $this->_objectManager->get('Magento\Checkout\Model\Cart');
         $quoteId = $cart->getQuote()->getId();

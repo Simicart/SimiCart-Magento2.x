@@ -13,8 +13,7 @@ class User extends \MobileApp\Connector\Controller\Customer\Customer
         $this->_serviceClassName = 'Magento\Customer\Api\CustomerRepositoryInterface';
         $this->_serviceMethodName = 'save';
 
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
 
         $websiteId = $this->storeManager->getStore()->getWebsiteId();
         $session = $this->_objectManager->get('Magento\Customer\Model\Session');

@@ -12,8 +12,7 @@ class Password extends \MobileApp\Connector\Controller\Connector
     {
         $this->_serviceClassName = 'Magento\Customer\Api\AccountManagementInterface';
         $this->_serviceMethodName = 'initiatePasswordReset';
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
 
         $inputData = ['email' => $params['user_email'], 'template' => 'email_reset'];
         $this->_params = $inputData;

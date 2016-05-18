@@ -12,8 +12,7 @@ class In extends \MobileApp\Connector\Controller\Connector
     {
         $this->_serviceClassName = 'Magento\Quote\Api\CartManagementInterface';
         $this->_serviceMethodName = 'getCartForCustomer';
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
 
         $customer = $this->_objectManager->get('Magento\Customer\Model\Customer')
                 ->setWebsiteId($this->storeManager->getStore()->getWebsiteId());

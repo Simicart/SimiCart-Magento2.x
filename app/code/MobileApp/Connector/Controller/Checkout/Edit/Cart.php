@@ -12,8 +12,7 @@ class Cart extends \MobileApp\Connector\Controller\Connector
     {
         $this->_serviceClassName = 'Magento\Quote\Api\CartItemRepositoryInterface';
         $this->_serviceMethodName = 'save';
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
 
         $cart = $this->_objectManager->get('Magento\Checkout\Model\Cart');
         $quoteId = $cart->getQuote()->getId();
