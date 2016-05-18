@@ -289,6 +289,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         if ($adapter->isUploaded($scope)) {
             // validate image
+
             if (!$adapter->isValid($scope)) {
                 throw new \Exception(__('Uploaded image is not valid.'));
             }

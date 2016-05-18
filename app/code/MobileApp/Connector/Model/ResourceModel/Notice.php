@@ -5,7 +5,7 @@ namespace MobileApp\Connector\Model\ResourceModel;
 /**
  * Connector Resource Model
  */
-class Key extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
+class Notice extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
     /**
      * Initialize resource model

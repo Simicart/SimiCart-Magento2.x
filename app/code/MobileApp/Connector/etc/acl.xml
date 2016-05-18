@@ -24,8 +24,13 @@
                         <resource id="MobileApp_Connector::simicategory_delete" title="Delete Simicategory" sortOrder="20" />
                     </resource>
                     <resource id="MobileApp_Connector::history" title="History" sortOrder="40">
-                        <resource id="MobileApp_Connector::history_save" title="Save History" sortOrder="10" />
-                        <resource id="MobileApp_Connector::history_delete" title="Delete History" sortOrder="20" />
+                        <resource id="MobileApp_Connector::history_delete" title="Delete History" sortOrder="10" />
+                    </resource>
+                    <resource id="MobileApp_Connector::device" title="Device" sortOrder="50">
+                        <resource id="MobileApp_Connector::device_delete" title="Delete Device" sortOrder="10" />
+                    </resource>
+                    <resource id="MobileApp_Connector::notice" title="Notice" sortOrder="60">
+                        <resource id="MobileApp_Connector::notice_delete" title="Delete Notice" sortOrder="10" />
                     </resource>
                 </resource>
                 <resource id="MobileApp_Adminhtml::stores">
