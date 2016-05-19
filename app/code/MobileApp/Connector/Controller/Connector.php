@@ -18,6 +18,7 @@ use Magento\Webapi\Controller\Rest\Router;
 use Magento\Webapi\Controller\Rest\Router\Route;
 use Magento\Webapi\Model\Rest\Swagger\Generator;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\App\RequestInterface;
 use Symfony\Component\Config\Definition\Exception\Exception;
 
 class Connector extends \Magento\Framework\App\Action\Action
@@ -77,8 +78,51 @@ class Connector extends \Magento\Framework\App\Action\Action
         $this->resultJsonFactory = $resultJsonFactory;
         $this->resource = $resource;
         $this->dateTime = $dateTime;
-        $this->_params = $this->_getParams();
         parent::__construct($context);
+    }
+
+    /**
+     * Dispatch request
+     *
+     * @param RequestInterface $request
+     * @return ResponseInterface
+     * @throws NotFoundException
+     */
+    public function dispatch(RequestInterface $request)
+    {
+        $this->_checkKey($request);
+        parent::dispatch($request);
+    }
+
+    /*
+     * Check
+     *
+     * @param $request RequestInterface
+     */
+    protected function _check($request){
+
+        $enabled = $this->scopeConfig->getValue('mobileapp/view/enabled');
+        if (!$enabled) {
+            echo 'Connect was disable!';
+            header("HTTP/1.0 503");
+            exit();
+        }
+
+        $token = $request->getHeader('Token');
+        if(!$token)
+            $token = $request->getHeader('TOKEN');
+
+        $websiteId = $this->storeManager->getStore()->getWebsiteId();
+        $key = $this->_objectManager
+            ->create('MobileApp\Connector\Model\Key')
+            ->getKey($websiteId);
+        $secretKey = $key->getSecretKey();
+
+        if($token != $secretKey){
+            echo 'Connect error!';
+            header("HTTP/1.0 401 Unauthorized");
+            exit();
+        }
     }
 
     /**
