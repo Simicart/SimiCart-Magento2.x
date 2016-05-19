@@ -10,11 +10,24 @@ class Detail extends \MobileApp\Connector\Controller\Connector
      */
     public function execute()
     {
+        //$this->_serviceClassName = 'Magento\Sales\Api\OrderRepositoryInterface';
+        //$this->_serviceMethodName = 'get';
+        //$this->_params = ['id' => $params['order_id']];
+
         $this->_serviceClassName = 'Magento\Sales\Api\OrderRepositoryInterface';
-        $this->_serviceMethodName = 'get';
+        $this->_serviceMethodName = 'getList';
         $params = $this->_getParams();
 
-        $this->_params = ['id' => $params['order_id']];
+        $criteria['filter_groups'][] = [
+            'filters' => [
+                [
+                    'field' => 'increment_id',
+                    'value' => $params['order_id']
+                ]
+            ]
+        ];
+
+        $this->_params = ['searchCriteria' => $criteria];
         return parent::execute();
     }
 
@@ -25,6 +38,10 @@ class Detail extends \MobileApp\Connector\Controller\Connector
      * @return array
      */
     protected function _formatData($data){
+        if(!isset($data['items'][0])){
+            return ['status' => 'FAIL', 'message' => ['FAIL']];
+        }
+        $data = $data['items'][0];
         $items = $this->_parseOrderItems($data['entity_id']);
 
         $serviceClassName = 'Magento\Directory\Api\CountryInformationAcquirerInterface';
