@@ -1,6 +1,6 @@
 <?php
 
-namespace MobileApp\Connector\Controller\Adminhtml\Simicategory;
+namespace MobileApp\Connector\Controller\Adminhtml\Device;
 
 use Magento\Backend\App\Action;
 
@@ -15,10 +15,7 @@ class Save extends \Magento\Backend\App\Action
      * @param Action\Context $context
      * @param PostDataProcessor $dataProcessor
      */
-    public function __construct(
-        Action\Context $context,
-        PostDataProcessor $dataProcessor
-    )
+    public function __construct(Action\Context $context, PostDataProcessor $dataProcessor)
     {
         $this->dataProcessor = $dataProcessor;
         parent::__construct($context);
@@ -29,7 +26,7 @@ class Save extends \Magento\Backend\App\Action
      */
     protected function _isAllowed()
     {
-        return $this->_authorization->isAllowed('MobileApp_Connector::simicategory_save');
+        return $this->_authorization->isAllowed('MobileApp_Connector::device_save');
     }
 
     /**
@@ -42,39 +39,30 @@ class Save extends \Magento\Backend\App\Action
         $data = $this->getRequest()->getPostValue();
         if ($data) {
             $data = $this->dataProcessor->filter($data);
-            $model = $this->_objectManager->create('MobileApp\Connector\Model\Simicategory');
+            $model = $this->_objectManager->create('MobileApp\Connector\Model\Device');
 
-            $id = $this->getRequest()->getParam('simicategory_id');
+            $id = $this->getRequest()->getParam('device_id');
             if ($id) {
                 $model->load($id);
             }
-            if(isset($data['new_category_parent'])){
-                $data['category_id'] = $data['new_category_parent'];
-                $cat = $this->_objectManager->create('Magento\Catalog\Model\Category')->load($data['category_id']);
-                if($cat->getId()){
-                    $data['simicategory_name'] = $cat->getName();
-                }
-            }
 
-            $is_delete_simicategory = isset($data['simicategory_filename']['delete']) ? $data['simicategory_filename']['delete'] : false;
-
-            $data['simicategory_filename'] = isset($data['simicategory_filename']['value']) ? $data['simicategory_filename']['value'] : '';
-
+            $is_delete_device = isset($data['device_name']['delete']) ? $data['device_name']['delete'] : false;
+            $data['device_name'] = isset($data['device_name']['value']) ? $data['device_name']['value'] : '';
             $model->addData($data);
 
             if (!$this->dataProcessor->validate($data)) {
-                $this->_redirect('*/*/edit', ['simicategory_id' => $model->getId(), '_current' => true]);
+                $this->_redirect('*/*/edit', ['device_id' => $model->getId(), '_current' => true]);
                 return;
             }
 
             try {
                 $imageHelper = $this->_objectManager->get('MobileApp\Connector\Helper\Data');
-                if ($is_delete_simicategory && $model->getSimicategoryFilename()) {
-                    $model->setSimicategoryFilename('');
+                if ($is_delete_device && $model->getBannerName()) {
+                    $model->setBannerName('');
                 } else {
-                    $imageFile = $imageHelper->uploadImage('simicategory_filename','simicategory');
+                    $imageFile = $imageHelper->uploadImage('device_name','device');
                     if ($imageFile) {
-                        $model->setSimicategoryFilename($imageFile);
+                        $model->setBannerName($imageFile);
                     }
                 }
 
@@ -82,7 +70,7 @@ class Save extends \Magento\Backend\App\Action
                 $this->messageManager->addSuccess(__('The Data has been saved.'));
                 $this->_objectManager->get('Magento\Backend\Model\Session')->setFormData(false);
                 if ($this->getRequest()->getParam('back')) {
-                    $this->_redirect('*/*/edit', ['simicategory_id' => $model->getId(), '_current' => true]);
+                    $this->_redirect('*/*/edit', ['device_id' => $model->getId(), '_current' => true]);
                     return;
                 }
                 $this->_redirect('*/*/');
@@ -96,7 +84,7 @@ class Save extends \Magento\Backend\App\Action
             }
 
             $this->_getSession()->setFormData($data);
-            $this->_redirect('*/*/edit', ['simicategory_id' => $this->getRequest()->getParam('simicategory_id')]);
+            $this->_redirect('*/*/edit', ['device_id' => $this->getRequest()->getParam('device_id')]);
             return;
         }
         $this->_redirect('*/*/');

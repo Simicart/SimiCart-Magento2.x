@@ -23,19 +23,25 @@ class Website extends \Magento\Framework\App\Helper\AbstractHelper
     protected $_request;
 
     /**
+     * @var \Magento\Directory\Model\ResourceModel\Country\Collection
+     **/
+    protected $_countryCollectionFactory;
+
+    /**
      * @param \Magento\Framework\App\Helper\Context $context
      */
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Store\Model\ResourceModel\Website\CollectionFactory $websiteFactory,
         \Magento\Store\Model\WebsiteRepositoryFactory $websiteRepositoryFactory,
-        \Magento\Framework\App\Request\Http $request
+        \Magento\Framework\App\Request\Http $request,
+        \Magento\Directory\Model\ResourceModel\Country\CollectionFactory $countryCollectionFactory
     )
     {
         $this->_request = $request;
         $this->_websiteFactory = $websiteFactory;
         $this->_websiteRepositoryFactory = $websiteRepositoryFactory;
-
+        $this->_countryCollectionFactory = $countryCollectionFactory;
         parent::__construct($context);
     }
 
@@ -60,7 +66,17 @@ class Website extends \Magento\Framework\App\Helper\AbstractHelper
         return $website;
     }
 
+    /**
+     * @return \Magento\Store\Model\ResourceModel\Website\Collection
+     */
     public function getWebsiteCollection(){
         return $this->_websiteFactory->create();
+    }
+
+    /**
+     * @return \Magento\Directory\Model\ResourceModel\Country\Collection
+     */
+    public function getCountryCollection(){
+        return $this->_countryCollectionFactory->create();
     }
 }
