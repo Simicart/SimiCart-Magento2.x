@@ -97,7 +97,7 @@ class Connector extends \Magento\Framework\App\Action\Action
     /*
      * Check
      *
-     * @param $request RequestInterface
+     * @param RequestInterface $request
      */
     protected function _check($request){
 
