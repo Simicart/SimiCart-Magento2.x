@@ -14,9 +14,7 @@ class Device extends \MobileApp\Connector\Controller\Connector
      */
     public function execute()
     {
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
-
+        $params = $this->_getParams();
         $device = $this->_objectManager
             ->create('MobileApp\Connector\Model\Device');
 

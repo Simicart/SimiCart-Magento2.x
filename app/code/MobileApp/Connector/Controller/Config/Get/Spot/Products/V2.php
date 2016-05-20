@@ -164,8 +164,7 @@ class V2 extends \MobileApp\Connector\Controller\Catalog\Products
      * @return
      */
     protected function _getProductCollection(){
-        $data = $this->getRequest()->getParam('data');
-        $params = $data?json_decode($data, true):[];
+        $params = $this->_getParams();
 
         $collection = $this->_objectManager
             ->create('Magento\Catalog\Model\ResourceModel\Product\Collection')
