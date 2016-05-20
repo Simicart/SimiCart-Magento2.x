@@ -30,10 +30,6 @@ class Index extends \Magento\Framework\App\Action\Action
      */
     public function execute()
     {
-        var_dump($this->getRequest()->getFrontName());
-        var_dump($this->getRequest()->getRouteName());
-        var_dump($this->getRequest()->getControllerModule());
-
         $order = $this->_objectManager->get('Magento\Sales\Model\Order');
         $order->loadByIncrementId('000000052');
         var_dump($order->getId());

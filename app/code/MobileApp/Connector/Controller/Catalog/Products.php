@@ -18,7 +18,8 @@ class Products extends \MobileApp\Connector\Controller\Connector
      */
     public function execute()
     {
-        $params = $this->_getParams();
+        $data = $this->getRequest()->getParam('data');
+        $params = $data?json_decode($data, true):[];
 
         $collection = $this->_objectManager->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
         $collection->addAttributeToSelect('*')

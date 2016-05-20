@@ -335,11 +335,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @return string
      */
     public
-    function getBaseUrl()
+    function getBaseUrl($is_connector = true)
     {
-        return $this->_storeManager->getStore()->getBaseUrl(
-            \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
-        ) . '/' . self::MEDIA_PATH;
+        if($is_connector)
+            return $this->_storeManager->getStore()->getBaseUrl(
+                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+            ) . self::MEDIA_PATH;
+        else
+            return $this->_storeManager->getStore()->getBaseUrl(
+                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+            );
     }
 
     /**

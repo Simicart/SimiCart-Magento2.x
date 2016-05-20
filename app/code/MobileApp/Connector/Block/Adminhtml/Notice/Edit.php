@@ -67,6 +67,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         } else {
             $this->buttonList->remove('delete');
         }
+
+        $this->buttonList->update('save', 'label', __('Send'));
     }
 
     /**
@@ -77,7 +79,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
     public function getHeaderText()
     {
         if ($this->_coreRegistry->registry('notice')->getId()) {
-            return __("Edit Notice '%1'", $this->escapeHtml($this->_coreRegistry->registry('notice')->getId()));
+            return __("Edit Notification '%1'", $this->escapeHtml($this->_coreRegistry->registry('notice')->getId()));
         } else {
             return __('New Notification');
         }
