@@ -1,0 +1,30 @@
+<?php
+/**
+ * Simisimiconnector template for separate item
+ *
+ */
+
+/**
+ * @var $this Simi\Simisimiconnector\Block\View
+ * @see Simi\Simisimiconnector\Block\View
+ */
+?>
+<?php $_simiconnectorItem = $this->getSimisimiconnector(); ?>
+    <div class="simiconnector_item_subtitle">
+        <?php echo $this->formatDate($_simiconnectorItem->getPublishedAt()) ?> |
+        <?php echo $this->escapeHtml($_simiconnectorItem->getAuthor()) ?>
+    </div>
+
+<div class="simiconnector_item_view">
+    <?php if ($imageUrl = $this->getImageUrl($_simiconnectorItem, 400)): ?>
+       <p><img src="<?php echo $imageUrl ?>" alt="<?php echo $this->escapeHtml($_simiconnectorItem->getTitle()) ?>" /></p>
+    <?php endif; ?>
+
+    <div class="simiconnector_item_content"><?php echo $_simiconnectorItem->getContent() ?></div>
+
+    <div class="pager">
+        <a href="<?php echo $this->getBackUrl() ?>">
+            <?php echo __('Return to list') ?>
+        </a>
+    </div>
+</div>
