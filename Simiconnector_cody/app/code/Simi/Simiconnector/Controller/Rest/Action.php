@@ -19,7 +19,6 @@ class Action extends \Magento\Framework\App\Action\Action
     protected function _getServer(){
         $serverModel =  $this->_objectManager->get('Simi\Simiconnector\Model\Server');
         $serverModel->eventManager = $this->_eventManager;
-        $serverModel->objectManager = $this->_objectManager;
         return $serverModel;
     }
 

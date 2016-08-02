@@ -58,7 +58,7 @@ class Server
         }
         
         $model = $this->objectManager->get('Simi\\'.$data['module'].'\Model\Api\\'.$data['resource']);
-        
+
         if (is_callable(array(&$model, $this->_method))) {
             return call_user_func_array(array(&$model, $this->_method), array($data));
         }
@@ -74,7 +74,7 @@ class Server
      */
     public function initialize(\Magento\Framework\App\Action\Action $controller)
     {
-
+        $this->objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $request_string = $controller->getRequest()->getRequestString();
         $action_string = $controller->getRequest()->getActionName() . '/';
         $cache = explode($action_string, $request_string);
@@ -90,10 +90,6 @@ class Server
 
         $module = $controller->getRequest()->getModuleName();
         $params = $controller->getRequest()->getQuery();
-        $om = \Magento\Framework\App\ObjectManager::getInstance();
-        $request = $om->get('Magento\Framework\App\RequestInterface');
-        $contents = $request->getParams();
-        //$zendFramework = $om->get('Magento\Framework\HTTP\ZendClient');
         $zendHTTPResponseStream = new \Zend\Http\Response\Stream;
         $contents = $zendHTTPResponseStream->getRawBody();
         if ($contents && strlen($contents)) {

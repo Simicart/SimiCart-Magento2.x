@@ -1,22 +1,16 @@
 <?php
+
 /**
  * Copyright © 2015 Simi. All rights reserved.
  */
 
 namespace Simi\Simiconnector\Model\Api;
 
-
-use Magento\Framework\Webapi\Rest\Request as RestRequest;
-use Magento\Framework\Webapi\Rest\Response as RestResponse;
-use Magento\Store\Model\Store;
-use Magento\Store\Model\StoreManagerInterface;
-use Magento\Webapi\Controller\Rest\Router;
-
 /**
  * Codymodeltab codymodel model
  */
-abstract class Apiabstract
-{ 
+abstract class Apiabstract {
+
     const DEFAULT_DIR = 'asc';
     const DEFAULT_LIMIT = 15;
     const DIR = 'dir';
@@ -29,20 +23,23 @@ abstract class Apiabstract
     const LIMIT_COUNT = 200;
 
     protected $_DEFAULT_ORDER = 'entity_id';
-    
-    protected $_objectManager ;
+    protected $_objectManager;
+    protected $_storeManager;
+
     /**
      * Singular key.
      *
      * @var string
      */
     protected $_helper;
+
     /**
      * Singular key.
      *
      * @var string
      */
     protected $singularKey;
+
     /**
      * Plural key.
      *
@@ -52,30 +49,26 @@ abstract class Apiabstract
     /**
      *
      */
+
     /**
      * @var collection Magento
      */
     protected $builderQuery = null;
-
     protected $_data;
 
     abstract public function setBuilderQuery();
 
-    public function init()
-    {
+    public function __construct() {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->_storeManager = $this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
-        $this->_helper = $this->_objectManager->get('\Simi\Simiconnector\Helper\Data');
+        $this->_storeManager = $this->_objectManager->get('\Magento\Store\Model\StoreManagerInterface');
         return $this;
     }
-    
-    public function setDataValue($data)
-    {
+
+    public function setDataValue($data) {
         $this->_data = $data;
     }
 
-    public function getData($key = '', $index = NULL)
-    {
+    public function getData($key = '', $index = NULL) {
         return $this->_data;
     }
 
@@ -83,8 +76,7 @@ abstract class Apiabstract
      * Get singular key
      * @return string
      */
-    public function getSingularKey()
-    {
+    public function getSingularKey() {
         return $this->singularKey;
     }
 
@@ -92,8 +84,7 @@ abstract class Apiabstract
      * Set singular query
      * @return $this
      */
-    public function setSingularKey($singularKey)
-    {
+    public function setSingularKey($singularKey) {
         $this->singularKey = substr($singularKey, 0, -1);
         return $this;
     }
@@ -102,8 +93,7 @@ abstract class Apiabstract
      * Get singular key
      * @return string
      */
-    public function getPluralKey()
-    {
+    public function getPluralKey() {
         return $this->pluralKey;
     }
 
@@ -111,19 +101,17 @@ abstract class Apiabstract
      * Set singular query
      * @return $this
      */
-    public function setPluralKey($pluralKey)
-    {
+    public function setPluralKey($pluralKey) {
         $this->pluralKey = $pluralKey;
         return $this;
     }
+
     //start
-    public function store()
-    {
+    public function store() {
         return $this->getDetail(array());
     }
 
-    public function index()
-    {
+    public function index() {
         $collection = $this->builderQuery;
         $this->filter();
         $data = $this->getData();
@@ -149,10 +137,10 @@ abstract class Apiabstract
         $total = $collection->getSize();
 
         if ($offset > $total)
-            throw new Exception($this->_helper->__('Invalid method.'), 4);
+            throw new \Exception(__('Invalid method.'), 4);
 
         $fields = array();
-        if(isset($parameters['fields']) && $parameters['fields']){
+        if (isset($parameters['fields']) && $parameters['fields']) {
             $fields = explode(',', $parameters['fields']);
         }
 
@@ -172,37 +160,32 @@ abstract class Apiabstract
         return $this->getList($info, $all_ids, $total, $limit, $offset);
     }
 
-    public function show()
-    {
+    public function show() {
         $entity = $this->builderQuery;
         $data = $this->getData();
         $parameters = $data['params'];
         $fields = array();
-        if(isset($parameters['fields']) && $parameters['fields']){
+        if (isset($parameters['fields']) && $parameters['fields']) {
             $fields = explode(',', $parameters['fields']);
         }
         $info = $entity->toArray($fields);
         return $this->getDetail($info);
     }
 
-    public function update()
-    {
+    public function update() {
         return $this->getDetail(array());
     }
 
-    public function destroy()
-    {
+    public function destroy() {
         return $this->getDetail(array());
     }
 
     //end
-    public function getBuilderQuery()
-    {
+    public function getBuilderQuery() {
         return $this->builderQuery;
     }
 
-    public function callApi($data)
-    {
+    public function callApi($data) {
         $this->setDataValue($data);
         $this->setBuilderQuery(null);
         $this->setPluralKey($data['resource']);
@@ -222,8 +205,7 @@ abstract class Apiabstract
         }
     }
 
-    public function getList($info, $all_ids, $total, $page_size, $from)
-    {
+    public function getList($info, $all_ids, $total, $page_size, $from) {
         return array(
             'all_ids' => $all_ids,
             $this->getPluralKey() => $info,
@@ -233,13 +215,11 @@ abstract class Apiabstract
         );
     }
 
-    public function getDetail($info)
-    {
+    public function getDetail($info) {
         return array($this->getSingularKey() => $info);
     }
 
-    protected function filter()
-    {
+    protected function filter() {
         $data = $this->_data;
         $parameters = $data['params'];
         $query = $this->builderQuery;
@@ -249,8 +229,7 @@ abstract class Apiabstract
         return $query;
     }
 
-    protected function _order($parameters)
-    {
+    protected function _order($parameters) {
         $query = $this->builderQuery;
         $order = isset($parameters[self::ORDER]) ? $parameters[self::ORDER] : $this->_DEFAULT_ORDER;
         $order = str_replace('|', '.', $order);
@@ -258,8 +237,7 @@ abstract class Apiabstract
         $query->setOrder($order, $dir);
     }
 
-    protected function _whereFilter(&$query, $parameters)
-    {
+    protected function _whereFilter(&$query, $parameters) {
         if (isset($parameters[self::FILTER])) {
             foreach ($parameters[self::FILTER] as $key => $value) {
                 if ($key == 'or') {
@@ -267,7 +245,8 @@ abstract class Apiabstract
                     foreach ($value as $k => $v) {
                         $filters[] = $this->_addCondition($k, $v, true);
                     }
-                    if (count($filters)) $query->addAttributeToFilter($filters);
+                    if (count($filters))
+                        $query->addAttributeToFilter($filters);
                 } else {
                     $filter = $this->_addCondition($key, $value);
                     $query->addAttributeToFilter($key, $filter);
@@ -276,8 +255,7 @@ abstract class Apiabstract
         }
     }
 
-    protected function _addCondition($key, $value, $isOr = false)
-    {
+    protected function _addCondition($key, $value, $isOr = false) {
         $key = str_replace('|', '.', $key);
         if (is_array($value)) {
             foreach ($value as $operator => $v) {
@@ -293,4 +271,5 @@ abstract class Apiabstract
             }
         }
     }
+
 }

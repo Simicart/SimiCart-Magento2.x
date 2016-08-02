@@ -13,14 +13,12 @@ class Stores extends Apiabstract
     protected $_DEFAULT_ORDER = 'group_id';
 
     public function setBuilderQuery() {
-        
-        \zend_debug::dump($this->storeManager->getStore()->getData());die;
-        $collection = $this->_objectManager->create('\Magento\Store\Model\Group')->getCollection();
         $data = $this->getData();
+        $collection = $this->_objectManager->get('\Magento\Store\Model\Group')->getCollection();
         if ($data['resourceid']) {
-            $this->builderQuery = Mage::getModel('core/store_group')->load($data['resourceid']);
+            $this->builderQuery = $this->_objectManager->get('\Magento\Store\Model\Group')->load($data['resourceid']);
         } else {
-            $this->builderQuery = $collection;
+            $this->builderQuery = $collection->addFieldToFilter('website_id', $this->_storeManager->getStore()->getWebsiteId());
         }
     }
 
