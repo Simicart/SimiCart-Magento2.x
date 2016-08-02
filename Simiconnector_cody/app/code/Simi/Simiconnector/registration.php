@@ -2,6 +2,6 @@
 
 \Magento\Framework\Component\ComponentRegistrar::register(
     \Magento\Framework\Component\ComponentRegistrar::MODULE,
-    'Simi_Simisimiconnector',
+    'Simi_Simiconnector',
     __DIR__
 );

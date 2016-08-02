@@ -1,21 +1,10 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Acl/etc/acl.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/Acl/etc/acl.xsd">
     <acl>
         <resources>
-            <resource id="Simi_Adminhtml::admin">
-                <resource id="Simi_Simisimiconnector::simiconnector" title="Simisimiconnector" sortOrder="40">
-                    <resource id="Simi_Simisimiconnector::manage" title="Simisimiconnector Module" sortOrder="10">
-						<resource id="Simi_Simisimiconnector::save" title="Save Simisimiconnector" sortOrder="10" />
-                        <resource id="Simi_Simisimiconnector::news_delete" title="Delete Simisimiconnector" sortOrder="20" />
-					</resource>
-                </resource>
-                <resource id="Simi_Adminhtml::stores">
-                    <resource id="Simi_Adminhtml::stores_settings">
-                        <resource id="Simi_Adminhtml::config">
-                            <resource id="Simi_Simisimiconnector::config_simiconnector" title="Simisimiconnector Section" sortOrder="50" />
-                        </resource>
-                    </resource>
-                </resource>
+            <resource id="Magento_Adminhtml::admin">
+                <resource id="Simi_Simiconnector::codymodel" title="codymodel" sortOrder="100"/>
+ <!--AddMenuAcl-->
             </resource>
         </resources>
     </acl>

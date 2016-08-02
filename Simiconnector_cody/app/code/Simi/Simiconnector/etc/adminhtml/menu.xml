@@ -1,48 +1,12 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+<!--
+/**
+ * Copyright © 2015 Simi. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Backend/etc/menu.xsd">
     <menu>
-        <!--<add id="Simi_Simisimiconnector::simiconnector" title="Simisimiconnector" module="Simi_Simisimiconnector" sortOrder="30" resource="Simi_Simisimiconnector::simiconnector"/>-->
-
-        <!--<add id="Simi_Simisimiconnector::simiconnector_manage" title="All Items" module="Simi_Simisimiconnector" sortOrder="10" parent="Simi_Simisimiconnector::simiconnector" action="simiconnector/index/" resource="Simi_Simisimiconnector::manage"/>-->
-
-        <add id="Simi_Simisimiconnector::simiconnector" title="Simi" module="Simi_Simisimiconnector" sortOrder="20" resource="Simi_Simisimiconnector::simiconnector"/>
-
-        <add id="Simi_Simisimiconnector::simiconnector_settings" title="Simisimiconnector Settings" module="Simi_Simisimiconnector" sortOrder="10" parent="Simi_Simisimiconnector::simiconnector" resource="Simi_Simisimiconnector::simiconnector_settings"/>
-
-        <add id="Simi_Simisimiconnector::app" title="App" module="Simi_Simisimiconnector" sortOrder="10" parent="Simi_Simisimiconnector::simiconnector_settings" action="simiconnector/index/" resource="Simi_Simisimiconnector::manage"/>
-
-        <!--<add id="Simi_Simisimiconnector::promote_app" title="Promote App" module="Simi_Simisimiconnector" sortOrder="30" parent="Simi_Simisimiconnector::simiconnector_settings" action="simi/index/" resource="Simi_Simisimiconnector::manage"/>-->
-
-        <!--<add id="Simi_Simisimiconnector::app_transaction" title="App Transactions" module="Simi_Simisimiconnector" sortOrder="40" parent="Simi_Simisimiconnector::simiconnector_settings" action="simi/index/" resource="Simi_Simisimiconnector::manage"/>-->
-
-        <add id="Simi_Simisimiconnector::general_settings" title="General Settings" module="Simi_Simisimiconnector" sortOrder="50" parent="Simi_Simisimiconnector::simiconnector_settings" action="simiconnector/index/" resource="Simi_Simisimiconnector::manage"/>
-
-        <!--<add id="Simi_Simisimiconnector::notifications" title="Notifications" module="Simi_Simisimiconnector" sortOrder="20" parent="Simi_Simisimiconnector::simi" action="simi/index/" resource="Simi_Simisimiconnector::manage"/>-->
-
-        <!--<add id="Simi_Simisimiconnector::manage_notify" title="Manage Notifications" module="Simi_Simisimiconnector" sortOrder="20" parent="Simi_Simisimiconnector::notifications" action="simi/index/" resource="Simi_Simisimiconnector::manage"/>-->
-
-        <!--<add id="Simi_Simisimiconnector::devices" title="Devices" module="Simi_Simisimiconnector" sortOrder="20" parent="Simi_Simisimiconnector::notifications" action="simi/index/" resource="Simi_Simisimiconnector::manage"/>-->
-
-        <!--<add id="Simi_Simisimiconnector::history" title="History" module="Simi_Simisimiconnector" sortOrder="20" parent="Simi_Simisimiconnector::notifications" action="simi/index/" resource="Simi_Simisimiconnector::manage"/>-->
-
-
-        <add id="Simi_Simisimiconnector::default_themes" title="Default Themes" module="Simi_Simisimiconnector" sortOrder="30" parent="Simi_Simisimiconnector::simiconnector" resource="Simi_Simisimiconnector::themes"/>
-
-        <add id="Simi_Simisimiconnector::banner" title="Banners" module="Simi_Simisimiconnector" sortOrder="10" parent="Simi_Simisimiconnector::default_themes" action="simi/index/" resource="Simi_Simisimiconnector::manage"/>
-
-        <!--<add id="Simi_Simisimiconnector::home_category" title="Home Category" module="Simi_Simisimiconnector" sortOrder="10" parent="Simi_Simisimiconnector::default_themes" action="simi/index/" resource="Simi_Simisimiconnector::manage"/>-->
-
-        <!--<add id="Simi_Simisimiconnector::cms" title="CMS" module="Simi_Simisimiconnector" sortOrder="10" parent="Simi_Simisimiconnector::default_themes" action="simi/index/" resource="Simi_Simisimiconnector::manage"/>-->
-
-        <!--<add id="Simi_Simisimiconnector::spot_products" title="Spot Products" module="Simi_Simisimiconnector" sortOrder="10" parent="Simi_Simisimiconnector::default_themes" action="simi/index/" resource="Simi_Simisimiconnector::manage"/>-->
-
-
-        <!--<add id="Simi_Simisimiconnector::payment" title="Payments" module="Simi_Simisimiconnector" sortOrder="40" parent="Simi_Simisimiconnector::simi" resource="Simi_Simisimiconnector::payment"/>-->
-
-        <!--<add id="Simi_Simisimiconnector::mobile_bank_transfer" title="Mobile Bank Transfer" module="Simi_Simisimiconnector" sortOrder="20" parent="Simi_Simisimiconnector::payment" action="simi/index/" resource="Simi_Simisimiconnector::manage"/>-->
-
-        <!--<add id="Simi_Simisimiconnector::rich_content" title="Rich Content" module="Simi_Simisimiconnector" sortOrder="50" parent="Simi_Simisimiconnector::simi" resource="Simi_Simisimiconnector::rich_content"/>-->
-
-        <!--<add id="Simi_Simisimiconnector::user_experience" title="User Experience" module="Simi_Simisimiconnector" sortOrder="60" parent="Simi_Simisimiconnector::simi" resource="Simi_Simisimiconnector::user_experience"/>-->
+        <add id="Simi_Simiconnector::simi_cody_index" title="codymenu" module="Simi_Simiconnector"  sortOrder="20" dependsOnModule="Simi_Simiconnector" action="simiconnector/cody/index" resource="Simi_Simiconnector::simi_cody_index"/>
+<!--AddMenu-->
     </menu>
 </config>

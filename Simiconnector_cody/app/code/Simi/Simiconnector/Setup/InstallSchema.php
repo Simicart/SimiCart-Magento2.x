@@ -1,7 +1,9 @@
 <?php
+/**
+ * Copyright © 2015 Simi. All rights reserved.
+ */
 
-
-namespace Simi\Simisimiconnector\Setup;
+namespace Simi\Simiconnector\Setup;
 
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
@@ -14,11 +16,11 @@ class InstallSchema implements InstallSchemaInterface
 {
     /**
      * {@inheritdoc}
-     * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    public function install(SchemaSetupInterface $installer, ModuleContextInterface $context)
+    public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
-        $installer = $installer;
+	
+        $installer = $setup;
         $installer->startSetup();
 
         
@@ -36,85 +38,85 @@ class InstallSchema implements InstallSchemaInterface
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
             ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            'Cat Id'
         )->addColumn(
             'simicategory_name',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Cat Name'
         )->addColumn(
             'simicategory_filename',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             255,
             ['nullable' => true],
-            'Website Id'
+            'File Name'
         )->addColumn(
             'simicategory_filename_tablet',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'File name tablet'
         )->addColumn(
             'category_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            ['nullable' => true, 'unsigned' => true],
+            'Category Id'
         )->addColumn(
             'status',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            ['nullable' => true, 'unsigned' => true],
+            'status'
         )->addColumn(
             'website_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            ['nullable' => true, 'unsigned' => true],
+            'Web Id'
         )->addColumn(
             'storeview_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Storeview Id'
         )->addColumn(
             'sort_order',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Sort Order'
         )->addColumn(
             'matrix_width_percent',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Width Percent'
         )->addColumn(
             'matrix_height_percent',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Height Percent'
         )->addColumn(
             'matrix_width_percent_tablet',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Width Percent Tab'
         )->addColumn(
             'matrix_height_percent_tablet',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Height Percent Tab'
         )->addColumn(
             'matrix_row',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Rownum'
         );
         $installer->getConnection()->createTable($table_key);
         // end create table simicategory
@@ -133,67 +135,67 @@ class InstallSchema implements InstallSchemaInterface
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
             ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            'Banner Id'
         )->addColumn(
             'banner_name',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Name'
         )->addColumn(
             'banner_url',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             255,
             ['nullable' => true],
-            'Website Id'
+            'Banner URL'
         )->addColumn(
             'banner_name_tablet',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'image tablet'
         )->addColumn(
             'banner_title',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Title'
         )->addColumn(
             'status',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            ['unsigned' => true],
+            'Status'
         )->addColumn(
             'website_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            ['unsigned' => true],
+            'Web ID'
         )->addColumn(
             'type',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            ['unsigned' => true],
+            'Type'
         )->addColumn(
             'category_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            ['unsigned' => true],
+            'Category Id'
         )->addColumn(
             'product_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            ['unsigned' => true],
+            'Product Id'
         )->addColumn(
             'sort_order',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Sort Order'
         );
         $installer->getConnection()->createTable($table_key);
         // end create table simiconnector_banner
@@ -212,85 +214,85 @@ class InstallSchema implements InstallSchemaInterface
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
             ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            'CMS Id'
         )->addColumn(
             'cms_title',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'CMS title'
         )->addColumn(
             'cms_image',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             255,
             ['nullable' => true],
-            'Website Id'
+            'CMS image'
         )->addColumn(
             'cms_content',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             '2M',
             ['nullable' => true],
-            'Key Secret'
+            'CMS content'
         )->addColumn(
             'status',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            ['unsigned' => true],
+            'Status'
         )->addColumn(
             'website_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            ['unsigned' => true],
+            'Web Id'
         )->addColumn(
             'type',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            ['unsigned' => true],
+            'Type'
         )->addColumn(
             'category_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            ['unsigned' => true],
+            'Cat id'
         )->addColumn(
             'sort_order',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Sort Order'
         )->addColumn(
             'matrix_width_percent',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Width Percent'
         )->addColumn(
             'matrix_height_percent',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Height Percent'
         )->addColumn(
             'matrix_width_percent_tablet',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Width tab'
         )->addColumn(
             'matrix_height_percent_tablet',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Height Tab'
         )->addColumn(
             'matrix_row',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Rownum'
         );
         $installer->getConnection()->createTable($table_key);
         // end create table simiconnector_cms
@@ -309,54 +311,203 @@ class InstallSchema implements InstallSchemaInterface
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
             ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            'Product List Id'
         )->addColumn(
             'list_title',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'Title'
         )->addColumn(
             'list_image',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Website Id'
+            'List Image'
         )->addColumn(
             'list_image_tablet',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
-            'Key Secret'
+            'List Image Tab'
         )->addColumn(
             'list_type',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            ['unsigned' => true, 'nullable' => true],
+            'Type'
         )->addColumn(
             'list_products',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
+            '2M',
             ['nullable' => true],
-            'Key Secret'
+            'List Products'
         )->addColumn(
             'list_status',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            ['unsigned' => true, 'nullable' => true],
+            'status'
         )->addColumn(
             'sort_order',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Key Id'
+            ['unsigned' => true, 'nullable' => true],
+            'Sort Order'
         );
         $installer->getConnection()->createTable($table_key);
         // end create table simiconnector_product_list
 
-		//old source here
+		
+		/**
+         * Creating table simiconnector_visibility
+         */
+        $table_key_name = $installer->getTable('simiconnector_visibility');
+        if ($installer->getConnection()->isTableExists($table_key_name) == true) {
+            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_visibility'));
+        }
+        $table_key = $installer->getConnection()->newTable(
+            $table_key_name
+        )->addColumn(
+            'entity_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+            'Entity Id'
+        )->addColumn(
+            'content_type',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['unsigned' => true],
+            'Type'
+        )->addColumn(
+            'item_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['unsigned' => true],
+            'Item Id'
+        )->addColumn(
+            'store_view_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'Storeview Id'
+        );
+        $installer->getConnection()->createTable($table_key);
+        // end create table simiconnector_visibility
+		
+		
+		/**
+         * Creating table simiconnector device
+         */
+        $table_device_name = $installer->getTable('simiconnector_device');
+        if ($installer->getConnection()->isTableExists($table_device_name) == true) {
+            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_device'));
+        }
+        $table_device = $installer->getConnection()->newTable(
+            $table_device_name
+        )->addColumn(
+            'device_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+            'Device Id'
+        )->addColumn(
+            'device_token',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'Device Token'
+        )->addColumn(
+            'plaform_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'Platform'
+        )->addColumn(
+            'storeview_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'Storevew Id'
+        )->addColumn(
+            'latitude',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            30,
+            ['nullable' => true],
+            'Latitude'
+        )->addColumn(
+            'longitude',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            30,
+            ['nullable' => true],
+            'Longitude'
+        )->addColumn(
+            'address',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'Address'
+        )->addColumn(
+            'city',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'City'
+        )->addColumn(
+            'country',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'Country'
+        )->addColumn(
+            'zipcode',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            25,
+            ['nullable' => true],
+            'Zipcode'
+        )->addColumn(
+            'state',
+            \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+            25,
+            ['nullable' => true],
+            'Zipcode'
+        )->addColumn(
+            'created_time',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
+            null,
+            ['nullable' => true],
+            'Created Time'
+        )->addColumn(
+            'is_demo',
+            \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+            25,
+            ['nullable' => true],
+            'Is demo'
+        )->addColumn(
+            'user_email',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'User Email'
+        )->addColumn(
+            'app_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'App Id'
+        )->addColumn(
+            'build_version',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'Build Version'
+        );
+        $installer->getConnection()->createTable($table_device);
+        // end create table simiconnector device
+
+		
+		
         /**
          * Creating table simiconnector notice
          */
@@ -397,473 +548,702 @@ class InstallSchema implements InstallSchemaInterface
             ['nullable' => true],
             'Notice Sanbox'
         )->addColumn(
-            'website_id',
+            'storeview_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['nullable' => false],
-            'Website Id'
+            ['nullable' => true],
+            'Storeview Id'
         )->addColumn(
             'device_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['nullable' => false],
+            ['nullable' => true],
             'Device Id'
         )->addColumn(
             'type',
             \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
             5,
-            ['nullable' => false],
+            ['nullable' => true],
             'Type'
         )->addColumn(
             'category_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['nullable' => false],
+            ['nullable' => true],
             'Category Id'
         )->addColumn(
             'product_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['nullable' => false],
+            ['nullable' => true],
             'Product Id'
         )->addColumn(
             'image_url',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
-            ['nullable' => false],
+            ['nullable' => true],
             'Image Url'
-        )
-            ->addColumn(
-                'latitude',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                30,
-                ['nullable' => false],
-                'Latitude'
-            )->addColumn(
-                'longitude',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                30,
-                ['nullable' => false],
-                'Longitude'
-            )->addColumn(
-                'address',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                255,
-                ['nullable' => false],
-                'Address'
-            )->addColumn(
-                'city',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                255,
-                ['nullable' => false],
-                'City'
-            )->addColumn(
-                'country',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                255,
-                ['nullable' => false],
-                'Country'
-            )->addColumn(
-                'zipcode',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                25,
-                ['nullable' => false],
-                'Zipcode'
-            )->addColumn(
-                'state',
-                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
-                25,
-                ['nullable' => false],
-                'Zipcode'
-            )->addColumn(
-                'show_popup',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
-                255,
-                ['nullable' => true, 'default' => null],
-                'Show Popup'
-            )->addColumn(
-                'created_at',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
-                null,
-                ['nullable' => false],
-                'Created At'
-            );
+        )->addColumn(
+			'location',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+			255,
+			['nullable' => true],
+			'Location'
+		)->addColumn(
+			'distance',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+			255,
+			['nullable' => true],
+			'Distance'
+		)->addColumn(
+			'address',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+			255,
+			['nullable' => true],
+			'Address'
+		)->addColumn(
+			'city',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+			255,
+			['nullable' => true],
+			'City'
+		)->addColumn(
+			'country',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+			255,
+			['nullable' => true],
+			'Country'
+		)->addColumn(
+			'state',
+			\Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+			255,
+			['nullable' => true],
+			'State'
+		)->addColumn(
+			'zipcode',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+			255,
+			['nullable' => true],
+			'Zipcode'
+		)->addColumn(
+			'show_popup',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+			255,
+			['nullable' => true, 'default' => null],
+			'Show Popup'
+		)->addColumn(
+			'devices_pushed',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+			'2M',
+			['nullable' => true, 'default' => null],
+			'Devices Pushed'
+		)->addColumn(
+			'created_time',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
+			null,
+			['nullable' => true],
+			'Created Time'
+		);
         $installer->getConnection()->createTable($table_notice);
         // end create table simiconnector notice
 
-        /**
-         * Creating table simiconnector app
+		/**
+         * Creating table simiconnector notice history
          */
-
-        $table_app_name = $installer->getTable('simiconnector_app');
-        if ($installer->getConnection()->isTableExists($table_app_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_app'));
+        $table_notice_name = $installer->getTable('simiconnector_notice_history');
+        if ($installer->getConnection()->isTableExists($table_notice_name) == true) {
+            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_notice_history'));
         }
-        $table_app = $installer->getConnection()->newTable(
-            $table_app_name
+        $table_notice = $installer->getConnection()->newTable(
+            $table_notice_name
         )->addColumn(
-            'app_id',
+            'history_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
             ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'App Id'
+            'Notice Id'
         )->addColumn(
-            'app_name',
+            'notice_title',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
-            ['nullable' => true],
-            'App Name'
+            ['nullable' => true, 'default' => null],
+            'Notice Title'
         )->addColumn(
-            'device_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['nullable' => false],
-            'Device Id'
-        )->addColumn(
-            'expired_time',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
-            null,
-            ['nullable' => false],
-            'Expired Time'
-        )->addColumn(
-            'status',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['nullable' => false],
-            'Status'
-        )->addColumn(
-            'categories',
+            'notice_url',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
-            ['nullable' => false],
-            'Categories'
+            ['nullable' => true, 'default' => null],
+            'Notice Url'
         )->addColumn(
-            'website_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['nullable' => false],
-            'Website Id'
-        );
-        $installer->getConnection()->createTable($table_app);
-        // end create table simiconnector app
-
-        /**
-         * Creating table simiconnector plugin
-         */
-        $table_plugin_name = $installer->getTable('simiconnector_plugin');
-        if ($installer->getConnection()->isTableExists($table_plugin_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_plugin'));
-        }
-        $table_plugin = $installer->getConnection()->newTable(
-            $table_plugin_name
-        )->addColumn(
-            'plugin_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Plugin Id'
-        )->addColumn(
-            'plugin_name',
+            'notice_content',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => true],
-            'Plugin Name'
+            '2M',
+            ['nullable' => true, 'default' => null],
+            'Notice Content'
         )->addColumn(
-            'plugin_version',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['nullable' => false],
-            'Plugin Version'
-        )->addColumn(
-            'plugin_code',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['nullable' => false],
-            'Plugin Code'
-        )->addColumn(
-            'expired_time',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
-            null,
-            ['nullable' => false],
-            'Expired Time'
-        )->addColumn(
-            'status',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['nullable' => false],
-            'Status'
-        )->addColumn(
-            'plugin_sku',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => false],
-            'Plugin Sku'
-        )->addColumn(
-            'device_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['nullable' => false],
-            'Device'
-        )->addColumn(
-            'website_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['nullable' => false],
-            'Website Id'
-        );
-        $installer->getConnection()->createTable($table_plugin);
-        // end create table simiconnector plugin
-
-        /**
-         * Creating table simiconnector design
-         */
-        $table_design_name = $installer->getTable('simiconnector_design');
-        if ($installer->getConnection()->isTableExists($table_design_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_design'));
-        }
-        $table_design = $installer->getConnection()->newTable(
-            $table_design_name
-        )->addColumn(
-            'design_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Design Id'
-        )->addColumn(
-            'theme_color',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => true],
-            'Theme Color'
-        )->addColumn(
-            'device_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['nullable' => false],
-            'Device Id'
-        )->addColumn(
-            'theme_logo',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => false],
-            'Theme Logo'
-        )->addColumn(
-            'website_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['nullable' => false],
-            'Website Id'
-        );
-        $installer->getConnection()->createTable($table_design);
-        // end create table simiconnector design
-
-        /**
-         * Creating table simiconnector device
-         */
-        $table_device_name = $installer->getTable('simiconnector_device');
-        if ($installer->getConnection()->isTableExists($table_device_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_device'));
-        }
-        $table_device = $installer->getConnection()->newTable(
-            $table_device_name
-        )->addColumn(
-            'device_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Device Id'
-        )->addColumn(
-            'device_token',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => true],
-            'Device Token'
-        )->addColumn(
-            'plaform_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['nullable' => false],
-            'Platform'
-        )->addColumn(
-            'website_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['nullable' => false],
-            'Website Id'
-        )->addColumn(
-            'device_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['nullable' => false],
-            'Device'
-        )->addColumn(
-            'latitude',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            30,
-            ['nullable' => false],
-            'Latitude'
-        )->addColumn(
-            'longitude',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            30,
-            ['nullable' => false],
-            'Longitude'
-        )->addColumn(
-            'address',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => false],
-            'Address'
-        )->addColumn(
-            'city',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => false],
-            'City'
-        )->addColumn(
-            'country',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => false],
-            'Country'
-        )->addColumn(
-            'zipcode',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            25,
-            ['nullable' => false],
-            'Zipcode'
-        )->addColumn(
-            'state',
+            'notice_sanbox',
             \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
-            25,
-            ['nullable' => false],
-            'Zipcode'
-        )->addColumn(
-            'created_time',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
             null,
-            ['nullable' => false],
-            'Created Time'
-        );
-        $installer->getConnection()->createTable($table_device);
-        // end create table simiconnector device
-
-        /**
-         * Creating table simiconnector design
-         */
-        $table_banner_name = $installer->getTable('simiconnector_banner');
-        if ($installer->getConnection()->isTableExists($table_banner_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_banner'));
-        }
-        $table_banner = $installer->getConnection()->newTable(
-            $table_banner_name
-        )->addColumn(
-            'banner_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'Banner Id'
-        )->addColumn(
-            'banner_name',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
             ['nullable' => true],
-            'Banner Name'
+            'Notice Sanbox'
         )->addColumn(
-            'banner_url',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
+            'storeview_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
             ['nullable' => true],
-            'Banner Url'
+            'Storeview Id'
         )->addColumn(
-            'banner_title',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => false],
-            'Banner Title'
-        )->addColumn(
-            'status',
+            'device_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['nullable' => false],
-            'Status'
-        )->addColumn(
-            'website_id',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['nullable' => false],
-            'Website Id'
+            ['nullable' => true],
+            'Device Id'
         )->addColumn(
             'type',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-            null,
-            ['nullable' => false, 'default' => 3],
+            \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+            5,
+            ['nullable' => true],
             'Type'
         )->addColumn(
             'category_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['nullable' => false],
-            'Category'
+            ['nullable' => true],
+            'Category Id'
         )->addColumn(
             'product_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['nullable' => false],
-            'Product'
-        );
-        $installer->getConnection()->createTable($table_banner);
-        // end create table simiconnector design
-
-        /**
-         * Creating table simiconnector cms
-         */
-        $table_cms_name = $installer->getTable('simiconnector_cms');
-        if ($installer->getConnection()->isTableExists($table_cms_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_cms'));
-        }
-        $table_cms = $installer->getConnection()->newTable(
-            $table_cms_name
+            ['nullable' => true],
+            'Product Id'
         )->addColumn(
-            'cms_id',
+            'image_url',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'Image Url'
+        )->addColumn(
+			'location',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+			255,
+			['nullable' => true],
+			'Location'
+		)->addColumn(
+			'distance',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+			255,
+			['nullable' => true],
+			'Distance'
+		)->addColumn(
+			'address',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+			255,
+			['nullable' => true],
+			'Address'
+		)->addColumn(
+			'city',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+			255,
+			['nullable' => true],
+			'City'
+		)->addColumn(
+			'country',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+			255,
+			['nullable' => true],
+			'Country'
+		)->addColumn(
+			'state',
+			\Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+			255,
+			['nullable' => true],
+			'State'
+		)->addColumn(
+			'zipcode',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+			255,
+			['nullable' => true],
+			'Zipcode'
+		)->addColumn(
+			'show_popup',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
+			255,
+			['nullable' => true, 'default' => null],
+			'Show Popup'
+		)->addColumn(
+			'created_time',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
+			null,
+			['nullable' => true],
+			'Created Time'
+		)->addColumn(
+			'notice_type',
+			\Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+			255,
+			['nullable' => true],
+			'Notice Type'
+		)->addColumn(
+			'status',
+			\Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+			255,
+			['nullable' => true],
+			'Status'
+		)->addColumn(
+			'devices_pushed',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+			'2M',
+			['nullable' => true, 'default' => null],
+			'Devices Pushed'
+		)->addColumn(
+            'notice_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'Notice Id'
+        );
+        $installer->getConnection()->createTable($table_notice);
+        // end create table simiconnector notice history
+		
+		/**
+         * Creating table simiconnector barcode
+         */
+        $table_barcode_name = $installer->getTable('simiconnector_simibarcode');
+        if ($installer->getConnection()->isTableExists($table_barcode_name) == true) {
+            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_simibarcode'));
+        }
+        $table_barcode = $installer->getConnection()->newTable(
+            $table_barcode_name
+        )->addColumn(
+            'barcode_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
             ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
-            'CMS'
+            'Barcode Id'
         )->addColumn(
-            'cms_title',
+            'barcode',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
-            ['nullable' => true],
-            'CMS Title'
+            ['nullable' => true, 'default' => null],
+            'Barcode'
         )->addColumn(
-            'cms_image',
+            'qrcode',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
-            ['nullable' => true],
-            'CMS Image'
+            ['nullable' => true, 'default' => null],
+            'QR code'
         )->addColumn(
-            'cms_content',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => false],
-            'CMS Content'
-        )->addColumn(
-            'cms_status',
+            'barcode_status',
             \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
             null,
-            ['nullable' => false],
-            'CMS Status'
+            ['nullable' => true],
+            'Status'
         )->addColumn(
-            'website_id',
+            'product_entity_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['nullable' => false],
-            'Website Id'
+            ['nullable' => true],
+            'Product Id'
+        )->addColumn(
+            'product_name',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'Product Name'
+        )->addColumn(
+			'product_sku',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+			255,
+			['nullable' => true],
+			'Sku'
+		)->addColumn(
+			'created_date',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
+			255,
+			['nullable' => true, 'default' => null],
+			'Created Time'
+		);
+        $installer->getConnection()->createTable($table_barcode);
+        // end create table simiconnector barcode
+		
+		/**
+         * Creating table simiconnector Videos
+         */
+        $table_video_name = $installer->getTable('simiconnector_videos');
+        if ($installer->getConnection()->isTableExists($table_video_name) == true) {
+            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_videos'));
+        }
+        $table_video = $installer->getConnection()->newTable(
+            $table_video_name
+        )->addColumn(
+            'video_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+            'Video Id'
+        )->addColumn(
+            'video_url',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Video URL'
+        )->addColumn(
+            'video_key',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Video Key'
+        )->addColumn(
+            'video_title',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Video Title'
+        )->addColumn(
+            'product_ids',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            '2M',
+            ['nullable' => true, 'default' => null],
+            'Product ids'
+        )->addColumn(
+            'storeview_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'Storeview Id'
+        )->addColumn(
+            'status',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'Status'
         );
-        $installer->getConnection()->createTable($table_cms);
-        // end create table simiconnector cms
-
+        $installer->getConnection()->createTable($table_video);
+        // end create table simiconnector Video
+		
+				
+		/**
+         * Creating table simiconnector Transactions
+         */
+        $table_transaction_name = $installer->getTable('simiconnector_transactions');
+        if ($installer->getConnection()->isTableExists($table_transaction_name) == true) {
+            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_transactions'));
+        }
+        $table_transaction = $installer->getConnection()->newTable(
+            $table_transaction_name
+        )->addColumn(
+            'transaction_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+            'Transaction Id'
+        )->addColumn(
+            'order_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'Order Id'
+        );
+        $installer->getConnection()->createTable($table_transaction);
+        // end create table simiconnector Transactions
+		
+		/**
+         * Creating table simiconnector Productlabels
+         */
+        $table_label_name = $installer->getTable('simiconnector_productlabels');
+        if ($installer->getConnection()->isTableExists($table_label_name) == true) {
+            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_productlabels'));
+        }
+        $table_label = $installer->getConnection()->newTable(
+            $table_label_name
+        )->addColumn(
+            'label_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+            'Label Id'
+        )->addColumn(
+            'storeview_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'Storeview Id'
+        )->addColumn(
+            'name',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Name'
+        )->addColumn(
+            'description',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            '2M',
+            ['nullable' => true, 'default' => null],
+            'Description'
+        )->addColumn(
+            'status',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'Status'
+        )->addColumn(
+            'product_ids',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            '2M',
+            ['nullable' => true, 'default' => null],
+            'Product ids'
+        )->addColumn(
+			'from_date',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
+			255,
+			['nullable' => true, 'default' => null],
+			'From Time'
+		)->addColumn(
+			'to_date',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
+			255,
+			['nullable' => true, 'default' => null],
+			'To Time'
+		)->addColumn(
+            'priority',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'Priority'
+        )->addColumn(
+            'conditions_serialized',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            '2M',
+            ['nullable' => true, 'default' => null],
+            'Conditions Serialized'
+        )->addColumn(
+            'text',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Text'
+        )->addColumn(
+            'image',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Image'
+        )->addColumn(
+            'position',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'position'
+        )->addColumn(
+            'display',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'display'
+        )->addColumn(
+            'category_text',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Category Text'
+        )->addColumn(
+            'category_image',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Category Image'
+        )->addColumn(
+            'category_position',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'Category Position'
+        )->addColumn(
+            'category_display',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'Category Display'
+        )->addColumn(
+            'is_auto_fill',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'Is Autofill'
+        )->addColumn(
+			'created_time',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
+			255,
+			['nullable' => true, 'default' => null],
+			'Created Time'
+		)->addColumn(
+			'update_time',
+			\Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
+			255,
+			['nullable' => true, 'default' => null],
+			'Updated Time'
+		)->addColumn(
+            'condition_selected',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Condition Selected'
+        )->addColumn(
+            'threshold',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'threshold'
+        );
+        $installer->getConnection()->createTable($table_label);
+        // end create table simiconnector Productlabels
+		
+		/**
+         * Creating table simiconnector Taskbar
+         */
+        $table_taskbar_name = $installer->getTable('simiconnector_taskbar');
+        if ($installer->getConnection()->isTableExists($table_taskbar_name) == true) {
+            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_taskbar'));
+        }
+        $table_taskbar = $installer->getConnection()->newTable(
+            $table_taskbar_name
+        )->addColumn(
+            'taskbar_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+            'Taskbar Id'
+        )->addColumn(
+            'storeview_id',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'Storeview Id'
+        )->addColumn(
+            'taskbar_color',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Color'
+        )->addColumn(
+            'icon_color',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Icon Color'
+        )->addColumn(
+            'item1_text',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Item 1 Text'
+        )->addColumn(
+            'item1_image',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Icon 1 Image'
+        )->addColumn(
+            'item1_type',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Icon 1 Type'
+        )->addColumn(
+            'item2_text',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Item 2 Text'
+        )->addColumn(
+            'item2_image',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Icon 2 Image'
+        )->addColumn(
+            'item2_type',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Icon 2 Type'
+        )->addColumn(
+            'item3_text',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Item 3 Text'
+        )->addColumn(
+            'item3_image',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Icon 3 Image'
+        )->addColumn(
+            'item3_type',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Icon 3 Type'
+        )->addColumn(
+            'item4_text',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Item 4 Text'
+        )->addColumn(
+            'item4_image',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Icon 4 Image'
+        )->addColumn(
+            'item4_type',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Icon 4 Type'
+        )->addColumn(
+            'item5_text',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Item 5 Text'
+        )->addColumn(
+            'item5_image',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Icon 5 Image'
+        )->addColumn(
+            'item5_type',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Icon 5 Type'
+        )->addColumn(
+            'item6_text',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Item 6 Text'
+        )->addColumn(
+            'item6_image',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Icon 6 Image'
+        )->addColumn(
+            'item6_type',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true, 'default' => null],
+            'Icon 6 Type'
+        );
+        $installer->getConnection()->createTable($table_taskbar);
+        // end create table simiconnector Taskbar
+		
+		
         $installer->endSetup();
+
     }
 }

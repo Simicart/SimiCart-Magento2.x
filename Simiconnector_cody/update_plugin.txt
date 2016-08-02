@@ -1,0 +1,4 @@
+cmd:
+cd C:/xampp/apps/magento/htdocs
+then:
+php bin/magento setup:upgrade

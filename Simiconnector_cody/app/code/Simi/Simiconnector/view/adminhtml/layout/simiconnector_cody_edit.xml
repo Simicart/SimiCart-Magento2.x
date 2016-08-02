@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
+     <update handle="editor"/>
+    <body>
+	   <referenceContainer name="content">
+            <block class="Simi\Simiconnector\Block\Adminhtml\Codymodel\Edit" name="simiconnector_codymodel_edit"/>
+        </referenceContainer>
+		 <referenceContainer name="left">
+            <block class="Simi\Simiconnector\Block\Adminhtml\Codymodel\Edit\Tabs" name="simiconnector_codymodel_edit_tabs">
+				<block class="Simi\Simiconnector\Block\Adminhtml\Codymodel\Edit\Tab\codytab" name="simiconnector_codymodel_edit_tab_codytab"/>
+				 <action method="addTab">
+                    <argument name="name" xsi:type="string">codytab_section</argument>
+                    <argument name="block" xsi:type="string">simiconnector_codymodel_edit_tab_codytab</argument>
+                </action>
+				<!--CedAddTab-->
+			</block>
+        </referenceContainer>
+    </body>
+</page>
