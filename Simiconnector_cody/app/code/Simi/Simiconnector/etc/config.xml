@@ -52,6 +52,10 @@
             <terms_conditions>
                 <enable_terms>0</enable_terms>
             </terms_conditions>  
+            <instant_contact>
+                <enable>0</enable>
+                <icon_color>FFB22E</icon_color>
+            </instant_contact>
             <barcode>
                 <pattern>BAR[A.4][AN.6]</pattern>
                 <qrcode_pattern>QR[A.4][AN.6]</qrcode_pattern>                
@@ -67,5 +71,20 @@
                 <phone>3</phone>
             </zopim>  
         </simiconnector>  
+        <simi_notifications>
+            <notification>
+                <android_app_key></android_app_key>
+                <android_secret_key></android_secret_key>
+            </notification>
+            <notice_price>
+                <noti_price_enable>0</noti_price_enable>
+            </notice_price> 
+            <noti_new_product>
+                <new_product_enable>0</new_product_enable>
+            </noti_new_product>
+            <noti_purchase>
+                <noti_purchase_enable>0</noti_purchase_enable>
+            </noti_purchase>
+        </simi_notifications>
     </default>
 </config>
