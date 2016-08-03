@@ -6,11 +6,66 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../Store/etc/config.xsd">
-    <!-- <default>
+    <default>
         <simiconnector>
-            <module>
-                <is_enabled>0</is_enabled>
-            </module>
-		</simiconnector>
-    </default> -->
+            <general>                                               
+                <enable>1</enable>
+                <is_show_price_zero>0</is_show_price_zero>
+                <is_show_all_product>1</is_show_all_product>
+                <cms_shipping_condition></cms_shipping_condition>
+                <is_show_sample_data>1</is_show_sample_data>
+                <base_url></base_url>
+                <is_show_home_title>1</is_show_home_title>
+            </general>  
+            <currency>                                           
+                <thousand_separator>,</thousand_separator>
+                <decimal_separator>.</decimal_separator>
+                <min_number_of_decimals>0</min_number_of_decimals>
+                <max_number_of_decimals>2</max_number_of_decimals>			
+            </currency> 
+            <notification>
+                <android_app_key></android_app_key>
+                <android_secret_key></android_secret_key>
+                <noti_price_enable>0</noti_price_enable>
+                <new_product_enable>0</new_product_enable>
+                <noti_purchase_enable>0</noti_purchase_enable>
+            </notification> 
+            <hideaddress>
+                <hideaddress_enable>0</hideaddress_enable>
+                <firstname>2</firstname>
+                <lastname>2</lastname>
+                <email>2</email>
+                <company>2</company>
+                <street>2</street>
+                <country_id>2</country_id>
+                <region_id>2</region_id>
+                <city>2</city>
+                <zipcode>2</zipcode>
+                <telephone>2</telephone>
+                <fax>2</fax>
+                <prefix>2</prefix>
+                <suffix>2</suffix>
+                <birthday>2</birthday>
+                <gender>2</gender>
+                <taxvat>2</taxvat>
+            </hideaddress>  
+            <terms_conditions>
+                <enable_terms>0</enable_terms>
+            </terms_conditions>  
+            <barcode>
+                <pattern>BAR[A.4][AN.6]</pattern>
+                <qrcode_pattern>QR[A.4][AN.6]</qrcode_pattern>                
+            </barcode> 
+            <productlabel>
+                <enable>0</enable>
+            </productlabel> 
+            <zopim>
+                <enable>0</enable>
+                <show_profile>0</show_profile>
+                <name>3</name>
+                <email>3</email>
+                <phone>3</phone>
+            </zopim>  
+        </simiconnector>  
+    </default>
 </config>

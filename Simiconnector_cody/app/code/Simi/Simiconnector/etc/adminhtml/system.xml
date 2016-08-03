@@ -4,41 +4,80 @@
         <tab id="simi" translate="label" sortOrder="1000">
             <label>Simiconnector</label>
         </tab>
-        <section id="simi" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+        <section id="simiconnector" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
-            <label>General Configuration</label>
+            <label>General Settings</label>
             <tab>simi</tab>
             <resource>Simi_Simi::config_simi</resource>
-            <group id="view" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Simi View Settings</label>
-                <field id="enabled" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Enable Simi On Frontend</label>
+            <group id="general" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General Configuration</label>
+                <field id="enable" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="is_show_price_zero" translate="label" type="select" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="secret_key" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Secret Key</label>
+                    <comment>Your secret key (get from your Building Dashboard)</comment>
+                </field>
+                <field id="base_url" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Base URL</label>
+                    <comment>eg. http://simicart.com/, leave it blank if you want to use default value from Building Dashboard</comment>
+                </field>
+                <field id="is_show_price_zero" translate="label" type="select" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Show option price if it's $0.00?</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="is_show_all_product" translate="label" type="select" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_show_all_product" translate="label" type="select" sortOrder="499" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Show "All Products" link in Category?</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="cms_shipping_condition" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="cms_shipping_condition" translate="label" type="text" sortOrder="599" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Show CMS content in product detail</label>
                     <comment>Please enter its CMS ID SimiCart Simisimiconnector/CMS</comment>
                 </field>
-                <field id="is_reload_payment_method" translate="label" type="select" sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_show_sample_data" translate="label" type="select" sortOrder="699" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Update order review when select payment method</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="show_product_type" translate="label" type="select" sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="show_product_type" translate="label" type="select" sortOrder="799" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>View products default</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\ViewType</source_model>
                 </field>
-                <field id="rtl_country" translate="label" type="multiselect" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="rtl_country" translate="label" type="multiselect" sortOrder="899" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Use RTL language</label>
                     <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
                     <can_be_empty>1</can_be_empty>
+                </field>
+                <field id="categories_in_app" translate="label" type="text" sortOrder="999" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Hidden categories on app</label>
+                    <comment>Category IDs (separated by comma). Eg. 2, 4, 15</comment>
+                </field>
+                <field id="is_show_home_title" translate="label" type="select" sortOrder="1099" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Title For Banners, Categories and Product Lists on Home Screen</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="currency" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Currency Display Configuration</label>
+                <field id="thousand_separator" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Thousand Separator</label>
+                </field>
+                <field id="decimal_separator" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Decimal Separator</label>
+                </field>                
+                <field id="min_number_of_decimals" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Minimum Number of Decimals</label>
+                </field>
+                <field id="max_number_of_decimals" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Maximum Number of Decimals</label>
+                </field>
+            </group>
+            <group id="notification" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Notification Settings</label>
+                <field id="upload_pem_file" translate="label" type="file" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Upload Apple PEM file</label>
+                    <comment>Certificate (PEM) for Apple Device Notification Sending</comment>
+                    <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>                    
                 </field>
             </group>
         </section>
