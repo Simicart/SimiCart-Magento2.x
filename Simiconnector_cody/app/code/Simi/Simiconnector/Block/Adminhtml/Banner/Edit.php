@@ -1,8 +1,8 @@
 <?php
-namespace Simi\Simiconnector\Block\Adminhtml\Cms;
+namespace Simi\Simiconnector\Block\Adminhtml\Banner;
 
 /**
- * Admin Connector page
+ * Admin Simiconnector page
  *
  */
 class Edit extends \Magento\Backend\Block\Widget\Form\Container
@@ -37,9 +37,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
     protected function _construct()
     {
 
-        $this->_objectId = 'cms_id';
+        $this->_objectId = 'banner_id';
         $this->_blockGroup = 'Simi_Simiconnector';
-        $this->_controller = 'adminhtml_cms';
+        $this->_controller = 'adminhtml_banner';
 
         parent::_construct();
 
@@ -62,7 +62,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
             $this->buttonList->remove('save');
         }
 
-        if ($this->_isAllowedAction('Simi_Simiconnector::connector_delete')) {
+        if ($this->_isAllowedAction('Simi_Simiconnector::simiconnector_delete')) {
             $this->buttonList->update('delete', 'label', __('Delete'));
         } else {
             $this->buttonList->remove('delete');
@@ -76,10 +76,10 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      */
     public function getHeaderText()
     {
-        if ($this->_coreRegistry->registry('cms')->getId()) {
-            return __("Edit Cms '%1'", $this->escapeHtml($this->_coreRegistry->registry('cms')->getId()));
+        if ($this->_coreRegistry->registry('banner')->getId()) {
+            return __("Edit Banner '%1'", $this->escapeHtml($this->_coreRegistry->registry('banner')->getId()));
         } else {
-            return __('New Cms');
+            return __('New Banner');
         }
     }
 
@@ -102,7 +102,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      */
     protected function _getSaveAndContinueUrl()
     {
-        return $this->getUrl('connector/*/save', ['_current' => true, 'back' => 'edit', 'active_tab' => '{{tab_id}}']);
+        return $this->getUrl('simiconnector/*/save', ['_current' => true, 'back' => 'edit', 'active_tab' => '{{tab_id}}']);
     }
 
     /**
@@ -112,6 +112,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      */
     protected function _prepareLayout()
     {
+        $arrow_down_img = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png');
+        $arrow_up_img = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_up.png');
+
         $this->_formScripts[] = "
             function toggleEditor() {
                 if (tinyMCE.getInstanceById('page_content') == null) {
@@ -120,27 +123,18 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                     tinyMCE.execCommand('mceRemoveControl', false, 'page_content');
                 }
             };
-            
+
             document.addEventListener('DOMContentLoaded', function(){
-                toogleType();
-            }, false);
-            
-            function toogleType(){
-            
+
+                // event change Type
                 changeType();
-                if(type.value == 2){                    
-                    document.querySelectorAll('.field-cms_image')[0].style.display = 'none';                    
-                    document.querySelectorAll('.field-category_id')[0].style.display = 'block';
-                } else {
-                    document.querySelectorAll('.field-category_id')[0].style.display = 'none';                    
-                    document.querySelectorAll('.field-cms_image')[0].style.display = 'block';
-                }
-            };
-            
+
+                // default: hidden product grid
+                document.getElementById('product_grid').style.display = 'none';
+
+            }, false);
 
             document.body.addEventListener('click', function(e){
-            
-                changeType();
                 var product_grid_trs = document.querySelectorAll('#product_grid_table tbody tr');
                 var trElement;
                 var radioArray = [];
@@ -167,7 +161,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                     product_grid.style.display = 'none';
                     product_choose_img.src = '$arrow_down_img';
                 }
-            };
+            }
 
             function changeType(){
                 var banner_type = document.getElementById('type').value;
@@ -218,7 +212,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                         document.querySelectorAll('.field-banner_url')[0].style.display = 'none';
                         document.querySelectorAll('#banner_url')[0].classList.remove('required-entry');
                 }
-            };
+            }
         ";
         return parent::_prepareLayout();
     }

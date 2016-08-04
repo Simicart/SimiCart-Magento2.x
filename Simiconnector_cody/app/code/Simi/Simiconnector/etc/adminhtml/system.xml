@@ -33,7 +33,7 @@
                 </field>
                 <field id="cms_shipping_condition" translate="label" type="text" sortOrder="599" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Show CMS content in product detail</label>
-                    <comment>Please enter its CMS ID SimiCart Simisimiconnector/CMS</comment>
+                    <comment>Please enter its CMS ID SimiCart Simiconnector/CMS</comment>
                 </field>
                 <field id="is_show_sample_data" translate="label" type="select" sortOrder="699" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Update order review when select payment method</label>
