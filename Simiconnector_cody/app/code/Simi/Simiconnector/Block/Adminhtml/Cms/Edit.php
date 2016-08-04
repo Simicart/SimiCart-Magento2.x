@@ -120,6 +120,20 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                     tinyMCE.execCommand('mceRemoveControl', false, 'page_content');
                 }
             };
+            
+            document.addEventListener('DOMContentLoaded', function(){
+                toogleType();
+            }, false);
+            
+            function toogleType(){
+                if(type.value == 2){                    
+                    document.querySelectorAll('.field-cms_image')[0].style.display = 'none';                    
+                    document.querySelectorAll('.field-category_id')[0].style.display = 'block';
+                } else {
+                    document.querySelectorAll('.field-category_id')[0].style.display = 'none';                    
+                    document.querySelectorAll('.field-cms_image')[0].style.display = 'block';
+                }
+            }
         ";
         return parent::_prepareLayout();
     }

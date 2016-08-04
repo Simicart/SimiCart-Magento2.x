@@ -1,11 +1,17 @@
 <?php
+
 namespace Simi\Simiconnector\Block\Adminhtml\Cms\Edit\Tab;
 
 /**
  * Cms page edit form main tab
  */
-class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magento\Backend\Block\Widget\Tab\TabInterface
-{
+class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magento\Backend\Block\Widget\Tab\TabInterface {
+
+    /**
+     * @var \Magento\Framework\App\ObjectManager
+     */
+    protected $_objectmanager;
+    
     /**
      * @var \Magento\Store\Model\System\Store
      */
@@ -13,7 +19,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
     /**
      * @var \Simi\Simiconnector\Helper\Website
-     **/
+     * */
     protected $_websiteHelper;
 
     /**
@@ -44,18 +50,17 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @param array $data
      */
     public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Magento\Framework\Data\FormFactory $formFactory,
-        \Magento\Store\Model\System\Store $systemStore,
-        \Simi\Simiconnector\Helper\Website $websiteHelper,
-        \Simi\Simiconnector\Model\CmsFactory $cmsFactory,
-        \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig,
-        \Magento\Framework\Json\EncoderInterface $jsonEncoder,
-        \Magento\Catalog\Model\CategoryFactory $categoryFactory,
-        array $data = []
-    )
-    {
+            \Magento\Backend\Block\Template\Context $context, 
+            \Magento\Framework\Registry $registry, 
+            \Magento\Framework\Data\FormFactory $formFactory, 
+            \Magento\Store\Model\System\Store $systemStore, 
+            \Simi\Simiconnector\Helper\Website $websiteHelper, 
+            \Simi\Simiconnector\Model\CmsFactory $cmsFactory, 
+            \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig, 
+            \Magento\Framework\Json\EncoderInterface $jsonEncoder,             
+            \Magento\Catalog\Model\CategoryFactory $categoryFactory, array $data = []
+    ) {
+        $this->_objectmanager = $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_cmsFactory = $cmsFactory;
         $this->_websiteHelper = $websiteHelper;
         $this->_systemStore = $systemStore;
@@ -70,8 +75,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return $this
      */
-    protected function _prepareForm()
-    {
+    protected function _prepareForm() {
         /* @var $model \Magento\Cms\Model\Page */
         $model = $this->_coreRegistry->registry('cms');
 
@@ -91,75 +95,108 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $htmlIdPrefix = $form->getHtmlIdPrefix();
 
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Cms Information')]);
-
         $new_category_parent = false;
+
         if ($model->getId()) {
             $fieldset->addField('cms_id', 'hidden', ['name' => 'cms_id']);
+            $new_category_parent = $model->getData('category_id');
         }
+        
+        $storeResourceModel = $this->_objectmanager->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
+        
+        $fieldset->addField('storeview_id', 'multiselect', array(
+            'name' => 'storeview_id[]',
+            'label' => __('Store View'),
+            'title' => __('Store View'),
+            'required' => true,
+            'values' => $storeResourceModel->toArray(),
+        ));
+       
 
         $fieldset->addField(
-            'website_id',
+            'cms_title', 'text', [
+            'name' => 'cms_title',
+            'label' => __('Title'),
+            'title' => __('Title'),
+            'required' => true,
+            'disabled' => $isElementDisabled
+                ]
+        );
+
+        $fieldset->addField(
+            'cms_content', 'editor', [
+            'name' => 'cms_content',
+            'label' => __('Content'),
+            'title' => __('Content'),
+            'required' => true,
+            'style' => 'height: 500px',
+            'disabled' => $isElementDisabled,
+            'config' => $this->_wysiwygConfig->getConfig()
+                ]
+        );
+        
+        $fieldset->addField(
+            'sort_order', 'text', [
+            'name' => 'sort_order',
+            'label' => __('Sort Order'),
+            'title' => __('Sort Order'),
+            'required' => true,
+            'disabled' => $isElementDisabled
+                ]
+        );
+        
+        $fieldset->addField(
+            'cms_status', 'select', [
+            'name' => 'cms_status',
+            'label' => __('Status'),
+            'title' => __('Status'),
+            'required' => false,
+            'disabled' => $isElementDisabled,
+            'options' => $this->_cmsFactory->create()->toOptionStatusHash(),
+                ]
+        );
+        
+        $fieldset->addField(
+            'type', 'select', [
+            'name' => 'type',
+            'label' => __('Show Block On'),
+            'title' => __('Show Block On'),
+            'required' => false,
+            'disabled' => $isElementDisabled,
+            'options' => array(
+            '1' => __('Left Menu'),
+            '2' => __('Category In-app'),
+        ),
+            'onchange' => 'toogleType()'
+                
+                ]
+        );
+        
+        
+        $fieldset->addField(
+            'category_id',
             'select',
             [
-                'name' => 'website_id',
-                'label' => __('Website'),
-                'title' => __('Website'),
+                'label' => __('Category ID'),
+                'title' => __('Category ID'),
                 'required' => true,
-                'disabled' => $isElementDisabled,
-                'options' => $this->_cmsFactory->create()->toOptionWebsiteHash(),
+                'class' => 'validate-parent-category',
+                'name' => 'new_category_parent',
+                'options' => $this->_getParentCategoryOptions($new_category_parent),
             ]
         );
-
+        
+        
         $fieldset->addField(
-            'cms_title',
-            'text',
-            [
-                'name' => 'cms_title',
-                'label' => __('Title'),
-                'title' => __('Title'),
-                'required' => true,
-                'disabled' => $isElementDisabled
-            ]
+            'cms_image', 'image', [
+            'name' => 'cms_image',
+            'label' => __('Image (width:64px, height:64px)'),
+            'title' => __('Image (width:64px, height:64px)'),
+            'required' => false,
+            'disabled' => $isElementDisabled
+                ]
         );
-
-        $fieldset->addField(
-            'cms_image',
-            'image',
-            [
-                'name' => 'cms_image',
-                'label' => __('Image (width:64px, height:64px)'),
-                'title' => __('Image (width:64px, height:64px)'),
-                'required' => false,
-                'disabled' => $isElementDisabled
-            ]
-        );
-
-        $fieldset->addField(
-            'cms_status',
-            'select',
-            [
-                'name' => 'cms_status',
-                'label' => __('Status'),
-                'title' => __('Status'),
-                'required' => false,
-                'disabled' => $isElementDisabled,
-                'options' => $this->_cmsFactory->create()->toOptionStatusHash(),
-            ]
-        );
-
-        $fieldset->addField(
-            'cms_content',
-            'editor',
-            [
-                'name' => 'cms_content',
-                'label' => __('Content'),
-                'title' => __('Content'),
-                'required' => true,
-                'style' => 'height: 500px',
-                'disabled' => $isElementDisabled,
-                'config' => $this->_wysiwygConfig->getConfig()
-            ]
-        );
+        
 
         $this->_eventManager->dispatch('adminhtml_cms_edit_tab_main_prepare_form', ['form' => $form]);
 
@@ -173,8 +210,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
      * @return mixed
      */
-    protected function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element)
-    {
+    protected function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element) {
         $element->setWysiwyg(true);
         $element->setConfig($this->_wysiwygConfig->getConfig($element));
         return parent::_getElementHtml($element);
@@ -185,17 +221,15 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return array
      */
-    protected function _getParentCategoryOptions($category_id)
-    {
+    protected function _getParentCategoryOptions($category_id) {
 
         $items = $this->_categoryFactory->create()->getCollection()->addAttributeToSelect(
-            'name'
-        )->addAttributeToSort(
-            'entity_id',
-            'ASC'
-        )->setPageSize(
-            3
-        )->load()->getItems();
+                        'name'
+                )->addAttributeToSort(
+                        'entity_id', 'ASC'
+                )->setPageSize(
+                        3
+                )->load()->getItems();
 
         $result = [];
         if (count($items) === 2) {
@@ -203,7 +237,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             $result = [$item->getEntityId() => $item->getName()];
         }
 
-        if(sizeof($result) == 0 && $category_id){
+        if (sizeof($result) == 0 && $category_id) {
             $category = $this->_categoryFactory->create()->load($category_id);
             $result = [$category_id => $category->getName()];
         }
@@ -216,8 +250,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return string
      */
-    public function getTabLabel()
-    {
+    public function getTabLabel() {
         return __('Cms Information');
     }
 
@@ -226,24 +259,21 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return string
      */
-    public function getTabTitle()
-    {
+    public function getTabTitle() {
         return __('Cms Information');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function canShowTab()
-    {
+    public function canShowTab() {
         return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isHidden()
-    {
+    public function isHidden() {
         return false;
     }
 
@@ -253,8 +283,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @param string $resourceId
      * @return bool
      */
-    protected function _isAllowedAction($resourceId)
-    {
+    protected function _isAllowedAction($resourceId) {
         return $this->_authorization->isAllowed($resourceId);
     }
 
