@@ -2,6 +2,6 @@
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <update handle="formkey"/>
     <container name="root" label="Root">
-        <block class="Simi\Simiconnector\Block\Adminhtml\Cms\Grid" name="admin.connector.cms.grid"/>
+        <block class="Simi\Simiconnector\Block\Adminhtml\Cms\Grid" name="admin.simiconnector.cms.grid"/>
     </container>
 </page>

@@ -49,7 +49,7 @@ class Edit extends \Magento\Backend\App\Action
         /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu(
-            'Simi_Simiconnector::connector_manage'
+            'Simi_Simiconnector::simiconnector_manage'
         )->addBreadcrumb(
             __('Cms'),
             __('Cms')
@@ -67,6 +67,7 @@ class Edit extends \Magento\Backend\App\Action
      */
     public function execute()
     {
+        die('1');
         // 1. Get ID and create model
         $id = $this->getRequest()->getParam('cms_id');
         $model = $this->_objectManager->create('Simi\Simiconnector\Model\Cms');

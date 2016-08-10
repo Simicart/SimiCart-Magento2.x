@@ -156,6 +156,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 ]
         );
         
+        
         $fieldset->addField(
             'type', 'select', [
             'name' => 'type',
@@ -172,7 +173,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 ]
         );
         
-        
+        /*
         $fieldset->addField(
             'category_id',
             'select',
@@ -185,6 +186,20 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'options' => $this->_getParentCategoryOptions($new_category_parent),
             ]
         );
+        */
+        $fieldset->addField(
+            'new_category_parent',
+            'select',
+            [
+                'label' => __('Categories'),
+                'title' => __('Categories'),
+                'required' => true,
+                'class' => 'validate-parent-category',
+                'name' => 'new_category_parent',
+                'options' => $this->_getParentCategoryOptions($new_category_parent),
+            ]
+        );
+        
         
         
         $fieldset->addField(

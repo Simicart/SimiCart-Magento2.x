@@ -67,10 +67,10 @@ class Save extends \Magento\Backend\App\Action
                         $model->setBannerName($imageFile);
                     }
                 }
-
                 $model->save();
                 $this->messageManager->addSuccess(__('The Data has been saved.'));
                 $this->_objectManager->get('Magento\Backend\Model\Session')->setFormData(false);
+                
                 if ($this->getRequest()->getParam('back')) {
                     $this->_redirect('*/*/edit', ['banner_id' => $model->getId(), '_current' => true]);
                     return;

@@ -127,98 +127,19 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
             
             function toogleType(){
             
-                changeType();
                 if(type.value == 2){                    
-                    document.querySelectorAll('.field-cms_image')[0].style.display = 'none';                    
-                    document.querySelectorAll('.field-category_id')[0].style.display = 'block';
+                    document.querySelectorAll('.field-cms_image')[0].style.display = 'none';           
+                    document.querySelectorAll('.field-new_category_parent')[0].style.display = 'block';
+                    document.querySelectorAll('#new_category_parent')[0].classList.add('required-entry');
                 } else {
-                    document.querySelectorAll('.field-category_id')[0].style.display = 'none';                    
+                    document.querySelectorAll('.field-new_category_parent')[1].style.display = 'none';
+                    document.querySelectorAll('.field-new_category_parent')[0].style.display = 'none';
+                    document.querySelectorAll('#new_category_parent')[0].classList.remove('required-entry');
+                    document.querySelectorAll('#new_category_parent')[1].classList.remove('required-entry');
                     document.querySelectorAll('.field-cms_image')[0].style.display = 'block';
                 }
             };
             
-
-            document.body.addEventListener('click', function(e){
-            
-                changeType();
-                var product_grid_trs = document.querySelectorAll('#product_grid_table tbody tr');
-                var trElement;
-                var radioArray = [];
-                for (var i = 0, j = 0; i < product_grid_trs.length; i++) {
-                    trElement = product_grid_trs.item(i);
-                    trElement.addEventListener('click', function(e){
-                        var rd = this.getElementsByTagName('input')[0];
-                        rd.checked = true;
-                        document.getElementById('product_id').value = rd.value;
-                        return false;
-                    });
-                }
-
-            }, false);
-
-            function toogleProduct(){
-                var product_grid = document.getElementById('product_grid');
-                var product_choose_img = document.getElementById('show_product_grid');
-
-                if(product_grid.style.display == 'none'){
-                    product_grid.style.display = 'block';
-                    product_choose_img.src = '$arrow_up_img';
-                } else {
-                    product_grid.style.display = 'none';
-                    product_choose_img.src = '$arrow_down_img';
-                }
-            };
-
-            function changeType(){
-                var banner_type = document.getElementById('type').value;
-                switch (banner_type) {
-                    case '1':
-                        document.querySelectorAll('.field-product_id')[0].style.display = 'block';
-                        document.querySelectorAll('#product_id')[0].classList.add('required-entry');
-
-                        document.querySelectorAll('.field-new_category_parent')[1].style.display = 'none';
-                        document.querySelectorAll('.field-new_category_parent')[0].style.display = 'none';
-                        document.querySelectorAll('#new_category_parent')[0].classList.remove('required-entry');
-                        document.querySelectorAll('#new_category_parent')[1].classList.remove('required-entry');
-
-                        document.querySelectorAll('.field-banner_url')[0].style.display = 'none';
-                        document.querySelectorAll('#banner_url')[0].classList.remove('required-entry');
-                        break;
-                    case '2':
-                        document.querySelectorAll('.field-product_id')[0].style.display = 'none';
-                        document.querySelectorAll('#product_id')[0].classList.remove('required-entry');
-
-                        document.querySelectorAll('.field-new_category_parent')[0].style.display = 'block';
-                        document.querySelectorAll('#new_category_parent')[0].classList.add('required-entry');
-
-                        document.querySelectorAll('.field-banner_url')[0].style.display = 'none';
-                        document.querySelectorAll('#banner_url')[0].classList.remove('required-entry');
-                        break;
-                    case '3':
-                        document.querySelectorAll('.field-product_id')[0].style.display = 'none';
-                        document.querySelectorAll('#product_id')[0].classList.remove('required-entry');
-
-                        document.querySelectorAll('.field-new_category_parent')[1].style.display = 'none';
-                        document.querySelectorAll('.field-new_category_parent')[0].style.display = 'none';
-                        document.querySelectorAll('#new_category_parent')[0].classList.remove('required-entry');
-                        document.querySelectorAll('#new_category_parent')[1].classList.remove('required-entry');
-
-                        document.querySelectorAll('.field-banner_url')[0].style.display = 'block';
-                        document.querySelectorAll('#banner_url')[0].classList.add('required-entry');
-                        break;
-                    default:
-                        document.querySelectorAll('.field-product_id')[0].style.display = 'block';
-                        document.querySelectorAll('#product_id')[0].classList.add('required-entry');
-
-                        document.querySelectorAll('.field-new_category_parent')[1].style.display = 'none';
-                        document.querySelectorAll('.field-new_category_parent')[0].style.display = 'none';
-                        document.querySelectorAll('#new_category_parent')[0].classList.remove('required-entry');
-                        document.querySelectorAll('#new_category_parent')[1].classList.remove('required-entry');
-
-                        document.querySelectorAll('.field-banner_url')[0].style.display = 'none';
-                        document.querySelectorAll('#banner_url')[0].classList.remove('required-entry');
-                }
-            };
         ";
         return parent::_prepareLayout();
     }
