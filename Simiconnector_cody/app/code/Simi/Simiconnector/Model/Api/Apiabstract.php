@@ -25,6 +25,7 @@ abstract class Apiabstract {
     protected $_DEFAULT_ORDER = 'entity_id';
     protected $_objectManager;
     protected $_storeManager;
+    protected $_scopeConfig;
 
     /**
      * Singular key.
@@ -58,7 +59,10 @@ abstract class Apiabstract {
 
     abstract public function setBuilderQuery();
 
-    public function __construct() {
+    public function __construct(
+            \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+            ) {
+        $this->_scopeConfig = $scopeConfig;
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_storeManager = $this->_objectManager->get('\Magento\Store\Model\StoreManagerInterface');
         return $this;

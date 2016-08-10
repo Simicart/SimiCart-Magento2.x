@@ -96,10 +96,23 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Cms Information')]);
         $new_category_parent = false;
-
+        
+        $data = $model->getData();
         if ($model->getId()) {
             $fieldset->addField('cms_id', 'hidden', ['name' => 'cms_id']);
             $new_category_parent = $model->getData('category_id');
+            
+            $simiconnectorhelper = $this->_objectmanager->get('Simi\Simiconnector\Helper\Data');  
+            $typeID = $simiconnectorhelper->getVisibilityTypeId('cms');
+            $visibleStoreViews = $this->_objectmanager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+                    ->addFieldToFilter('content_type', $typeID)
+                    ->addFieldToFilter('item_id', $model->getId());
+            $storeIdArray = array();
+            
+            foreach ($visibleStoreViews as $visibilityItem) {
+                $storeIdArray[] = $visibilityItem->getData('store_view_id');
+            }
+            $data['storeview_id'] = implode(',', $storeIdArray);
         }
         
         $storeResourceModel = $this->_objectmanager->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
@@ -215,7 +228,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         $this->_eventManager->dispatch('adminhtml_cms_edit_tab_main_prepare_form', ['form' => $form]);
 
-        $form->setValues($model->getData());
+        $form->setValues($data);
         $this->setForm($form);
 
         return parent::_prepareForm();
