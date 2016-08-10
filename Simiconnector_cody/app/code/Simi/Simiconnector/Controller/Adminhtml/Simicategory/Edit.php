@@ -1,6 +1,6 @@
 <?php
 
-namespace Simi\Simiconnector\Controller\Adminhtml\Cms;
+namespace Simi\Simiconnector\Controller\Adminhtml\Simicategory;
 
 use Magento\Backend\App\Action;
 
@@ -51,11 +51,11 @@ class Edit extends \Magento\Backend\App\Action
         $resultPage->setActiveMenu(
             'Simi_Simiconnector::simiconnector_manage'
         )->addBreadcrumb(
-            __('Cms'),
-            __('Cms')
+            __('Simicategory'),
+            __('Simicategory')
         )->addBreadcrumb(
-            __('Manage Cms'),
-            __('Manage Cms')
+            __('Manage Simicategory'),
+            __('Manage Simicategory')
         );
         return $resultPage;
     }
@@ -68,14 +68,14 @@ class Edit extends \Magento\Backend\App\Action
     public function execute()
     {
         // 1. Get ID and create model
-        $id = $this->getRequest()->getParam('cms_id');
-        $model = $this->_objectManager->create('Simi\Simiconnector\Model\Cms');
+        $id = $this->getRequest()->getParam('simicategory_id');
+        $model = $this->_objectManager->create('Simi\Simiconnector\Model\Simicategory');
 
         // 2. Initial checking
         if ($id) {
             $model->load($id);
             if (!$model->getId()) {
-                $this->messageManager->addError(__('This cms no longer exists.'));
+                $this->messageManager->addError(__('This simicategory no longer exists.'));
 				/** \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
                 $resultRedirect = $this->resultRedirectFactory->create();
                 return $resultRedirect->setPath('*/*/');
@@ -89,18 +89,18 @@ class Edit extends \Magento\Backend\App\Action
         }
 
         // 4. Register model to use later in blocks
-        $this->_coreRegistry->register('cms', $model);
+        $this->_coreRegistry->register('simicategory', $model);
 
         // 5. Build edit form
 		/** @var \Magento\Backend\Model\View\Result\Page $resultPage */
         $resultPage = $this->_initAction();
         $resultPage->addBreadcrumb(
-            $id ? __('Edit Cms') : __('New Cms'),
-            $id ? __('Edit Cms') : __('New Cms')
+            $id ? __('Edit Simicategory') : __('New Simicategory'),
+            $id ? __('Edit Simicategory') : __('New Simicategory')
         );
-        $resultPage->getConfig()->getTitle()->prepend(__('Cms'));
+        $resultPage->getConfig()->getTitle()->prepend(__('Simicategory'));
         $resultPage->getConfig()->getTitle()
-            ->prepend($model->getId() ? $model->getId() : __('New Cms'));
+            ->prepend($model->getId() ? $model->getId() : __('New Simicategory'));
         return $resultPage;
     }
 }

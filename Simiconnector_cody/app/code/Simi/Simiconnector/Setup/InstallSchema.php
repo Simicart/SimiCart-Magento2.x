@@ -47,7 +47,7 @@ class InstallSchema implements InstallSchemaInterface
             'Cat Name'
         )->addColumn(
             'simicategory_filename',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
             'File Name'
@@ -83,8 +83,8 @@ class InstallSchema implements InstallSchemaInterface
             'Storeview Id'
         )->addColumn(
             'sort_order',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
             ['nullable' => true],
             'Sort Order'
         )->addColumn(
@@ -144,7 +144,7 @@ class InstallSchema implements InstallSchemaInterface
             'Name'
         )->addColumn(
             'banner_url',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
             'Banner URL'
@@ -192,9 +192,9 @@ class InstallSchema implements InstallSchemaInterface
             'Product Id'
         )->addColumn(
             'sort_order',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => true],
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['unsigned' => true],
             'Sort Order'
         );
         $installer->getConnection()->createTable($table_key);
@@ -223,7 +223,7 @@ class InstallSchema implements InstallSchemaInterface
             'CMS title'
         )->addColumn(
             'cms_image',
-            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
             255,
             ['nullable' => true],
             'CMS image'
@@ -234,7 +234,7 @@ class InstallSchema implements InstallSchemaInterface
             ['nullable' => true],
             'CMS content'
         )->addColumn(
-            'status',
+            'cms_status',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
             ['unsigned' => true],
@@ -259,40 +259,10 @@ class InstallSchema implements InstallSchemaInterface
             'Cat id'
         )->addColumn(
             'sort_order',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => true],
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['unsigned' => true],
             'Sort Order'
-        )->addColumn(
-            'matrix_width_percent',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => true],
-            'Width Percent'
-        )->addColumn(
-            'matrix_height_percent',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => true],
-            'Height Percent'
-        )->addColumn(
-            'matrix_width_percent_tablet',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => true],
-            'Width tab'
-        )->addColumn(
-            'matrix_height_percent_tablet',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => true],
-            'Height Tab'
-        )->addColumn(
-            'matrix_row',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            255,
-            ['nullable' => true],
-            'Rownum'
         );
         $installer->getConnection()->createTable($table_key);
         // end create table simiconnector_cms
@@ -354,6 +324,36 @@ class InstallSchema implements InstallSchemaInterface
             null,
             ['unsigned' => true, 'nullable' => true],
             'Sort Order'
+        )->addColumn(
+            'matrix_width_percent',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'Width Percent'
+        )->addColumn(
+            'matrix_height_percent',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'Height Percent'
+        )->addColumn(
+            'matrix_width_percent_tablet',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'Width tab'
+        )->addColumn(
+            'matrix_height_percent_tablet',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'Height Tab'
+        )->addColumn(
+            'matrix_row',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'Rownum'
         );
         $installer->getConnection()->createTable($table_key);
         // end create table simiconnector_product_list
@@ -463,18 +463,18 @@ class InstallSchema implements InstallSchemaInterface
         )->addColumn(
             'zipcode',
             \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-            25,
+            255,
             ['nullable' => true],
             'Zipcode'
         )->addColumn(
             'state',
-            \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
-            25,
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
             ['nullable' => true],
-            'Zipcode'
+            'State'
         )->addColumn(
             'created_time',
-            \Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
+            \Magento\Framework\DB\Ddl\Table::TYPE_DATETIME,
             null,
             ['nullable' => true],
             'Created Time'
@@ -584,66 +584,66 @@ class InstallSchema implements InstallSchemaInterface
             ['nullable' => true],
             'Image Url'
         )->addColumn(
-			'location',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-			255,
-			['nullable' => true],
-			'Location'
-		)->addColumn(
-			'distance',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-			255,
-			['nullable' => true],
-			'Distance'
-		)->addColumn(
-			'address',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-			255,
-			['nullable' => true],
-			'Address'
-		)->addColumn(
-			'city',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-			255,
-			['nullable' => true],
-			'City'
-		)->addColumn(
-			'country',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-			255,
-			['nullable' => true],
-			'Country'
-		)->addColumn(
-			'state',
-			\Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
-			255,
-			['nullable' => true],
-			'State'
-		)->addColumn(
-			'zipcode',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-			255,
-			['nullable' => true],
-			'Zipcode'
-		)->addColumn(
-			'show_popup',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-			255,
-			['nullable' => true, 'default' => null],
-			'Show Popup'
-		)->addColumn(
-			'devices_pushed',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-			'2M',
-			['nullable' => true, 'default' => null],
-			'Devices Pushed'
-		)->addColumn(
-			'created_time',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
-			null,
-			['nullable' => true],
-			'Created Time'
-		);
+                'location',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Location'
+        )->addColumn(
+                'distance',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Distance'
+        )->addColumn(
+                'address',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Address'
+        )->addColumn(
+                'city',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'City'
+        )->addColumn(
+                'country',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Country'
+        )->addColumn(
+                'state',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'State'
+        )->addColumn(
+                'zipcode',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Zipcode'
+        )->addColumn(
+                'show_popup',
+                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                null,
+                ['nullable' => true, 'default' => null],
+                'Show Popup'
+        )->addColumn(
+                'devices_pushed',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                '2M',
+                ['nullable' => true, 'default' => null],
+                'Devices Pushed'
+        )->addColumn(
+                'created_time',
+                \Magento\Framework\DB\Ddl\Table::TYPE_DATETIME,
+                null,
+                ['nullable' => true],
+                'Created Time'
+        );
         $installer->getConnection()->createTable($table_notice);
         // end create table simiconnector notice
 
@@ -723,78 +723,78 @@ class InstallSchema implements InstallSchemaInterface
             ['nullable' => true],
             'Image Url'
         )->addColumn(
-			'location',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-			255,
-			['nullable' => true],
-			'Location'
-		)->addColumn(
-			'distance',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-			255,
-			['nullable' => true],
-			'Distance'
-		)->addColumn(
-			'address',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-			255,
-			['nullable' => true],
-			'Address'
-		)->addColumn(
-			'city',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-			255,
-			['nullable' => true],
-			'City'
-		)->addColumn(
-			'country',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-			255,
-			['nullable' => true],
-			'Country'
-		)->addColumn(
-			'state',
-			\Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
-			255,
-			['nullable' => true],
-			'State'
-		)->addColumn(
-			'zipcode',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-			255,
-			['nullable' => true],
-			'Zipcode'
-		)->addColumn(
-			'show_popup',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
-			255,
-			['nullable' => true, 'default' => null],
-			'Show Popup'
-		)->addColumn(
-			'created_time',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
-			null,
-			['nullable' => true],
-			'Created Time'
-		)->addColumn(
-			'notice_type',
-			\Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
-			255,
-			['nullable' => true],
-			'Notice Type'
-		)->addColumn(
-			'status',
-			\Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
-			255,
-			['nullable' => true],
-			'Status'
-		)->addColumn(
-			'devices_pushed',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-			'2M',
-			['nullable' => true, 'default' => null],
-			'Devices Pushed'
-		)->addColumn(
+                'location',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Location'
+        )->addColumn(
+                'distance',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Distance'
+        )->addColumn(
+                'address',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Address'
+        )->addColumn(
+                'city',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'City'
+        )->addColumn(
+                'country',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Country'
+        )->addColumn(
+                'state',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'State'
+        )->addColumn(
+                'zipcode',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Zipcode'
+        )->addColumn(
+                'show_popup',
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                null,
+                ['nullable' => true, 'default' => null],
+                'Show Popup'
+        )->addColumn(
+                'created_time',
+                \Magento\Framework\DB\Ddl\Table::TYPE_DATETIME,
+                null,
+                ['nullable' => true],
+                'Created Time'
+        )->addColumn(
+                'notice_type',
+                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                255,
+                ['nullable' => true],
+                'Notice Type'
+        )->addColumn(
+                'status',
+                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
+                255,
+                ['nullable' => true],
+                'Status'
+        )->addColumn(
+                'devices_pushed',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                '2M',
+                ['nullable' => true, 'default' => null],
+                'Devices Pushed'
+        )->addColumn(
             'notice_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
@@ -850,18 +850,18 @@ class InstallSchema implements InstallSchemaInterface
             ['nullable' => true],
             'Product Name'
         )->addColumn(
-			'product_sku',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-			255,
-			['nullable' => true],
-			'Sku'
-		)->addColumn(
-			'created_date',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
-			255,
-			['nullable' => true, 'default' => null],
-			'Created Time'
-		);
+                'product_sku',
+                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                255,
+                ['nullable' => true],
+                'Sku'
+        )->addColumn(
+                'created_date',
+                \Magento\Framework\DB\Ddl\Table::TYPE_DATETIME,
+                255,
+                ['nullable' => true, 'default' => null],
+                'Created Time'
+        );
         $installer->getConnection()->createTable($table_barcode);
         // end create table simiconnector barcode
 		
@@ -992,18 +992,18 @@ class InstallSchema implements InstallSchemaInterface
             ['nullable' => true, 'default' => null],
             'Product ids'
         )->addColumn(
-			'from_date',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
-			255,
-			['nullable' => true, 'default' => null],
-			'From Time'
-		)->addColumn(
-			'to_date',
-			\Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
-			255,
-			['nullable' => true, 'default' => null],
-			'To Time'
-		)->addColumn(
+                'from_date',
+                \Magento\Framework\DB\Ddl\Table::TYPE_DATETIME,
+                255,
+                ['nullable' => true, 'default' => null],
+                'From Time'
+        )->addColumn(
+                'to_date',
+                \Magento\Framework\DB\Ddl\Table::TYPE_DATETIME,
+                255,
+                ['nullable' => true, 'default' => null],
+                'To Time'
+        )->addColumn(
             'priority',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,

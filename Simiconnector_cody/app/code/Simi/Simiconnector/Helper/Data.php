@@ -262,4 +262,28 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     {
         return abs((int)$this->_scopeConfig->getValue(self::XML_PATH_ITEMS_PER_PAGE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
     }
+    
+    public function getVisibilityTypeId($contentTypeName) {
+        switch ($contentTypeName) {
+            case 'cms':
+                $typeId = 1;
+                break;
+            case 'banner':
+                $typeId = 2;
+                break;
+            case 'homecategory':
+                $typeId = 3;
+                break;
+            case 'productlist':
+                $typeId = 4;
+                break;
+            case 'storelocator':
+                $typeId = 5;
+                break;
+            default :
+                $typeId = 0;
+                break;
+        }
+        return $typeId;
+    }
 }

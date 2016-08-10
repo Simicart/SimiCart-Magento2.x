@@ -65,8 +65,27 @@ class Save extends \Magento\Backend\App\Action
                         $model->setCmsImage($imageFile);
                     }
                 }
-
                 $model->save();
+                
+                $simiconnectorhelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');                
+                if ($data['storeview_id'] && is_array($data['storeview_id'])) {
+                    $typeID = $simiconnectorhelper->getVisibilityTypeId('cms');
+                                            
+                    $visibleStoreViews = $this->_objectManager->get('Simi\Simiconnector\Model\Visibility')->create()->getCollection()
+                            ->addFieldToFilter('content_type', $typeID)
+                            ->addFieldToFilter('item_id', $model->getId());
+                    foreach ($visibleStoreViews as $visibilityItem)
+                        $visibilityItem->delete();
+                    foreach ($data['storeview_id'] as $storeViewId){
+                        $visibilityItem = $this->_objectManager->get('Simi\Simiconnector\Model\Visibility')->create();
+                        $visibilityItem->setData('content_type',$typeID);                        
+                        $visibilityItem->setData('item_id',$model->getId());
+                        $visibilityItem->setData('store_view_id',$storeViewId);
+                        $visibilityItem->save();
+                    }                        
+                }
+                 
+                
                 $this->messageManager->addSuccess(__('The Data has been saved.'));
                 $this->_objectManager->get('Magento\Backend\Model\Session')->setFormData(false);
                 if ($this->getRequest()->getParam('back')) {

@@ -1,9 +1,9 @@
 <?php
+
 namespace Simi\Simiconnector\Block\Adminhtml\Codymodel;
 
+class Grid extends \Magento\Backend\Block\Widget\Grid\Extended {
 
-class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
-{
     /**
      * @var \Magento\Framework\Module\Manager
      */
@@ -28,7 +28,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @var \Magento\Catalog\Model\Product\Attribute\Source\Status
      */
     protected $_status;
-	protected $_collectionFactory;
+    protected $_collectionFactory;
 
     /**
      * @var \Magento\Catalog\Model\Product\Visibility
@@ -55,15 +55,10 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-        \Magento\Backend\Block\Template\Context $context,
-        \Magento\Backend\Helper\Data $backendHelper,
-        \Magento\Store\Model\WebsiteFactory $websiteFactory,
-		\Simi\Simiconnector\Model\ResourceModel\Codymodel\Collection $collectionFactory,
-        \Magento\Framework\Module\Manager $moduleManager,
-        array $data = []
+    \Magento\Backend\Block\Template\Context $context, \Magento\Backend\Helper\Data $backendHelper, \Magento\Store\Model\WebsiteFactory $websiteFactory, \Simi\Simiconnector\Model\ResourceModel\Codymodel\Collection $collectionFactory, \Magento\Framework\Module\Manager $moduleManager, array $data = []
     ) {
-		
-		$this->_collectionFactory = $collectionFactory;
+
+        $this->_collectionFactory = $collectionFactory;
         $this->_websiteFactory = $websiteFactory;
         $this->moduleManager = $moduleManager;
         parent::__construct($context, $backendHelper, $data);
@@ -72,66 +67,48 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @return void
      */
-    protected function _construct()
-    {
+    protected function _construct() {
         parent::_construct();
-		
+
         $this->setId('productGrid');
         $this->setDefaultSort('id');
         $this->setDefaultDir('DESC');
         $this->setSaveParametersInSession(true);
         $this->setUseAjax(false);
-       
     }
 
     /**
      * @return Store
      */
-    protected function _getStore()
-    {
-        $storeId = (int)$this->getRequest()->getParam('store', 0);
+    protected function _getStore() {
+        $storeId = (int) $this->getRequest()->getParam('store', 0);
         return $this->_storeManager->getStore($storeId);
     }
 
     /**
      * @return $this
      */
-    protected function _prepareCollection()
-    {
-		try{
-			
-			
-			$collection =$this->_collectionFactory->load();
-
-		  
-
-			$this->setCollection($collection);
-
-			parent::_prepareCollection();
-		  
-			return $this;
-		}
-		catch(Exception $e)
-		{
-			echo $e->getMessage();die;
-		}
+    protected function _prepareCollection() {
+        try {
+            $collection = $this->_collectionFactory->load();
+            $this->setCollection($collection);
+            parent::_prepareCollection();
+            return $this;
+        } catch (Exception $e) {
+            echo $e->getMessage();
+            die;
+        }
     }
 
     /**
      * @param \Magento\Backend\Block\Widget\Grid\Column $column
      * @return $this
      */
-    protected function _addColumnFilterToCollection($column)
-    {
+    protected function _addColumnFilterToCollection($column) {
         if ($this->getCollection()) {
             if ($column->getId() == 'websites') {
                 $this->getCollection()->joinField(
-                    'websites',
-                    'catalog_product_website',
-                    'website_id',
-                    'product_id=entity_id',
-                    null,
-                    'left'
+                        'websites', 'catalog_product_website', 'website_id', 'product_id=entity_id', null, 'left'
                 );
             }
         }
@@ -142,35 +119,31 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @return $this
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      */
-    protected function _prepareColumns()
-    {
+    protected function _prepareColumns() {
         $this->addColumn(
-            'id',
-            [
-                'header' => __('ID'),
-                'type' => 'number',
-                'index' => 'id',
-                'header_css_class' => 'col-id',
-                'column_css_class' => 'col-id'
-            ]
+                'id', [
+            'header' => __('ID'),
+            'type' => 'number',
+            'index' => 'id',
+            'header_css_class' => 'col-id',
+            'column_css_class' => 'col-id'
+                ]
         );
-		$this->addColumn(
-            'codycolumn',
-            [
-                'header' => __('codycolumn'),
-                'index' => 'codycolumn',
-                'class' => 'codycolumn'
-            ]
+        $this->addColumn(
+                'codycolumn', [
+            'header' => __('codycolumn'),
+            'index' => 'codycolumn',
+            'class' => 'codycolumn'
+                ]
         );
-		$this->addColumn(
-            'codycolumn2',
-            [
-                'header' => __('codycolumn2'),
-                'index' => 'codycolumn2',
-                'class' => 'codycolumn2'
-            ]
+        $this->addColumn(
+                'codycolumn2', [
+            'header' => __('codycolumn2'),
+            'index' => 'codycolumn2',
+            'class' => 'codycolumn2'
+                ]
         );
-		/*{{CedAddGridColumn}}*/
+        /* {{CedAddGridColumn}} */
 
         $block = $this->getLayout()->getBlock('grid.bottom.links');
         if ($block) {
@@ -180,21 +153,19 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         return parent::_prepareColumns();
     }
 
-     /**
+    /**
      * @return $this
      */
-    protected function _prepareMassaction()
-    {
+    protected function _prepareMassaction() {
         $this->setMassactionIdField('id');
         $this->getMassactionBlock()->setFormFieldName('id');
 
         $this->getMassactionBlock()->addItem(
-            'delete',
-            array(
-                'label' => __('Delete'),
-                'url' => $this->getUrl('simiconnector/*/massDelete'),
-                'confirm' => __('Are you sure?')
-            )
+                'delete', array(
+            'label' => __('Delete'),
+            'url' => $this->getUrl('simiconnector/*/massDelete'),
+            'confirm' => __('Are you sure?')
+                )
         );
         return $this;
     }
@@ -202,8 +173,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @return string
      */
-    public function getGridUrl()
-    {
+    public function getGridUrl() {
         return $this->getUrl('simiconnector/*/index', ['_current' => true]);
     }
 
@@ -211,11 +181,10 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @param \Magento\Catalog\Model\Product|\Magento\Framework\Object $row
      * @return string
      */
-    public function getRowUrl($row)
-    {
+    public function getRowUrl($row) {
         return $this->getUrl(
-            'simiconnector/*/edit',
-            ['store' => $this->getRequest()->getParam('store'), 'id' => $row->getId()]
+                        'simiconnector/*/edit', ['store' => $this->getRequest()->getParam('store'), 'id' => $row->getId()]
         );
     }
+
 }
