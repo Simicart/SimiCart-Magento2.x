@@ -60,7 +60,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             \Magento\Framework\Json\EncoderInterface $jsonEncoder,             
             \Magento\Catalog\Model\CategoryFactory $categoryFactory, array $data = []
     ) {
-        $this->_objectmanager = $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $this->_objectmanager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_cmsFactory = $cmsFactory;
         $this->_websiteHelper = $websiteHelper;
         $this->_systemStore = $systemStore;

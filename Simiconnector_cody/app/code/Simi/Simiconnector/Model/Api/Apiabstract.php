@@ -21,12 +21,15 @@ abstract class Apiabstract {
     const FILTER = 'filter';
     const ALL_IDS = 'all_ids';
     const LIMIT_COUNT = 200;
+    const MEDIA_PATH    = 'Simiconnector';
 
     protected $_DEFAULT_ORDER = 'entity_id';
     protected $_objectManager;
     protected $_storeManager;
     protected $_scopeConfig;
+    protected $_resource;
 
+    
     /**
      * Singular key.
      *
@@ -60,9 +63,11 @@ abstract class Apiabstract {
     abstract public function setBuilderQuery();
 
     public function __construct(
-            \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig
+            \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+            \Magento\Framework\App\ResourceConnection $resource
             ) {
         $this->_scopeConfig = $scopeConfig;
+        $this->_resource = $resource;
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_storeManager = $this->_objectManager->get('\Magento\Store\Model\StoreManagerInterface');
         return $this;
@@ -72,9 +77,17 @@ abstract class Apiabstract {
         $this->_data = $data;
     }
 
-    public function getData($key = '', $index = NULL) {
+    
+    public function setData($data)
+    {
+        $this->_data = $data;
+    }
+
+    public function getData()
+    {
         return $this->_data;
     }
+
 
     /**
      * Get singular key
@@ -276,4 +289,22 @@ abstract class Apiabstract {
         }
     }
 
+    
+    /*
+     * Get Store Configuration Value
+     */
+    public function getStoreConfig($path) {
+        return $this->_scopeConfig->getValue($path);
+    }
+    
+    
+    /**
+     * @return string
+     */
+    public function getMediaUrl($media_path)
+    { 
+        return $this->_storeManager->getStore()->getBaseUrl(
+                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+            ).$media_path;
+    }
 }

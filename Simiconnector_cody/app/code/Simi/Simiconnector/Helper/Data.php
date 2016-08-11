@@ -36,28 +36,28 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      *
      * @var int
      */
-    const MIN_HEIGHT = 50;
+    const MIN_HEIGHT = 10;
 
     /**
      * Maximum image height in pixels
      *
      * @var int
      */
-    const MAX_HEIGHT = 800;
+    const MAX_HEIGHT = 3000;
 
     /**
      * Manimum image width in pixels
      *
      * @var int
      */
-    const MIN_WIDTH = 50;
+    const MIN_WIDTH = 10;
 
     /**
      * Maximum image width in pixels
      *
      * @var int
      */
-    const MAX_WIDTH = 1024;
+    const MAX_WIDTH = 3000;
 
     /**
      * Array of image size limitation
@@ -209,19 +209,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $adapter->addValidator(
             new \Zend_Validate_File_FilesSize(['max' => self::MAX_FILE_SIZE])
         );
-        
         if ($adapter->isUploaded($scope)) {
             // validate image
             if (!$adapter->isValid($scope)) {
                 throw new \Exception(__('Uploaded image is not valid.'));
             }
-            
             $uploader = $this->_fileUploaderFactory->create(['fileId' => $scope]);
             $uploader->setAllowedExtensions(['jpg', 'jpeg', 'gif', 'png']);
             $uploader->setAllowRenameFiles(true);
             $uploader->setFilesDispersion(false);
             $uploader->setAllowCreateFolders(true);
-            
             if ($uploader->save($this->getBaseDir())) {
                 return 'Simiconnector/'.$uploader->getUploadedFileName();
             }

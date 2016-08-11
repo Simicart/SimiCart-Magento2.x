@@ -6,6 +6,11 @@ namespace Simi\Simiconnector\Block\Adminhtml\Banner\Edit\Tab;
  */
 class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magento\Backend\Block\Widget\Tab\TabInterface
 {
+    
+    /**
+     * @var \Magento\Framework\App\ObjectManager
+     */
+    protected $_objectmanager;
     /**
      * @var \Magento\Store\Model\System\Store
      */
@@ -51,6 +56,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         array $data = []
     )
     {
+        $this->_objectmanager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_bannerFactory = $bannerFactory;
         $this->_websiteHelper = $websiteHelper;
         $this->_systemStore = $systemStore;
@@ -85,26 +91,36 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $htmlIdPrefix = $form->getHtmlIdPrefix();
 
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Banner Information')]);
-
         $new_category_parent = false;
+        
+        $data = $model->getData();
         if ($model->getId()) {
             $fieldset->addField('banner_id', 'hidden', ['name' => 'banner_id']);
             $new_category_parent = $model->getData('category_id');
+            
+            $simiconnectorhelper = $this->_objectmanager->get('Simi\Simiconnector\Helper\Data');  
+            $typeID = $simiconnectorhelper->getVisibilityTypeId('banner');
+            $visibleStoreViews = $this->_objectmanager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+                    ->addFieldToFilter('content_type', $typeID)
+                    ->addFieldToFilter('item_id', $model->getId());
+            $storeIdArray = array();
+            
+            foreach ($visibleStoreViews as $visibilityItem) {
+                $storeIdArray[] = $visibilityItem->getData('store_view_id');
+            }
+            $data['storeview_id'] = implode(',', $storeIdArray);
         }
 
-        $fieldset->addField(
-            'website_id',
-            'select',
-            [
-                'name' => 'website_id',
-                'label' => __('Website'),
-                'title' => __('Website'),
-                'required' => true,
-                'disabled' => $isElementDisabled,
-                'options' => $this->_bannerFactory->create()->toOptionWebsiteHash(),
-            ]
-        );
-
+        $storeResourceModel = $this->_objectmanager->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
+        
+        $fieldset->addField('storeview_id', 'multiselect', array(
+            'name' => 'storeview_id[]',
+            'label' => __('Store View'),
+            'title' => __('Store View'),
+            'required' => true,
+            'values' => $storeResourceModel->toArray(),
+        ));
+        
         $fieldset->addField(
             'banner_title',
             'text',
@@ -122,25 +138,25 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'image',
             [
                 'name' => 'banner_name',
-                'label' => __('Image (width:640px, height:180px)'),
-                'title' => __('Image (width:640px, height:180px)'),
+                'label' => __('Image (width:640px, height:340px)'),
+                'title' => __('Image (width:640px, height:340px)'),
+                'required' => false,
+                'disabled' => $isElementDisabled
+            ]
+        );
+        
+        $fieldset->addField(
+            'banner_name_tablet',
+            'image',
+            [
+                'name' => 'banner_name_tablet',
+                'label' => __('Tablet Image (width:640px, height:340px)'),
+                'title' => __('Tablet Image (width:640px, height:340px)'),
                 'required' => false,
                 'disabled' => $isElementDisabled
             ]
         );
 
-        $fieldset->addField(
-            'status',
-            'select',
-            [
-                'name' => 'status',
-                'label' => __('Status'),
-                'title' => __('Status'),
-                'required' => false,
-                'disabled' => $isElementDisabled,
-                'options' => $this->_bannerFactory->create()->toOptionStatusHash(),
-            ]
-        );
 
         $fieldset->addField(
             'type',
@@ -194,11 +210,37 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'disabled' => $isElementDisabled,
             ]
         );
+        
+        $fieldset->addField(
+            'sort_order',
+            'text',
+            [
+                'name' => 'sort_order',
+                'label' => __('Sort Order'),
+                'title' => __('Sort Order'),
+                'disabled' => $isElementDisabled
+            ]
+        );
+        
+        $fieldset->addField(
+            'status',
+            'select',
+            [
+                'name' => 'status',
+                'label' => __('Status'),
+                'title' => __('Status'),
+                'required' => false,
+                'disabled' => $isElementDisabled,
+                'options' => $this->_bannerFactory->create()->toOptionStatusHash(),
+            ]
+        );
+        
         /* product + category + url */
 
         $this->_eventManager->dispatch('adminhtml_banner_edit_tab_main_prepare_form', ['form' => $form]);
 
-        $form->setValues($model->getData());
+        
+        $form->setValues($data);
         $this->setForm($form);
 
         return parent::_prepareForm();

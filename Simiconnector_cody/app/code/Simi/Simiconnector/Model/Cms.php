@@ -14,6 +14,7 @@ class Cms extends \Magento\Framework\Model\AbstractModel
      * @var \Simi\Simiconnector\Helper\Website
      **/
     protected $_websiteHelper;
+    protected $_tableresource;
 
     /**
      * @param \Magento\Framework\Model\Context $context
@@ -30,12 +31,13 @@ class Cms extends \Magento\Framework\Model\AbstractModel
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
+        \Magento\Framework\App\ResourceConnection $tableresource,
         \Simi\Simiconnector\Model\ResourceModel\Cms $resource,
         \Simi\Simiconnector\Model\ResourceModel\Cms\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
     )
     {
-
+        $this->_tableresource = $tableresource;
         $this->_websiteHelper = $websiteHelper;
 
         parent::__construct(
@@ -82,4 +84,21 @@ class Cms extends \Magento\Framework\Model\AbstractModel
         return $list;
     }
 
+    /*
+     * Get CMS pages that shown on categories
+     */
+    public function getCategoryCMSPages(){
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+        $typeID = $objectManager->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('cms');
+        $visibilityTable = $this->_tableresource->getTableName('simiconnector_visibility');
+        $cmsCollection = $objectManager->get('Simi\Simiconnector\Model\Cms')->getCollection()->addFieldToFilter('type', '2')->setOrder('sort_order','ASC');
+        $cmsCollection->getSelect()
+                ->join(array('visibility' => $visibilityTable), 'visibility.item_id = main_table.cms_id AND visibility.content_type = ' . $typeID . ' AND visibility.store_view_id =' . $storeManager->getStore()->getId());
+        $cmsArray = array();
+        foreach ($cmsCollection as $cms) {
+            $cmsArray[] = $cms->toArray();
+        }
+        return $cmsArray;
+    }
 }

@@ -48,15 +48,19 @@ class Save extends \Magento\Backend\App\Action
             if(isset($data['new_category_parent']))
                 $data['category_id'] = $data['new_category_parent'];
 
+            
             $is_delete_banner = isset($data['banner_name']['delete']) ? $data['banner_name']['delete'] : false;
             $data['banner_name'] = isset($data['banner_name']['value']) ? $data['banner_name']['value'] : '';
+            
+            $is_delete_banner_tablet = isset($data['banner_name_tablet']['delete']) ? $data['banner_name_tablet']['delete'] : false;
+            $data['banner_name_tablet'] = isset($data['banner_name_tablet']['value']) ? $data['banner_name_tablet']['value'] : '';
+            
             $model->addData($data);
-
+            
             if (!$this->dataProcessor->validate($data)) {
                 $this->_redirect('*/*/edit', ['banner_id' => $model->getId(), '_current' => true]);
                 return;
             }
-
             try {
                 $imageHelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');
                 if ($is_delete_banner && $model->getBannerName()) {
@@ -67,7 +71,34 @@ class Save extends \Magento\Backend\App\Action
                         $model->setBannerName($imageFile);
                     }
                 }
+                if ($is_delete_banner_tablet && $model->getBannerNameTablet()) {
+                    $model->setBannerNameTablet('');
+                } else {
+                    $imageFileTablet = $imageHelper->uploadImage('banner_name_tablet','banner');
+                    if ($imageFile) {
+                        $model->setBannerNameTablet($imageFileTablet);
+                    }
+                }
                 $model->save();
+                
+                $simiconnectorhelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');                
+                if ($data['storeview_id'] && is_array($data['storeview_id'])) {
+                    $typeID = $simiconnectorhelper->getVisibilityTypeId('banner');
+                    $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+                            ->addFieldToFilter('content_type', $typeID)
+                            ->addFieldToFilter('item_id', $model->getId());
+                    foreach ($visibleStoreViews as $visibilityItem) {
+                        $visibilityItem->delete();
+                    }
+                    foreach ($data['storeview_id'] as $storeViewId){
+                        $visibilityItem = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility');
+                        $visibilityItem->setData('content_type',$typeID);                        
+                        $visibilityItem->setData('item_id',$model->getId());
+                        $visibilityItem->setData('store_view_id',$storeViewId);
+                        $visibilityItem->save();
+                    }                        
+                }
+                
                 $this->messageManager->addSuccess(__('The Data has been saved.'));
                 $this->_objectManager->get('Magento\Backend\Model\Session')->setFormData(false);
                 

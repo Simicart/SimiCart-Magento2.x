@@ -103,11 +103,9 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
             'index' => 'cms_title',
         ]);
 
-        $this->addColumn('website_id', [
-            'type' => 'options',
-            'header' => __('Website'),
-            'index' => 'website_id',
-            'options' => $this->_cmsFactory->create()->toOptionWebsiteHash(),
+        $this->addColumn('sort_order', [
+            'header' => __('Sort Order'),
+            'index' => 'sort_order',
         ]);
 
         $this->addColumn('cms_status', [
