@@ -107,6 +107,20 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     protected $_storeManager;
     
+    /*
+     * Scope Config
+     * 
+     * 
+     */
+    protected $_scopeConfig;
+    
+    /*
+     * Object Mangager
+     * 
+     * 
+     */
+    protected $_objectManager;
+    
     /**
      * @param \Magento\Framework\App\Helper\Context $context
      */
@@ -121,6 +135,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Image\Factory $imageFactory
     ) {
+        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_scopeConfig = $scopeConfig;
         $this->filesystem = $filesystem;
         $this->mediaDirectory = $filesystem->getDirectoryWrite(DirectoryList::MEDIA);

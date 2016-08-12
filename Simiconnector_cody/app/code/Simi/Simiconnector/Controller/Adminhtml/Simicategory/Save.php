@@ -57,9 +57,12 @@ class Save extends \Magento\Backend\App\Action
             }
 
             $is_delete_simicategory = isset($data['simicategory_filename']['delete']) ? $data['simicategory_filename']['delete'] : false;
-
             $data['simicategory_filename'] = isset($data['simicategory_filename']['value']) ? $data['simicategory_filename']['value'] : '';
 
+            $is_delete_simicategory_tablet = isset($data['simicategory_filename_tablet']['delete']) ? $data['simicategory_filename_tablet']['delete'] : false;
+            $data['simicategory_filename_tablet'] = isset($data['simicategory_filename_tablet']['value']) ? $data['simicategory_filename_tablet']['value'] : '';
+
+            
             $model->addData($data);
 
             if (!$this->dataProcessor->validate($data)) {
@@ -77,8 +80,36 @@ class Save extends \Magento\Backend\App\Action
                         $model->setSimicategoryFilename($imageFile);
                     }
                 }
-
+                
+                if ($is_delete_simicategory_tablet && $model->getSimicategoryFilename()) {
+                    $model->setSimicategoryFilenameTablet('');
+                } else {
+                    $imageFiletablet = $imageHelper->uploadImage('simicategory_filename_tablet','simicategory');
+                    if ($imageFiletablet) {
+                        $model->setSimicategoryFilenameTablet($imageFiletablet);
+                    }
+                }
+                $model->setData('storeview_id',null);
                 $model->save();
+                
+                $simiconnectorhelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');                
+                if ($data['storeview_id'] && is_array($data['storeview_id'])) {
+                    $typeID = $simiconnectorhelper->getVisibilityTypeId('homecategory');
+                    $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+                            ->addFieldToFilter('content_type', $typeID)
+                            ->addFieldToFilter('item_id', $model->getId());
+                    foreach ($visibleStoreViews as $visibilityItem) {
+                        $visibilityItem->delete();
+                    }
+                    foreach ($data['storeview_id'] as $storeViewId){
+                        $visibilityItem = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility');
+                        $visibilityItem->setData('content_type',$typeID);                        
+                        $visibilityItem->setData('item_id',$model->getId());
+                        $visibilityItem->setData('store_view_id',$storeViewId);
+                        $visibilityItem->save();
+                    }                        
+                }
+                
                 $this->messageManager->addSuccess(__('The Data has been saved.'));
                 $this->_objectManager->get('Magento\Backend\Model\Session')->setFormData(false);
                 if ($this->getRequest()->getParam('back')) {

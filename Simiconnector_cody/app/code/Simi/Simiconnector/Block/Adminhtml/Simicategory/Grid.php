@@ -103,11 +103,10 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
             'index' => 'simicategory_name',
         ]);
 
-        $this->addColumn('website_id', [
-            'type' => 'options',
-            'header' => __('Website'),
-            'index' => 'website_id',
-            'options' => $this->_simicategoryFactory->create()->toOptionWebsiteHash(),
+        
+        $this->addColumn('sort_order', [
+            'header' => __('Sort Order'),
+            'index' => 'sort_order',
         ]);
 
         $this->addColumn('status', [

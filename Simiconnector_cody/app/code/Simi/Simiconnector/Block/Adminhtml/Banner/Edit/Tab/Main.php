@@ -50,7 +50,6 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         \Magento\Store\Model\System\Store $systemStore,
         \Simi\Simiconnector\Helper\Website $websiteHelper,
         \Simi\Simiconnector\Model\BannerFactory $bannerFactory,
-
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         array $data = []

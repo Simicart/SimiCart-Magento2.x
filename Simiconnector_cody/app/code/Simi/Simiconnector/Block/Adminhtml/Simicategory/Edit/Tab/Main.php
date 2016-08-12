@@ -51,6 +51,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         array $data = []
     )
     {
+        $this->_objectmanager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_simicategoryFactory = $simicategoryFactory;
         $this->_websiteHelper = $websiteHelper;
         $this->_systemStore = $systemStore;
@@ -87,24 +88,35 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Simicategory Information')]);
 
         $new_category_parent = false;
+        $data = $model->getData();
         if ($model->getId()) {
             $fieldset->addField('simicategory_id', 'hidden', ['name' => 'simicategory_id']);
             $new_category_parent = $model->getData('category_id');
+            
+            $simiconnectorhelper = $this->_objectmanager->get('Simi\Simiconnector\Helper\Data');  
+            $typeID = $simiconnectorhelper->getVisibilityTypeId('homecategory');
+            $visibleStoreViews = $this->_objectmanager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+                    ->addFieldToFilter('content_type', $typeID)
+                    ->addFieldToFilter('item_id', $model->getId());
+            $storeIdArray = array();
+            
+            foreach ($visibleStoreViews as $visibilityItem) {
+                $storeIdArray[] = $visibilityItem->getData('store_view_id');
+            }
+            $data['storeview_id'] = implode(',', $storeIdArray);
         }
 
-        $fieldset->addField(
-            'website_id',
-            'select',
-            [
-                'name' => 'website_id',
-                'label' => __('Website'),
-                'title' => __('Website'),
-                'required' => true,
-                'disabled' => $isElementDisabled,
-                'options' => $this->_simicategoryFactory->create()->toOptionWebsiteHash(),
-            ]
-        );
-
+        $storeResourceModel = $this->_objectmanager->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
+        
+        $fieldset->addField('storeview_id', 'multiselect', array(
+            'name' => 'storeview_id[]',
+            'label' => __('Store View'),
+            'title' => __('Store View'),
+            'required' => true,
+            'values' => $storeResourceModel->toArray(),
+        ));
+        
+        
         $fieldset->addField(
             'simicategory_filename',
             'image',
@@ -112,6 +124,18 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'name' => 'simicategory_filename',
                 'label' => __('Image (width:220px, height:220px)'),
                 'title' => __('Image (width:220px, height:220px)'),
+                'required' => true,
+                'disabled' => $isElementDisabled
+            ]
+        );
+        
+        $fieldset->addField(
+            'simicategory_filename_tablet',
+            'image',
+            [
+                'name' => 'simicategory_filename_tablet',
+                'label' => __('Tablet Image (width:220px, height:220px)'),
+                'title' => __('Tablet Image (width:220px, height:220px)'),
                 'required' => true,
                 'disabled' => $isElementDisabled
             ]
@@ -131,6 +155,16 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
+            'sort_order', 'text', [
+            'name' => 'sort_order',
+            'label' => __('Sort Order'),
+            'title' => __('Sort Order'),
+            'required' => true,
+            'disabled' => $isElementDisabled
+                ]
+        );
+        
+        $fieldset->addField(
             'status',
             'select',
             [
@@ -145,7 +179,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         $this->_eventManager->dispatch('adminhtml_simicategory_edit_tab_main_prepare_form', ['form' => $form]);
 
-        $form->setValues($model->getData());
+        $form->setValues($data);
         $this->setForm($form);
 
         return parent::_prepareForm();

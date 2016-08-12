@@ -7,24 +7,9 @@ namespace Simi\Simiconnector\Helper;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 
-class Instantcontact extends \Magento\Framework\App\Helper\AbstractHelper
+class Instantcontact extends \Simi\Simiconnector\Helper\Data
 {
-    protected $_scopeConfig;
     
-    public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\Filesystem $filesystem,
-        \Magento\Framework\File\Size $fileSize,
-        \Magento\Framework\HTTP\Adapter\FileTransferFactory $httpFactory,
-        \Magento\MediaStorage\Model\File\UploaderFactory $fileUploaderFactory,
-        \Magento\Framework\Filesystem\Io\File $ioFile,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\Image\Factory $imageFactory
-    ) {
-        $this->_scopeConfig = $scopeConfig;
-        parent::__construct($context);
-    }
     
     public function getConfig($value) {
         return $this->getStoreConfig("simiconnector/instant_contact/" . $value);
