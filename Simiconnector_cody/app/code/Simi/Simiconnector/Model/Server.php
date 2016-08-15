@@ -12,10 +12,17 @@ class Server
     protected $_method = 'callApi';
     public $eventManager;
     public $objectManager;
+    public $_coreRegistry;
     
+    public function __construct(
+        \Magento\Framework\Registry $registry
+    ) {
+	$this->_coreRegistry = $registry;
+    }
     
-    public function init(\Magento\Framework\App\Action\Action $controller)
-    {
+    public function init(
+            \Magento\Framework\App\Action\Action $controller)
+    {   
         $this->initialize($controller);
         return $this;
     }
@@ -117,6 +124,7 @@ class Server
             'module' => $module,
             'controller' => $controller,
         );
+        $this->_coreRegistry->register('simidata', $this->_data);
         $this->eventManager->dispatch('Simi_Simiconnector_Model_Server_Initialize', array('object' => $this, 'data' => $this->_data));
     }
 

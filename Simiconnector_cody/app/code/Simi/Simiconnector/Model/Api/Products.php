@@ -141,7 +141,7 @@ class Products extends Apiabstract
             );
             $info_detail['images'] = $images;
             
-            //hainh $info_detail['app_prices'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Price')->formatPriceFromProduct($entity);
+            $info_detail['app_prices'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Price')->formatPriceFromProduct($entity);
             //hainh $info_detail['product_label'] = Mage::helper('simiconnector/productlabel')->getProductLabel($entity);
             $info[] = $info_detail;
 
@@ -154,7 +154,7 @@ class Products extends Apiabstract
      * @return array
      * override
      */
-    /*
+    
     public function show() {
         $entity = $this->builderQuery;
         $data = $this->getData();
@@ -183,25 +183,25 @@ class Products extends Apiabstract
             );
         }
         
-        if (!Mage::registry('product') && $entity->getId()) {
-            Mage::register('product', $entity);
-        }
         
-
-        //hainh $block_att = Mage::getBlockSingleton('catalog/product_view_attributes');
-        // hainh $_additional = $block_att->getAdditionalData();
+        $registry = $this->_objectManager->get('\Magento\Framework\Registry');
+        if (!$registry->registry('product') && $entity->getId()) {
+            $registry->register('product', $entity);
+        }
+        $layout = $this->_objectManager->get('Magento\Framework\View\LayoutInterface');
+        $block_att = $layout->createBlock('Magento\Catalog\Block\Product\View\Attributes');
+        $_additional = $block_att->getAdditionalData();
         $info['additional'] = $_additional;
         $info['images'] = $images;
-        $info['app_prices'] = Mage::helper('simiconnector/price')->formatPriceFromProduct($entity, true);
-        $info['app_options'] = Mage::helper('simiconnector/options')->getOptions($entity);
-        $info['wishlist_item_id'] = Mage::helper('simiconnector/wishlist')->getWishlistItemId($entity);
-        $info['product_label'] = Mage::helper('simiconnector/productlabel')->getProductLabel($entity);
+        $info['app_prices'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Price')->formatPriceFromProduct($entity, true);
+        $info['app_options'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Options')->getOptions($entity);
+        //$info['wishlist_item_id'] = Mage::helper('simiconnector/wishlist')->getWishlistItemId($entity);
+        //$info['product_label'] = Mage::helper('simiconnector/productlabel')->getProductLabel($entity);
         $this->detail_info = $this->getDetail($info);
-        Mage::dispatchEvent('Simi_Simiconnector_Model_Api_Products_Show_After', array('object' => $this, 'data' => $this->detail_info));
+        //Mage::dispatchEvent('Simi_Simiconnector_Model_Api_Products_Show_After', array('object' => $this, 'data' => $this->detail_info));
         return $this->detail_info;
     }
-     * 
-     */
+    
 
     public function setFilterByCategoryId($cat_id) {
         $data = $this->getData();
