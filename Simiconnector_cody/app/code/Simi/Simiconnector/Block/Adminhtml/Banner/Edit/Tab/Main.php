@@ -10,7 +10,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
     /**
      * @var \Magento\Framework\App\ObjectManager
      */
-    protected $_objectmanager;
+    protected $_objectManager;
     /**
      * @var \Magento\Store\Model\System\Store
      */
@@ -55,7 +55,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         array $data = []
     )
     {
-        $this->_objectmanager = \Magento\Framework\App\ObjectManager::getInstance();
+        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_bannerFactory = $bannerFactory;
         $this->_websiteHelper = $websiteHelper;
         $this->_systemStore = $systemStore;
@@ -97,9 +97,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             $fieldset->addField('banner_id', 'hidden', ['name' => 'banner_id']);
             $new_category_parent = $model->getData('category_id');
             
-            $simiconnectorhelper = $this->_objectmanager->get('Simi\Simiconnector\Helper\Data');  
+            $simiconnectorhelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');  
             $typeID = $simiconnectorhelper->getVisibilityTypeId('banner');
-            $visibleStoreViews = $this->_objectmanager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+            $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
                     ->addFieldToFilter('content_type', $typeID)
                     ->addFieldToFilter('item_id', $model->getId());
             $storeIdArray = array();
@@ -110,7 +110,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             $data['storeview_id'] = implode(',', $storeIdArray);
         }
 
-        $storeResourceModel = $this->_objectmanager->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
+        $storeResourceModel = $this->_objectManager->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
         
         $fieldset->addField('storeview_id', 'multiselect', array(
             'name' => 'storeview_id[]',

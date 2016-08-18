@@ -10,7 +10,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
     /**
      * @var \Magento\Framework\App\ObjectManager
      */
-    protected $_objectmanager;
+    protected $_objectManager;
     
     /**
      * @var \Magento\Store\Model\System\Store
@@ -60,7 +60,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             \Magento\Framework\Json\EncoderInterface $jsonEncoder,             
             \Magento\Catalog\Model\CategoryFactory $categoryFactory, array $data = []
     ) {
-        $this->_objectmanager = \Magento\Framework\App\ObjectManager::getInstance();
+        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_cmsFactory = $cmsFactory;
         $this->_websiteHelper = $websiteHelper;
         $this->_systemStore = $systemStore;
@@ -102,9 +102,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             $fieldset->addField('cms_id', 'hidden', ['name' => 'cms_id']);
             $new_category_parent = $model->getData('category_id');
             
-            $simiconnectorhelper = $this->_objectmanager->get('Simi\Simiconnector\Helper\Data');  
+            $simiconnectorhelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');  
             $typeID = $simiconnectorhelper->getVisibilityTypeId('cms');
-            $visibleStoreViews = $this->_objectmanager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+            $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
                     ->addFieldToFilter('content_type', $typeID)
                     ->addFieldToFilter('item_id', $model->getId());
             $storeIdArray = array();
@@ -115,7 +115,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             $data['storeview_id'] = implode(',', $storeIdArray);
         }
         
-        $storeResourceModel = $this->_objectmanager->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
+        $storeResourceModel = $this->_objectManager->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
         
         $fieldset->addField('storeview_id', 'multiselect', array(
             'name' => 'storeview_id[]',
@@ -153,7 +153,6 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'name' => 'sort_order',
             'label' => __('Sort Order'),
             'title' => __('Sort Order'),
-            'required' => true,
             'disabled' => $isElementDisabled
                 ]
         );
@@ -206,7 +205,6 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             [
                 'label' => __('Categories'),
                 'title' => __('Categories'),
-                'required' => true,
                 'class' => 'validate-parent-category',
                 'name' => 'new_category_parent',
                 'options' => $this->_getParentCategoryOptions($new_category_parent),

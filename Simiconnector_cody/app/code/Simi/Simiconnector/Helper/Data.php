@@ -29,7 +29,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      *
      * @var int
      */
-    const MAX_FILE_SIZE = 1048576;
+    const MAX_FILE_SIZE = 8388608;
 
     /**
      * Manimum image height in pixels
@@ -43,7 +43,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      *
      * @var int
      */
-    const MAX_HEIGHT = 3000;
+    const MAX_HEIGHT = 6000;
 
     /**
      * Manimum image width in pixels
@@ -57,7 +57,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      *
      * @var int
      */
-    const MAX_WIDTH = 3000;
+    const MAX_WIDTH = 10000;
 
     /**
      * Array of image size limitation
@@ -121,6 +121,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     protected $_objectManager;
     
+    protected $_resource;
+
+
     /**
      * @param \Magento\Framework\App\Helper\Context $context
      */
@@ -133,7 +136,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\MediaStorage\Model\File\UploaderFactory $fileUploaderFactory,
         \Magento\Framework\Filesystem\Io\File $ioFile,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\Image\Factory $imageFactory
+        \Magento\Framework\Image\Factory $imageFactory,
+        \Magento\Framework\App\ResourceConnection $resource
     ) {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_scopeConfig = $scopeConfig;
@@ -144,6 +148,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $this->_ioFile = $ioFile;
         $this->_storeManager = $storeManager;
         $this->_imageFactory = $imageFactory;
+        $this->_resource = $resource;
         parent::__construct($context);
     }
     

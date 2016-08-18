@@ -4,9 +4,7 @@
  */
 namespace Simi\Simiconnector\Model\ResourceModel;
 
-/**
- * Codymodel resource
- */
+
 class Visibility extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
     /**

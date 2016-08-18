@@ -206,7 +206,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
                             $priveV2['show_weee_price'] = 1;
                         }
                     }elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($_product, 2)){
-                        $priveV2['price_label'] = Mage::helper('catalog')->__('Regular Price');
+                        $priveV2['price_label'] = __('Regular Price');
                         $weeeAmountToDisplay = $_taxHelper->displayPriceIncludingTax() ? $_weeeTaxAmountInclTaxes : $_weeeTaxAmount;
                         $this->setTaxReguarlPrice($priveV2, $_price + $weeeAmountToDisplay);
                         if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($_product, 1)){

@@ -5,9 +5,7 @@
 
 namespace Simi\Simiconnector\Model\Api;
 
-/**
- * Codymodeltab codymodel model
- */
+
 class Products extends Apiabstract
 {
     protected $_layer = array();

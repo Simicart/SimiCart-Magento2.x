@@ -5,9 +5,7 @@
 
 namespace Simi\Simiconnector\Model\Api;
 
-/**
- * Codymodeltab codymodel model
- */
+
 class Storeviews extends Apiabstract
 {
     protected $_DEFAULT_ORDER = 'store_id';

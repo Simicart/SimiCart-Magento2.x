@@ -5,9 +5,7 @@
 
 namespace Simi\Simiconnector\Model\Api;
 
-/**
- * Codymodeltab codymodel model
- */
+
 class Stores extends Apiabstract
 {
     protected $_DEFAULT_ORDER = 'group_id';
@@ -22,18 +20,16 @@ class Stores extends Apiabstract
         }
     }
 
-    /*
     public function index() {
         $result = parent::index();
         foreach ($result['stores'] as $index => $store) {
-            $storeViewAPIModel = Mage::getModel('simiconnector/api_storeviews');
+            $storeViewAPIModel = $this->_objectManager->get('\Simi\Simiconnector\Model\Api\Storeviews');
             $storeViewAPIModel->setData($this->getData());
-            $storeViewAPIModel->builderQuery = Mage::getModel('core/store')->getCollection()->addFieldToFilter('group_id', $store['group_id']);
+            $storeViewAPIModel->builderQuery = $this->_objectManager->get('\Magento\Store\Model\Store')->getCollection()->addFieldToFilter('group_id', $store['group_id']);
             $storeViewAPIModel->pluralKey = 'storeviews';
             $result['stores'][$index]['storeviews'] = $storeViewAPIModel->index();
         }
         return $result;
     }
-     */
 
 }

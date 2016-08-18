@@ -6,9 +6,7 @@
 namespace Simi\Simiconnector\Model;
 
 
-/**
- * Codymodeltab codymodel model
- */
+
 class Visibility extends \Magento\Framework\Model\AbstractModel
 {
 

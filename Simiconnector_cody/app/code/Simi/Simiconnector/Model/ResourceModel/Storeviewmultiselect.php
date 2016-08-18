@@ -10,7 +10,7 @@ class Storeviewmultiselect extends \Magento\Framework\Model\ResourceModel\Db\Abs
     /**
      * @var \Magento\Framework\App\ObjectManager
      */
-    protected $_objectmanager;
+    protected $_objectManager;
     
     /**
      * Initialize resource model
@@ -23,9 +23,9 @@ class Storeviewmultiselect extends \Magento\Framework\Model\ResourceModel\Db\Abs
     
     public function toArray()
     {
-        $this->_objectmanager = \Magento\Framework\App\ObjectManager::getInstance();
-        $groupCollection = $this->_objectmanager->get('\Magento\Store\Model\Group')->getCollection();
-        $storeCollection = $this->_objectmanager->get('\Magento\Store\Model\Store')->getCollection();      
+        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $groupCollection = $this->_objectManager->get('\Magento\Store\Model\Group')->getCollection();
+        $storeCollection = $this->_objectManager->get('\Magento\Store\Model\Store')->getCollection();      
         $returnArray = array();
         
         foreach ($groupCollection as $group) {

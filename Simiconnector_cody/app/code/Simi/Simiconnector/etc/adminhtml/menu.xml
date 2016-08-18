@@ -6,7 +6,7 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Backend/etc/menu.xsd">
     <menu>
-        <add id="Simi_Simiconnector::simiconnector" title="Simicart" module="Simi_Simiconnector"  sortOrder="20" dependsOnModule="Simi_Simiconnector" action="simiconnector/cody/index" resource="Simi_Simiconnector::simi_cody_index"/>
+        <add id="Simi_Simiconnector::simiconnector" title="Simicart" module="Simi_Simiconnector"  sortOrder="20" dependsOnModule="Simi_Simiconnector" resource="Simi_Simiconnector::general"/>
         <!-- connector setting -->
         <add id="Simi_Simiconnector::simiconnector_settings" title="Simiconnector Settings" module="Simi_Simiconnector" sortOrder="99" parent="Simi_Simiconnector::simiconnector" resource="Simi_Simiconnector::simiconnector_settings"/>
         <add id="Simi_Simiconnector::settings" title="General Settings" module="Simi_Simiconnector" sortOrder="40" parent="Simi_Simiconnector::simiconnector_settings" resource="Simi_Simiconnector::configuration" action="adminhtml/system_config/edit/section/simiconnector"/>
@@ -16,6 +16,7 @@
         <add id="Simi_Simiconnector::themes" title="Themes" module="Simi_Simiconnector" sortOrder="199" parent="Simi_Simiconnector::simiconnector" resource="Simi_Simiconnector::themes"/>
         <add id="Simi_Simiconnector::banner" title="Banners" module="Simi_Simiconnector" sortOrder="10" parent="Simi_Simiconnector::themes" action="simiconnector/banner/" resource="Simi_Simiconnector::manage"/>        
         <add id="Simi_Simiconnector::simicategory" title="Home Category" module="Simi_Simiconnector" sortOrder="30" parent="Simi_Simiconnector::themes" action="simiconnector/simicategory/" resource="Simi_Simiconnector::manage"/>
+        <add id="Simi_Simiconnector::productlist" title="Product Lists" module="Simi_Simiconnector" sortOrder="30" parent="Simi_Simiconnector::themes" action="simiconnector/productlist/" resource="Simi_Simiconnector::manage"/>
         <add id="Simi_Simiconnector::cms" title="Cms Pages" module="Simi_Simiconnector" sortOrder="30" parent="Simi_Simiconnector::themes" action="simiconnector/cms/" resource="Simi_Simiconnector::manage"/>
         
         <!-- rich content -->

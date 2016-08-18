@@ -5,9 +5,6 @@
 
 namespace Simi\Simiconnector\Model\Api;
 
-/**
- * Codymodeltab codymodel model
- */
 class Homecategories extends Apiabstract
 {
     protected $_DEFAULT_ORDER = 'sort_order';
@@ -20,7 +17,7 @@ class Homecategories extends Apiabstract
     
     public function setBuilderQuery() {
         if ($this->getStoreConfig('simiconnector/general/categories_in_app'))
-            $this->_visible_array = explode(',', Mage::getStoreConfig('simiconnector/general/categories_in_app'));
+            $this->_visible_array = explode(',', $this->getStoreConfig('simiconnector/general/categories_in_app'));
         $data = $this->getData();
         if ($data['resourceid']) {
             $this->builderQuery = $this->_objectManager->get('Simi\Simiconnector\Model\Simicategory')->load($data['resourceid']);
@@ -33,7 +30,6 @@ class Homecategories extends Apiabstract
         $typeID = $this->_objectManager->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('homecategory');
         $visibilityTable = $this->_resource->getTableName('simiconnector_visibility');
         $simicategoryCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Simicategory')->getCollection();
-
         $simicategoryCollection->getSelect()
                 ->join(array('visibility' => $visibilityTable), 'visibility.item_id = main_table.simicategory_id AND visibility.content_type = ' . $typeID . ' AND visibility.store_view_id =' . $this->_storeManager->getStore()->getId());
         $this->builderQuery = $simicategoryCollection;

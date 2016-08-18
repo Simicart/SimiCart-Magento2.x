@@ -14,9 +14,14 @@
         <referenceContainer name="left">
             <block class="Simi\Simiconnector\Block\Adminhtml\Simicategory\Edit\Tabs" name="simicategory_edit_tabs">
                 <block class="Simi\Simiconnector\Block\Adminhtml\Simicategory\Edit\Tab\Main" name="simicategory_edit_tab_main"/>
+                <block class="Simi\Simiconnector\Block\Adminhtml\Simicategory\Edit\Tab\Matrix" name="simicategory_edit_tab_matrix"/>
                 <action method="addTab">
                     <argument name="name" xsi:type="string">main_section</argument>
                     <argument name="block" xsi:type="string">simicategory_edit_tab_main</argument>
+                </action>
+                <action method="addTab">
+                    <argument name="name" xsi:type="string">matrix_section</argument>
+                    <argument name="block" xsi:type="string">simicategory_edit_tab_matrix</argument>
                 </action>
             </block>
         </referenceContainer>

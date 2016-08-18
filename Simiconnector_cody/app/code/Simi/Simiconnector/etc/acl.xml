@@ -3,7 +3,7 @@
     <acl>
         <resources>
             <resource id="Magento_Adminhtml::admin">
-                <resource id="Simi_Simiconnector::codymodel" title="codymodel" sortOrder="100"/>
+                <resource id="Simi_Simiconnector::productlist" title="productlist" sortOrder="100"/>
  <!--AddMenuAcl-->
             </resource>
         </resources>

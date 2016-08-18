@@ -6,9 +6,7 @@
 
 namespace Simi\Simiconnector\Model\Api;
 
-/**
- * Codymodeltab codymodel model
- */
+
 abstract class Apiabstract {
 
     const DEFAULT_DIR = 'asc';

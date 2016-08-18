@@ -5,9 +5,6 @@
 
 namespace Simi\Simiconnector\Model\Api;
 
-/**
- * Codymodeltab codymodel model
- */
 class Homebanners extends Apiabstract
 {
     protected $_DEFAULT_ORDER = 'sort_order';
