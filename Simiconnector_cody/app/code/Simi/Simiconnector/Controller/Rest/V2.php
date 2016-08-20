@@ -1,7 +1,7 @@
 <?php
 /**
  *
- * Copyright © 2015 Simicommerce. All rights reserved.
+ * Copyright © 2016 Simicommerce. All rights reserved.
  */
 namespace Simi\Simiconnector\Controller\Rest;
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Simi. All rights reserved.
+ * Copyright © 2016 Simi. All rights reserved.
  */
 
 namespace Simi\Simiconnector\Model\Api;
@@ -276,8 +276,18 @@ class Storeviews extends Apiabstract
     public function setStoreView($data) {
         if (($data['resourceid'] == 'default') || ($data['resourceid'] == $this->_storeManager->getStore()->getId()))
             return;
+        $storeCode = $this->_objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore($data['resourceid'])->getCode();
+
+        $store = $this->storeRepository->getActiveStoreByCode($storeCode);
         
-        $this->_objectManager->get('Magento\Store\Model\StoreManagerInterface')->setCurrentStore(
+        $defaultStoreView = $this->_storeManager->getDefaultStoreView();
+        if ($defaultStoreView->getId() == $store->getId()) {
+            $this->storeCookieManager->deleteStoreCookie($store);
+        } else {
+            $this->storeCookieManager->setStoreCookie($store);
+        }
+
+        $this->_storeManager->setCurrentStore(
             $this->_objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore($data['resourceid'])
         );
     }

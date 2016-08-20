@@ -80,11 +80,11 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
     public function formatPriceFromProduct($_product, $is_detail=false)
     {
         $priveV2 = array();
+        $_product = $this->_objectManager->get('Magento\Catalog\Model\Product')->load($_product->getId());
         $this->_product = $_product;
 
         $_weeeHelper = $this->helper('Magento\Weee\Helper\Data');
         $_taxHelper = $this->helper('Magento\Tax\Helper\Data');
-        
         
         $_simplePricesTax = ($_taxHelper->displayPriceIncludingTax() || $_taxHelper->displayBothPrices());
         $_minimalPrice = $this->convertPrice($_product->getMinimalPrice());
@@ -230,7 +230,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
                 }
             }else{  /* if ($_finalPrice == $_price): */
                 $priveV2['has_special_price'] = 1;
-                $_originalWeeeTaxAmount = $_weeeHelper->getOriginalAmount($_product);
+                $_originalWeeeTaxAmount = $_weeeHelper->getAmountExclTax($_product);
                 $_originalWeeeTaxAmount = $this->convertPrice($_originalWeeeTaxAmount);
                 if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($_product, 0)){
                     $priveV2['price_label'] = __('Regular Price');

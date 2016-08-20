@@ -17,7 +17,8 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     protected $_sortOrders = array();
     
     public $category;
-
+    public $productStatus;
+    public $productVisibility;
 
     const XML_PATH_RANGE_STEP = 'catalog/layered_navigation/price_range_step';
     const MIN_RANGE_POWER = 10;
@@ -31,11 +32,15 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Framework\HTTP\Adapter\FileTransferFactory $httpFactory,
         \Magento\MediaStorage\Model\File\UploaderFactory $fileUploaderFactory,
         \Magento\Framework\Filesystem\Io\File $ioFile,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
+        \Magento\Store\Model\StoreManagerInterface $storeManager,    
+        \Magento\Catalog\Model\Product\Attribute\Source\Status $productStatus,
+        \Magento\Catalog\Model\Product\Visibility $productVisibility,
         \Magento\Framework\Image\Factory $imageFactory
     ) {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_storeManager = $this->_objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+        $this->productStatus = $productStatus;
+        $this->productVisibility = $productVisibility;
         parent::__construct($context);
     }
     
@@ -104,9 +109,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         $collection->addAttributeToSelect('*')
             ->addStoreFilter()
             ->addAttributeToFilter('status', 1)
-            ->setVisibility([3, 4])
             ->addFinalPrice();
-        
         $collection = $this->_filter($collection, $parameters);
         $this->builderQuery = $collection;
                 
@@ -160,6 +163,13 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             }
             if (count($ids)>0)
                 $collection->addFieldToFilter('entity_id', ['in' => $ids]);
+
+                $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
+                $collection->getVisibleInSearchIds($this->productVisibility->getVisibleInSiteIds());
+        }
+        else {
+            $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
+            $collection->setVisibility($this->productVisibility->getVisibleInSiteIds());
         }
         
         $data = $this->getData();

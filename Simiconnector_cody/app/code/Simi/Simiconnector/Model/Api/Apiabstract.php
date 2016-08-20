@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright © 2015 Simi. All rights reserved.
+ * Copyright © 2016 Simi. All rights reserved.
  */
 
 namespace Simi\Simiconnector\Model\Api;
@@ -9,6 +9,8 @@ namespace Simi\Simiconnector\Model\Api;
 
 abstract class Apiabstract {
 
+    public $FILTER_RESULT = true;
+    
     const DEFAULT_DIR = 'asc';
     const DEFAULT_LIMIT = 15;
     const DIR = 'dir';
@@ -26,8 +28,9 @@ abstract class Apiabstract {
     protected $_storeManager;
     protected $_scopeConfig;
     protected $_resource;
-
     
+    public  $storeRepository;
+    public  $storeCookieManager;
     /**
      * Singular key.
      *
@@ -62,12 +65,17 @@ abstract class Apiabstract {
 
     public function __construct(
             \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
+            \Magento\Store\Model\StoreManagerInterface $storeManagerInterface,
+            \Magento\Store\Api\StoreRepositoryInterface $storeRepository,
+            \Magento\Store\Api\StoreCookieManagerInterface $storeCookieManager,
             \Magento\Framework\App\ResourceConnection $resource
             ) {
-        $this->_scopeConfig = $scopeConfig;
-        $this->_resource = $resource;
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->_storeManager = $this->_objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+        $this->_scopeConfig = $scopeConfig;
+        $this->_storeManager = $storeManagerInterface;
+        $this->storeRepository = $storeRepository;
+        $this->storeCookieManager = $storeCookieManager;
+        $this->_resource = $resource;
         return $this;
     }
 
@@ -235,6 +243,8 @@ abstract class Apiabstract {
     }
 
     protected function filter() {
+        if (!$this->FILTER_RESULT)
+            return;
         $data = $this->_data;
         $parameters = $data['params'];
         $query = $this->builderQuery;

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Simi. All rights reserved.
+ * Copyright © 2016 Simi. All rights reserved.
  */
 
 namespace Simi\Simiconnector\Model\Api;
@@ -61,6 +61,7 @@ class Homeproductlists extends Apiabstract
             $productListAPIModel = $this->_objectManager->get('Simi\Simiconnector\Model\Api\Products');
             $productListAPIModel->setData($this->getData());
             $productListAPIModel->setBuilderQuery();
+            $productListAPIModel->FILTER_RESULT = false;
             $productListAPIModel->builderQuery = $productCollection;
             $productListAPIModel->pluralKey = 'products';
             $listAPI = $productListAPIModel->index();

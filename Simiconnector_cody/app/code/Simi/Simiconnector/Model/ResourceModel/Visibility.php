@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Simi. All rights reserved.
+ * Copyright © 2016 Simi. All rights reserved.
  */
 namespace Simi\Simiconnector\Model\ResourceModel;
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Simi. All rights reserved.
+ * Copyright © 2016 Simi. All rights reserved.
  */
 
 namespace Simi\Simiconnector\Model\Api;
@@ -72,6 +72,8 @@ class Products extends Apiabstract
      * override
      */
     protected function filter() {
+        if (!$this->FILTER_RESULT)
+            return;
         $data = $this->_data;
         $parameters = $data['params'];
         if ($this->_allow_filter_core) {

@@ -5,38 +5,6 @@ namespace Simi\Simiconnector\Helper;
 
 class Productlist extends Data
 {
-    /**
-     * @param \Magento\Framework\App\Helper\Context $context
-     */
-    
-    protected $_resourceFactory;
-    
-    public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
-        \Magento\Framework\Filesystem $filesystem,
-        \Magento\Framework\File\Size $fileSize,
-        \Magento\Framework\HTTP\Adapter\FileTransferFactory $httpFactory,
-        \Magento\MediaStorage\Model\File\UploaderFactory $fileUploaderFactory,
-        \Magento\Framework\Filesystem\Io\File $ioFile,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Reports\Model\ResourceModel\Report\Collection\Factory $resourceFactory,
-        \Magento\Framework\Image\Factory $imageFactory,
-        \Magento\Framework\App\ResourceConnection $resource
-    ) {
-        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->_scopeConfig = $scopeConfig;
-        $this->filesystem = $filesystem;
-        $this->mediaDirectory = $filesystem->getDirectoryWrite(DirectoryList::MEDIA);
-        $this->httpFactory = $httpFactory;
-        $this->_fileUploaderFactory = $fileUploaderFactory;
-        $this->_ioFile = $ioFile;
-        $this->_storeManager = $storeManager;
-        $this->_imageFactory = $imageFactory;
-        $this->_resource = $resource;
-        $this->_resourceFactory = $resourceFactory;
-        parent::__construct($context);
-    }
     
     public function getListTypeId() {
         return array(
@@ -73,33 +41,37 @@ class Productlist extends Data
                 break;
             //Best seller
             case 2:
-                $collection = $this->_objectManager->get('Magento\Reports\Model\ResourceModel\Product\Sold\Collection');
-                $resourceCollection = $this->_resourceFactory->create('Magento\Sales\Model\ResourceModel\Report\Bestsellers\Collection');
-		
-                die;
-		$resourceCollection = $resourceF->create('Magento\Sales\Model\ResourceModel\Report\Bestsellers\Collection');
-                
-                \zend_debug::dump($resourceCollection->getData());die;
-                    $collection = $this->_objectManager->get('Magento\Catalog\Model\Product')->getCollection()
-                            ->addAttributeToSelect('ordered_qty');
-                    //->addOrderedQty();
-                \zend_debug::dump($collection->getData());die;
-                die;
-                        //->addAttributeToSelect($this->_objectManager->get('Magento\Catalog\Model\Config')
-                           // ->getProductAttributes())
-                       // ->addOrderedQty()->addMinimalPrice()
-                         //  ->addTaxPercents()
-                      //  ->addStoreFilter()
-                      //  ->setOrder('ordered_qty', 'desc');
+                $orderItemTable = $this->_resource->getTableName('sales_order_item');
+                $collection = $this->_objectManager->get('Magento\Catalog\Model\Product')->getCollection();
+                $select = $collection->getSelect()
+                ->join(array('order_item' => $orderItemTable), 'order_item.product_id = entity_id', array('order_item.product_id','order_item.qty_ordered'))
+                ->columns('SUM(qty_ordered) as total_ordered')
+                ->group('product_id')
+                ->order(array('total_ordered DESC'));
+                $collection
+                        ->addAttributeToSelect($this->_objectManager->get('Magento\Catalog\Model\Config')
+                        ->getProductAttributes())
+                ->addMinimalPrice()
+                ->addFinalPrice()
+                ->addTaxPercents()
+                ->addUrlRewrite();
                 break;
-            //Most Viewed
+             //Most Viewed
             case 3:
-                $collection = Mage::getResourceModel('reports/product_collection')
-                        ->addAttributeToSelect(Mage::getSingleton('catalog/config')->getProductAttributes())
-                        ->addViewsCount()
-                        ->addMinimalPrice()
-                        ->addTaxPercents()
-                        ->addStoreFilter();
+                $productViewTable = $this->_resource->getTableName('report_viewed_product_aggregated_yearly');
+                $collection = $this->_objectManager->get('Magento\Catalog\Model\Product')->getCollection();
+                $select = $collection->getSelect()
+                ->join(array('product_viewed' => $productViewTable), 'product_viewed.product_id = entity_id', array('product_viewed.product_id','product_viewed.views_num'))
+                ->columns('SUM(views_num) as total_viewed')
+                ->group('product_id')
+                ->order(array('total_viewed DESC'));
+                $collection
+                        ->addAttributeToSelect($this->_objectManager->get('Magento\Catalog\Model\Config')
+                        ->getProductAttributes())
+                ->addMinimalPrice()
+                ->addFinalPrice()
+                ->addTaxPercents()
+                ->addUrlRewrite();
                 break;
             //New Updated
             case 4:

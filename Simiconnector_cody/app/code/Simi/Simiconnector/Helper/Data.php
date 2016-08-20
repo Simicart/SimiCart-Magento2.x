@@ -137,6 +137,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Framework\Filesystem\Io\File $ioFile,
         \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Framework\Image\Factory $imageFactory,
+            
+        \Magento\Reports\Model\ResourceModel\Report\Collection\Factory $resourceFactory,
         \Magento\Framework\App\ResourceConnection $resource
     ) {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -149,6 +151,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $this->_storeManager = $storeManager;
         $this->_imageFactory = $imageFactory;
         $this->_resource = $resource;
+        
+        $this->_resourceFactory = $resourceFactory;
         parent::__construct($context);
     }
     
