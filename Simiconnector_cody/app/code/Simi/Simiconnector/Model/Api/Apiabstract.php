@@ -209,6 +209,7 @@ abstract class Apiabstract {
     }
 
     public function callApi($data) {
+        $this->_objectManager->get('Simi\Simiconnector\Helper\Customer')->renewCustomerSesssion($data);
         $this->setDataValue($data);
         $this->setBuilderQuery(null);
         $this->setPluralKey($data['resource']);

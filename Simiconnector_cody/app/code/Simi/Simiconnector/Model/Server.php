@@ -97,8 +97,8 @@ class Server
 
         $module = $controller->getRequest()->getModuleName();
         $params = $controller->getRequest()->getQuery();
-        $zendHTTPResponseStream = new \Zend\Http\Response\Stream;
-        $contents = $zendHTTPResponseStream->getRawBody();
+        $zendHTTPRequestHttp = new \Zend_Controller_Request_Http;
+        $contents = $zendHTTPRequestHttp->getRawBody();
         if ($contents && strlen($contents)) {
             $contents = urldecode($contents);
             $contents = json_decode($contents);
