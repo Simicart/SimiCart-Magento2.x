@@ -228,7 +228,9 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         $priceRanges = $this->_getPriceRanges($collection);
         $filters = [];
         $totalCount = 0;
-        $maxIndex = max(array_keys($priceRanges['counts']));
+        $maxIndex = 0;
+        if(count($priceRanges['counts'])>0)
+            $maxIndex = max(array_keys($priceRanges['counts']));
         foreach($priceRanges['counts'] as $index => $count){
             if($index === '' || $index == 1){
                 $index = 1;

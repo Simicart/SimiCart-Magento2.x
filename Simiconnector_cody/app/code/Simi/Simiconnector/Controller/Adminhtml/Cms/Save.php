@@ -65,7 +65,8 @@ class Save extends \Magento\Backend\App\Action
                         $model->setCmsImage($imageFile);
                     }
                 }
-                $model->setData('category_id',$data['new_category_parent']);
+                if (isset($data['new_category_parent']))
+                    $model->setData('category_id',$data['new_category_parent']);
                 $model->save();
                 $simiconnectorhelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');                
                 if ($data['storeview_id'] && is_array($data['storeview_id'])) {
@@ -84,7 +85,6 @@ class Save extends \Magento\Backend\App\Action
                         $visibilityItem->save();
                     }                        
                 }
-                
                  
                 
                 $this->messageManager->addSuccess(__('The Data has been saved.'));

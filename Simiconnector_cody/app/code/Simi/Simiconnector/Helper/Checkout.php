@@ -25,5 +25,20 @@ class Checkout extends \Simi\Simiconnector\Helper\Data
     public function getStoreConfig($path) {
         return $this->_scopeConfig->getValue($path);
     }
+    
+    public function convertOptionsCart($options) {
+        $data = array();
+        foreach ($options as $option) {
+            $item = array(
+                'option_title' => $option['label']
+            );
+            if (is_array($option['value']))
+                $item['option_value'] = strip_tags ($option['value'][0]);
+            else 
+                $item['option_value'] = strip_tags ($option['value']);
+            $data[] = $item;
+        }
+        return $data;
+    }
 }
 

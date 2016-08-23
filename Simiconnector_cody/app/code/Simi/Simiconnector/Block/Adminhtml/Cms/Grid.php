@@ -34,8 +34,8 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Backend\Helper\Data $backendHelper
-     * @param \Simi\Simiconnector\Model\Connector $connectorPage
-     * @param \Simi\Simiconnector\Model\ResourceModel\Connector\CollectionFactory $collectionFactory
+     * @param \Simi\Simiconnector\Model\Simiconnector $connectorPage
+     * @param \Simi\Simiconnector\Model\ResourceModel\Simiconnector\CollectionFactory $collectionFactory
      * @param \Magento\Core\Model\PageLayout\Config\Builder $pageLayoutBuilder
      * @param array $data
      */

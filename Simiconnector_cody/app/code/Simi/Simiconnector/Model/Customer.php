@@ -134,7 +134,9 @@ class Customer extends \Magento\Framework\Model\AbstractModel
             if ($newPass != $confPass) {
                 throw new InputException(__('Password confirmation doesn\'t match entered password.'));
             }
-            $isPasswordChanged = $this->getAccountManagement()->changePassword($data->email, $currPass, $newPass);
+            $customer->setPassword($newPass);
+            $customer->setConfirmation($confPass);
+            $customer->setPasswordConfirmation($confPass);
         }
         $customerErrors = $customer->validate();
 		
@@ -223,7 +225,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel
      */
 
     private function _createCustomer($data) {
-        $customer = $this->_objectManager->get('Magento\Customer\Model\Customer')
+        $customer = $this->_objectManager->create('Magento\Customer\Model\Customer')
                 ->setFirstname($data->firstname)
                 ->setLastname($data->lastname)
                 ->setEmail($data->email);

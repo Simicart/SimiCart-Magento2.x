@@ -33,7 +33,7 @@ class Customers extends Apiabstract
                         throw new \Exception($this->_helper->__('Login Failed'), 4);
                     break;
                 case 'sociallogin':
-                    $this->builderQuery = Mage::getModel('simiconnector/customer')->socialLogin($data);
+                    $this->builderQuery = $this->_objectManager->get('Simi\Simiconnector\Model\Customer')->socialLogin($data);
                 case 'logout':
                     $lastCustomerId = $this->_objectManager->get('Magento\Customer\Model\Session')->getCustomer()->getId();
                     if ($this->_objectManager->get('Simi\Simiconnector\Model\Customer')->logout($data))

@@ -156,6 +156,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         parent::__construct($context);
     }
     
+    /*
+     * Get Store Config Value
+     */
+    public function getStoreConfig($path) {
+        return $this->_scopeConfig->getValue($path);
+    }
+    
     /**
      * Remove Simiconnector item image by image filename
      *
@@ -284,6 +291,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         return abs((int)$this->_scopeConfig->getValue(self::XML_PATH_ITEMS_PER_PAGE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
     }
     
+    /*
+     * Visibility Id for Different Types
+     */
     public function getVisibilityTypeId($contentTypeName) {
         switch ($contentTypeName) {
             case 'cms':

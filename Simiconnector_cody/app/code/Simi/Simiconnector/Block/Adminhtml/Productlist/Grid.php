@@ -98,9 +98,9 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
             'index' => 'productlist_id',
         ]);
 
-        $this->addColumn('productlist_name', [
-            'header' => __('Category Name'),
-            'index' => 'productlist_name',
+        $this->addColumn('list_title', [
+            'header' => __('List Title'),
+            'index' => 'list_title',
         ]);
 
         
@@ -109,10 +109,10 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
             'index' => 'sort_order',
         ]);
 
-        $this->addColumn('status', [
+        $this->addColumn('list_status', [
             'type' => 'options',
             'header' => __('Status'),
-            'index' => 'status',
+            'index' => 'list_status',
             'options' => $this->_productlistFactory->create()->toOptionStatusHash(),
         ]);
 

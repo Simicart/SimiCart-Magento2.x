@@ -8,12 +8,12 @@ namespace Simi\Simiconnector\Helper;
 class Website extends \Magento\Framework\App\Helper\AbstractHelper
 {
     /**
-     * @var \Simi\Simiconnector\Model\Connector
+     * @var \Simi\Simiconnector\Model\Simiconnector
      */
     protected $_websiteFactory;
 
     /**
-     * @var \Simi\Simiconnector\Model\Connector
+     * @var \Simi\Simiconnector\Model\Simiconnector
      */
     protected $_websiteRepositoryFactory;
 

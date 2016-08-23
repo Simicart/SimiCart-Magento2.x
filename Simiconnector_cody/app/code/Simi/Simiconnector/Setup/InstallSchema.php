@@ -502,6 +502,18 @@ class InstallSchema implements InstallSchemaInterface
             255,
             ['nullable' => true],
             'Build Version'
+        )->addColumn(
+            'device_ip',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'Device IP Address'
+        )->addColumn(
+            'device_user_agent',
+            \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+            255,
+            ['nullable' => true],
+            'Device User Agent'
         );
         $installer->getConnection()->createTable($table_device);
         // end create table simiconnector device
