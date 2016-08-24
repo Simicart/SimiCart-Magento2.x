@@ -87,7 +87,7 @@ class Products extends Apiabstract
 
     /**
      * @return array
-     * @throws Exception
+     * @throws \Exception
      * override
      */
     public function index() {
@@ -142,7 +142,7 @@ class Products extends Apiabstract
             $info_detail['images'] = $images;
             
             $info_detail['app_prices'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Price')->formatPriceFromProduct($entity);
-            //hainh $info_detail['product_label'] = Mage::helper('simiconnector/productlabel')->getProductLabel($entity);
+            //hainh $info_detail['product_label'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Productlabel')->getProductLabel($entity);
             $info[] = $info_detail;
 
             $all_ids[] = $entity->getId();
@@ -195,10 +195,10 @@ class Products extends Apiabstract
         $info['images'] = $images;
         $info['app_prices'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Price')->formatPriceFromProduct($entity, true);
         $info['app_options'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Options')->getOptions($entity);
-        //$info['wishlist_item_id'] = Mage::helper('simiconnector/wishlist')->getWishlistItemId($entity);
-        //$info['product_label'] = Mage::helper('simiconnector/productlabel')->getProductLabel($entity);
+        //$info['wishlist_item_id'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Wishlist')->getWishlistItemId($entity);
+        //$info['product_label'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Productlabel')->getProductLabel($entity);
         $this->detail_info = $this->getDetail($info);
-        //Mage::dispatchEvent('Simi_Simiconnector_Model_Api_Products_Show_After', array('object' => $this, 'data' => $this->detail_info));
+        $this->_eventManager->dispatch('Simi_Simiconnector_Model_Api_Products_Show_After', array('object' => $this, 'data' => $this->detail_info));
         return $this->detail_info;
     }
     

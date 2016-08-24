@@ -60,6 +60,7 @@ abstract class Apiabstract {
      */
     protected $builderQuery = null;
     protected $_data;
+    protected $_eventManager;
 
     abstract public function setBuilderQuery();
 
@@ -76,6 +77,7 @@ abstract class Apiabstract {
         $this->storeRepository = $storeRepository;
         $this->storeCookieManager = $storeCookieManager;
         $this->_resource = $resource;
+        $this->_eventManager = $this->_objectManager->get('\Magento\Framework\Event\ManagerInterface');
         return $this;
     }
 

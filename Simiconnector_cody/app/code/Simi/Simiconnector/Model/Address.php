@@ -77,24 +77,8 @@ class Address extends \Magento\Framework\Model\AbstractModel
             return $address;
         } else {
             if (is_array($addressErrors))
-                throw new Exception($addressErrors[0],7);
-            throw new Exception($this->_helperAddress()->__('Can not save address customer'),7);
+                throw new \Exception($addressErrors[0],7);
+            throw new \Exception(__('Can not save address customer'),7);
         }
     }
-
-    public function getStates($code) {
-        $list = array();
-        if ($code) {
-            $states = Mage::getModel('directory/country')->loadByCode($code)->getRegions();
-            foreach ($states as $state) {
-                $list[] = array(
-                    'state_id' => $state->getRegionId(),
-                    'state_name' => $state->getName(),
-                    'state_code' => $state->getCode(),
-                );
-            }
-        }
-        return $list;
-    }
-
 }

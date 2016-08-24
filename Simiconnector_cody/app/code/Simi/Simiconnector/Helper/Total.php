@@ -103,11 +103,8 @@ class Total extends Data
             $data['coupon_code'] = $coupon;
         }
 
-
         $this->data = $data;
-
-        
-        //Mage::dispatchEvent('Simi_Simiconnector_Helper_Total_SetTotal_After', array('object' => $this, 'data' => $this->_data));
+        $this->_objectManager->get('\Magento\Framework\Event\ManagerInterface')->dispatch('Simi_Simiconnector_Helper_Total_SetTotal_After', array('object' => $this, 'data' => $this->data));
         $data = $this->data;
     }
 
@@ -133,8 +130,8 @@ class Total extends Data
         $data['grand_total_excl_tax'] = $order->getGrandTotal() - $data['tax'];
         $data['grand_total_incl_tax'] = $order->getGrandTotal();
 
-        if (Mage::app()->getLocale()->currency($order->getOrderCurrency()->getCurrencyCode())->getSymbol() != null) {
-            $data['currency_symbol'] = Mage::app()->getLocale()->currency($order->getOrderCurrency()->getCurrencyCode())->getSymbol();
+        if ($this->_objectManager->get('Magento\Directory\Model\Currency')->load($order->getData('order_currency_code'))->getCurrencySymbol() != null) {
+            $data['currency_symbol'] = $this->_objectManager->get('Magento\Directory\Model\Currency')->load($order->getData('order_currency_code'))->getCurrencySymbol();
         } else {
             $data['currency_symbol'] = $order->getOrderCurrency()->getCurrencyCode();
         }

@@ -23,7 +23,7 @@ class Customer extends Data
             return;
         try {
             $this->loginByEmailAndPass($data['params']['email'], $data['params']['password']);
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             
         }
     }

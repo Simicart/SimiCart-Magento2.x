@@ -39,7 +39,7 @@ class Quoteitems extends Apiabstract
         $data = $this->getData();
         $parameters = (array) $data['contents'];
         if (isset($parameters['coupon_code'])) {
-            $this->_RETURN_MESSAGE = Mage::helper('simiconnector/coupon')->setCoupon($parameters['coupon_code']);
+            $this->_RETURN_MESSAGE = $this->_objectManager->get('Simi\Simiconnector\Helper\Coupon')->setCoupon($parameters['coupon_code']);
         }
         $this->_updateItems($parameters);
         return $this->index();
@@ -111,7 +111,7 @@ class Quoteitems extends Apiabstract
         $cart->addProduct($product, $params);
         $cart->save();
         $this->_getSession()->setCartWasUpdated(true);
-        //Mage::dispatchEvent('checkout_cart_add_product_complete', array('product' => $product, 'request' => Mage::app()->getRequest(), 'response' => Mage::app()->getResponse()));
+        $this->_eventManager->dispatch('checkout_cart_add_product_complete', array('product' => $product, 'request' => $controller->getRequest(), 'response' => $controller->getResponse()));
         $this->_RETURN_MESSAGE = __('You added %1 to your shopping cart.', $product->getName());
     }
 
@@ -188,7 +188,7 @@ class Quoteitems extends Apiabstract
         $total = $collection->getSize();
 
         if ($offset > $total) {
-            throw new Exception($this->_helper->__('Invalid method.'), 4);
+            throw new \Exception(__('Invalid method.'), 4);
         }
 
         $fields = array();
@@ -247,7 +247,7 @@ class Quoteitems extends Apiabstract
             $all_ids[] = $entity->getId();
         }
         $this->detail_list = $this->getList($info, $all_ids, $total, $limit, $offset);
-        //Mage::dispatchEvent('Simi_Simiconnector_Model_Api_Quoteitems_Index_After', array('object' => $this, 'data' => $this->detail_list));
+        $this->_eventManager->dispatch('Simi_Simiconnector_Model_Api_Quoteitems_Index_After', array('object' => $this, 'data' => $this->detail_list));
         return $this->detail_list;
     }
 

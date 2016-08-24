@@ -250,7 +250,7 @@ class Save extends \Magento\Backend\App\Action
                 //$fp = stream_socket_client('ssl://gateway.sandbox.push.apple.com:2195', $err, $errstr, 60, STREAM_CLIENT_CONNECT | STREAM_CLIENT_PERSISTENT, $ctx);
                 $fp = stream_socket_client('ssl://gateway.push.apple.com:2195', $err, $errstr, 60, STREAM_CLIENT_CONNECT | STREAM_CLIENT_PERSISTENT, $ctx);
                 if (!$fp) {
-                    Mage::getSingleton('adminhtml/session')->addError("Failed to connect:" . $err . $errstr . PHP_EOL . "(IOS)");
+                    $this->messageManager->addError("Failed to connect:" . $err . $errstr . PHP_EOL . "(IOS)");
                     return;
                 }
                 $deviceToken = $item->getDeviceToken();

@@ -22,7 +22,7 @@ class Addresses extends Apiabstract
             
         } else {
             if (!$this->_objectManager->get('Magento\Customer\Model\Session')->isLoggedIn()) {
-                throw new Exception($this->_helper->__('You have not logged in'), 4);
+                throw new \Exception(__('You have not logged in'), 4);
             } else {
                 $customer = $this->_objectManager->get('Magento\Customer\Model\Session')->getCustomer();
                 $addressArray = array();

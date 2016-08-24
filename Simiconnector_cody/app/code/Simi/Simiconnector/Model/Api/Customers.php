@@ -30,7 +30,7 @@ class Customers extends Apiabstract
                     if ($this->_objectManager->get('Simi\Simiconnector\Model\Customer')->login($data))
                         $this->builderQuery = $this->_objectManager->get('Magento\Customer\Model\Session')->getCustomer();
                     else
-                        throw new \Exception($this->_helper->__('Login Failed'), 4);
+                        throw new \Exception(__('Login Failed'), 4);
                     break;
                 case 'sociallogin':
                     $this->builderQuery = $this->_objectManager->get('Simi\Simiconnector\Model\Customer')->socialLogin($data);
@@ -39,7 +39,7 @@ class Customers extends Apiabstract
                     if ($this->_objectManager->get('Simi\Simiconnector\Model\Customer')->logout($data))
                         $this->builderQuery = $this->_objectManager->get('Magento\Customer\Model\Customer')->load($lastCustomerId);
                     else
-                        throw new Exception($this->_helper->__('Logout Failed'), 4);
+                        throw new \Exception(__('Logout Failed'), 4);
                     break;
                 default:
                     $this->builderQuery = $this->_objectManager->get('Magento\Customer\Model\Customer')->setWebsiteId($this->_storeManager->getStore()->getWebsiteId())->load($data['resourceid']);

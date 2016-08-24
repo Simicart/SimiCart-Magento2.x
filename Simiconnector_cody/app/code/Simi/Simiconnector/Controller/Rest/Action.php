@@ -53,8 +53,7 @@ class Action extends \Magento\Framework\App\Action\Action
         $head = getallheaders();
 
         // token is key
-        $websiteId = Mage::app()->getWebsite()->getId();
-        $keyModel = Mage::getModel('connector/key')->getKey($websiteId);
+        $keyModel = 1; //use Secret key for storeview here (from configuration)
         $token = "";
         foreach ($head as $k => $h) {
             if ($k == "Authorization" || $k == "TOKEN"

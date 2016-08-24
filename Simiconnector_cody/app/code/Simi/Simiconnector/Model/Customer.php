@@ -180,7 +180,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel
 		
         
         if (is_array($customerErrors))
-            throw new \Exception($this->_helperCustomer()->__('Invalid profile information'), 4);
+            throw new \Exception(__('Invalid profile information'), 4);
         $customer->setConfirmation(null);
         $customer->save();
         $this->_getSession()->setCustomer($customer);

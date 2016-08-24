@@ -346,7 +346,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         }
     }
     
-    public function getImageProduct($product, $file = null, $width, $height)
+    public function getImageProduct($product, $file = null, $width = null, $height = null)
     {
         if (!is_null($width) && !is_null($height)) {
             if ($file) {
@@ -396,7 +396,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         if ($is_search == 1) {
             unset($availableOrders['position']);
             $availableOrders = array_merge(array(
-                'relevance' => $this->__('Relevance')
+                'relevance' => __('Relevance')
             ), $availableOrders);
 
             $block_toolbar->setAvailableOrders($availableOrders)
