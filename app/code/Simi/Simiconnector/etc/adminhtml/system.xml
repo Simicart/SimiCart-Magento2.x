@@ -325,10 +325,6 @@
                     <label>Android Secret Key</label>
                     <comment>Secret Key for Android Notification Sending</comment>
                 </field>
-                <field id="android_secret_key" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Android Secret Key</label>
-                    <comment>Secret Key for Android Notification Sending</comment>
-                </field>
             </group>
             <group id="notice_price" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Send Notification when Price Updated</label>
@@ -474,7 +470,7 @@
                         <field id="*/*/noti_purchase_type">2</field>
                     </depends>
                 </field>
-                <field id="noti_purchase_category_id" translate="label" type="text" sortOrder="599" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="noti_purchase_product_id" translate="label" type="text" sortOrder="599" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Product ID</label>
                     <depends>
                         <field id="*/*/noti_purchase_enable">1</field>

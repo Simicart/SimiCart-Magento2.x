@@ -10,7 +10,6 @@ class Options extends \Magento\Framework\App\Helper\AbstractHelper
 {
 
     protected $_objectManager;
-    protected $_scopeConfig;
     protected $_catalogHelper;
     public $priceCurrency;
     public $priceHelper;
@@ -19,7 +18,6 @@ class Options extends \Magento\Framework\App\Helper\AbstractHelper
     
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\Filesystem $filesystem,
         \Magento\Framework\File\Size $fileSize,
         \Magento\Framework\HTTP\Adapter\FileTransferFactory $httpFactory,

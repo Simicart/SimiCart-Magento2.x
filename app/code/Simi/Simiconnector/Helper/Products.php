@@ -26,7 +26,6 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
-        \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Framework\Filesystem $filesystem,
         \Magento\Framework\File\Size $fileSize,
         \Magento\Framework\HTTP\Adapter\FileTransferFactory $httpFactory,
@@ -38,6 +37,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Framework\Image\Factory $imageFactory
     ) {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $this->_scopeConfig = $this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
         $this->_storeManager = $this->_objectManager->get('\Magento\Store\Model\StoreManagerInterface');
         $this->productStatus = $productStatus;
         $this->productVisibility = $productVisibility;
