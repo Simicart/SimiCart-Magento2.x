@@ -5,12 +5,15 @@
  */
 namespace Simi\Simiconnector\Helper;
 
-use Magento\Framework\App\Filesystem\DirectoryList;
-
 class Address extends Data
 {
+    protected function _getCart() {
+        return $this->_objectManager->get('Magento\Checkout\Model\Cart');
+    }
     
-    
+    protected function _getQuote() {
+        return $this->_getCart()->getQuote();
+    }
     /*
      * Get States
      */
@@ -97,33 +100,37 @@ class Address extends Data
      * Convert Address before Saving
      */
     public function convertDataAddress($data) {
-        $country = $data->country_id;
-        $listState = $this->getStates($country);
-        $state_id = null;
-        $check_state = false;
-        if (count($listState) == 0) {
-            $check_state = true;
-        }
-
-        foreach ($listState as $state) {
-            if (isset($data->region_code)&&in_array($data->region_code, $state) || 
-                    isset($data->region) && in_array($data->region, $state) || 
-                    isset($data->region_id) && in_array($data->region_id, $state)) {
-                $state_id = $state['state_id'];
+        if (isset($data->country_id))
+        {
+            $country = $data->country_id;
+            $listState = $this->getStates($country);
+            $state_id = null;
+            $check_state = false;
+            if (count($listState) == 0) {
                 $check_state = true;
-                break;
             }
-        }
-        if (!$check_state) {
-            throw new \Exception(__('State invalid'), 4);
+
+            foreach ($listState as $state) {
+                if (isset($data->region_code)&&in_array($data->region_code, $state) || 
+                        isset($data->region) && in_array($data->region, $state) || 
+                        isset($data->region_id) && in_array($data->region_id, $state)) {
+                    $state_id = $state['state_id'];
+                    $check_state = true;
+                    break;
+                }
+            }
+            if (!$check_state) {
+                throw new \Exception(__('State invalid'), 4);
+            }
+            $address['region_id'] = $state_id;
         }
         $latlng = isset($data->latlng) == true ? $data->latlng : '';
         $address = array();
         foreach ((array) $data as $index => $info) {
             $address[$index] = $info;
         }
-        $address['street'] = array($data->street, '', $latlng, '');
-        $address['region_id'] = $state_id;
+        if (isset($data->street))
+            $address['street'] = array($data->street, '', $latlng, '');
         return $address;
     }
 
@@ -132,7 +139,7 @@ class Address extends Data
     /*
      * Get Address to be Shown
      */
-    public function getAddressDetail($data, $customer) {
+    public function getAddressDetail($data) {
         $street = $data->getStreet();
         if (!isset($street[2]))
             $street[2] = NULL;
@@ -151,7 +158,7 @@ class Address extends Data
             'country_name' => $data->getCountry() ? $data->getCountryModel()->loadByCode($data->getCountry())->getName() : NULL,
             'country_id' => $data->getCountry(),
             'telephone' => $data->getTelephone(),
-            'email' => $customer->getEmail(),
+            'email' => $data->getEmail(),
             'company' => $data->getCompany(),
             'fax' => $data->getFax(),
             'latlng' => $street[2] != NULL ? $street[2] : "",
@@ -163,27 +170,40 @@ class Address extends Data
      * Save Billing Address To Quote
      */
     public function saveBillingAddress($billingAddress) {
+        $is_register_mode = false;
         if (isset($billingAddress->customer_password) && $billingAddress->customer_password) {
             $is_register_mode = true;
             $this->_getOnepage()->saveCheckoutMethod('register');
-        } elseif (Mage::getSingleton('customer/session')->isLoggedIn()) {
+            $passwordHash = $this->_objectManager->get('Magento\Customer\Model\Customer')->encryptPassword($billingAddress->customer_password);
+            $this->_getQuote()->setPasswordHash($passwordHash);
+        } elseif ($this->_objectManager->get('Magento\Customer\Model\Session')->isLoggedIn()) {
             $this->_getOnepage()->saveCheckoutMethod('customer');
         } else {
             $this->_getOnepage()->saveCheckoutMethod('guest');
         }
-
+        
         if ($is_register_mode) {
             $customer_email = $billingAddress->email;
-            $customer = Mage::getModel('customer/customer');
-            $customer->setWebsiteId(Mage::app()->getWebsite()->getId());
-            $customer->loadByEmail($customer_email);
+            $customer = $this->_objectManager->get('Magento\Customer\Model\Customer')
+                        ->setWebsiteId($this->_storeManager->getStore()->getWebsiteId())
+                        ->loadByEmail($customer_email);
             if ($customer->getId()) {
-                throw new \Exception(__('There is already a customer registered using this email address. Please login using this email address or enter a different email address to register your account.'),7);
+                throw new \Exception($this->__('There is already a customer registered using this email address. Please login using this email address or enter a different email address to register your account.'),7);
             }
         }
+        
         $address = $this->convertDataAddress($billingAddress);
+        
         $address['save_in_address_book'] = '1';
-        $this->_getOnepage()->saveBilling($address, $billingAddress->entity_id);
+        
+        $addressInterface = $this->_objectManager->create('Magento\Customer\Api\Data\AddressInterface');
+        $billingAddress = $this->_objectManager->get('Magento\Quote\Model\Quote\Address')->importCustomerAddressData($addressInterface);
+        if (isset($billingAddress->entity_id)) 
+            $addressInterface = $this->_objectManager->create('Magento\Customer\Api\AddressRepositoryInterface')->getById($billingAddress->entity_id);
+        else 
+            $billingAddress->setData($address);
+        
+        $this->_getQuote()->setBillingAddress($billingAddress);
     }
 
     /*
@@ -192,6 +212,8 @@ class Address extends Data
     public function saveShippingAddress($shippingAddress) {
         $address = $this->convertDataAddress($shippingAddress);
         $address['save_in_address_book'] = '1';
+        if (!isset($shippingAddress->entity_id))
+            $shippingAddress->entity_id = '';
         $this->_getOnepage()->saveShipping($address, $shippingAddress->entity_id);
     }
 

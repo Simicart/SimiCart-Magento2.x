@@ -71,11 +71,10 @@ class Addresses extends Apiabstract
 
     public function index() {
         $result = parent::index();
-        $customer = $this->_objectManager->get('Magento\Customer\Model\Session')->getCustomer();
         $addresses = $result['addresses'];
         foreach ($addresses as $index => $address) {
             $addressModel = $this->_objectManager->get('Magento\Customer\Model\Address')->load($address['entity_id']);
-            $addresses[$index] = array_merge($address, $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($addressModel, $customer));
+            $addresses[$index] = array_merge($address, $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($addressModel));
         }
         $result['addresses'] = $addresses;
         return $result;

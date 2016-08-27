@@ -229,29 +229,8 @@ class Customer extends \Magento\Framework\Model\AbstractModel
                 ->setFirstname($data->firstname)
                 ->setLastname($data->lastname)
                 ->setEmail($data->email);
-        if (isset($data->day) && $data->day != "") {
-            $birthday = $data->year . "-" . $data->month . "-" . $data->day;
-            $customer->setDob($birthday);
-        }
-
-        if (isset($data->taxvat)) {
-            $customer->setTaxvat($data->taxvat);
-        }
-
-        if (isset($data->gender) && $data->gender) {
-            $customer->setGender($data->gender);
-        }
-        if (isset($data->prefix) && $data->prefix) {
-            $customer->setPrefix($data->prefix);
-        }
-
-        if (isset($data->middlename) && $data->middlename) {
-            $customer->setMiddlename($data->middlename);
-        }   
+        $this->_objectManager->get('Simi\Simiconnector\Helper\Customer')->applyDataToCustomer($customer, $data);
         
-        if (isset($data->suffix) && $data->suffix) {
-            $customer->setSuffix($data->suffix);
-        }
         if (!isset($data->password)) {
             $data->password = 'simipassword'.rand(pow(10, 9),pow(10, 10)).substr(md5(microtime()),rand(0,26),5);
         }
