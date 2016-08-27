@@ -31,9 +31,6 @@ class Orders extends Apiabstract
     }
 
     public function setBuilderQuery() {
-        $passwordHash = $this->_objectManager->get('Magento\Customer\Model\Customer')->hashPassword('Simicart123');
-            
-        echo $passwordHash;die;
         $data = $this->getData();
         if ($data['resourceid']) {
             if ($data['resourceid'] == 'onepage') {

@@ -14,6 +14,7 @@
                 <is_show_all_product>1</is_show_all_product>
                 <cms_shipping_condition></cms_shipping_condition>
                 <is_show_sample_data>1</is_show_sample_data>
+                <show_product_type>1</show_product_type>
                 <base_url></base_url>
                 <is_show_home_title>1</is_show_home_title>
             </general>  

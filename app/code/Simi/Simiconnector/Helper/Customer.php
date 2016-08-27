@@ -64,7 +64,6 @@ class Customer extends Data
      */
     
     public function applyDataToCustomer(&$customer, $data) {
-        
         if (isset($data->day) && $data->day != "") {
             $birthday = $data->year . "-" . $data->month . "-" . $data->day;
             $customer->setDob($birthday);

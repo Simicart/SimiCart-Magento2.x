@@ -174,7 +174,7 @@ class Address extends Data
         if (isset($billingAddress->customer_password) && $billingAddress->customer_password) {
             $is_register_mode = true;
             $this->_getOnepage()->saveCheckoutMethod('register');
-            $passwordHash = $this->_objectManager->get('Magento\Customer\Model\Customer')->encryptPassword($billingAddress->customer_password);
+            $passwordHash = $this->_objectManager->get('Magento\Customer\Model\Customer')->hashPassword($billingAddress->customer_password);
             $this->_getQuote()->setPasswordHash($passwordHash);
         } elseif ($this->_objectManager->get('Magento\Customer\Model\Session')->isLoggedIn()) {
             $this->_getOnepage()->saveCheckoutMethod('customer');
@@ -193,9 +193,7 @@ class Address extends Data
         }
         
         $address = $this->convertDataAddress($billingAddress);
-        
         $address['save_in_address_book'] = '1';
-        
         $addressInterface = $this->_objectManager->create('Magento\Customer\Api\Data\AddressInterface');
         $billingAddress = $this->_objectManager->get('Magento\Quote\Model\Quote\Address')->importCustomerAddressData($addressInterface);
         if (isset($billingAddress->entity_id)) 
