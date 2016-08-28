@@ -11,9 +11,9 @@ class Options extends \Magento\Framework\App\Helper\AbstractHelper
 
     protected $_objectManager;
     protected $_catalogHelper;
+    protected $_scopeConfig;
     public $priceCurrency;
     public $priceHelper;
-    
     
     
     public function __construct(
@@ -30,7 +30,7 @@ class Options extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Framework\Pricing\Helper\Data $pricingHelper
     ) {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->_scopeConfig = $scopeConfig;
+        $this->_scopeConfig = $this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
         $this->filesystem = $filesystem;
         $this->httpFactory = $httpFactory;
         $this->_fileUploaderFactory = $fileUploaderFactory;

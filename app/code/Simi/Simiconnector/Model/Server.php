@@ -59,7 +59,7 @@ class Server
 
         if (!isset($data['resource'])) 
             throw new \Exception(__('Invalid method.'), 4);
-        $className = 'Simi\\'.$data['module'].'\Model\Api\\'.$data['resource'];
+        $className = 'Simi\\'.ucfirst($data['module']).'\Model\Api\\'.ucfirst($data['resource']);
         if (!class_exists($className)) {
             throw new \Exception(__('Invalid method.'), 4);
         }

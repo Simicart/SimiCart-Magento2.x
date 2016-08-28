@@ -192,6 +192,9 @@ class Orders extends Apiabstract
         }
 
         $result = array('order' => $order);
+        
+        $session = $this->_getOnepage()->getCheckout();
+        $session->resetCheckout();
         return $result;
     }
 

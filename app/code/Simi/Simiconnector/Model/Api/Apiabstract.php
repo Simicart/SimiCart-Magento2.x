@@ -65,14 +65,13 @@ abstract class Apiabstract {
     abstract public function setBuilderQuery();
 
     public function __construct(
-            \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
             \Magento\Store\Model\StoreManagerInterface $storeManagerInterface,
             \Magento\Store\Api\StoreRepositoryInterface $storeRepository,
             \Magento\Store\Api\StoreCookieManagerInterface $storeCookieManager,
             \Magento\Framework\App\ResourceConnection $resource
             ) {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->_scopeConfig = $scopeConfig;
+        $this->_scopeConfig = $this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
         $this->_storeManager = $storeManagerInterface;
         $this->storeRepository = $storeRepository;
         $this->storeCookieManager = $storeCookieManager;
