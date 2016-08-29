@@ -108,7 +108,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             $_weeeTaxAmountInclTaxes = $this->convertPrice($_weeeTaxAmountInclTaxes);
 
             //price box
-            $_convertedPrice = $this->convertPrice($_product->getPrice());
+            $_convertedPrice = $this->convertPrice($_product->getData('price'));
             $_price = $this->_catalogHelper->getTaxPrice($_product, $_convertedPrice);
             $_regularPrice = $this->_catalogHelper->getTaxPrice($_product, $_convertedPrice, $_simplePricesTax);
             $_finalPrice = $this->_catalogHelper->getTaxPrice($_product, $_convertedFinalPrice);

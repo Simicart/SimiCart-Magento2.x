@@ -64,18 +64,13 @@ abstract class Apiabstract {
 
     abstract public function setBuilderQuery();
 
-    public function __construct(
-            \Magento\Store\Model\StoreManagerInterface $storeManagerInterface,
-            \Magento\Store\Api\StoreRepositoryInterface $storeRepository,
-            \Magento\Store\Api\StoreCookieManagerInterface $storeCookieManager,
-            \Magento\Framework\App\ResourceConnection $resource
-            ) {
+    public function __construct() {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_scopeConfig = $this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
-        $this->_storeManager = $storeManagerInterface;
-        $this->storeRepository = $storeRepository;
-        $this->storeCookieManager = $storeCookieManager;
-        $this->_resource = $resource;
+        $this->_storeManager = $this->_objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+        $this->storeRepository = $this->_objectManager->get('\Magento\Store\Api\StoreRepositoryInterface');
+        $this->storeCookieManager = $this->_objectManager->get('\Magento\Store\Api\StoreCookieManagerInterface');
+        $this->_resource = $this->_objectManager->get('\Magento\Framework\App\ResourceConnection');
         $this->_eventManager = $this->_objectManager->get('\Magento\Framework\Event\ManagerInterface');
         return $this;
     }

@@ -127,32 +127,18 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @param \Magento\Framework\App\Helper\Context $context
      */
-    public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
-        \Magento\Framework\Filesystem $filesystem,
-        \Magento\Framework\File\Size $fileSize,
-        \Magento\Framework\HTTP\Adapter\FileTransferFactory $httpFactory,
-        \Magento\MediaStorage\Model\File\UploaderFactory $fileUploaderFactory,
-        \Magento\Framework\Filesystem\Io\File $ioFile,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,
-        \Magento\Framework\Image\Factory $imageFactory,
-            
-        \Magento\Reports\Model\ResourceModel\Report\Collection\Factory $resourceFactory,
-        \Magento\Framework\App\ResourceConnection $resource
-    ) {
+    public function __construct() {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_scopeConfig = $this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
-        $this->filesystem = $filesystem;
-        $this->mediaDirectory = $filesystem->getDirectoryWrite(DirectoryList::MEDIA);
-        $this->httpFactory = $httpFactory;
-        $this->_fileUploaderFactory = $fileUploaderFactory;
-        $this->_ioFile = $ioFile;
-        $this->_storeManager = $storeManager;
-        $this->_imageFactory = $imageFactory;
-        $this->_resource = $resource;
-        
-        $this->_resourceFactory = $resourceFactory;
-        parent::__construct($context);
+        $this->filesystem = $this->_objectManager->get('\Magento\Framework\Filesystem');
+        $this->mediaDirectory = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
+        $this->httpFactory = $this->_objectManager->get('\Magento\Framework\HTTP\Adapter\FileTransferFactory');
+        $this->_fileUploaderFactory = $this->_objectManager->get('\Magento\MediaStorage\Model\File\UploaderFactory');
+        $this->_ioFile = $this->_objectManager->get('\Magento\Framework\Filesystem\Io\File');
+        $this->_storeManager = $this->_objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+        $this->_imageFactory = $this->_objectManager->get('\Magento\Framework\Image\Factory');
+        $this->_resource = $this->_objectManager->get('\Magento\Reports\Model\ResourceModel\Report\Collection\Factory');
+        $this->_resourceFactory = $this->_objectManager->get('\Magento\Reports\Model\ResourceModel\Report\Collection\Factory');
     }
     
     /*
