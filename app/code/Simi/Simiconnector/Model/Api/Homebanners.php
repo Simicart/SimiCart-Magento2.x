@@ -33,13 +33,17 @@ class Homebanners extends Apiabstract
         $result = parent::index();
         foreach ($result['homebanners'] as $index => $item) {
             
+            
+            if (!$item['banner_name_tablet'])
+                $item['banner_name_tablet'] = $item['banner_name'];
+            
             if ($item['banner_name']) {
                 $imagesize = @getimagesize(BP.'/pub/media/'.$item['banner_name']);
                 $item['width'] = $imagesize[0];
                 $item['height'] = $imagesize[1];
                 $item['banner_name'] = $this->getMediaUrl($item['banner_name']);
             }
-                
+            
             if ($item['banner_name_tablet']) {
                 $imagesize = @getimagesize(BP.'/pub/media/'.$item['banner_name_tablet']);
                 $item['width_tablet'] = $imagesize[0];

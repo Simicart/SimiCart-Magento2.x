@@ -514,6 +514,12 @@ class InstallSchema implements InstallSchemaInterface
             255,
             ['nullable' => true],
             'Device User Agent'
+        )->addColumn(
+            'unseen_count',
+            \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+            null,
+            ['nullable' => true],
+            'Unseen Count'
         );
         $installer->getConnection()->createTable($table_device);
         // end create table simiconnector device

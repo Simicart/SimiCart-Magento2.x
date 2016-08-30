@@ -137,7 +137,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $this->_ioFile = $this->_objectManager->get('\Magento\Framework\Filesystem\Io\File');
         $this->_storeManager = $this->_objectManager->get('\Magento\Store\Model\StoreManagerInterface');
         $this->_imageFactory = $this->_objectManager->get('\Magento\Framework\Image\Factory');
-        $this->_resource = $this->_objectManager->get('\Magento\Reports\Model\ResourceModel\Report\Collection\Factory');
+        $this->_resource = $this->_objectManager->get('\Magento\Framework\App\ResourceConnection');
         $this->_resourceFactory = $this->_objectManager->get('\Magento\Reports\Model\ResourceModel\Report\Collection\Factory');
     }
     

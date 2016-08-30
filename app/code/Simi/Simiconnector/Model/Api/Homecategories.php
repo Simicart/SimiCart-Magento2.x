@@ -43,13 +43,20 @@ class Homecategories extends Apiabstract
         $data = $this->getData();
 
         foreach ($result['homecategories'] as $index => $item) {
+            
+            if (!$item['simicategory_filename_tablet'])
+                $item['simicategory_filename_tablet'] = $item['simicategory_filename'];
+            
             $imagesize = @getimagesize(BP.'/pub/media/'.$item['simicategory_filename']);
             $item['width'] = $imagesize[0];
             $item['height'] = $imagesize[1];
+            $item['simicategory_filename'] = $this->getMediaUrl($item['simicategory_filename']);
+            
             if ($item['simicategory_filename_tablet']) {
                 $imagesize = @getimagesize(BP.'/pub/media/'.$item['simicategory_filename_tablet']);
                 $item['width_tablet'] = $imagesize[0];
                 $item['height_tablet'] = $imagesize[1];
+                $item['simicategory_filename_tablet'] = $this->getMediaUrl($item['simicategory_filename_tablet']);
             }
             $categoryModel = $this->_objectManager->create('\Magento\Catalog\Model\Category')->load($item['category_id']);
             $item['cat_name'] = $categoryModel->getName();

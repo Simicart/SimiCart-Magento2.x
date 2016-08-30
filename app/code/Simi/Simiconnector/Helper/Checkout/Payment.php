@@ -8,6 +8,12 @@ namespace Simi\Simiconnector\Helper\Checkout;
 
 class Payment extends \Simi\Simiconnector\Helper\Data
 {
+    
+    public function __construct() {
+        parent::__construct();
+        $this->_setListPayment();
+        $this->setListCase();
+    }
     protected function _getCart() {
         return $this->_objectManager->get('Magento\Checkout\Model\Cart');
     }
@@ -40,6 +46,7 @@ class Payment extends \Simi\Simiconnector\Helper\Data
         }
         $this->_getOnepage()->savePayment($method);
     }
+    
 
     /**
      * Add payment method
@@ -57,9 +64,7 @@ class Payment extends \Simi\Simiconnector\Helper\Data
          * Dispatch event Simiconnector_Add_Payment_Method
          */
         $this->_objectManager->get('\Magento\Framework\Event\ManagerInterface')->dispatch('Simiconnector_Add_Payment_Method',array('object'=>$this));
-        $this->_setListPayment();
-        $this->setListCase();
-
+        
         $quote = $this->_getQuote();
         $store = $quote ? $quote->getStoreId() : null;
         $methods = $this->_objectManager->get('Magento\Payment\Helper\Data')->getStoreMethods($store, $quote);

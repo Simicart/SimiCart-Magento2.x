@@ -46,14 +46,20 @@ class Homeproductlists extends Apiabstract
     private function _addInfo($dataArray) {
         $listHelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Productlist');
         $listModel = $this->_objectManager->get('Simi\Simiconnector\Model\Productlist')->load($dataArray['productlist_id']);
-        $imagesize = @getimagesize(BP.'/pub/media/'.$item['list_image']);
+        
+        if (!isset($dataArray['list_image_tablet']) || !$dataArray['list_image_tablet'])
+                $dataArray['list_image_tablet'] = $dataArray['list_image'];
+        
+        $imagesize = @getimagesize(BP.'/pub/media/'.$dataArray['list_image']);
         $dataArray['width'] = $imagesize[0];
         $dataArray['height'] = $imagesize[1];
-        if ($listModel->getData('list_image_tablet')) {
-            $imagesize = @getimagesize(BP.'/pub/media/'.$item['list_image_tablet']);
-            $dataArray['width_tablet'] = $imagesize[0];
-            $dataArray['height_tablet'] = $imagesize[1];
-        }
+        $dataArray['list_image'] = $this->getMediaUrl($dataArray['list_image']);
+         
+        $imagesize = @getimagesize(BP.'/pub/media/'.$dataArray['list_image_tablet']);
+        $dataArray['width_tablet'] = $imagesize[0];
+        $dataArray['height_tablet'] = $imagesize[1];
+        $dataArray['list_image_tablet'] = $this->getMediaUrl($dataArray['list_image_tablet']);
+        
         $typeArray = $listHelper->getListTypeId();
         $dataArray['type_name'] = $typeArray[$listModel->getData('list_type')];
         if ($this->SHOW_PRODUCT_ARRAY) {
