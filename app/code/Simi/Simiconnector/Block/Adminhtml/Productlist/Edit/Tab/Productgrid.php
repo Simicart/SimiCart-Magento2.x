@@ -120,7 +120,6 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
                 'index' => 'entity_id',
                 'header_css_class' => 'col-select',
                 'column_css_class' => 'col-select',
-                'onclick' => 'testCody(this)',
                 'renderer'  => '\Simi\Simiconnector\Block\Adminhtml\Productlist\Edit\Tab\Productrender',
             ]
         );

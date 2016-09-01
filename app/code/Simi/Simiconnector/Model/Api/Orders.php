@@ -154,9 +154,9 @@ class Orders extends Apiabstract
          */
         try {
             $orderId = $this->_objectManager->get('Magento\Sales\Model\Order')->loadByIncrementId($this->_getCheckoutSession()->getLastRealOrderId())->getId();
-            //$newTransaction = $this->_objectManager->create('Simi\Simiconnector\Model\Appreport');
-            //$newTransaction->setOrderId($orderId);
-            //$newTransaction->save();
+            $newTransaction = $this->_objectManager->create('Simi\Simiconnector\Model\Appreport');
+            $newTransaction->setOrderId($orderId);
+            $newTransaction->save();
         } catch (\Exception $exc) {
             
         }
