@@ -27,6 +27,7 @@ class Banner extends \Magento\Framework\Model\AbstractModel
      * @param ResourceModel\App\CollectionFactory $appCollection
      * @param ResourceModel\Key\CollectionFactory $keyCollection
      */
+    protected $_objectManager;
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
@@ -35,7 +36,7 @@ class Banner extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Helper\Website $websiteHelper
     )
     {
-
+        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_websiteHelper = $websiteHelper;
 
         parent::__construct(
@@ -93,6 +94,16 @@ class Banner extends \Magento\Framework\Model\AbstractModel
             }
         }
         return $list;
+    }
+    
+    public function delete() {
+        $typeID = $this->_objectManager->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('banner');
+        $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+                            ->addFieldToFilter('content_type', $typeID)
+                            ->addFieldToFilter('item_id', $this->getId());
+        foreach ($visibleStoreViews as $visibilityItem)
+            $visibilityItem->delete();
+        return parent::delete();
     }
 
 }

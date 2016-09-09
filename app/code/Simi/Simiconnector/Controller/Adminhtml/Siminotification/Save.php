@@ -41,7 +41,7 @@ class Save extends \Magento\Backend\App\Action
             $data = $this->dataProcessor->filter($data);
             $model = $this->_objectManager->create('Simi\Simiconnector\Model\Siminotification');
 
-            $id = $this->getRequest()->getParam('siminotification_id');
+            $id = $this->getRequest()->getParam('notice_id');
             if ($id) {
                 $model->load($id);
             }
@@ -50,11 +50,11 @@ class Save extends \Magento\Backend\App\Action
 
             $is_delete_siminotification = isset($data['image_url']['delete']) ? $data['image_url']['delete'] : false;
             $data['image_url'] = isset($data['image_url']['value']) ? $data['image_url']['value'] : '';
-            $data['created_at'] = time();
+            $data['created_time'] = time();
             $model->addData($data);
 
             if (!$this->dataProcessor->validate($data)) {
-                $this->_redirect('*/*/edit', ['siminotification_id' => $model->getId(), '_current' => true]);
+                $this->_redirect('*/*/edit', ['notice_id' => $model->getId(), '_current' => true]);
                 return;
             }
 
@@ -75,7 +75,7 @@ class Save extends \Magento\Backend\App\Action
 
 
                 if ($this->getRequest()->getParam('back')) {
-                    $this->_redirect('*/*/edit', ['siminotification_id' => $model->getId(), '_current' => true]);
+                    $this->_redirect('*/*/edit', ['notice_id' => $model->getId(), '_current' => true]);
                     return;
                 } else {
                     if($model->getImageUrl()){
@@ -101,7 +101,7 @@ class Save extends \Magento\Backend\App\Action
             }
 
             $this->_getSession()->setFormData($data);
-            $this->_redirect('*/*/edit', ['siminotification_id' => $this->getRequest()->getParam('siminotification_id')]);
+            $this->_redirect('*/*/edit', ['notice_id' => $this->getRequest()->getParam('notice_id')]);
             return;
         }
         $this->_redirect('*/*/');

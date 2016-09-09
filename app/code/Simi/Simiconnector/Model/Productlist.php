@@ -15,6 +15,7 @@ class Productlist extends \Magento\Framework\Model\AbstractModel
      **/
     protected $_websiteHelper;
 
+    protected $_objectManager;
     /**
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
@@ -36,6 +37,7 @@ class Productlist extends \Magento\Framework\Model\AbstractModel
     )
     {
 
+        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_websiteHelper = $websiteHelper;
 
         parent::__construct(
@@ -80,6 +82,16 @@ class Productlist extends \Magento\Framework\Model\AbstractModel
             }
         }
         return $list;
+    }
+    
+    public function delete() {
+        $typeID = $this->_objectManager->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('productlist');
+        $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+                            ->addFieldToFilter('content_type', $typeID)
+                            ->addFieldToFilter('item_id', $this->getId());
+        foreach ($visibleStoreViews as $visibilityItem)
+            $visibilityItem->delete();
+        return parent::delete();
     }
 
 }

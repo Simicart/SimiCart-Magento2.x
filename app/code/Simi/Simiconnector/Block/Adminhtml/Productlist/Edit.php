@@ -138,9 +138,19 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                             }
                     }
                     
+
+                    function checkboxAllChecked(el){
+                        var product_grid_trs = document.querySelectorAll(".admin__control-checkbox");
+                        for (var i=1; i< product_grid_trs.length; i++) {
+                            var e = product_grid_trs[i];
+                            if (e.id != "checkall_simiproductlist")
+                                e.checked = el.checked;
+                        }
+                    }
+                    
                     function toogleCheckAllProduct(){
-                    var product_grid_trs = document.querySelectorAll(".admin__control-checkbox");
-                    var el = product_grid_trs[0];
+                        var product_grid_trs = document.querySelectorAll(".admin__control-checkbox");
+                        var el = product_grid_trs[0];
                         if(el.checked == true){
                             for (var i=1; i< product_grid_trs.length; i++) {
                                 var e = product_grid_trs[i];
@@ -152,7 +162,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                                 selectProduct(e);
                             }
                         }
-                    }  
+                    }
+                    
         ';
         
         $this->_formScripts[] = $productJsUpdateFunction."
@@ -170,11 +181,6 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
 
                 // default: hide product grid
                 document.getElementById('product_grid').style.display = 'none';
-
-                var product_grid_trs = document.querySelectorAll('.admin__control-checkbox');
-                product_grid_trs[0].addEventListener('click', function(){
-                   toogleCheckAllProduct();
-                })
                 
             }, false);
             

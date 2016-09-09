@@ -68,7 +68,7 @@ class Edit extends \Magento\Backend\App\Action
     public function execute()
     {
         // 1. Get ID and create model
-        $id = $this->getRequest()->getParam('siminotification_id');
+        $id = $this->getRequest()->getParam('notice_id');
         $model = $this->_objectManager->create('Simi\Simiconnector\Model\Siminotification');
 
         // 2. Initial checking

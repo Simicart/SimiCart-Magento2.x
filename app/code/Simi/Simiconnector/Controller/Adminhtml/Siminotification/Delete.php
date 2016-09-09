@@ -20,7 +20,7 @@ class Delete extends \Magento\Backend\App\Action
     public function execute()
     {
         // check if we know what should be deleted
-        $id = $this->getRequest()->getParam('siminotification_id');
+        $id = $this->getRequest()->getParam('notice_id');
 		/** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($id) {
@@ -39,7 +39,7 @@ class Delete extends \Magento\Backend\App\Action
                 // display error message
                 $this->messageManager->addError($e->getMessage());
                 // go back to edit form
-                return $resultRedirect->setPath('*/*/edit', ['siminotification_id' => $id]);
+                return $resultRedirect->setPath('*/*/edit', ['notice_id' => $id]);
             }
         }
         // display error message

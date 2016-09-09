@@ -37,7 +37,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
     protected function _construct()
     {
 
-        $this->_objectId = 'siminotification_id';
+        $this->_objectId = 'notice_id';
         $this->_blockGroup = 'Simi_Simiconnector';
         $this->_controller = 'adminhtml_siminotification';
 
@@ -133,6 +133,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
 
                 // default: hidden product grid
                 document.getElementById('product_grid').style.display = 'none';
+                
+                // hide Device Grid
+                document.getElementById('deviceGrid').style.display = 'none';
 
             }, false);
 
@@ -177,8 +180,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                         document.querySelectorAll('#new_category_parent')[0].classList.remove('required-entry');
                         document.querySelectorAll('#new_category_parent')[1].classList.remove('required-entry');
 
-                        document.querySelectorAll('.field-siminotification_url')[0].style.display = 'none';
-                        document.querySelectorAll('#siminotification_url')[0].classList.remove('required-entry');
+                        document.querySelectorAll('.field-notice_url')[0].style.display = 'none';
+                        document.querySelectorAll('#notice_url')[0].classList.remove('required-entry');
                         break;
                     case '2':
                         document.querySelectorAll('.field-product_id')[0].style.display = 'none';
@@ -187,8 +190,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                         document.querySelectorAll('.field-new_category_parent')[0].style.display = 'block';
                         document.querySelectorAll('#new_category_parent')[0].classList.add('required-entry');
 
-                        document.querySelectorAll('.field-siminotification_url')[0].style.display = 'none';
-                        document.querySelectorAll('#siminotification_url')[0].classList.remove('required-entry');
+                        document.querySelectorAll('.field-notice_url')[0].style.display = 'none';
+                        document.querySelectorAll('#notice_url')[0].classList.remove('required-entry');
                         break;
                     case '3':
                         document.querySelectorAll('.field-product_id')[0].style.display = 'none';
@@ -199,8 +202,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                         document.querySelectorAll('#new_category_parent')[0].classList.remove('required-entry');
                         document.querySelectorAll('#new_category_parent')[1].classList.remove('required-entry');
 
-                        document.querySelectorAll('.field-siminotification_url')[0].style.display = 'block';
-                        document.querySelectorAll('#siminotification_url')[0].classList.add('required-entry');
+                        document.querySelectorAll('.field-notice_url')[0].style.display = 'block';
+                        document.querySelectorAll('#notice_url')[0].classList.add('required-entry');
                         break;
                     default:
                         document.querySelectorAll('.field-product_id')[0].style.display = 'block';
@@ -211,8 +214,20 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                         document.querySelectorAll('#new_category_parent')[0].classList.remove('required-entry');
                         document.querySelectorAll('#new_category_parent')[1].classList.remove('required-entry');
                         
-                        document.querySelectorAll('.field-siminotification_url')[0].style.display = 'none';
-                        document.querySelectorAll('#siminotification_url')[0].classList.remove('required-entry');
+                        document.querySelectorAll('.field-notice_url')[0].style.display = 'none';
+                        document.querySelectorAll('#notice_url')[0].classList.remove('required-entry');
+                }
+            }
+            function toogleDevice(){
+                var device_grid = document.getElementById('deviceGrid');
+                var device_choose_img = document.getElementById('show_device_grid');
+
+                if(device_grid.style.display == 'none'){
+                    device_grid.style.display = 'block';
+                    device_choose_img.src = '$arrow_up_img';
+                } else {
+                    device_grid.style.display = 'none';
+                    device_choose_img.src = '$arrow_down_img';
                 }
             }
         ";

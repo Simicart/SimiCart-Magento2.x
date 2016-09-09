@@ -14,6 +14,8 @@ class Simicategory extends \Magento\Framework\Model\AbstractModel
      * @var \Simi\Simiconnector\Helper\Website
      **/
     protected $_websiteHelper;
+    
+    protected $_objectManager;
 
     /**
      * @param \Magento\Framework\Model\Context $context
@@ -35,7 +37,8 @@ class Simicategory extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Helper\Website $websiteHelper
     )
     {
-
+ 
+        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_websiteHelper = $websiteHelper;
 
         parent::__construct(
@@ -80,6 +83,16 @@ class Simicategory extends \Magento\Framework\Model\AbstractModel
             }
         }
         return $list;
+    }
+    
+    public function delete() {
+        $typeID = $this->_objectManager->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('homecategory');
+        $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+                            ->addFieldToFilter('content_type', $typeID)
+                            ->addFieldToFilter('item_id', $this->getId());
+        foreach ($visibleStoreViews as $visibilityItem)
+            $visibilityItem->delete();
+        return parent::delete();
     }
 
 }

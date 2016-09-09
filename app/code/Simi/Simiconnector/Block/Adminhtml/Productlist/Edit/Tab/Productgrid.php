@@ -18,7 +18,9 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     protected
     $_productFactory;
 
-    
+    protected
+    $_objectManager = null;
+
     protected
     $_productlistFactory = null;
 
@@ -39,7 +41,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         array $data = []
     )
     {
-
+        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_productFactory = $productFactory;
         $this->_productlistFactory = $productlistFactory;
         $this->_coreRegistry = $coreRegistry;
@@ -145,7 +147,18 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
                 'column_css_class' => 'col-name'
             ]
         );
-
+        
+        $this->addColumn(
+            'type_id',
+            [
+                'header' => __('Type'),
+                'type' => 'options',
+                'index' => 'type_id',
+                'options' => $this->_objectManager->get('\Magento\Catalog\Model\Product\Type')->getOptionArray(),
+                'header_css_class' => 'col-type',
+                'column_css_class' => 'col-type'
+            ]
+        );
 
         $this->addColumn(
             'sku',
@@ -222,27 +235,6 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         return $proIds;
     }
 
-    /**
-     * Rewrite checkbox column
-     */
-    public function addCheckoxColumn($columnId, $column)
-    {
-        if (is_array($column)) {
-            $this->getColumnSet()->setChild(
-                $columnId,
-                $this->getLayout()
-                    ->createBlock('Simi\Simiconnector\Block\Adminhtml\Productlist\Edit\Tab\ColumnExtendedRewrite')
-                    ->setData($column)
-                    ->setId($columnId)
-                    ->setGrid($this)
-            );
-            $this->getColumnSet()->getChildBlock($columnId)->setGrid($this);
-        } else {
-            throw new \Exception(__('Please correct the column format and try again.'));
-        }
-
-        $this->_lastColumnId = $columnId;
-        return $this;
-    }
+    
 
 }

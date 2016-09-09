@@ -88,28 +88,28 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         $new_category_parent = false;
         if ($model->getId()) {
-            $fieldset->addField('siminotification_id', 'hidden', ['name' => 'siminotification_id']);
+            $fieldset->addField('notice_id', 'hidden', ['name' => 'notice_id']);
             $new_category_parent = $model->getData('category_id');
         }
 
         $fieldset->addField(
-            'website_id',
+            'storeview_id',
             'select',
             [
-                'name' => 'website_id',
-                'label' => __('Website'),
-                'title' => __('Website'),
+                'name' => 'storeview_id',
+                'label' => __('Store View'),
+                'title' => __('Store View'),
                 'required' => true,
                 'disabled' => $isElementDisabled,
-                'options' => $this->_siminotificationFactory->create()->toOptionWebsiteHash(),
+                'options' => $this->_siminotificationFactory->create()->toOptionStoreviewHash(),
             ]
         );
 
         $fieldset->addField(
-            'siminotification_sanbox',
+            'notice_sanbox',
             'select',
             [
-                'name' => 'siminotification_sanbox',
+                'name' => 'notice_sanbox',
                 'label' => __('Send To'),
                 'title' => __('Send To'),
                 'required' => true,
@@ -132,10 +132,10 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-            'siminotification_title',
+            'notice_title',
             'text',
             [
-                'name' => 'siminotification_title',
+                'name' => 'notice_title',
                 'label' => __('Title'),
                 'title' => __('Title'),
                 'required' => true,
@@ -156,10 +156,10 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-            'siminotification_content',
+            'notice_content',
             'textarea',
             [
-                'name' => 'siminotification_content',
+                'name' => 'notice_content',
                 'label' => __('Message'),
                 'title' => __('Message'),
                 'required' => false,
@@ -181,7 +181,6 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             ]
         );
 
-        /* product + category + url */
         $fieldset->addField(
             'product_id',
             'text',
@@ -209,106 +208,48 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-            'siminotification_url',
+            'notice_url',
             'textarea',
             [
-                'name' => 'siminotification_url',
+                'name' => 'notice_url',
                 'label' => __('Url'),
                 'title' => __('Url'),
                 'required' => true,
                 'disabled' => $isElementDisabled,
             ]
         );
-        /* product + category + url */
+        
 
         $fieldset->addField(
-            'created_at',
+            'created_time',
             'label',
             [
-                'name' => 'created_at',
-                'label' => __('Created At'),
-                'title' => __('Created At'),
+                'name' => 'created_time',
+                'label' => __('Created Date'),
+                'title' => __('Created Date'),
                 'required' => false,
                 'disabled' => $isElementDisabled,
             ]
         );
 
-        $_fieldset = $form->addFieldset('device_location', ['legend' => __('Notification Device & Location')]);
+        $_fieldset = $form->addFieldset('device_location', ['legend' => __('Notification Device Select')]);
 
+        
         $_fieldset->addField(
-            'device_id',
-            'select',
+            'devices_pushed',
+            'textarea',
             [
-                'name' => 'device_id',
-                'label' => __('Device Type'),
-                'title' => __('Device Type'),
+                'name' => 'devices_pushed',
+                'label' => __('Device IDs'),
+                'title' => __('Device IDs'),
                 'required' => true,
                 'disabled' => $isElementDisabled,
-                'options' => $this->_siminotificationFactory->create()->toOptionDeviceHash(),
+                'after_element_html' => '<a href="#" title="Show Device Grid" onclick="toogleDevice();return false;"><img id="show_device_grid" src="'.$this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png').'" title="" /></a>'.$this->getLayout()->createBlock('Simi\Simiconnector\Block\Adminhtml\Siminotification\Edit\Tab\Devicegrid')->toHtml()
+            
             ]
         );
-
-        $_fieldset->addField(
-            'address',
-            'text',
-            [
-                'name' => 'address',
-                'label' => __('Address'),
-                'title' => __('Address'),
-                'required' => false,
-                'disabled' => $isElementDisabled,
-            ]
-        );
-
-        $_fieldset->addField(
-            'country',
-            'select',
-            [
-                'name' => 'country',
-                'label' => __('Country'),
-                'title' => __('Country'),
-                'required' => false,
-                'disabled' => $isElementDisabled,
-                'options' => $this->_siminotificationFactory->create()->toOptionCountryHash(),
-            ]
-        );
-
-        $_fieldset->addField(
-            'state',
-            'text',
-            [
-                'name' => 'state',
-                'label' => __('State/Province'),
-                'title' => __('State/Province'),
-                'required' => false,
-                'disabled' => $isElementDisabled,
-            ]
-        );
-
-        $_fieldset->addField(
-            'city',
-            'text',
-            [
-                'name' => 'city',
-                'label' => __('City'),
-                'title' => __('City'),
-                'required' => false,
-                'disabled' => $isElementDisabled,
-            ]
-        );
-
-        $_fieldset->addField(
-            'zipcode',
-            'text',
-            [
-                'name' => 'zipcode',
-                'label' => __('Zip Code'),
-                'title' => __('Zip Code'),
-                'required' => false,
-                'disabled' => $isElementDisabled,
-            ]
-        );
-
+ 
+ 
         $this->_eventManager->dispatch('adminhtml_siminotification_edit_tab_main_prepare_form', ['form' => $form]);
 
         $form->setValues($model->getData());

@@ -23,4 +23,33 @@ class Productrender extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\C
         $html .= '</label>';
         return $html;
     }
+    
+    /**
+     * Renders header of the column
+     *
+     * @return string
+     */
+    public function renderHeader()
+    {
+        if ($this->getColumn()->getHeader()) {
+            return parent::renderHeader();
+        }
+
+        $checked = '';
+        if ($filter = $this->getColumn()->getFilter()) {
+            $checked = $filter->getValue() ? ' checked="checked"' : '';
+        }
+
+        $disabled = '';
+        if ($this->getColumn()->getDisabled()) {
+            $disabled = ' disabled="disabled"';
+        }
+        $html = '<th class="data-grid-th data-grid-actions-cell"><input type="checkbox" ';
+        $html .= 'id="checkall_simiproductlist" ';
+        $html .= 'name="' . $this->getColumn()->getFieldName() . '" ';
+        $html .= 'onclick="checkboxAllChecked(this); toogleCheckAllProduct();"';
+        $html .= 'class="admin__control-checkbox"' . $checked . $disabled . ' ';
+        $html .= 'title="' . __('Select All') . '"/><label></label></th>';
+        return $html;
+    }
 }

@@ -1,18 +1,18 @@
 <?php
-namespace Simi\Simiconnector\Block\Adminhtml\Siminotification;
+namespace Simi\Simiconnector\Block\Adminhtml\Siminotification\Edit\Tab;
 
 /**
- * Adminhtml Connector grid
+ * @SuppressWarnings(PHPMD.DepthOfInheritance)
  */
-class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
+class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
 {
     /**
-     * @var \Simi\Simiconnector\Model\Siminotification
+     * @var \Simi\Simiconnector\Model\Device
      */
-    protected $_siminotificationFactory;
+    protected $_deviceFactory;
 
     /**
-     * @var \Simi\Simiconnector\Model\ResourceModel\Siminotification\CollectionFactory
+     * @var \Simi\Simiconnector\Model\ResourceModel\Device\CollectionFactory
      */
     protected $_collectionFactory;
 
@@ -31,6 +31,9 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      **/
     protected $_websiteHelper;
 
+
+    protected $_objectManager;
+
     /**
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Backend\Helper\Data $backendHelper
@@ -42,19 +45,22 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Backend\Helper\Data $backendHelper,
-        \Simi\Simiconnector\Model\SiminotificationFactory $siminotificationFactory,
-        \Simi\Simiconnector\Model\ResourceModel\Siminotification\CollectionFactory $collectionFactory,
+        \Simi\Simiconnector\Model\DeviceFactory $deviceFactory,
+        \Simi\Simiconnector\Model\ResourceModel\Device\CollectionFactory $collectionFactory,
         \Magento\Framework\Module\Manager $moduleManager,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Simi\Simiconnector\Helper\Website $websiteHelper,
+
         array $data = []
     )
     {
+        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_collectionFactory = $collectionFactory;
         $this->moduleManager = $moduleManager;
         $this->_resource = $resourceConnection;
-        $this->_siminotificationFactory = $siminotificationFactory;
+        $this->_deviceFactory = $deviceFactory;
         $this->_websiteHelper = $websiteHelper;
+
         parent::__construct($context, $backendHelper, $data);
     }
 
@@ -64,8 +70,8 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     protected function _construct()
     {
         parent::_construct();
-        $this->setId('siminotificationGrid');
-        $this->setDefaultSort('notice_id');
+        $this->setId('deviceGrid');
+        $this->setDefaultSort('device_id');
         $this->setDefaultDir('DESC');
         $this->setUseAjax(true);
         $this->setSaveParametersInSession(true);
@@ -92,33 +98,62 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     protected function _prepareColumns()
     {
-        $this->addColumn('notice_id', [
+        $this->addColumn(
+            'in_devices',
+            [
+                'type' => 'checkbox',
+                'html_name' => 'devices_id',
+                'required' => true,
+                'values' => $this->_getSelectedDevices(),
+                'align' => 'center',
+                'index' => 'entity_id',
+                'header_css_class' => 'col-select',
+                'column_css_class' => 'col-select',
+                'renderer'  => '\Simi\Simiconnector\Block\Adminhtml\Siminotification\Edit\Tab\Devicerender',
+            ]
+        );
+        
+        $this->addColumn('device_id', [
             'header' => __('ID'),
-            'index' => 'notice_id',
-        ]);
-
-        $this->addColumn('notice_title', [
-            'header' => __('Title'),
-            'index' => 'notice_title',
-        ]);
-
-        $this->addColumn('notice_content', [
-            'header' => __('Message'),
-            'index' => 'notice_content',
+            'index' => 'device_id',
         ]);
 
         $this->addColumn('storeview_id', [
             'type' => 'options',
             'header' => __('Storeview'),
             'index' => 'storeview_id',
-            'options' => $this->_siminotificationFactory->create()->toOptionStoreviewHash(),
+            'options' => $this->_deviceFactory->create()->toOptionStoreviewHash(),
         ]);
 
-        $this->addColumn('device_id', [
+        $this->addColumn('plaform_id', [
             'type' => 'options',
-            'header' => __('Device'),
-            'index' => 'device_id',
-            'options' => $this->_siminotificationFactory->create()->toOptionDeviceHash(),
+            'header' => __('Device Type'),
+            'index' => 'plaform_id',
+            'options' => $this->_deviceFactory->create()->toOptionDeviceHash(),
+        ]);
+
+        $this->addColumn('city', [
+            'header' => __('City'),
+            'index' => 'city',
+        ]);
+
+        $this->addColumn('state', [
+            'header' => __('State/Province'),
+            'index' => 'state',
+        ]);
+
+        $this->addColumn('country', [
+            'type' => 'options',
+            'header' => __('Country'),
+            'index' => 'country',
+            'options' => $this->_deviceFactory->create()->toOptionCountryHash(),
+        ]);
+
+        $this->addColumn('is_demo', [
+            'type' => 'options',
+            'header' => __('Is Demo'),
+            'index' => 'is_demo',
+            'options' => $this->_deviceFactory->create()->toOptionDemoHash(),
         ]);
 
         $this->addColumn('created_time', [
@@ -126,7 +161,6 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
             'header'    => __('Created Date'),
             'index'     => 'created_time',
         ]);
-
 
         $this->addColumn(
             'action',
@@ -141,7 +175,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
                             'base' => '*/*/edit',
                             'params' => ['store' => $this->getRequest()->getParam('store')]
                         ],
-                        'field' => 'notice_id'
+                        'field' => 'device_id'
                     ]
                 ],
                 'sortable' => false,
@@ -163,7 +197,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/edit', [
-            'notice_id' => $row->getId()
+            'device_id' => $row->getId()
         ]);
     }
 
@@ -174,15 +208,43 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function getGridUrl()
     {
-        return $this->getUrl('*/*/grid', ['_current' => true]);
+        return $this->getUrl('simiconnector/*/devicegrid', ['_current' => true]);
+    }
+    
+    /**
+     * @return array
+     */
+    protected
+    function _getSelectedDevices()
+    {
+        $devices = array_keys($this->getSelectedDevices());
+        return $devices;
     }
 
     /**
-     * @return mixed
+     * @return array
      */
-    public function getWebsiteIdFromUrl()
+    public
+    function getSelectedDevices()
     {
-        return $this->_websiteHelper->getWebsiteIdFromUrl();
+        $noticeId = $this->getRequest()->getParam('notice_id');
+        if (!isset($noticeId)) {
+            $noticeId = 0;
+        }
+
+        $notification = $this->_objectManager->get('Simi\Simiconnector\Model\Siminotification')->load($noticeId);
+        $devices = array();
+        
+        if($notification->getId()){
+            $devices = explode(',',  str_replace(' ', '', $notification->getData('devices_pushed')));
+        }
+
+        $proIds = array();
+
+        foreach ($devices as $device) {
+            $proIds[$device] = array('id' => $device);
+        }
+        return $proIds;
     }
 
 }

@@ -61,6 +61,20 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
     /**
      * @return array Website
      */
+    public function toOptionStoreviewHash(){
+        $storeViewCollection = \Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Store\Model\Store')->getCollection();
+        $list = array();
+        if(sizeof($storeViewCollection) > 0){
+            foreach($storeViewCollection as $storeView){
+                $list[$storeView->getId()] = $storeView->getName();
+            }
+        }
+        return $list;
+    }
+    
+    /**
+     * @return array Website
+     */
     public function toOptionWebsiteHash(){
         $website_collection = $this->_websiteHelper->getWebsiteCollection();
         $list = array();
@@ -117,7 +131,6 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
      */
     public function toOptionSanboxHash(){
         $sandbox = array(
-            '0' => __('Both Live App and Test App'),
             '1' => __('Test App'),
             '2' => __('Live App'),
         );

@@ -204,12 +204,12 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     public
     function getSelectedProducts()
     {
-        $siminotification_id = $this->getRequest()->getParam('id');
+        $notice_id = $this->getRequest()->getParam('notice_id');
         if (!isset($tm_id)) {
-            $siminotification_id = 0;
+            $notice_id = 0;
         }
 
-        $siminotification = $this->_siminotificationFactory->create()->load($siminotification_id);
+        $siminotification = $this->_siminotificationFactory->create()->load($notice_id);
         $products = array();
         if($siminotification->getId()){
             $products = array($siminotification->getProductId());
