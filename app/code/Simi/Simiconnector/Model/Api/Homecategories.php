@@ -29,7 +29,7 @@ class Homecategories extends Apiabstract
     public function getCollection() {
         $typeID = $this->_objectManager->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('homecategory');
         $visibilityTable = $this->_resource->getTableName('simiconnector_visibility');
-        $simicategoryCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Simicategory')->getCollection();
+        $simicategoryCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Simicategory')->getCollection()->addFieldToFilter('status','1');
         $simicategoryCollection->getSelect()
                 ->join(array('visibility' => $visibilityTable), 'visibility.item_id = main_table.simicategory_id AND visibility.content_type = ' . $typeID . ' AND visibility.store_view_id =' . $this->_storeManager->getStore()->getId());
         $this->builderQuery = $simicategoryCollection;
@@ -90,10 +90,8 @@ class Homecategories extends Apiabstract
      */
 
     public function getVisibleChildren($catId) {
-        $childCollection = $this->_objectManager->create('\Magento\Catalog\Model\Category')->getCollection()->addAttributeToSelect('*')->addFieldToFilter('parent_id', $catId);
-        if ($this->_visible_array)
-            $childCollection->addFieldToFilter('entity_id', array('nin' => $this->_visible_array));
-        return $childCollection;
+        $category = $this->_objectManager->create('\Magento\Catalog\Model\Category')->load($catId);
+        return $category->getChildrenCategories()->addAttributeToSelect('*');
     }
 
 }

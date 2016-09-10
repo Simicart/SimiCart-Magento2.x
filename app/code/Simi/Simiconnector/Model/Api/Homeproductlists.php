@@ -22,7 +22,7 @@ class Homeproductlists extends Apiabstract
     public function getCollection() {
         $typeID = $this->_objectManager->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('productlist');
         $visibilityTable = $this->_resource->getTableName('simiconnector_visibility');
-        $listCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Productlist')->getCollection();
+        $listCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Productlist')->getCollection()->addFieldToFilter('list_status','1');
         $listCollection->getSelect()
                 ->join(array('visibility' => $visibilityTable), 'visibility.item_id = main_table.productlist_id AND visibility.content_type = ' . $typeID . ' AND visibility.store_view_id =' . $this->_storeManager->getStore()->getId());
         return $listCollection;

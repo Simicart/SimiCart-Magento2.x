@@ -2,40 +2,32 @@
 
 namespace Simi\Simiconnector\Model;
 
-
 use Magento\Customer\Api\AccountManagementInterface;
 use Magento\Customer\Model\AccountManagement;
 use Magento\Framework\Stdlib\Cookie\CookieMetadataFactory;
 use Magento\Framework\Stdlib\Cookie\PhpCookieManager;
+
 /**
  * Simiconnector Model
  *
  * @method \Simi\Simiconnector\Model\Resource\Page _getResource()
  * @method \Simi\Simiconnector\Model\Resource\Page getResource()
  */
-class Customer extends \Magento\Framework\Model\AbstractModel
-{
-    protected  $_objectManager;
-    protected  $_storeManager;
-    public  $cookieMetadataFactory;
-    public  $cookieMetadataManager;
+class Customer extends \Magento\Framework\Model\AbstractModel {
 
-
+    protected $_objectManager;
+    protected $_storeManager;
+    public $cookieMetadataFactory;
+    public $cookieMetadataManager;
 
     public function __construct(
-        \Magento\Framework\Model\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
-        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
-        array $data = []
+    \Magento\Framework\Model\Context $context, \Magento\Framework\Registry $registry, \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null, \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null, array $data = []
     ) {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_storeManager = $this->_objectManager->get('Magento\Store\Model\StoreManagerInterface');
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
-        
     }
 
-    
     protected function _helperCustomer() {
         return $this->_objectManager->get('Simi\Simiconnector\Helper\Customer');
     }
@@ -47,7 +39,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel
     public function getCustomerByEmail($email) {
         return $this->_helperCustomer()->getCustomerByEmail($email);
     }
-    
+
     public function getAccountManagement() {
         return $this->_objectManager->get('Magento\Customer\Api\AccountManagementInterface');
     }
@@ -65,8 +57,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel
             $customer = $this->_helperCustomer()->getCustomerByEmail($email);
             if ($customer->getId()) {
                 $this->getAccountManagement()->initiatePasswordReset(
-                    $email,
-                    AccountManagement::EMAIL_RESET
+                        $email, AccountManagement::EMAIL_RESET
                 );
             } else {
                 throw new \Exception(__('Customer is not exist'));
@@ -81,7 +72,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel
     public function logout($data) {
         $lastCustomerId = $this->_getSession()->getId();
         $this->_getSession()->logout()->setBeforeAuthUrl($this->_objectManager->get('Magento\Framework\UrlInterface')->getUrl())
-            ->setLastCustomerId($lastCustomerId);
+                ->setLastCustomerId($lastCustomerId);
         if ($this->getCookieManager()->getCookie('mage-cache-sessid')) {
             $metadata = $this->getCookieMetadataFactory()->createCookieMetadata();
             $metadata->setPath('/');
@@ -138,9 +129,8 @@ class Customer extends \Magento\Framework\Model\AbstractModel
             $customer->setConfirmation($confPass);
             $customer->setPasswordConfirmation($confPass);
         }
-        $customerErrors = $customer->validate();
-		
-	if (isset($data->taxvat)) {
+
+        if (isset($data->taxvat)) {
             $customer->setTaxvat($data->taxvat);
         }
 
@@ -148,7 +138,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel
             $birthday = $data->year . "-" . $data->month . "-" . $data->day;
             $customer->setDob($birthday);
         }
-        
+
         if (isset($data->gender) && $data->gender) {
             $customer->setGender($data->gender);
         }
@@ -158,13 +148,13 @@ class Customer extends \Magento\Framework\Model\AbstractModel
 
         if (isset($data->middlename) && $data->middlename) {
             $customer->setMiddlename($data->middlename);
-        }   
-        
+        }
+
         if (isset($data->suffix) && $data->suffix) {
             $customer->setSuffix($data->suffix);
         }
-        
-        
+
+
         $customerForm = $this->_objectManager->get('Magento\Customer\Model\Form');
         $customerForm->setFormCode('customer_account_edit')
                 ->setEntity($customer);
@@ -177,8 +167,8 @@ class Customer extends \Magento\Framework\Model\AbstractModel
         } else {
             $customerForm->compactData($customerData);
         }
-		
-        
+
+
         if (is_array($customerErrors))
             throw new \Exception(__('Invalid profile information'), 4);
         $customer->setConfirmation(null);
@@ -186,7 +176,6 @@ class Customer extends \Magento\Framework\Model\AbstractModel
         $this->_getSession()->setCustomer($customer);
         return $customer;
     }
-    
 
     /*
      * Social Login
@@ -199,6 +188,8 @@ class Customer extends \Magento\Framework\Model\AbstractModel
 
     public function socialLogin($data) {
         $data = (object) $data['params'];
+        if (!isset($data->password) || !$this->_objectManager->get('Simi\Simiconnector\Helper\Customer')->validateSimiPass($data->email, $data->password))
+            throw new \Exception(__('Password is not Valid'), 4);
         if (!$data->email)
             throw new \Exception(__('Cannot Get Your Email'), 4);
         $customer = $this->_objectManager->get('Simi\Simiconnector\Helper\Customer')->getCustomerByEmail($data->email);
@@ -230,29 +221,27 @@ class Customer extends \Magento\Framework\Model\AbstractModel
                 ->setLastname($data->lastname)
                 ->setEmail($data->email);
         $this->_objectManager->get('Simi\Simiconnector\Helper\Customer')->applyDataToCustomer($customer, $data);
-        
+
         if (!isset($data->password)) {
-            $data->password = 'simipassword'.rand(pow(10, 9),pow(10, 10)).substr(md5(microtime()),rand(0,26),5);
+            $data->password = 'simipassword' . rand(pow(10, 9), pow(10, 10)) . substr(md5(microtime()), rand(0, 26), 5);
         }
         $customer->setPassword($data->password);
         $customer->save();
         return $customer;
     }
 
-    private function getCookieManager()
-    {
+    private function getCookieManager() {
         if (!$this->cookieMetadataManager) {
             $this->cookieMetadataManager = $this->_objectManager->get(PhpCookieManager::class);
         }
         return $this->cookieMetadataManager;
     }
-    
-    private function getCookieMetadataFactory()
-    {
+
+    private function getCookieMetadataFactory() {
         if (!$this->cookieMetadataFactory) {
             $this->cookieMetadataFactory = $this->_objectManager->get(CookieMetadataFactory::class);
         }
         return $this->cookieMetadataFactory;
     }
-}
 
+}

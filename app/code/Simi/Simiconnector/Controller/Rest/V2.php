@@ -55,6 +55,7 @@ class V2 extends Action
      */
     public function execute()
     {
+        parent::execute();
         ob_start();
         try{
             $result = $this->_getServer()

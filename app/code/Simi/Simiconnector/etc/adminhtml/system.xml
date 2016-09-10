@@ -303,6 +303,13 @@
                     </depends>
                 </field>
             </group>
+            <group id="mixpanel" translate="label" type="text" sortOrder="899" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Mixpanel Configuration</label>
+                <field id="token" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Mixpanel Token</label>
+                    <comment>Leave this field blank to disable Mixpanel on Application</comment>
+                </field>
+            </group>
         </section>
         <section id="simi_notifications" translate="label" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>

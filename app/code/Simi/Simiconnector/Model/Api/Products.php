@@ -1,13 +1,13 @@
 <?php
+
 /**
  * Copyright © 2016 Simi. All rights reserved.
  */
 
 namespace Simi\Simiconnector\Model\Api;
 
+class Products extends Apiabstract {
 
-class Products extends Apiabstract
-{
     protected $_layer = array();
     protected $_allow_filter_core = false;
     protected $_helperProduct;
@@ -18,7 +18,7 @@ class Products extends Apiabstract
      * override
      */
     public function setBuilderQuery() {
-            
+
         $data = $this->getData();
         $parameters = $data['params'];
         $this->_helperProduct = $this->_objectManager->get('\Simi\Simiconnector\Helper\Products');
@@ -99,7 +99,7 @@ class Products extends Apiabstract
         if (isset($parameters[self::PAGE]) && $parameters[self::PAGE]) {
             $page = $parameters[self::PAGE];
         }
-        
+
         $limit = self::DEFAULT_LIMIT;
         if (isset($parameters[self::LIMIT]) && $parameters[self::LIMIT]) {
             $limit = $parameters[self::LIMIT];
@@ -114,7 +114,7 @@ class Products extends Apiabstract
         $all_ids = array();
         $info = array();
         $total = $collection->getSize();
-        
+
         if ($offset > $total)
             throw new \Exception(__('Invalid method.'), 4);
 
@@ -139,9 +139,16 @@ class Products extends Apiabstract
                 'url' => $this->_helperProduct->getImageProduct($entity, null, $parameters['image_width'], $parameters['image_height']),
                 'position' => 1,
             );
+            $ratings = $this->_objectManager->get('\Simi\Simiconnector\Helper\Review')->getRatingStar($entity->getId());
+            $total_rating = $this->_objectManager->get('\Simi\Simiconnector\Helper\Review')->getTotalRate($ratings);
+            $avg = $this->_objectManager->get('\Simi\Simiconnector\Helper\Review')->getAvgRate($ratings, $total_rating);
+
             $info_detail['images'] = $images;
-            
             $info_detail['app_prices'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Price')->formatPriceFromProduct($entity);
+            $info_detail['app_reviews'] = array(
+                'rate' => $avg,
+                'number' => $ratings[5],
+            );
             //hainh $info_detail['product_label'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Productlabel')->getProductLabel($entity);
             $info[] = $info_detail;
 
@@ -154,7 +161,6 @@ class Products extends Apiabstract
      * @return array
      * override
      */
-    
     public function show() {
         $entity = $this->builderQuery;
         $data = $this->getData();
@@ -182,8 +188,8 @@ class Products extends Apiabstract
                 'position' => 1,
             );
         }
-        
-        
+
+
         $registry = $this->_objectManager->get('\Magento\Framework\Registry');
         if (!$registry->registry('product') && $entity->getId()) {
             $registry->register('product', $entity);
@@ -191,17 +197,26 @@ class Products extends Apiabstract
         $layout = $this->_objectManager->get('Magento\Framework\View\LayoutInterface');
         $block_att = $layout->createBlock('Magento\Catalog\Block\Product\View\Attributes');
         $_additional = $block_att->getAdditionalData();
+
+        $ratings = $this->_objectManager->get('\Simi\Simiconnector\Helper\Review')->getRatingStar($entity->getId());
+        $total_rating = $this->_objectManager->get('\Simi\Simiconnector\Helper\Review')->getTotalRate($ratings);
+        $avg = $this->_objectManager->get('\Simi\Simiconnector\Helper\Review')->getAvgRate($ratings, $total_rating);
+
+
         $info['additional'] = $_additional;
         $info['images'] = $images;
         $info['app_prices'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Price')->formatPriceFromProduct($entity, true);
         $info['app_options'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Options')->getOptions($entity);
         //$info['wishlist_item_id'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Wishlist')->getWishlistItemId($entity);
         //$info['product_label'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Productlabel')->getProductLabel($entity);
+        $info['app_reviews'] = array(
+                'rate' => $avg,
+                'number' => $ratings[5],
+            );
         $this->detail_info = $this->getDetail($info);
         $this->_eventManager->dispatch('Simi_Simiconnector_Model_Api_Products_Show_After', array('object' => $this, 'data' => $this->detail_info));
         return $this->detail_info;
     }
-    
 
     public function setFilterByCategoryId($cat_id) {
         $data = $this->getData();

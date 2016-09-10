@@ -12,7 +12,22 @@ class Action extends \Magento\Framework\App\Action\Action
 
     public function preDispatch()
     {
-        parent::preDispatch();
+        $enable = (int)$this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface')->getValue('simiconnector/general/enable');
+        /*
+         
+        if (!$enable) {
+            echo 'Connector was disabled!';
+            @header("HTTP/1.0 503");
+            exit();
+        }
+        
+        if (!$this->isHeader()) {
+            echo 'Connect error!';
+            @header("HTTP/1.0 401 Unauthorized");
+            exit();
+        }
+         * 
+         */
 
     }
 
@@ -23,7 +38,7 @@ class Action extends \Magento\Framework\App\Action\Action
     }
 
     protected function _printData($result){
-        header("Content-Type: application/json");
+        @header("Content-Type: application/json");
         $this->setData($result);
         $this->_eventManager->dispatch($this->getRequest()->getFullActionName(), array('object' => $this, 'data' => $result));
         $this->_data = $this->getData();
@@ -32,7 +47,6 @@ class Action extends \Magento\Framework\App\Action\Action
 
     protected function isHeader() {
         if (!function_exists('getallheaders')) {
-
             function getallheaders() {
                 $head = array();
                 foreach ($_SERVER as $name => $value) {
@@ -47,13 +61,11 @@ class Action extends \Magento\Framework\App\Action\Action
                 }
                 return $head;
             }
-
         }
 
         $head = getallheaders();
-
         // token is key
-        $keyModel = 1; //use Secret key for storeview here (from configuration)
+        $keySecret = md5 ($this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface')->getValue('simiconnector/general/secret_key'));
         $token = "";
         foreach ($head as $k => $h) {
             if ($k == "Authorization" || $k == "TOKEN"
@@ -61,7 +73,7 @@ class Action extends \Magento\Framework\App\Action\Action
                 $token = $h;
             }
         }
-        if (strcmp($token, 'Bearer '.$keyModel->getKeySecret()) == 0)
+        if (strcmp($token, 'Bearer '.$keySecret) == 0)
             return true;
         else
             return false;
@@ -77,6 +89,6 @@ class Action extends \Magento\Framework\App\Action\Action
     
     public function execute()
     {
-        
+        $this->preDispatch();
     }
 }

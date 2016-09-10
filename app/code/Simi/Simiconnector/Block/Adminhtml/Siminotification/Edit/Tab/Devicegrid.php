@@ -208,7 +208,11 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function getGridUrl()
     {
-        return $this->getUrl('simiconnector/*/devicegrid', ['_current' => true]);
+        return $this->_getData(
+            'grid_url'
+        ) ? $this->_getData(
+            'grid_url'
+        ) : $this->getUrl('simiconnector/*/devicegrid', ['_current' => true]);
     }
     
     /**

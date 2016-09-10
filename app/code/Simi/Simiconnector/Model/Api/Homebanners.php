@@ -21,7 +21,7 @@ class Homebanners extends Apiabstract
     public function getCollection() {
         $typeID = $this->_objectManager->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('banner');
         $visibilityTable = $this->_resource->getTableName('simiconnector_visibility');
-        $bannerCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Banner')->getCollection();
+        $bannerCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Banner')->getCollection()->addFieldToFilter('status','1');
         $bannerCollection->getSelect()
                 ->join(array('visibility' => $visibilityTable), 'visibility.item_id = main_table.banner_id AND visibility.content_type = ' . $typeID . ' AND visibility.store_view_id =' . $this->_storeManager->getStore()->getId());
 

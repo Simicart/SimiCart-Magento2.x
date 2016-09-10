@@ -99,10 +99,11 @@ class Server
         $params = $controller->getRequest()->getQuery();
         $zendHTTPRequestHttp = new \Zend_Controller_Request_Http;
         $contents = $zendHTTPRequestHttp->getRawBody();
+        $contents_array = array();
         if ($contents && strlen($contents)) {
-            $contents = urldecode($contents);
-            $contents = json_decode($contents);
-
+            $contents_paser = urldecode($contents);
+            $contents = json_decode($contents_paser);
+            $contents_array = json_decode($contents_paser, true);
         }
 
         $is_method = 1;
@@ -120,6 +121,7 @@ class Server
             'nestedid' => $nestedid,
             'params' => $params,
             'contents' => $contents,
+            'contents_array' => $contents_array,
             'is_method' => $is_method,
             'module' => $module,
             'controller' => $controller,

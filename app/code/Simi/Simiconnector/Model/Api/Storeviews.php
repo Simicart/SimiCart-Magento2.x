@@ -1,18 +1,16 @@
 <?php
+
 /**
  * Copyright © 2016 Simi. All rights reserved.
  */
 
 namespace Simi\Simiconnector\Model\Api;
 
+class Storeviews extends Apiabstract {
 
-class Storeviews extends Apiabstract
-{
     protected $_DEFAULT_ORDER = 'store_id';
     protected $_method = 'callApi';
     protected $_scope_interface;
-
-
 
     public function setBuilderQuery() {
         $data = $this->getData();
@@ -26,8 +24,6 @@ class Storeviews extends Apiabstract
         }
     }
 
-    
-
     public function index() {
         $result = parent::index();
         foreach ($result['storeviews'] as $index => $storeView) {
@@ -40,13 +36,13 @@ class Storeviews extends Apiabstract
         $information = parent::show();
         $country_code = $this->getStoreConfig('general/country/default');
         $country = $this->_objectManager->get('\Magento\Directory\Model\Country')->loadByCode($country_code);
-        
+
         $locale = $this->getLocale();
-        $currencyCode =  $this->_storeManager->getStore()->getCurrentCurrencyCode();
+        $currencyCode = $this->_storeManager->getStore()->getCurrentCurrencyCode();
         $currency = $this->_objectManager->create('Magento\Directory\Model\CurrencyFactory')->create()->load($currencyCode);
         $currencySymbol = $currency->getCurrencySymbol();
         $options = $this->_objectManager->get('Magento\Customer\Model\Customer')->getAttribute('gender')->getSource()->getAllOptions();
-        
+
         $values = array();
         foreach ($options as $option) {
             if ($option['value']) {
@@ -64,15 +60,15 @@ class Storeviews extends Apiabstract
             $isRtl = '1';
         }
         $currencies = $this->getCurrencies();
-        
-        
+
+
         $cmsData = $this->getData();
         $cmsData['resourceid'] = NULL;
         $cmsData['resource'] = 'cmspages';
         $model = $this->_objectManager->get('Simi\Simiconnector\Model\Api\Cmspages');
         $cmsPageList = call_user_func_array(array(&$model, $this->_method), array($cmsData));
-        
-        
+
+
         $additionInfo = array(
             'base' => array(
                 'country_code' => $country->getId(),
@@ -86,7 +82,7 @@ class Storeviews extends Apiabstract
                 'use_store' => $this->getStoreConfig('web/url/use_store'),
                 'is_rtl' => $isRtl,
                 'is_show_sample_data' => $this->getStoreConfig('simiconnector/general/is_show_sample_data'),
-                'android_sender' =>  $this->getStoreConfig('simiconnector/notification/android_app_key'),
+                'android_sender' => $this->getStoreConfig('simiconnector/notification/android_app_key'),
                 'currency_symbol' => $currencySymbol,
                 'currency_code' => $currencyCode,
                 'currency_position' => $this->getCurrencyPosition(),
@@ -97,7 +93,6 @@ class Storeviews extends Apiabstract
                 'currencies' => $currencies,
                 'is_show_home_title' => $this->getStoreConfig('simiconnector/general/is_show_home_title'),
             ),
-            
             'sales' => array(
                 'sales_reorder_allow' => $this->getStoreConfig('sales/reorder/allow'),
                 'sales_totals_sort_subtotal' => $this->getStoreConfig('sales/totals_sort/subtotal'),
@@ -121,7 +116,6 @@ class Storeviews extends Apiabstract
                 'tax_cart_display_full_summary' => $this->getStoreConfig('tax/cart_display/full_summary'),
                 'tax_cart_display_zero_tax' => $this->getStoreConfig('tax/cart_display/zero_tax'),
             ),
-            
             'google_analytics' => array(
                 'google_analytics_active' => $this->getStoreConfig('google/analytics/active'),
                 'google_analytics_type' => $this->getStoreConfig('google/analytics/type'),
@@ -131,12 +125,12 @@ class Storeviews extends Apiabstract
             'customer' => array(
                 'address_option' => array(
                     'street_lines' => $this->getStoreConfig('customer/address/street_lines'),
-                    'prefix_show' => $this->getStoreConfig('customer/address/prefix_show')?$this->getStoreConfig('customer/address/prefix_show'):'',
-                    'middlename_show' => $this->getStoreConfig('customer/address/middlename_show')?$this->getStoreConfig('customer/address/middlename_show'):'',
-                    'suffix_show' => $this->getStoreConfig('customer/address/suffix_show')?$this->getStoreConfig('customer/address/suffix_show'):'',
-                    'dob_show' => $this->getStoreConfig('customer/address/dob_show')?$this->getStoreConfig('customer/address/dob_show'):'',
-                    'taxvat_show' => $this->getStoreConfig('customer/address/taxvat_show')?$this->getStoreConfig('customer/address/taxvat_show'):'',
-                    'gender_show' => $this->getStoreConfig('customer/address/gender_show')?$this->getStoreConfig('customer/address/gender_show'):'',
+                    'prefix_show' => $this->getStoreConfig('customer/address/prefix_show') ? $this->getStoreConfig('customer/address/prefix_show') : '',
+                    'middlename_show' => $this->getStoreConfig('customer/address/middlename_show') ? $this->getStoreConfig('customer/address/middlename_show') : '',
+                    'suffix_show' => $this->getStoreConfig('customer/address/suffix_show') ? $this->getStoreConfig('customer/address/suffix_show') : '',
+                    'dob_show' => $this->getStoreConfig('customer/address/dob_show') ? $this->getStoreConfig('customer/address/dob_show') : '',
+                    'taxvat_show' => $this->getStoreConfig('customer/address/taxvat_show') ? $this->getStoreConfig('customer/address/taxvat_show') : '',
+                    'gender_show' => $this->getStoreConfig('customer/address/gender_show') ? $this->getStoreConfig('customer/address/gender_show') : '',
                     'gender_value' => $values,
                 ),
                 'account_option' => array(
@@ -175,29 +169,30 @@ class Storeviews extends Apiabstract
                 'email' => $this->getStoreConfig('simiconnector/zopim/email'),
                 'phone' => $this->getStoreConfig('simiconnector/zopim/phone'),
             ),
-             
+            'mixpanel_config' => array(
+                'token' => $this->getStoreConfig('simiconnector/mixpanel/token'),
+            ),
             'allowed_countries' => $this->getAllowedCountries(),
             'stores' => $this->getStores(),
         );
-        
-        if ($checkout_info_setting =  $this->_objectManager->get('\Simi\Simiconnector\Helper\Address')->getCheckoutAddressSetting())
+
+        if ($checkout_info_setting = $this->_objectManager->get('\Simi\Simiconnector\Helper\Address')->getCheckoutAddressSetting())
             $additionInfo['customer']['address_fields_config'] = $checkout_info_setting;
 
         if ($checkout_terms = $this->_objectManager->get('\Simi\Simiconnector\Helper\Checkout')->getCheckoutTermsAndConditions())
             $additionInfo['checkout']['checkout_terms_and_conditions'] = $checkout_terms;
-        
+
         if ($this->_objectManager->get('\Simi\Simiconnector\Helper\Instantcontact')->isEnabled())
             $additionInfo['instant_contact'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Instantcontact')->getContacts();
-        
+
         $information['storeview'] = $additionInfo;
         return $information;
     }
-    
+
     function getLocale() {
-	$resolver = $this->_objectManager->get('Magento\Framework\Locale\Resolver');
-	return $resolver->getLocale();
+        $resolver = $this->_objectManager->get('Magento\Framework\Locale\Resolver');
+        return $resolver->getLocale();
     }
-    
 
     public function getAllowedCountries() {
         $list = array();
@@ -216,7 +211,7 @@ class Storeviews extends Apiabstract
                     'country_code' => $country->getId(),
                     'country_name' => $country->getName(),
                     'states' => $this->_objectManager->get('\Simi\Simiconnector\Helper\Address')->getStates($country->getId()),
-               );
+                );
             }
         }
         if ($cache) {
@@ -240,11 +235,11 @@ class Storeviews extends Apiabstract
         $codes = $this->_storeManager->getStore()->getAvailableCurrencyCodes(true);
         $locale = $this->getLocale();
         $options = new \Zend_Currency(null, $locale);
-        
+
         if (is_array($codes) && count($codes) > 1) {
-            $rates =  $this->_objectManager
-            ->create('Magento\Directory\Model\ResourceModel\Currency')->getCurrencyRates(
-                $this->_storeManager->getStore()->getCurrentCurrencyCode(), $codes
+            $rates = $this->_objectManager
+                            ->create('Magento\Directory\Model\ResourceModel\Currency')->getCurrencyRates(
+                    $this->_storeManager->getStore()->getCurrentCurrencyCode(), $codes
             );
             foreach ($codes as $code) {
                 if (isset($rates[$code])) {
@@ -271,7 +266,7 @@ class Storeviews extends Apiabstract
                 //$this->_objectManager->get('Vendor\Module\Cookie\Example')->set('currency_code', $currency, TRUE);
             }
         }
-    }   
+    }
 
     public function setStoreView($data) {
         if (($data['resourceid'] == 'default') || ($data['resourceid'] == $this->_storeManager->getStore()->getId()))
@@ -279,7 +274,7 @@ class Storeviews extends Apiabstract
         $storeCode = $this->_objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore($data['resourceid'])->getCode();
 
         $store = $this->storeRepository->getActiveStoreByCode($storeCode);
-        
+
         $defaultStoreView = $this->_storeManager->getDefaultStoreView();
         if ($defaultStoreView->getId() == $store->getId()) {
             $this->storeCookieManager->deleteStoreCookie($store);
@@ -288,16 +283,16 @@ class Storeviews extends Apiabstract
         }
 
         $this->_storeManager->setCurrentStore(
-            $this->_objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore($data['resourceid'])
+                $this->_objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore($data['resourceid'])
         );
     }
-    
+
     public function getStores() {
-       $storeAPIModel = $this->_objectManager->get('Simi\Simiconnector\Model\Api\Stores');
-       $storeAPIModel->setData($this->getData());
-       $storeAPIModel->builderQuery = $this->_objectManager->get('\Magento\Store\Model\Group')->getCollection()->addFieldToFilter('website_id', $this->_storeManager->getStore()->getWebsiteId());
-       $storeAPIModel->pluralKey = 'stores';
-       return $storeAPIModel->index();
+        $storeAPIModel = $this->_objectManager->get('Simi\Simiconnector\Model\Api\Stores');
+        $storeAPIModel->setData($this->getData());
+        $storeAPIModel->builderQuery = $this->_objectManager->get('\Magento\Store\Model\Group')->getCollection()->addFieldToFilter('website_id', $this->_storeManager->getStore()->getWebsiteId());
+        $storeAPIModel->pluralKey = 'stores';
+        return $storeAPIModel->index();
     }
 
 }

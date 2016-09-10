@@ -289,11 +289,11 @@ class Price extends \Simi\Simiconnector\Helper\Price
     public function setBothTaxPrice(&$price, $_exclTax, $_inclTax)
     {
         $price['price_excluding_tax'] = array(
-            'label' => __('Excl. Tax:'),
+            'label' => __('Excl. Tax'),
             'price' => $this->currency($_exclTax, false, false),
         );
         $price['price_including_tax'] = array(
-            'label' => __('Incl. Tax:'),
+            'label' => __('Incl. Tax'),
             'price' => $this->currency($_inclTax, false, false),
         );
     }
@@ -301,11 +301,11 @@ class Price extends \Simi\Simiconnector\Helper\Price
     public function setBothTaxFromPrice(&$price, $_exclTax, $_inclTax)
     {
         $price['from_price_excluding_tax'] = array(
-            'label' => __('Excl. Tax:'),
+            'label' => __('Excl. Tax'),
             'price' => $this->currency($_exclTax, false, false),
         );
         $price['from_price_including_tax'] = array(
-            'label' => __('Incl. Tax:'),
+            'label' => __('Incl. Tax'),
             'price' => $this->currency($_inclTax, false, false),
         );
     }
@@ -313,11 +313,11 @@ class Price extends \Simi\Simiconnector\Helper\Price
     public function setBothTaxToPrice(&$price, $_exclTax, $_inclTax)
     {
         $price['to_price_excluding_tax'] = array(
-            'label' => __('Excl. Tax:'),
+            'label' => __('Excl. Tax'),
             'price' => $this->currency($_exclTax, false, false),
         );
         $price['to_price_including_tax'] = array(
-            'label' => __('Incl. Tax:'),
+            'label' => __('Incl. Tax'),
             'price' => $this->currency($_inclTax, false, false),
         );
     }

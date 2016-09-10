@@ -338,7 +338,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
                 if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($_product, array(0, 1, 4))){
                     $_minimalPriceDisplayValue = $_minimalPrice + $_weeeTaxAmount;
                     $priveV2['is_low_price'] = 1;
-                    $priveV2['low_price_label'] = __('As low as:');
+                    $priveV2['low_price_label'] = __('As low as');
                     $this->setTaxLowPrice($priveV2, $_minimalPriceDisplayValue);
                 }
             }
@@ -356,7 +356,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
 
             if ($price) {
                 if ($showMinPrice) {
-                    $priveV2['price_label'] = __('Starting at:');
+                    $priveV2['price_label'] = __('Starting at');
                 }
                 if ($_taxHelper->displayBothPrices()) {
                     $priveV2['show_ex_in_price'] = 1;
@@ -424,11 +424,11 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
     public function setBothTaxPrice(&$price, $_exclTax, $_inclTax)
     {
         $price['price_excluding_tax'] = array(
-            'label' => __('Excl. Tax:'),
+            'label' => __('Excl. Tax'),
             'price' => $_exclTax,
         );
         $price['price_including_tax'] = array(
-            'label' => __('Incl. Tax:'),
+            'label' => __('Incl. Tax'),
             'price' => $_inclTax,
         );
     }
