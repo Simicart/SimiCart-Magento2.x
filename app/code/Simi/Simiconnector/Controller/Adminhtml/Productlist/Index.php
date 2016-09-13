@@ -52,7 +52,7 @@ class Index extends \Magento\Backend\App\Action
             __('Manage Productlist'),
             __('Manage Productlist')
         );
-        $resultPage->getConfig()->getTitle()->prepend(__('Productlist'));
+        $resultPage->getConfig()->getTitle()->prepend(__('Product List'));
         return $resultPage;
     }
 }

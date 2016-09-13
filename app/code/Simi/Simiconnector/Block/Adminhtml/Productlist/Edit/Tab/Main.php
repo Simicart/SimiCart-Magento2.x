@@ -86,7 +86,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $form->setHtmlIdPrefix('');
         $htmlIdPrefix = $form->getHtmlIdPrefix();
 
-        $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Productlist Information')]);
+        $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Product List Information')]);
 
         $new_category_parent = false;
         $data = $model->getData();
@@ -247,7 +247,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      */
     public function getTabLabel()
     {
-        return __('Productlist Information');
+        return __('Product List Information');
     }
 
     /**
@@ -257,7 +257,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      */
     public function getTabTitle()
     {
-        return __('Productlist Information');
+        return __('Product List Information');
     }
 
     /**

@@ -322,13 +322,19 @@
                     <label>Upload Apple PEM file</label>
                     <comment>Certificate (PEM) for Apple Device Notification Sending</comment>
                     <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>    
-                    <upload_dir config="system/filesystem/media">simi/simicart/pem/ios</upload_dir>                
+                    <upload_dir config="system/filesystem/media">simi/simiconnector/pem/manual</upload_dir>                
                 </field>
-                <field id="android_app_key" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="upload_pem_file_test" translate="label" type="file" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Upload Apple Demo PEM file</label>
+                    <comment>Certificate (PEM) for Demo Apple Device Notification Sending</comment>
+                    <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>    
+                    <upload_dir config="system/filesystem/media">simi/simiconnector/pem</upload_dir>                
+                </field>
+                <field id="android_app_key" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Android App Key</label>
                     <comment>App Key for Android Notification Sending</comment>
                 </field>
-                <field id="android_secret_key" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="android_secret_key" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Android Secret Key</label>
                     <comment>Secret Key for Android Notification Sending</comment>
                 </field>

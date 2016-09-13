@@ -33,6 +33,8 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
 
 
     protected $_objectManager;
+    
+    public $storeview_id;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
@@ -83,11 +85,14 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @return \Magento\Backend\Block\Widget\Grid
      */
     protected function _prepareCollection()
-    {
-        $collection = $this->_collectionFactory->create();
-
+    { 
+        if (!$this->storeview_id && ($storeviewId = $this->getRequest()->getParam('storeview_id'))) {
+            $this->storeview_id = $storeviewId;
+        }
+        if (!$this->storeview_id)
+            $this->storeview_id = $this->_objectManager->get('\Magento\Store\Model\Store')->getCollection()->getFirstItem()->getId();
+        $collection = $this->_collectionFactory->create()->addFieldToFilter('storeview_id',$this->storeview_id);
         $this->setCollection($collection);
-
         return parent::_prepareCollection();
     }
 
@@ -162,29 +167,6 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
             'index'     => 'created_time',
         ]);
 
-        $this->addColumn(
-            'action',
-            [
-                'header' => __('View'),
-                'type' => 'action',
-                'getter' => 'getId',
-                'actions' => [
-                    [
-                        'caption' => __('Edit'),
-                        'url' => [
-                            'base' => '*/*/edit',
-                            'params' => ['store' => $this->getRequest()->getParam('store')]
-                        ],
-                        'field' => 'device_id'
-                    ]
-                ],
-                'sortable' => false,
-                'filter' => false,
-                'header_css_class' => 'col-action',
-                'column_css_class' => 'col-action',
-            ]
-        );
-
         return parent::_prepareColumns();
     }
 
@@ -196,9 +178,7 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function getRowUrl($row)
     {
-        return $this->getUrl('*/*/edit', [
-            'device_id' => $row->getId()
-        ]);
+        return false;
     }
 
     /**
@@ -212,7 +192,7 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
             'grid_url'
         ) ? $this->_getData(
             'grid_url'
-        ) : $this->getUrl('simiconnector/*/devicegrid', ['_current' => true]);
+        ) : $this->getUrl('simiconnector/*/devicegrid', ['_current' => true, 'notice_id'=> $this->getRequest()->getParam('notice_id'), 'storeview_id' => $this->storeview_id]);
     }
     
     /**
@@ -223,6 +203,12 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         $devices = array_keys($this->getSelectedDevices());
         return $devices;
+    }
+    
+    
+    public function setStoreview($storeviewid) {
+        $this->storeview_id = $storeviewid;
+        return $this;
     }
 
     /**
@@ -249,6 +235,7 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
             $proIds[$device] = array('id' => $device);
         }
         return $proIds;
+        
     }
 
 }

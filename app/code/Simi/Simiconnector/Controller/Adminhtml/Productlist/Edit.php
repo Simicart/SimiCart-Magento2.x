@@ -51,11 +51,11 @@ class Edit extends \Magento\Backend\App\Action
         $resultPage->setActiveMenu(
             'Simi_Simiconnector::simiconnector_manage'
         )->addBreadcrumb(
-            __('Productlist'),
-            __('Productlist')
+            __('Home Product List'),
+            __('Home Product List')
         )->addBreadcrumb(
-            __('Manage Productlist'),
-            __('Manage Productlist')
+            __('Manage Product Lists'),
+            __('Manage Product Lists')
         );
         return $resultPage;
     }
@@ -92,13 +92,13 @@ class Edit extends \Magento\Backend\App\Action
         $this->_coreRegistry->register('productlist', $model);
 
         // 5. Build edit form
-		/** @var \Magento\Backend\Model\View\Result\Page $resultPage */
+        /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
         $resultPage = $this->_initAction();
         $resultPage->addBreadcrumb(
-            $id ? __('Edit Productlist') : __('New Home Productlist'),
-            $id ? __('Edit Productlist') : __('New Home Productlist')
+            $id ? __('Edit Productlist') : __('New Home Product List'),
+            $id ? __('Edit Productlist') : __('New Home Product List')
         );
-        $resultPage->getConfig()->getTitle()->prepend(__('Productlist'));
+        $resultPage->getConfig()->getTitle()->prepend(__('Product List'));
         $resultPage->getConfig()->getTitle()
             ->prepend($model->getId() ? $model->getId() : __('New Home Product List'));
         return $resultPage;

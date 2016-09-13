@@ -15,12 +15,40 @@ class Devicerender extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\Ch
         //cody add js function
         $html .= 'onclick="selectDevice(this)"';
         //end
-        $html .= 'class="' .
+        $html .= 'class="simi-device-checkbox ' .
             ($this->getColumn()->getInlineCss() ? $this->getColumn()->getInlineCss() : 'checkbox') .
             ' admin__control-checkbox' . '"';
         $html .= $checked . $this->getDisabled() . '/>';
         $html .= '<label for="id_' . $this->escapeHtml($value) . '"></label>';
         $html .= '</label>';
+        return $html;
+    }
+    /**
+     * Renders header of the column
+     *
+     * @return string
+     */
+    public function renderHeader()
+    {
+        if ($this->getColumn()->getHeader()) {
+            return parent::renderHeader();
+        }
+
+        $checked = '';
+        if ($filter = $this->getColumn()->getFilter()) {
+            $checked = $filter->getValue() ? ' checked="checked"' : '';
+        }
+
+        $disabled = '';
+        if ($this->getColumn()->getDisabled()) {
+            $disabled = ' disabled="disabled"';
+        }
+        $html = '<th class="data-grid-th data-grid-actions-cell"><input type="checkbox" ';
+        $html .= 'id="checkall_device_siminotification" ';
+        $html .= 'name="' . $this->getColumn()->getFieldName() . '" ';
+        $html .= 'onclick="checkboxDeviceAllChecked(this); toogleCheckAllDevice();"';
+        //$html .= 'class="admin__control-checkbox"' . $checked . $disabled . ' ';
+        $html .= 'title="' . __('Select All') . '"/><label></label></th>';
         return $html;
     }
 }

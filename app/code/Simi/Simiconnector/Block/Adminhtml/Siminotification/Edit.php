@@ -117,7 +117,107 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         $arrow_down_img = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png');
         $arrow_up_img = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_up.png');
 
-        $this->_formScripts[] = "
+        $deviceJsUpdateFunction = '
+                    /*
+                        device selecting functions
+                    */
+                    
+                    function selectDevice(e) {
+                        var vl = e.value;
+                        if(e.checked == true){
+                            if($("devices_pushed").value == "")
+                                $("devices_pushed").value = e.value;
+                            else {
+                                removeValueFromField(vl);
+                                $("devices_pushed").value = $("devices_pushed").value + ", "+e.value;
+                            }
+                        }else{
+                            removeValueFromField(vl);
+                        }
+                    }
+                    
+                    
+                    function removeValueFromField(vl){
+                        if($("devices_pushed").value.search(vl) == 0){
+                                if ($("devices_pushed").value.search(vl+", ") != -1)
+                                    $("devices_pushed").value = $("devices_pushed").value.replace(vl+", ","");
+                                else 
+                                    $("devices_pushed").value = $("devices_pushed").value.replace(vl,"");
+                            }else{
+                                $("devices_pushed").value = $("devices_pushed").value.replace(", "+ vl,"");
+                            }
+                    }
+
+                    function checkboxDeviceAllChecked(el){
+                        var device_grid_trs = document.querySelectorAll(".simi-device-checkbox");
+                        for (var i=0; i< device_grid_trs.length; i++) {
+                            var e = device_grid_trs[i];
+                            if (e.id != "checkall_device_siminotification")
+                                e.checked = el.checked;
+                        }
+                    }
+                    
+                    function toogleCheckAllDevice(){
+                        var device_grid_trs = document.querySelectorAll(".simi-device-checkbox");
+                        var el = device_grid_trs[0];
+                        if(el.checked == true){
+                            for (var i=0; i< device_grid_trs.length; i++) {
+                                var e = device_grid_trs[i];
+                                selectDevice(e);
+                            }
+                        }else{
+                            for (var i=0; i< device_grid_trs.length; i++) {
+                                var e = device_grid_trs[i];
+                                selectDevice(e);
+                            }
+                        }
+                    }
+                    
+                    /*
+                        device listing functions
+                    */
+
+                    function clearDevices(){                    
+                        $("deviceGrid").style.display == "none";
+                        toggleMainDevices(2);
+                    }
+                    function updateNumberSeleced(){
+                        $("note_devices_pushed_number").update($("devices_pushed").value.split(", ").size());
+                    }
+                    
+                    function toggleMainDevices(check){
+                        var cate = $("deviceGrid");
+                        if($("deviceGrid").style.display == "none" || (check ==1) || (check == 2)){
+                            var url = "' . $this->getUrl('simiconnector/*/devicegrid') . '?storeview_id="+$("storeview_selected").value;                        
+                            if(check == 1){
+                                $("devices_pushed").value = $("devices_all_ids").value;
+                            }else if(check == 2){
+                                $("devices_pushed").value = "";
+                            }
+                            var params = $("devices_pushed").value.split(", ");
+                            var parameters = {"form_key": FORM_KEY,"selected[]":params };
+                            var request = new Ajax.Request(url,
+                                {
+                                    evalScripts: true,
+                                    parameters: parameters,
+                                    onComplete:function(transport){
+                                        $("deviceGrid").update(transport.responseText);
+                                        $("deviceGrid").style.display = "block"; 
+                                    }
+                                });
+                            if(cate.style.display == "none"){
+                                cate.style.display = "";
+                            }else{
+                                cate.style.display = "none";
+                            } 
+                        }else{
+                            cate.style.display = "none";                    
+                        }
+                        updateNumberSeleced();
+                    };
+        ' ;
+        
+        $this->_formScripts[] = $deviceJsUpdateFunction."
             function toggleEditor() {
                 if (tinyMCE.getInstanceById('page_content') == null) {
                     tinyMCE.execCommand('mceAddControl', false, 'page_content');
@@ -230,6 +330,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                     device_choose_img.src = '$arrow_down_img';
                 }
             }
+            
+
         ";
         return parent::_prepareLayout();
     }

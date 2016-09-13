@@ -132,7 +132,10 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                     
                     function removeValueFromField(vl){
                         if($("list_products").value.search(vl) == 0){
-                                $("list_products").value = $("list_products").value.replace(vl+", ","");
+                                if ($("list_products").value.search(vl+", ") != -1)
+                                    $("list_products").value = $("list_products").value.replace(vl+", ","");
+                                else 
+                                    $("list_products").value = $("list_products").value.replace(vl,"");
                             }else{
                                 $("list_products").value = $("list_products").value.replace(", "+ vl,"");
                             }
