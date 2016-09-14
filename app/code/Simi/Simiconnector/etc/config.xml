@@ -6,12 +6,6 @@
  */
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../Store/etc/config.xsd">
-    <event name="catalog_product_save_before">
-        <observer name="siminotification_product_save_before" 
-                  instance="Simi\Simiconnector\Model\Observer"
-                  method="sendNotificationProductChangePrice" />
-    </event>
-    
     <default>
         <simiconnector>
             <general>                                               

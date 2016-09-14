@@ -32,6 +32,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      */
     protected $_categoryFactory;
 
+    protected $_objectManager;
     /**
      * @param \Magento\Backend\Block\Template\Context $context
      * @param \Magento\Framework\Registry $registry
@@ -42,6 +43,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
     public function __construct(
     \Magento\Backend\Block\Template\Context $context, \Magento\Framework\Registry $registry, \Magento\Framework\Data\FormFactory $formFactory, \Magento\Store\Model\System\Store $systemStore, \Simi\Simiconnector\Helper\Website $websiteHelper, \Simi\Simiconnector\Model\SiminotificationFactory $siminotificationFactory, \Magento\Framework\Json\EncoderInterface $jsonEncoder, \Magento\Catalog\Model\CategoryFactory $categoryFactory, array $data = []
     ) {
+        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_siminotificationFactory = $siminotificationFactory;
         $this->_websiteHelper = $websiteHelper;
         $this->_systemStore = $systemStore;
@@ -82,9 +84,10 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         }
         $data = $model->getData();
 
-        if (isset($data['storeview_id'])) {
-            $data['storeview_selected'] = $data['storeview_id'];
-        }
+        if (!isset($data['storeview_id'])) {
+            $data['storeview_id'] = $this->_objectManager->get('\Magento\Store\Model\Store')->getCollection()->getFirstItem()->getId();
+        } 
+        $data['storeview_selected'] = $data['storeview_id'];
         $fieldset->addField(
                 'storeview_selected', 'select', [
             'name' => 'storeview_selected',

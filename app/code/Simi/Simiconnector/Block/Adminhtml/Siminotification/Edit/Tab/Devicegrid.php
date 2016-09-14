@@ -166,7 +166,17 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
             'header'    => __('Created Date'),
             'index'     => 'created_time',
         ]);
-
+        
+        $this->addColumn('app_id', [
+            'header' => __('App Id'),
+            'index' => 'app_id',
+        ]);
+        
+        $this->addColumn('build_version', [
+            'header' => __('Build Version'),
+            'index' => 'build_version',
+        ]);
+        
         return parent::_prepareColumns();
     }
 

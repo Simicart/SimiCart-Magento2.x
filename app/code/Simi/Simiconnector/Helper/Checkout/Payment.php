@@ -69,6 +69,7 @@ class Payment extends \Simi\Simiconnector\Helper\Data
         $store = $quote ? $quote->getStoreId() : null;
         $methods = $this->_objectManager->get('Magento\Payment\Helper\Data')->getStoreMethods($store, $quote);
         $total = $quote->getBaseSubtotal() + $quote->getShippingAddress()->getBaseShippingAmount();
+        
         foreach ($methods as $key => $method) {
             if ($this->_canUseMethod($method, $quote) && (!in_array($method->getCode(), $this->_getListPaymentNoUse()) &&
                     (in_array($method->getCode(), $this->_getListPayment()) || $method->getConfigData('cctypes'))) && ($total != 0 || $method->getCode() == 'free' || ($quote->hasRecurringItems() && $method->canManageRecurringProfiles()))) {
@@ -113,6 +114,7 @@ class Payment extends \Simi\Simiconnector\Helper\Data
         $this->_listPayment[] = 'cashondelivery';
         $this->_listPayment[] = 'checkmo';
         $this->_listPayment[] = 'free';
+        $this->_listPayment[] = 'banktransfer';
         $this->_listPayment[] = 'phoenix_cashondelivery';
     }
 
@@ -127,6 +129,7 @@ class Payment extends \Simi\Simiconnector\Helper\Data
 
     public function setListCase() {
         $this->_listCase = array(
+            'banktransfer' => 0,
             'transfer_mobile' => 0,
             'cashondelivery' => 0,
             'checkmo' => 0,
