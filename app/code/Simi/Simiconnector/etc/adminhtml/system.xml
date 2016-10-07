@@ -43,9 +43,9 @@
                     <label>View products default</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\ViewType</source_model>
                 </field>
-                <field id="rtl_country" translate="label" type="multiselect" sortOrder="899" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_rtl" translate="label" type="select" sortOrder="899" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Use RTL language</label>
-                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <can_be_empty>1</can_be_empty>
                 </field>
                 <field id="categories_in_app" translate="label" type="text" sortOrder="999" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -148,7 +148,7 @@
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
-                <field id="birthday" translate="label" type="select" sortOrder="1099" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="dob" translate="label" type="select" sortOrder="1099" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Date of Birth</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>

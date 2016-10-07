@@ -17,6 +17,7 @@
                 <show_product_type>1</show_product_type>
                 <base_url></base_url>
                 <is_show_home_title>1</is_show_home_title>
+                <is_rtl>0</is_rtl>
             </general>  
             <currency>                                           
                 <thousand_separator>,</thousand_separator>
@@ -46,7 +47,7 @@
                 <fax>2</fax>
                 <prefix>2</prefix>
                 <suffix>2</suffix>
-                <birthday>2</birthday>
+                <dob>2</dob>
                 <gender>2</gender>
                 <taxvat>2</taxvat>
             </hideaddress>  

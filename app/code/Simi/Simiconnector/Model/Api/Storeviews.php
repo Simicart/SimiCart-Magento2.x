@@ -8,6 +8,8 @@ namespace Simi\Simiconnector\Model\Api;
 
 class Storeviews extends Apiabstract {
 
+    public $storeviewInfo;
+    
     protected $_DEFAULT_ORDER = 'store_id';
     protected $_method = 'callApi';
     protected $_scope_interface;
@@ -33,7 +35,8 @@ class Storeviews extends Apiabstract {
     }
 
     public function show() {
-        $information = parent::show();
+        //$information = parent::show();
+
         $country_code = $this->getStoreConfig('general/country/default');
         $country = $this->_objectManager->get('\Magento\Directory\Model\Country')->loadByCode($country_code);
 
@@ -53,12 +56,6 @@ class Storeviews extends Apiabstract {
             }
         }
 
-        $rtlCountry = $this->getStoreConfig('simiconnector/general/rtl_country');
-        $isRtl = '0';
-        $rtlCountry = explode(',', $rtlCountry);
-        if (in_array($country_code, $rtlCountry)) {
-            $isRtl = '1';
-        }
         $currencies = $this->getCurrencies();
 
 
@@ -80,7 +77,7 @@ class Storeviews extends Apiabstract {
                 'group_id' => $this->_storeManager->getStore()->getGroupId(),
                 'base_url' => $this->getStoreConfig('simiconnector/general/base_url'),
                 'use_store' => $this->getStoreConfig('web/url/use_store'),
-                'is_rtl' => $isRtl,
+                'is_rtl' => $this->getStoreConfig('simiconnector/general/is_rtl'),
                 'is_show_sample_data' => $this->getStoreConfig('simiconnector/general/is_show_sample_data'),
                 'android_sender' => $this->getStoreConfig('simiconnector/notification/android_app_key'),
                 'currency_symbol' => $currencySymbol,
@@ -184,9 +181,10 @@ class Storeviews extends Apiabstract {
 
         if ($this->_objectManager->get('\Simi\Simiconnector\Helper\Instantcontact')->isEnabled())
             $additionInfo['instant_contact'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Instantcontact')->getContacts();
-
-        $information['storeview'] = $additionInfo;
-        return $information;
+        
+        $this->storeviewInfo = $additionInfo;
+        $this->_objectManager->get('\Magento\Framework\Event\ManagerInterface')->dispatch('simiconnector_get_storeview_info_after', array('object' => $this));
+        return $this->getDetail($this->storeviewInfo);
     }
 
     function getLocale() {

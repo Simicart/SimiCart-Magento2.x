@@ -127,7 +127,7 @@ class Server
             'controller' => $controller,
         );
         $this->_coreRegistry->register('simidata', $this->_data);
-        $this->eventManager->dispatch('Simi_Simiconnector_Model_Server_Initialize', array('object' => $this, 'data' => $this->_data));
+        $this->eventManager->dispatch('simi_simiconnector_model_server_initialize', array('object' => $this, 'data' => $this->_data));
     }
 
 }

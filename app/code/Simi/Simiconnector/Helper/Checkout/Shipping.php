@@ -63,6 +63,7 @@ class Shipping extends \Simi\Simiconnector\Helper\Data
 
     public function getMethods() {
         $shipping = $this->_getCheckoutSession()->getQuote()->getShippingAddress();
+        $shipping->collectShippingRates();
         $methods = $shipping->getGroupedAllShippingRates();
 
         $list = array();

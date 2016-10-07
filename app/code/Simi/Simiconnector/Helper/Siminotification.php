@@ -3,11 +3,11 @@
 /**
  * Connector data helper
  */
+
 namespace Simi\Simiconnector\Helper;
 
+class Siminotification extends \Simi\Simiconnector\Helper\Data {
 
-class Siminotification extends \Simi\Simiconnector\Helper\Data
-{
     public function sendNotice($data) {
         $trans = $this->send($data);
         // update notification history
@@ -285,8 +285,11 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
 
     public function getDirPEMfile($data) {
         switch ($data['notice_sanbox']) {
-            case '1':
-                return BP . '/pub/media/simi/simiconnector/pem/' . $this->getConfig("simi_notifications/notification/upload_pem_file_test", $data['storeview_id']);
+            case '1': 
+                if (!$this->getConfig("simi_notifications/notification/upload_pem_file_test", $data['storeview_id']))
+                    return BP . '/app/code/Simi/Simiconnector/view/adminhtml/web/pem/' . 'push.pem';
+                else
+                    return BP . '/pub/media/simi/simiconnector/pem/' . $this->getConfig("simi_notifications/notification/upload_pem_file_test", $data['storeview_id']);
                 break;
             case '2':
                 return BP . '/pub/media/simi/simiconnector/pem/manual' . $this->getConfig("simi_notifications/notification/upload_pem_file", $data['storeview_id']);
@@ -302,4 +305,5 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
     public function getConfig($nameConfig, $storeid) {
         return $this->_scopeConfig->getValue($nameConfig, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeid);
     }
+
 }

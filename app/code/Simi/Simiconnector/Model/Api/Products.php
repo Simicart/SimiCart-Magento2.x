@@ -214,7 +214,7 @@ class Products extends Apiabstract {
                 'number' => $ratings[5],
             );
         $this->detail_info = $this->getDetail($info);
-        $this->_eventManager->dispatch('Simi_Simiconnector_Model_Api_Products_Show_After', array('object' => $this, 'data' => $this->detail_info));
+        $this->_eventManager->dispatch('simi_simiconnector_model_api_products_show_after', array('object' => $this, 'data' => $this->detail_info));
         return $this->detail_info;
     }
 

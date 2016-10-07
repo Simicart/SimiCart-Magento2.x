@@ -227,6 +227,12 @@ class Customer extends \Magento\Framework\Model\AbstractModel {
         }
         $customer->setPassword($data->password);
         $customer->save();
+        
+        if (isset($data->news_letter) && ($data->news_letter == '1'))
+            $this->_objectManager->get('Magento\Newsletter\Model\Subscriber')->subscribe($data->email);
+        else
+            $this->_objectManager->get('Magento\Newsletter\Model\Subscriber')->loadByEmail($data->email)->unsubscribe();
+
         return $customer;
     }
 

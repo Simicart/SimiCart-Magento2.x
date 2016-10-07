@@ -6,11 +6,10 @@
 
 namespace Simi\Simiconnector\Model\Api;
 
-
 abstract class Apiabstract {
 
     public $FILTER_RESULT = true;
-    
+
     const DEFAULT_DIR = 'asc';
     const DEFAULT_LIMIT = 15;
     const DIR = 'dir';
@@ -21,16 +20,16 @@ abstract class Apiabstract {
     const FILTER = 'filter';
     const ALL_IDS = 'all_ids';
     const LIMIT_COUNT = 200;
-    const MEDIA_PATH    = 'Simiconnector';
+    const MEDIA_PATH = 'Simiconnector';
 
     protected $_DEFAULT_ORDER = 'entity_id';
     protected $_objectManager;
     protected $_storeManager;
     protected $_scopeConfig;
     protected $_resource;
-    
-    public  $storeRepository;
-    public  $storeCookieManager;
+    public $storeRepository;
+    public $storeCookieManager;
+
     /**
      * Singular key.
      *
@@ -79,17 +78,13 @@ abstract class Apiabstract {
         $this->_data = $data;
     }
 
-    
-    public function setData($data)
-    {
+    public function setData($data) {
         $this->_data = $data;
     }
 
-    public function getData()
-    {
+    public function getData() {
         return $this->_data;
     }
-
 
     /**
      * Get singular key
@@ -228,7 +223,7 @@ abstract class Apiabstract {
     public function getList($info, $all_ids, $total, $page_size, $from) {
         return array(
             'all_ids' => $all_ids,
-            $this->getPluralKey() => $info,
+            $this->getPluralKey() => $this->motifyFields($info),
             'total' => $total,
             'page_size' => $page_size,
             'from' => $from,
@@ -236,7 +231,7 @@ abstract class Apiabstract {
     }
 
     public function getDetail($info) {
-        return array($this->getSingularKey() => $info);
+        return array($this->getSingularKey() => $this->motifyFields($info));
     }
 
     protected function filter() {
@@ -294,22 +289,39 @@ abstract class Apiabstract {
         }
     }
 
-    
     /*
      * Get Store Configuration Value
      */
+
     public function getStoreConfig($path) {
         return $this->_scopeConfig->getValue($path);
     }
-    
-    
+
     /**
      * @return string
      */
-    public function getMediaUrl($media_path)
-    { 
+    public function getMediaUrl($media_path) {
         return $this->_storeManager->getStore()->getBaseUrl(
-                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
-            ).$media_path;
+                        \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+                ) . $media_path;
     }
+
+    //Max update to get fields
+    protected function motifyFields($content) {
+        $data = $this->getData();
+        $parameters = $data['params'];
+        if (isset($parameters['fields']) && $parameters['fields']) {
+            $fields = explode(',', $parameters['fields']);
+            $motify = array();
+            foreach ($content as $key => $item) {
+                if (in_array($key, $fields)) {
+                    $motify[$key] = $item;
+                }
+            }
+            return $motify;
+        } else {
+            return $content;
+        }
+    }
+
 }

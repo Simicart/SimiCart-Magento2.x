@@ -104,7 +104,7 @@ class Total extends Data
         }
 
         $this->data = $data;
-        $this->_objectManager->get('\Magento\Framework\Event\ManagerInterface')->dispatch('Simi_Simiconnector_Helper_Total_SetTotal_After', array('object' => $this, 'data' => $this->data));
+        $this->_objectManager->get('\Magento\Framework\Event\ManagerInterface')->dispatch('simi_simiconnector_helper_total_settotal_after', array('object' => $this, 'data' => $this->data));
         $data = $this->data;
     }
 

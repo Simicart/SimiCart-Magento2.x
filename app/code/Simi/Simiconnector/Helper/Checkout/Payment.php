@@ -3,17 +3,19 @@
 /**
  * Shipping helper
  */
+
 namespace Simi\Simiconnector\Helper\Checkout;
 
+class Payment extends \Simi\Simiconnector\Helper\Data {
 
-class Payment extends \Simi\Simiconnector\Helper\Data
-{
-    
+    public $detail;
+
     public function __construct() {
         parent::__construct();
         $this->_setListPayment();
         $this->setListCase();
     }
+
     protected function _getCart() {
         return $this->_objectManager->get('Magento\Checkout\Model\Cart');
     }
@@ -46,7 +48,6 @@ class Payment extends \Simi\Simiconnector\Helper\Data
         }
         $this->_getOnepage()->savePayment($method);
     }
-    
 
     /**
      * Add payment method
@@ -61,15 +62,15 @@ class Payment extends \Simi\Simiconnector\Helper\Data
 
     public function getMethods() {
         /*
-         * Dispatch event Simiconnector_Add_Payment_Method
+         * Dispatch event simiconnector_add_payment_method
          */
-        $this->_objectManager->get('\Magento\Framework\Event\ManagerInterface')->dispatch('Simiconnector_Add_Payment_Method',array('object'=>$this));
-        
+        $this->_objectManager->get('\Magento\Framework\Event\ManagerInterface')->dispatch('simiconnector_add_payment_method', array('object' => $this));
+
         $quote = $this->_getQuote();
         $store = $quote ? $quote->getStoreId() : null;
         $methods = $this->_objectManager->get('Magento\Payment\Helper\Data')->getStoreMethods($store, $quote);
         $total = $quote->getBaseSubtotal() + $quote->getShippingAddress()->getBaseShippingAmount();
-        
+
         foreach ($methods as $key => $method) {
             if ($this->_canUseMethod($method, $quote) && (!in_array($method->getCode(), $this->_getListPaymentNoUse()) &&
                     (in_array($method->getCode(), $this->_getListPayment()) || $method->getConfigData('cctypes'))) && ($total != 0 || $method->getCode() == 'free' || ($quote->hasRecurringItems() && $method->canManageRecurringProfiles()))) {
@@ -187,7 +188,9 @@ class Payment extends \Simi\Simiconnector\Helper\Data
         if (($this->_getQuote()->getPayment()->getMethod()) && ($this->_getQuote()->getPayment()->getMethodInstance()->getCode() == $method->getCode())) {
             $detail['p_method_selected'] = true;
         }
-        return $detail;
+        $this->detail = $detail;
+        $this->_objectManager->get('\Magento\Framework\Event\ManagerInterface')->dispatch('simiconnector_change_payment_detail', array('object' => $this));
+        return $this->detail;
     }
 
     public function getListCase() {

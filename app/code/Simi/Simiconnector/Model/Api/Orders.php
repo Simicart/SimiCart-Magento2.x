@@ -1,18 +1,19 @@
 <?php
+
 /**
  * Copyright © 2016 Simi. All rights reserved.
  */
 
 namespace Simi\Simiconnector\Model\Api;
 
+class Orders extends Apiabstract {
 
-class Orders extends Apiabstract
-{
     protected $_DEFAULT_ORDER = 'entity_id';
     protected $_RETURN_MESSAGE;
     protected $_QUOTE_INITED = FALSE;
     public $detail_onepage;
-
+    public $place_order;
+    public $order_placed_info;
 
     protected function _getCart() {
         return $this->_objectManager->get('Magento\Checkout\Model\Cart');
@@ -37,7 +38,6 @@ class Orders extends Apiabstract
                 
             } else {
                 $this->builderQuery = $this->_objectManager->get('Magento\Sales\Model\Order')->load($data['resourceid']);
-                $order = $this->builderQuery;
                 if (!$this->builderQuery->getId()) {
                     $this->builderQuery = $this->_objectManager->get('Magento\Sales\Model\Order')->loadByIncrementId($data['resourceid']);
                 }
@@ -79,14 +79,14 @@ class Orders extends Apiabstract
     private function _updateOrder() {
         $data = $this->getData();
         $parameters = (array) $data['contents'];
-        
+
         if (isset($parameters['b_address'])) {
             $this->_initCheckout();
             $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->saveBillingAddress($parameters['b_address']);
             if (!isset($parameters['s_address']) && (!$this->_getQuote()->getShippingAddress()->getFirstName()))
                 $parameters['s_address'] = $parameters['b_address'];
-        } 
-        
+        }
+
         if (isset($parameters['s_address'])) {
             $this->_initCheckout();
             $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->saveShippingAddress($parameters['s_address']);
@@ -95,15 +95,15 @@ class Orders extends Apiabstract
         if (isset($parameters['coupon_code'])) {
             $this->_RETURN_MESSAGE = $this->_objectManager->get('Simi\Simiconnector\Helper\Coupon')->setCoupon($parameters['coupon_code']);
         }
-        
+
         if (isset($parameters['s_method'])) {
             $this->_objectManager->get('Simi\Simiconnector\Helper\Checkout\Shipping')->saveShippingMethod($parameters['s_method']);
         }
-        
+
         if (isset($parameters['p_method'])) {
             $this->_objectManager->get('Simi\Simiconnector\Helper\Checkout\Payment')->savePaymentMethod($parameters['p_method']);
         }
-        
+
         $this->_getOnepage()->getQuote()->collectTotals()->save();
     }
 
@@ -121,6 +121,16 @@ class Orders extends Apiabstract
 
     public function store() {
         $this->_updateOrder();
+
+        $this->place_order = TRUE;
+        $this->_eventManager->dispatch('simi_simiconnector_model_api_orders_onepage_store_before', array('object' => $this, 'data' => $this->getData()));
+
+        if (!$this->place_order) {
+            $result = array('order' => $this->order_placed_info);
+            return $result;
+        }
+
+
         $quote = $this->_getQuote();
         if (!$quote->validateMinimumAmount()) {
             throw new \Exception($this->getStoreConfig('sales/minimum_order/error_message'), 4);
@@ -128,15 +138,15 @@ class Orders extends Apiabstract
         /*
          * Checkout as New Customer Data Adding
          */
-        if (!$this->_objectManager->get('Magento\Customer\Model\Session')->isLoggedIn() && 
+        if (!$this->_objectManager->get('Magento\Customer\Model\Session')->isLoggedIn() &&
                 $this->_getQuote()->getPasswordHash()) {
-            $billingAddress =  $quote->getBillingAddress();
+            $billingAddress = $quote->getBillingAddress();
             $customer = $this->_objectManager->create('Magento\Customer\Model\Data\Customer')
-                ->setFirstname($billingAddress->getFirstname())
-                ->setLastname($billingAddress->getLastname())
-                ->setEmail($billingAddress->getEmail());
-            $addressDataArray = $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($billingAddress);
-            foreach ($addressDataArray as $index=>$dataAddressItem) {
+                    ->setFirstname($billingAddress->getFirstname())
+                    ->setLastname($billingAddress->getLastname())
+                    ->setEmail($billingAddress->getEmail());
+            $addressDataArray = $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($billingAddress, $customer);
+            foreach ($addressDataArray as $index => $dataAddressItem) {
                 $customer->setData($index, $dataAddressItem);
             }
             $this->_getQuote()->setCustomer($customer);
@@ -187,14 +197,17 @@ class Orders extends Apiabstract
             $notification['type'] = $this->getStoreConfig('simi_notifications/noti_purchase/noti_purchase_type');
             $notification['productID'] = $this->getStoreConfig('simi_notifications/noti_purchase/noti_purchase_product_id');
             $notification['created_time'] = $this->_objectManager->get('\Magento\Framework\Stdlib\DateTime\DateTimeFactory')->create()->gmtDate();
-            $notification['notice_type'] = 3;           
+            $notification['notice_type'] = 3;
             $order['notification'] = $notification;
         }
 
         $result = array('order' => $order);
-        
         $session = $this->_getOnepage()->getCheckout();
         $session->resetCheckout();
+        
+        $lastOrderId = $this->_getCheckoutSession()->getLastRealOrderId();
+        $this->_eventManager->dispatch('simiconnector_checkout_onepage_controller_success_action', array('order_ids' => array($lastOrderId)));
+    
         return $result;
     }
 
@@ -205,29 +218,29 @@ class Orders extends Apiabstract
     public function show() {
         $data = $this->getData();
         if ($data['resourceid'] == 'onepage') {
+            $customer = $this->_objectManager->get('Magento\Customer\Model\Session')->getCustomer();
+            $quote = $this->_getQuote();
             $list_payment = array();
             $paymentHelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Checkout\Payment');
             foreach ($paymentHelper->getMethods() as $method) {
                 $list_payment[] = $paymentHelper->getDetailsPayment($method);
             }
             $order = array();
-            $quote = $this->_getQuote();
-            $customer = $this->_objectManager->get('Magento\Customer\Model\Session')->getCustomer();
-            $order['billing_address'] = $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($quote->getBillingAddress());
-            $order['shipping_address'] = $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($quote->getShippingAddress());
+            $order['billing_address'] = $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($quote->getBillingAddress(), $customer);
+            $order['shipping_address'] = $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($quote->getShippingAddress(), $customer);
             $order['shipping'] = $this->_objectManager->get('Simi\Simiconnector\Helper\Checkout\Shipping')->getMethods();
             $order['payment'] = $list_payment;
-            $order['total'] = $this->_objectManager->get('Simi\Simiconnector\Helper\Total')->getTotal();			
+            $order['total'] = $this->_objectManager->get('Simi\Simiconnector\Helper\Total')->getTotal();
             $detail_onepage = array('order' => $order);
             if ($this->_RETURN_MESSAGE) {
-                    $detail_onepage['message'] = array($this->_RETURN_MESSAGE);
+                $detail_onepage['message'] = array($this->_RETURN_MESSAGE);
             }
             $this->detail_onepage = $detail_onepage;
-            $this->_eventManager->dispatch('Simi_Simiconnector_Model_Api_Orders_Onepage_Show_After', array('object' => $this, 'data' => $this->detail_onepage));
+            $this->_eventManager->dispatch('simi_simiconnector_model_api_orders_onepage_show_after', array('object' => $this, 'data' => $this->detail_onepage));
             return $this->detail_onepage;
         } else {
             $result = parent::show();
-            if($data['params']['reorder'] == 1){
+            if ($data['params']['reorder'] == 1) {
                 $order = $this->_objectManager->get('Magento\Sales\Model\Order')->load($data['resourceid']);
                 $cart = $this->_getCart();
                 $items = $order->getItemsCollection();
@@ -263,13 +276,16 @@ class Orders extends Apiabstract
         $orderModel = $this->_objectManager->get('Magento\Sales\Model\Order')->load($order['entity_id']);
         $order['payment_method'] = $orderModel->getPayment()->getMethodInstance()->getTitle();
         $order['shipping_method'] = $orderModel->getShippingDescription();
-        $order['shipping_address'] = $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($orderModel->getShippingAddress());
-        $order['billing_address'] = $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($orderModel->getBillingAddress());
+        $order['billing_address'] = $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($orderModel->getBillingAddress(), $customer);
+        if (!$orderModel->getShippingAddress())
+            $order['shipping_address'] = $order['billing_address'];
+        else
+            $order['shipping_address'] = $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($orderModel->getShippingAddress(), $customer);
+        $order['billing_address'] = $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($orderModel->getBillingAddress(), $customer);
         $order['order_items'] = $this->_getProductFromOrderHistoryDetail($orderModel);
         $order['total'] = $this->_objectManager->get('Simi\Simiconnector\Helper\Total')->showTotalOrder($orderModel);
     }
 
-    
     public function _getProductFromOrderHistoryDetail($order) {
         $productInfo = array();
         $itemCollection = $order->getAllVisibleItems();
@@ -278,15 +294,13 @@ class Orders extends Apiabstract
             if ($item->getProductOptions()) {
                 $options = $this->_getOptions($item->getProductType(), $item->getProductOptions());
             }
-            $productInfo[] = array_merge( array('option' => $options),
-            $item->toArray(),
-            array('image' => $this->_objectManager->get('Simi\Simiconnector\Helper\Products')->getImageProduct($item->getProduct()))
+            $productInfo[] = array_merge(array('option' => $options), $item->toArray(), array('image' => $this->_objectManager->get('Simi\Simiconnector\Helper\Products')->getImageProduct($item->getProduct()))
             );
         }
 
         return $productInfo;
     }
-    
+
     public function _getOptions($type, $options) {
         $list = array();
         if ($type == 'bundle') {
@@ -319,5 +333,6 @@ class Orders extends Apiabstract
         }
         return $list;
     }
+
 
 }
