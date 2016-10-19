@@ -19,9 +19,25 @@ class Categories extends Apiabstract
         }
         if ($this->getStoreConfig('simiconnector/general/categories_in_app'))
             $this->_visible_array = explode(',', $this->getStoreConfig('simiconnector/general/categories_in_app'));
-        $this->builderQuery = $this->_objectManager->create('\Magento\Catalog\Model\Category')->getCollection()->addFieldToFilter('parent_id', $data['resourceid'])->addAttributeToSelect('*');
-        if ($this->_visible_array)
-            $this->builderQuery->addFieldToFilter('entity_id', array('nin' => $this->_visible_array));
+        
+        
+        $category = $this->_objectManager->create('\Magento\Catalog\Model\Category')->load($data['resourceid']);
+        if (is_array($category->getChildrenCategories())) {
+            $childArray = $category->getChildrenCategories();
+            $idArray = array();
+            foreach ($childArray as $childArrayItem) {
+                $idArray[] = $childArrayItem->getId();
+            }
+            if ($this->_visible_array)
+                $idArray = array_intersect($idArray, $this->_visible_array);
+            $this->builderQuery = $this->_objectManager->create('\Magento\Catalog\Model\Category')->getCollection()->addAttributeToSelect('*')->addFieldToFilter('entity_id', array('in' => $idArray));
+        }
+        else {
+            $this->builderQuery = $category->getChildrenCategories()->addAttributeToSelect('*');
+            if ($this->_visible_array)
+                $this->builderQuery->addFieldToFilter('entity_id', array('in' => $this->_visible_array));
+        }
+
     }
 
     public function index() {

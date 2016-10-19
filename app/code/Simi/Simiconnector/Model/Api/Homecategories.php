@@ -1,12 +1,13 @@
 <?php
+
 /**
  * Copyright © 2016 Simi. All rights reserved.
  */
 
 namespace Simi\Simiconnector\Model\Api;
 
-class Homecategories extends Apiabstract
-{
+class Homecategories extends Apiabstract {
+
     protected $_DEFAULT_ORDER = 'sort_order';
     protected $_visible_array;
 
@@ -14,7 +15,7 @@ class Homecategories extends Apiabstract
         $this->singularKey = 'Homecategory';
         return $this;
     }
-    
+
     public function setBuilderQuery() {
         if ($this->getStoreConfig('simiconnector/general/categories_in_app'))
             $this->_visible_array = explode(',', $this->getStoreConfig('simiconnector/general/categories_in_app'));
@@ -29,31 +30,29 @@ class Homecategories extends Apiabstract
     public function getCollection() {
         $typeID = $this->_objectManager->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('homecategory');
         $visibilityTable = $this->_resource->getTableName('simiconnector_visibility');
-        $simicategoryCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Simicategory')->getCollection()->addFieldToFilter('status','1');
+        $simicategoryCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Simicategory')->getCollection()->addFieldToFilter('status', '1');
         $simicategoryCollection->getSelect()
                 ->join(array('visibility' => $visibilityTable), 'visibility.item_id = main_table.simicategory_id AND visibility.content_type = ' . $typeID . ' AND visibility.store_view_id =' . $this->_storeManager->getStore()->getId());
         $this->builderQuery = $simicategoryCollection;
         return $simicategoryCollection;
     }
-      
 
-    
     public function index() {
         $result = parent::index();
         $data = $this->getData();
 
         foreach ($result['homecategories'] as $index => $item) {
-            
+
             if (!$item['simicategory_filename_tablet'])
                 $item['simicategory_filename_tablet'] = $item['simicategory_filename'];
-            
-            $imagesize = @getimagesize(BP.'/pub/media/'.$item['simicategory_filename']);
+
+            $imagesize = @getimagesize(BP . '/pub/media/' . $item['simicategory_filename']);
             $item['width'] = $imagesize[0];
             $item['height'] = $imagesize[1];
             $item['simicategory_filename'] = $this->getMediaUrl($item['simicategory_filename']);
-            
+
             if ($item['simicategory_filename_tablet']) {
-                $imagesize = @getimagesize(BP.'/pub/media/'.$item['simicategory_filename_tablet']);
+                $imagesize = @getimagesize(BP . '/pub/media/' . $item['simicategory_filename_tablet']);
                 $item['width_tablet'] = $imagesize[0];
                 $item['height_tablet'] = $imagesize[1];
                 $item['simicategory_filename_tablet'] = $this->getMediaUrl($item['simicategory_filename_tablet']);
@@ -91,6 +90,15 @@ class Homecategories extends Apiabstract
 
     public function getVisibleChildren($catId) {
         $category = $this->_objectManager->create('\Magento\Catalog\Model\Category')->load($catId);
+        if (is_array($category->getChildrenCategories())) {
+            $childArray = $category->getChildrenCategories();
+            $idArray = array();
+            foreach ($childArray as $childArrayItem) {
+                $idArray[] = $childArrayItem->getId();
+            }
+            return $this->_objectManager->create('\Magento\Catalog\Model\Category')->getCollection()->addAttributeToSelect('*')->addFieldToFilter('entity_id', array('in' => $idArray));
+        }
+
         return $category->getChildrenCategories()->addAttributeToSelect('*');
     }
 

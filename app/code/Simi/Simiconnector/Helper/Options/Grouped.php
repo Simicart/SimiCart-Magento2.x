@@ -35,6 +35,8 @@ class Grouped extends \Simi\Simiconnector\Helper\Options
                     'id' => $_item->getId(),
                     'name' => $_item->getName(),
                     'is_salable' => $_item->isSaleable() ? "1":"0",
+                    'qty' => is_null($_item->getData('qty')) ? "0" : $_item->getData('qty'),
+                    'position' => is_null($_item->getData('position'))? "0": $_item->getData('position'),
                 );
 
                 $final_price = $_item->getFinalPrice();

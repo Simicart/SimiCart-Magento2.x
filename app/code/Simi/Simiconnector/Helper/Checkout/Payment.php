@@ -166,17 +166,21 @@ class Payment extends \Simi\Simiconnector\Helper\Data {
             $detail['payment_method'] = strtoupper($method->getCode());
             $detail['title'] = $method->getConfigData('title');
             $detail['useccv'] = $method->getConfigData('useccv');
+            $detail['is_show_name'] = '0';
             $detail['show_type'] = 1;
         } elseif ($type == 2) {
-            $m_code = strtoupper($method->getCode());
-            $detail['email'] = $method->getConfigData('business_account');
-            $detail['client_id'] = $method->getConfigData('client_id');
-            $detail['is_sandbox'] = $method->getConfigData('is_sandbox');
+            $m_code = strtoupper($method->getCode());            
+            if ($method->getConfigData('business_account'))
+                $detail['email'] = $method->getConfigData('business_account');
+            if ($method->getConfigData('client_id'))
+                $detail['client_id'] = $method->getConfigData('client_id');
+            if ($method->getConfigData('is_sandbox'))
+                $detail['is_sandbox'] = $method->getConfigData('is_sandbox');
             $detail['payment_method'] = $m_code;
             $detail['title'] = $method->getConfigData('title');
-            $detail['bncode'] = "Magestore_SI_MagentoCE";
             $detail['show_type'] = 2;
             if (strcasecmp($m_code, 'PAYPAL_MOBILE') == 0) {
+                $detail['bncode'] = "Magestore_SI_MagentoCE";
                 $detail['use_credit_card'] = $this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface')->getValue('payment/paypal_mobile/use_credit_cart');
             }
         } elseif ($type == 3) {

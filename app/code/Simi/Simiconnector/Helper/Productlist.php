@@ -1,11 +1,9 @@
 <?php
 
-
 namespace Simi\Simiconnector\Helper;
 
-class Productlist extends Data
-{
-    
+class Productlist extends Data {
+
     public function getListTypeId() {
         return array(
             1 => __('Custom Product List'),
@@ -25,7 +23,7 @@ class Productlist extends Data
             array('value' => 5, 'label' => __('Recently Added')),
         );
     }
-    
+
     public function getProductCollection($listModel) {
         $collection = $this->_objectManager->get('Magento\Catalog\Model\Product')->getCollection()
                 ->addAttributeToSelect($this->_objectManager->get('Magento\Catalog\Model\Config')
@@ -44,34 +42,34 @@ class Productlist extends Data
                 $orderItemTable = $this->_resource->getTableName('sales_order_item');
                 $collection = $this->_objectManager->get('Magento\Catalog\Model\Product')->getCollection();
                 $select = $collection->getSelect()
-                ->join(array('order_item' => $orderItemTable), 'order_item.product_id = entity_id', array('order_item.product_id','order_item.qty_ordered'))
-                ->columns('SUM(qty_ordered) as total_ordered')
-                ->group('product_id')
-                ->order(array('total_ordered DESC'));
+                        ->join(array('order_item' => $orderItemTable), 'order_item.product_id = entity_id', array('order_item.product_id', 'order_item.qty_ordered'))
+                        ->columns('SUM(qty_ordered) as total_ordered')
+                        ->group('product_id')
+                        ->order(array('total_ordered DESC'));
                 $collection
                         ->addAttributeToSelect($this->_objectManager->get('Magento\Catalog\Model\Config')
-                        ->getProductAttributes())
-                ->addMinimalPrice()
-                ->addFinalPrice()
-                ->addTaxPercents()
-                ->addUrlRewrite();
+                                ->getProductAttributes())
+                        ->addMinimalPrice()
+                        ->addFinalPrice()
+                        ->addTaxPercents()
+                        ->addUrlRewrite();
                 break;
-             //Most Viewed
+            //Most Viewed
             case 3:
                 $productViewTable = $this->_resource->getTableName('report_viewed_product_aggregated_yearly');
                 $collection = $this->_objectManager->get('Magento\Catalog\Model\Product')->getCollection();
                 $select = $collection->getSelect()
-                ->join(array('product_viewed' => $productViewTable), 'product_viewed.product_id = entity_id', array('product_viewed.product_id','product_viewed.views_num'))
-                ->columns('SUM(views_num) as total_viewed')
-                ->group('product_id')
-                ->order(array('total_viewed DESC'));
+                        ->join(array('product_viewed' => $productViewTable), 'product_viewed.product_id = entity_id', array('product_viewed.product_id', 'product_viewed.views_num'))
+                        ->columns('SUM(views_num) as total_viewed')
+                        ->group('product_id')
+                        ->order(array('total_viewed DESC'));
                 $collection
                         ->addAttributeToSelect($this->_objectManager->get('Magento\Catalog\Model\Config')
-                        ->getProductAttributes())
-                ->addMinimalPrice()
-                ->addFinalPrice()
-                ->addTaxPercents()
-                ->addUrlRewrite();
+                                ->getProductAttributes())
+                        ->addMinimalPrice()
+                        ->addFinalPrice()
+                        ->addTaxPercents()
+                        ->addUrlRewrite();
                 break;
             //New Updated
             case 4:
@@ -87,10 +85,10 @@ class Productlist extends Data
         return $collection;
     }
 
-    
     /*
      * Matrix Helper Functions
      */
+
     public function getMatrixRowOptions() {
         //return $this->getListTypeId();
         $rows = array();
@@ -114,17 +112,16 @@ class Productlist extends Data
         ksort($rows);
         $returnArray = array($highestRow => _('Create New Row'));
         foreach ($rows as $index => $row)
-            $returnArray[$index] =  __('Row No. ') . $index . ' - ' . implode(',', $row);
+            $returnArray[$index] = __('Row No. ') . $index . ' - ' . implode(',', $row);
         return $returnArray;
     }
-    
     
     public function getMatrixLayoutMockup($storeviewid, $controller) {
         $rows = array();
         $typeID = $this->_objectManager->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('homecategory');
         $visibilityTable = $this->_resource->getTableName('simiconnector_visibility');
-        
-        $simicategoryCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Simicategory')->getCollection();
+
+        $simicategoryCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Simicategory')->getCollection()->setOrder('sort_order', 'desc')->addFieldToFilter('status', '1');
         $simicategoryCollection->getSelect()
                 ->join(array('visibility' => $visibilityTable), 'visibility.item_id = main_table.simicategory_id AND visibility.content_type = ' . $typeID . ' AND visibility.store_view_id =' . $storeviewid);
         $this->builderQuery = $simicategoryCollection;
@@ -132,7 +129,7 @@ class Productlist extends Data
             if (!isset($rows[$simicat->getData('matrix_row')]))
                 $rows[(int) $simicat->getData('matrix_row')] = array();
 
-            $editUrl = $controller->getUrl('*/*/simicategory/edit', array('productlist_id' => $simicat->getId()));
+            $editUrl = $controller->getUrl('*/simicategory/edit', array('simicategory_id' => $simicat->getId()));
             $title = '<a href="' . $editUrl . '" style="background-color:rgba(255,255,255,0.7); text-decoration:none; text-transform: uppercase; color: black">' . $simicat->getData('simicategory_name') . '</a>';
 
             $rows[(int) $simicat->getData('matrix_row')][] = array(
@@ -144,11 +141,13 @@ class Productlist extends Data
                 'matrix_width_percent_tablet' => $simicat->getData('matrix_width_percent_tablet'),
                 'matrix_height_percent_tablet' => $simicat->getData('matrix_height_percent_tablet'),
                 'title' => $title,
+                'sort_order' => $simicat->getData('sort_order')
             );
         }
 
         $listtypeID = $this->_objectManager->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('productlist');
-        $listCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Productlist')->getCollection();
+        $listCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Productlist')->getCollection()->setOrder('sort_order', 'desc')->addFieldToFilter('list_status', '1');
+
         $listCollection->getSelect()
                 ->join(array('visibility' => $visibilityTable), 'visibility.item_id = main_table.productlist_id AND visibility.content_type = ' . $listtypeID . ' AND visibility.store_view_id =' . $storeviewid);
 
@@ -167,15 +166,22 @@ class Productlist extends Data
                 'matrix_width_percent_tablet' => $productlist->getData('matrix_width_percent_tablet'),
                 'matrix_height_percent_tablet' => $productlist->getData('matrix_height_percent_tablet'),
                 'title' => $title,
+                'sort_order' => $productlist->getData('sort_order')
             );
         }
         ksort($rows);
+        foreach ($rows as $index => $row) {
+            usort($row, function($a, $b) {
+                return $a['sort_order'] - $b['sort_order'];
+            });
+            $rows[$index] = $row;
+        }
 
         $html = '</br> <b> Matrix Theme Mockup Preview: </b></br>(Save Item to update your Changes)</br></br>';
         $html.= 'Phone Screen Mockup Preview: </br>';
         $html.= $this->drawMatrixMockupTable(170, 320, false, $rows, $storeviewid);
         $html.= '</br>Tablet Screen Mockup Preview: </br>';
-        $html.= $this->drawMatrixMockupTable(178, 512, true, $rows, $storeviewid).'</table>';
+        $html.= $this->drawMatrixMockupTable(178, 512, true, $rows, $storeviewid) . '</table>';
         return $html;
     }
 
@@ -233,8 +239,7 @@ class Productlist extends Data
         $html.='</span></div></div>';
         return $html;
     }
-    
-    
+
     public function autoFillMatrixRowHeight() {
         $rows = array();
         foreach ($this->_objectManager->get('Simi\Simiconnector\Model\Simicategory')->getCollection() as $simicat) {
@@ -262,14 +267,14 @@ class Productlist extends Data
         ';
         return $script;
     }
+
     /**
      * @return string
      */
-    public function getImageUrl($media_path, $storeviewid)
-    { 
+    public function getImageUrl($media_path, $storeviewid) {
         return $this->_objectManager->get('\Magento\Store\Model\Store')->load($storeviewid)->getBaseUrl(
-                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
-            ).$media_path;
+                        \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+                ) . $media_path;
     }
-    
+
 }
