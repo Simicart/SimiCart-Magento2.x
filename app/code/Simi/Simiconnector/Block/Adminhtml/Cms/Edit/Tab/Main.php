@@ -11,7 +11,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @var \Magento\Framework\App\ObjectManager
      */
     protected $_objectManager;
-    
+
     /**
      * @var \Magento\Store\Model\System\Store
      */
@@ -50,15 +50,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @param array $data
      */
     public function __construct(
-            \Magento\Backend\Block\Template\Context $context, 
-            \Magento\Framework\Registry $registry, 
-            \Magento\Framework\Data\FormFactory $formFactory, 
-            \Magento\Store\Model\System\Store $systemStore, 
-            \Simi\Simiconnector\Helper\Website $websiteHelper, 
-            \Simi\Simiconnector\Model\CmsFactory $cmsFactory, 
-            \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig, 
-            \Magento\Framework\Json\EncoderInterface $jsonEncoder,             
-            \Magento\Catalog\Model\CategoryFactory $categoryFactory, array $data = []
+    \Magento\Backend\Block\Template\Context $context, \Magento\Framework\Registry $registry, \Magento\Framework\Data\FormFactory $formFactory, \Magento\Store\Model\System\Store $systemStore, \Simi\Simiconnector\Helper\Website $websiteHelper, \Simi\Simiconnector\Model\CmsFactory $cmsFactory, \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig, \Magento\Framework\Json\EncoderInterface $jsonEncoder, \Magento\Catalog\Model\CategoryFactory $categoryFactory, array $data = []
     ) {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_cmsFactory = $cmsFactory;
@@ -96,27 +88,27 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Cms Information')]);
         $new_category_parent = false;
-        
+
         $data = $model->getData();
         if ($model->getId()) {
             $fieldset->addField('cms_id', 'hidden', ['name' => 'cms_id']);
             $new_category_parent = $model->getData('category_id');
-            
-            $simiconnectorhelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');  
+
+            $simiconnectorhelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');
             $typeID = $simiconnectorhelper->getVisibilityTypeId('cms');
             $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
                     ->addFieldToFilter('content_type', $typeID)
                     ->addFieldToFilter('item_id', $model->getId());
             $storeIdArray = array();
-            
+
             foreach ($visibleStoreViews as $visibilityItem) {
                 $storeIdArray[] = $visibilityItem->getData('store_view_id');
             }
             $data['storeview_id'] = implode(',', $storeIdArray);
         }
-        
+
         $storeResourceModel = $this->_objectManager->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
-        
+
         $fieldset->addField('storeview_id', 'multiselect', array(
             'name' => 'storeview_id[]',
             'label' => __('Store View'),
@@ -124,10 +116,10 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'required' => true,
             'values' => $storeResourceModel->toArray(),
         ));
-       
+
 
         $fieldset->addField(
-            'cms_title', 'text', [
+                'cms_title', 'text', [
             'name' => 'cms_title',
             'label' => __('Title'),
             'title' => __('Title'),
@@ -137,7 +129,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-            'cms_content', 'editor', [
+                'cms_content', 'editor', [
             'name' => 'cms_content',
             'label' => __('Content'),
             'title' => __('Content'),
@@ -147,18 +139,21 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'config' => $this->_wysiwygConfig->getConfig()
                 ]
         );
-        
+
+        if (!isset($data['sort_order']))
+            $data['sort_order'] = 1;
         $fieldset->addField(
-            'sort_order', 'text', [
+                'sort_order', 'text', [
             'name' => 'sort_order',
             'label' => __('Sort Order'),
             'title' => __('Sort Order'),
+            'class' => 'validate-not-negative-number',
             'disabled' => $isElementDisabled
                 ]
         );
-        
+
         $fieldset->addField(
-            'cms_status', 'select', [
+                'cms_status', 'select', [
             'name' => 'cms_status',
             'label' => __('Status'),
             'title' => __('Status'),
@@ -167,54 +162,51 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'options' => $this->_cmsFactory->create()->toOptionStatusHash(),
                 ]
         );
-        
-        
+
+
         $fieldset->addField(
-            'type', 'select', [
+                'type', 'select', [
             'name' => 'type',
             'label' => __('Show Block On'),
             'title' => __('Show Block On'),
             'required' => false,
             'disabled' => $isElementDisabled,
             'options' => array(
-            '1' => __('Left Menu'),
-            '2' => __('Category In-app'),
-        ),
+                '1' => __('Left Menu'),
+                '2' => __('Category In-app'),
+            ),
             'onchange' => 'toogleType()'
-                
                 ]
         );
-        
+
         /*
+          $fieldset->addField(
+          'category_id',
+          'select',
+          [
+          'label' => __('Category ID'),
+          'title' => __('Category ID'),
+          'required' => true,
+          'class' => 'validate-parent-category',
+          'name' => 'new_category_parent',
+          'options' => $this->_getParentCategoryOptions($new_category_parent),
+          ]
+          );
+         */
         $fieldset->addField(
-            'category_id',
-            'select',
-            [
-                'label' => __('Category ID'),
-                'title' => __('Category ID'),
-                'required' => true,
-                'class' => 'validate-parent-category',
-                'name' => 'new_category_parent',
-                'options' => $this->_getParentCategoryOptions($new_category_parent),
-            ]
+                'new_category_parent', 'select', [
+            'label' => __('Categories'),
+            'title' => __('Categories'),
+            'class' => 'validate-parent-category',
+            'name' => 'new_category_parent',
+            'options' => $this->_getParentCategoryOptions($new_category_parent),
+                ]
         );
-        */
+
+
+
         $fieldset->addField(
-            'new_category_parent',
-            'select',
-            [
-                'label' => __('Categories'),
-                'title' => __('Categories'),
-                'class' => 'validate-parent-category',
-                'name' => 'new_category_parent',
-                'options' => $this->_getParentCategoryOptions($new_category_parent),
-            ]
-        );
-        
-        
-        
-        $fieldset->addField(
-            'cms_image', 'image', [
+                'cms_image', 'image', [
             'name' => 'cms_image',
             'label' => __('Image (width:64px, height:64px)'),
             'title' => __('Image (width:64px, height:64px)'),
@@ -222,7 +214,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'disabled' => $isElementDisabled
                 ]
         );
-        
+
 
         $this->_eventManager->dispatch('adminhtml_cms_edit_tab_main_prepare_form', ['form' => $form]);
 
