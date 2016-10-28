@@ -114,8 +114,23 @@ class Review extends \Simi\Simiconnector\Helper\Data
             $info[] = array('rates' => $rates, 'form_review' => array(
                 'key_1' => 'nickname',
                 'key_2' => 'title',
-                'key_3' => 'detail',
-            ));
+                'key_3' => 'detail',                 
+                'form_key'=> array(
+                     array(
+                         'key' => 'nickname',
+                         'value' => 'Nickname'
+                     ),
+                     array(
+                         'key' => 'title',
+                         'value' => 'Title'
+                     ),
+                     array(
+                         'key' => 'detail',
+                         'value' => 'Detail'
+                     ),
+                )),
+            );
+
             return $info;
         } else {
             return array($block->__('Only registered users can write reviews'));

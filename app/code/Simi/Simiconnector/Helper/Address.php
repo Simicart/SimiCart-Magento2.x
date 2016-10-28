@@ -110,7 +110,7 @@ class Address extends Data {
         if (isset($data->country_id)) {
             $country = $data->country_id;
             $listState = $this->getStates($country);
-            $state_id = null;
+            $state_id = $this->getStoreConfig('simiconnector/hideaddress/region_id_default');
             $check_state = false;
             if (count($listState) == 0) {
                 $check_state = true;
@@ -126,10 +126,28 @@ class Address extends Data {
                 }
             }
             if (!$check_state) {
-                throw new \Exception(__('State invalid'), 4);
+                if (!$state_id)
+                    throw new \Exception(__('State invalid'), 4);
             }
             $address['region_id'] = $state_id;
         }
+
+        if (!isset($data->country_id) && !isset($data->country_name))
+            $data->country_id = $this->getStoreConfig('simiconnector/hideaddress/country_id_default');
+
+        if (!isset($data->street))
+            $data->street = $this->getStoreConfig('simiconnector/hideaddress/street_default');
+
+        if (!isset($data->city))
+            $data->city = $this->getStoreConfig('simiconnector/hideaddress/city_default');
+
+        if (!isset($data->postcode))
+            $data->postcode = $this->getStoreConfig('simiconnector/hideaddress/zipcode_default');
+
+        if (!isset($data->telephone))
+            $data->telephone = $this->getStoreConfig('simiconnector/hideaddress/telephone_default');
+
+
         $latlng = isset($data->latlng) == true ? $data->latlng : '';
         $address = array();
         foreach ((array) $data as $index => $info) {
@@ -146,6 +164,9 @@ class Address extends Data {
 
     public function getAddressDetail($data, $customer = null) {
         $street = $data->getStreet();
+        if (!($email = $data->getData('email')) && $customer->getEmail())
+            $email = $customer->getEmail();
+        
         if (!isset($street[2]))
             $street[2] = NULL;
         return array(
@@ -162,8 +183,8 @@ class Address extends Data {
             'postcode' => $data->getPostcode(),
             'country_name' => $data->getCountry() ? $data->getCountryModel()->loadByCode($data->getCountry())->getName() : NULL,
             'country_id' => $data->getCountry(),
-            'telephone' => $data->getTelephone(),
-            'email' => $customer ? $customer->getEmail() : $data->getEmail(),
+            'telephone' => $data->getTelephone(),            
+            'email' => $email,
             'company' => $data->getCompany(),
             'fax' => $data->getFax(),
             'latlng' => $street[2] != NULL ? $street[2] : "",

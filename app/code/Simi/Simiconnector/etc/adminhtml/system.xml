@@ -92,12 +92,28 @@
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
+                <field id="street_default" translate="label" type="text" sortOrder="249" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Address Value</label>
+                    <depends>
+                        <field id="*/*/street" separator=",">2,3</field>
+                        <field id="*/*/hideaddress_enable">1</field>
+                    </depends>
+                    <comment>Applied when Customers leave Address field blank</comment>
+                </field>
                 <field id="country_id" translate="label" type="select" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Country</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
+                </field>
+                <field id="country_id_default" translate="label" type="text" sortOrder="349" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Country Value</label>
+                    <depends>
+                        <field id="*/*/country_id" separator=",">2,3</field>
+                        <field id="*/*/hideaddress_enable">1</field>
+                    </depends>
+                    <comment>Applied when Customers leave Country field blank, use country ID, eg. US</comment>
                 </field>
                 <field id="region_id" translate="label" type="select" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>State/Province</label>
@@ -106,12 +122,28 @@
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
+                <field id="region_id_default" translate="label" type="text" sortOrder="449" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default State/Province Value</label>
+                    <depends>
+                        <field id="*/*/region_id" separator=",">2,3</field>
+                        <field id="*/*/hideaddress_enable">1</field>
+                    </depends>                            
+                    <comment>Applied when Customers leave State/Province field blank, use region_id if State/Province is a option field. Eg. 1 for Alabama</comment>
+                </field>
                 <field id="city" translate="label" type="select" sortOrder="499" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>City</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
+                </field>
+                <field id="city_default" translate="label" type="text" sortOrder="549" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default City Value</label>
+                    <depends>
+                        <field id="*/*/city" separator=",">2,3</field>
+                        <field id="*/*/hideaddress_enable">1</field>
+                    </depends>                            
+                    <comment>Applied when Customers leave City field blank</comment>
                 </field>
                 <field id="zipcode" translate="label" type="select" sortOrder="599" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Zip/Postal Code</label>
@@ -120,12 +152,28 @@
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
+                <field id="zipcode_default" translate="label" type="text" sortOrder="649" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Zip/Postal Code Value</label>
+                    <depends>
+                        <field id="*/*/zipcode" separator=",">2,3</field>
+                        <field id="*/*/hideaddress_enable">1</field>
+                    </depends>                            
+                    <comment>Applied when Customers leave Zip/Postal Code field blank</comment>
+                </field>
                 <field id="telephone" translate="label" type="select" sortOrder="699" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Telephone</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
+                </field>
+                <field id="telephone_default" translate="label" type="text" sortOrder="749" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Default Telephone Value</label>
+                    <depends>
+                        <field id="*/*/telephone" separator=",">2,3</field>
+                        <field id="*/*/hideaddress_enable">1</field>
+                    </depends>                                                        
+                    <comment>Applied when Customers leave Telephone field blank</comment>
                 </field>
                 <field id="fax" translate="label" type="select" sortOrder="799" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Fax</label>

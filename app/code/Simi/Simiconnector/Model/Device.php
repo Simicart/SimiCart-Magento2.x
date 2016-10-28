@@ -8,12 +8,11 @@ namespace Simi\Simiconnector\Model;
  * @method \Simi\Simiconnector\Model\Resource\Page _getResource()
  * @method \Simi\Simiconnector\Model\Resource\Page getResource()
  */
-class Device extends \Magento\Framework\Model\AbstractModel
-{
+class Device extends \Magento\Framework\Model\AbstractModel {
 
     /**
      * @var \Simi\Simiconnector\Helper\Website
-     **/
+     * */
     protected $_websiteHelper;
     protected $_objectManager;
 
@@ -30,22 +29,13 @@ class Device extends \Magento\Framework\Model\AbstractModel
      * @param ResourceModel\Key\CollectionFactory $keyCollection
      */
     public function __construct(
-        \Magento\Framework\Model\Context $context,
-        \Magento\Framework\Registry $registry,
-        \Simi\Simiconnector\Model\ResourceModel\Device $resource,
-        \Simi\Simiconnector\Model\ResourceModel\Device\Collection $resourceCollection,
-        \Simi\Simiconnector\Helper\Website $websiteHelper
-
-    )
-    {
+    \Magento\Framework\Model\Context $context, \Magento\Framework\Registry $registry, \Simi\Simiconnector\Model\ResourceModel\Device $resource, \Simi\Simiconnector\Model\ResourceModel\Device\Collection $resourceCollection, \Simi\Simiconnector\Helper\Website $websiteHelper
+    ) {
 
         $this->_websiteHelper = $websiteHelper;
 
         parent::__construct(
-            $context,
-            $registry,
-            $resource,
-            $resourceCollection
+                $context, $registry, $resource, $resourceCollection
         );
     }
 
@@ -54,20 +44,19 @@ class Device extends \Magento\Framework\Model\AbstractModel
      *
      * @return void
      */
-    protected function _construct()
-    {
+    protected function _construct() {
         $this->_init('Simi\Simiconnector\Model\ResourceModel\Device');
     }
 
     /**
      * @return array Website
      */
-    public function toOptionStoreviewHash(){
+    public function toOptionStoreviewHash() {
         $storeViewCollection = \Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Store\Model\Store')->getCollection();
         $list = array();
         $list[0] = __('All');
-        if(sizeof($storeViewCollection) > 0){
-            foreach($storeViewCollection as $storeView){
+        if (sizeof($storeViewCollection) > 0) {
+            foreach ($storeViewCollection as $storeView) {
                 $list[$storeView->getId()] = $storeView->getName();
             }
         }
@@ -77,11 +66,11 @@ class Device extends \Magento\Framework\Model\AbstractModel
     /**
      * @return array Website
      */
-    public function toOptionCountryHash(){
+    public function toOptionCountryHash() {
         $country_collection = $this->_websiteHelper->getCountryCollection();
         $list = array();
-        if(sizeof($country_collection) > 0){
-            foreach($country_collection as $country){
+        if (sizeof($country_collection) > 0) {
+            foreach ($country_collection as $country) {
                 $list[$country->getId()] = $country->getName();
             }
         }
@@ -91,7 +80,7 @@ class Device extends \Magento\Framework\Model\AbstractModel
     /**
      * @return array Devices
      */
-    public function toOptionDeviceHash(){
+    public function toOptionDeviceHash() {
         $devices = array(
             '1' => __('iPhone'),
             '2' => __('iPad'),
@@ -103,7 +92,7 @@ class Device extends \Magento\Framework\Model\AbstractModel
     /**
      * @return array Devices
      */
-    public function toOptionDemoHash(){
+    public function toOptionDemoHash() {
         $demos = array(
             '0' => __('NO'),
             '1' => __('YES'),
@@ -111,8 +100,7 @@ class Device extends \Magento\Framework\Model\AbstractModel
         );
         return $demos;
     }
-    
-    
+
     public function detectMobile() {
         $user_agent = '';
         if ($_SERVER["HTTP_USER_AGENT"]) {
@@ -130,20 +118,20 @@ class Device extends \Magento\Framework\Model\AbstractModel
     }
 
     public function saveDevice($data) {
-        if ($this->_objectManager == null) 
+        if ($this->_objectManager == null)
             $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $deviceData = $data['contents'];
         if (!$deviceData->device_token)
             throw new \Exception(__('No Device Token Sent'), 4);
         if (isset($deviceData->plaform_id))
             $device_id = $deviceData->plaform_id;
-        
+
         if (!isset($device_id))
             $device_id = $this->detectMobile();
         $existed_device = $this->getCollection()->addFieldToFilter('device_token', $deviceData->device_token)->getFirstItem();
         if ($existed_device->getId()) {
-            if (($existed_device->getData('storeview_id') != null) && ($existed_device->getData('storeview_id') ==  $this->_objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore()->getId()))
-                $this->setId($existed_device->getId());
+            //if (($existed_device->getData('storeview_id') != null) && ($existed_device->getData('storeview_id') ==  $this->_objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore()->getId()))
+            $this->setId($existed_device->getId());
         }
         if (isset($deviceData->latitude) && isset($deviceData->longitude)) {
             $this->setData('latitude', $deviceData->latitude);
@@ -162,7 +150,7 @@ class Device extends \Magento\Framework\Model\AbstractModel
             $this->setData('user_email', $deviceData->user_email);
         if (isset($deviceData->app_id))
             $this->setData('app_id', $deviceData->app_id);
-        $this->setData('device_ip', $_SERVER['REMOTE_ADDR']);        
+        $this->setData('device_ip', $_SERVER['REMOTE_ADDR']);
         $this->setData('device_user_agent', $_SERVER['HTTP_USER_AGENT']);
         if (isset($deviceData->build_version))
             $this->setData('build_version', $deviceData->build_version);
@@ -171,6 +159,6 @@ class Device extends \Magento\Framework\Model\AbstractModel
         } else
             $this->setData('is_demo', $deviceData->is_demo);
         $this->save();
-    } 
+    }
 
 }

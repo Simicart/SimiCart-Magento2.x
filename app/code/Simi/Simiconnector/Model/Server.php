@@ -21,7 +21,7 @@ class Server
     }
     
     public function init(
-            \Magento\Framework\App\Action\Action $controller)
+            \Simi\Simiconnector\Controller\Rest\Action $controller)
     {   
         $this->initialize($controller);
         return $this;
@@ -73,13 +73,13 @@ class Server
     }
 
     /**
-     * @param Mage_Api_Controller_Action $controller
+     * @param \Simi\Simiconnector\Controller\Rest\Action $controller
      * $is_method = 1 - get
      * $is_method = 2 - post
      * $is_method = 3 - update
      * $is_method = 4 - delete
      */
-    public function initialize(\Magento\Framework\App\Action\Action $controller)
+    public function initialize(\Simi\Simiconnector\Controller\Rest\Action $controller)
     {
         $this->objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $request_string = $controller->getRequest()->getRequestString();
