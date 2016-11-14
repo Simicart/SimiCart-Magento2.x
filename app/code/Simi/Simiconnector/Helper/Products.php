@@ -168,7 +168,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 $collection->addFieldToFilter('entity_id', ['in' => $ids]);
 
                 $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
-                $collection->getVisibleInSearchIds($this->productVisibility->getVisibleInSiteIds());
+                $collection->setVisibility(array('3', '4'));
         }
         else {
             $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
