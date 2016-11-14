@@ -13,7 +13,7 @@ class Customer extends Data {
     }
 
     public function renewCustomerSesssion($data) {
-        if ($data['params']['quote_id']) {
+        if (isset($data['params']['quote_id']) && $data['params']['quote_id']) {
             $checkoutsession = $this->_objectManager->get('Magento\Checkout\Model\Session');
             $checkoutsession->setQuoteId($data['params']['quote_id']);
         }

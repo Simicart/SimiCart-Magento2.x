@@ -89,6 +89,7 @@ class Storeviews extends Apiabstract {
                 'max_number_of_decimals' => $this->getStoreConfig('simiconnector/currency/max_number_of_decimals'),
                 'currencies' => $currencies,
                 'is_show_home_title' => $this->getStoreConfig('simiconnector/general/is_show_home_title'),
+                'cust_group' => $this->_objectManager->get('Magento\Customer\Model\Session')->getCustomer()->getGroupId(),
             ),
             'sales' => array(
                 'sales_reorder_allow' => $this->getStoreConfig('sales/reorder/allow'),
@@ -112,6 +113,13 @@ class Storeviews extends Apiabstract {
                 'tax_cart_display_grandtotal' => $this->getStoreConfig('tax/cart_display/grandtotal'),
                 'tax_cart_display_full_summary' => $this->getStoreConfig('tax/cart_display/full_summary'),
                 'tax_cart_display_zero_tax' => $this->getStoreConfig('tax/cart_display/zero_tax'),
+                'tax_sales_display_price' => $this->getStoreConfig('tax/sales_display/price'),
+                'tax_sales_display_subtotal' => $this->getStoreConfig('tax/sales_display/subtotal'),
+                'tax_sales_display_shipping' => $this->getStoreConfig('tax/sales_display/shipping'),
+                'tax_sales_display_grandtotal' => $this->getStoreConfig('tax/sales_display/grandtotal'),
+                'tax_sales_display_full_summary' => $this->getStoreConfig('tax/sales_display/full_summary'),
+                'tax_sales_display_zero_tax' => $this->getStoreConfig('tax/sales_display/zero_tax'),
+
             ),
             'google_analytics' => array(
                 'google_analytics_active' => $this->getStoreConfig('google/analytics/active'),
@@ -151,6 +159,17 @@ class Storeviews extends Apiabstract {
                     'catalog_frontend_flat_catalog_category' => $this->getStoreConfig('catalog/frontend/flat_catalog_category'),
                     'catalog_frontend_flat_catalog_product' => $this->getStoreConfig('catalog/frontend/flat_catalog_product'),
                     'catalog_frontend_parse_url_directives' => $this->getStoreConfig('catalog/frontend/parse_url_directives'),
+                ),
+                'cataloginventory' => array(
+                    'cataloginventory_item_options_manage_stock' => $this->getStoreConfig('cataloginventory/item_options/manage_stock'),
+                    'cataloginventory_item_options_backorders' => $this->getStoreConfig('cataloginventory/item_options/backorders'),
+                    'cataloginventory_item_options_max_sale_qty' => $this->getStoreConfig('cataloginventory/item_options/max_sale_qty'),
+                    'cataloginventory_item_options_min_qty' => $this->getStoreConfig('cataloginventory/item_options/options_min_qty'),
+                    'cataloginventory_item_options_min_sale_qty' => $this->getStoreConfig('cataloginventory/item_options/min_sale_qty'),
+                    'cataloginventory_item_options_notify_stock_qty' => $this->getStoreConfig('cataloginventory/item_options/notify_stock_qty'),
+                    'cataloginventory_item_options_enable_qty_increments' => $this->getStoreConfig('cataloginventory/item_options/enable_qty_increments'),
+                    'cataloginventory_item_options_qty_increments' => $this->getStoreConfig('cataloginventory/item_options/qty_increments'),
+                    'cataloginventory_item_options_auto_return' => $this->getStoreConfig('cataloginventory/item_options/auto_return'),
                 ),
                 'review' => array(
                     'catalog_review_allow_guest' => $this->getStoreConfig('catalog/review/allow_guest'),

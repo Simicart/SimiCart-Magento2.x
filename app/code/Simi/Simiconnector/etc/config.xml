@@ -56,7 +56,10 @@
             </terms_conditions>  
             <instant_contact>
                 <enable>0</enable>
-                <icon_color>FFB22E</icon_color>
+                <email>sales@simicart.com</email>
+		<phone>84 - 04 - 3217 - 1357 (GMT+7)</phone>
+                <message>84 - 04 - 3217 - 1357 (GMT+7)</message>
+                <icon_color>FF9900</icon_color>
             </instant_contact>
             <barcode>
                 <pattern>BAR[A.4][AN.6]</pattern>

@@ -67,7 +67,10 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function getProduct($product_id)
     {
-        return $this->_objectManager->create('Magento\Catalog\Model\Product')->load($product_id);
+        $this->builderQuery = $this->_objectManager->create('Magento\Catalog\Model\Product')->load($product_id);
+        if(!$this->builderQuery->getId())
+            throw new \Exception(__('Resource cannot callable.'), 6);
+        return $this->builderQuery;
     }
 
     /**
