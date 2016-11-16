@@ -67,10 +67,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function getProduct($product_id)
     {
-        $this->builderQuery = $this->_objectManager->create('Magento\Catalog\Model\Product')->load($product_id);
-        if(!$this->builderQuery->getId())
-            throw new \Exception(__('Resource cannot callable.'), 6);
-        return $this->builderQuery;
+        return $this->_objectManager->create('Magento\Catalog\Model\Product')->load($product_id);
     }
 
     /**
@@ -108,6 +105,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 $controller->getRequest()->setParams($params);
             }
         }
+		
         $collection = $this->_objectManager->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
         $collection->addAttributeToSelect('*')
             ->addStoreFilter()
@@ -169,6 +167,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
                 $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
                 $collection->setVisibility(array('3', '4'));
+				//$collection->getVisibleInSearchIds($this->productVisibility->getVisibleInSiteIds());
         }
         else {
             $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
@@ -195,10 +194,23 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         
         $allProductIds = $collection->getAllIds();
         $layerFilters = [];
-        
+        $i = 0;
+			
+		$titleFilters = array();
         foreach($attributeCollection as $attribute){
             $attributeOptions = [];
             $attributeValues = $collection->getAllAttributeValues($attribute->getAttributeCode());
+			if ($attribute->getData('is_visible') != '1')
+				continue;
+			if ($attribute->getData('is_filterable') != '1')
+				continue;
+			if ($attribute->getData('is_visible_on_front') != '1')
+				continue;
+			if ($attribute->getData('used_in_product_listing') != '1')
+				continue;
+
+			if (in_array($attribute->getDefaultFrontendLabel(), $titleFilters))
+				continue;
             foreach($attributeValues as $productId => $optionIds){
                 if(in_array($productId, $allProductIds)){
                     $optionIds = explode(',', $optionIds[0]);
@@ -210,16 +222,18 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                     }
                 }
             }
+			
             $options = $attribute->getSource()->getAllOptions();
             $filters = [];
             foreach($options as $option){
                 if($option['value'] && isset($attributeOptions[$option['value']]) && $attributeOptions[$option['value']]){
                     $option['count'] = $attributeOptions[$option['value']];
-                    $filters[] = $option;
+					$filters[] = $option;
                 }
             }
             
-            if(count($filters)){
+            if(count($filters) > 1){
+				$titleFilters[] = $attribute->getDefaultFrontendLabel();
                 $layerFilters[] = [
                     'attribute' => $attribute->getAttributeCode(),
                     'title' => $attribute->getDefaultFrontendLabel(),
@@ -227,7 +241,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 ];
             }
         }
-        
+
         $priceRanges = $this->_getPriceRanges($collection);
         $filters = [];
         $totalCount = 0;
@@ -264,7 +278,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             'title' => __('Price'),
             'filter' => array_values($filters),
         ];
-
+		/*
         // category
         if ($this->category) {
             $childrenCategories = $this->category->getChildrenCategories();
@@ -286,7 +300,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 'filter' => ($filters),
             ];
         }
-        
+        */
         $selectedFilters = array();
         $selectableFilters = array();
         foreach ($layerFilters as $layerFilter){
@@ -305,6 +319,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             $layerArray['layer_state']=$selectedFilters;
         }
         return $layerArray;
+		
     }
     
     /*
