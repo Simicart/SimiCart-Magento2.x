@@ -67,7 +67,10 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function getProduct($product_id)
     {
-        return $this->_objectManager->create('Magento\Catalog\Model\Product')->load($product_id);
+		$this->builderQuery = $this->_objectManager->create('Magento\Catalog\Model\Product')->load($product_id);
+        if(!$this->builderQuery->getId())
+			throw new \Exception(__('Resource cannot callable.'), 6);
+		return $this->builderQuery;
     }
 
     /**
@@ -193,6 +196,10 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 ->addFieldToFilter('is_visible_on_front', 1);
         
         $allProductIds = $collection->getAllIds();
+		$arrayAhah = array();
+		foreach ($allProductIds as $allProductId) {
+			$arrayAhah[$allProductId] = '1';
+		}
         $layerFilters = [];
         $i = 0;
 			
@@ -208,11 +215,14 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 				continue;
 			if ($attribute->getData('used_in_product_listing') != '1')
 				continue;
-
+			/*
+			if ($attribute->getData('is_global') != '2')
+				continue;
+			*/
 			if (in_array($attribute->getDefaultFrontendLabel(), $titleFilters))
 				continue;
             foreach($attributeValues as $productId => $optionIds){
-                if(in_array($productId, $allProductIds)){
+                if(isset($arrayAhah[$productId]) && ($arrayAhah[$productId]!= null)){
                     $optionIds = explode(',', $optionIds[0]);
                     foreach($optionIds as $optionId){
                         if(isset($attributeOptions[$optionId]))
@@ -278,7 +288,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             'title' => __('Price'),
             'filter' => array_values($filters),
         ];
-		/*
+		
         // category
         if ($this->category) {
             $childrenCategories = $this->category->getChildrenCategories();
@@ -300,7 +310,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 'filter' => ($filters),
             ];
         }
-        */
+        
         $selectedFilters = array();
         $selectableFilters = array();
         foreach ($layerFilters as $layerFilter){
