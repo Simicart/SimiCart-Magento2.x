@@ -196,9 +196,9 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 ->addFieldToFilter('is_visible_on_front', 1);
         
         $allProductIds = $collection->getAllIds();
-		$arrayAhah = array();
+		$arrayIDs = array();
 		foreach ($allProductIds as $allProductId) {
-			$arrayAhah[$allProductId] = '1';
+			$arrayIDs[$allProductId] = '1';
 		}
         $layerFilters = [];
         $i = 0;
@@ -222,7 +222,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 			if (in_array($attribute->getDefaultFrontendLabel(), $titleFilters))
 				continue;
             foreach($attributeValues as $productId => $optionIds){
-                if(isset($arrayAhah[$productId]) && ($arrayAhah[$productId]!= null)){
+                if(isset($arrayIDs[$productId]) && ($arrayIDs[$productId]!= null)){
                     $optionIds = explode(',', $optionIds[0]);
                     foreach($optionIds as $optionId){
                         if(isset($attributeOptions[$optionId]))
