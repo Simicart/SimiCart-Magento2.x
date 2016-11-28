@@ -79,7 +79,7 @@ class Storeviews extends Apiabstract {
                 'use_store' => $this->getStoreConfig('web/url/use_store'),
                 'is_rtl' => $this->getStoreConfig('simiconnector/general/is_rtl'),
                 'is_show_sample_data' => $this->getStoreConfig('simiconnector/general/is_show_sample_data'),
-                'android_sender' => $this->getStoreConfig('simiconnector/notification/android_app_key'),
+                'android_sender' => $this->getStoreConfig('simi_notifications/notification/android_app_key'),
                 'currency_symbol' => $currencySymbol,
                 'currency_code' => $currencyCode,
                 'currency_position' => $this->getCurrencyPosition(),
