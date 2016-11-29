@@ -222,6 +222,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
                             $priveV2['show_weee_price'] = 2;
                         }
                     }else{
+                        $priveV2['price_label'] = __('Regular Price');
                         if ($_finalPrice == $_price){
                             $this->setTaxPrice($priveV2, $_finalPrice);
                         }else{

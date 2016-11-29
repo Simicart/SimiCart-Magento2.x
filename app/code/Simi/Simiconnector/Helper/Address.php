@@ -164,7 +164,7 @@ class Address extends Data {
 
     public function getAddressDetail($data, $customer = null) {
         $street = $data->getStreet();
-        if (!($email = $data->getData('email')) && $customer->getEmail())
+        if (!($email = $data->getData('email')) && $customer && $customer->getEmail())
             $email = $customer->getEmail();
         
         if (!isset($street[2]))

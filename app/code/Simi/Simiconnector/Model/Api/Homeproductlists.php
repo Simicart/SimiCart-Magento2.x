@@ -66,6 +66,10 @@ class Homeproductlists extends Apiabstract
             $productCollection = $listHelper->getProductCollection($listModel);
             $productListAPIModel = $this->_objectManager->get('Simi\Simiconnector\Model\Api\Products');
             $productListAPIModel->setData($this->getData());
+            $productListAPIModelData = $this->getData();
+            $productListAPIModelData['resourceid'] = null;
+            $productListAPIModel->setData($productListAPIModelData);
+            $productListAPIModel->reload_detail_product = true;
             $productListAPIModel->setBuilderQuery();
             $productListAPIModel->FILTER_RESULT = false;
             $productListAPIModel->builderQuery = $productCollection;

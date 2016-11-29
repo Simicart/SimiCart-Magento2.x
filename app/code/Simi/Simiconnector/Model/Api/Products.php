@@ -14,6 +14,12 @@ class Products extends Apiabstract {
     protected $_sortOrders = array();
     public $detail_info;
 
+    /*
+     * incase the collection doens't containt the full information product
+     * need to get product model again on detail calculating
+     */
+    public $reload_detail_product = false;
+    
     /**
      * override
      */
@@ -132,6 +138,9 @@ class Products extends Apiabstract {
             }
             if (++$check_limit > $limit)
                 break;
+            if ($this->reload_detail_product) {
+                $entity = $this->_objectManager->get('Magento\Catalog\Model\Product')->load($entity->getId());
+            }
             $info_detail = $entity->toArray($fields);
 
             $images = array();
