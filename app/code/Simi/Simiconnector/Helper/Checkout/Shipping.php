@@ -85,7 +85,7 @@ class Shipping extends \Simi\Simiconnector\Helper\Data
                         's_method_id' => $_rate->getId(),
                         's_method_code' => $_rate->getCode(),
                         's_method_title' => $_rate->getCarrierTitle(),
-                        's_method_fee' => $this->_objectManager->get('Simi\Simiconnector\Helper\Price')->convertPrice(floatval($s_fee), false),
+                        's_method_fee' => $s_fee,
                         's_method_fee_incl_tax' => $s_fee_incl,
                         's_method_name' => $_rate->getMethodTitle(),
                         's_method_selected' => $select,

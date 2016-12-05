@@ -71,7 +71,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
     public function convertPrice($price, $format = false)
     {
         $data = $this->getData();
-        if ($data['resourceid'])
+        if (isset($data['resourceid']) && ($data['resourceid'] == 'products'))
             return $price;
         return $format
             ? $this->priceCurrency->convertAndFormat($price)
@@ -222,7 +222,6 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
                             $priveV2['show_weee_price'] = 2;
                         }
                     }else{
-                        $priveV2['price_label'] = __('Regular Price');
                         if ($_finalPrice == $_price){
                             $this->setTaxPrice($priveV2, $_finalPrice);
                         }else{
