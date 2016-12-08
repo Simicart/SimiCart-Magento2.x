@@ -260,11 +260,17 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      *
      * @return string
      */
-    public function getBaseUrl()
+    public function getBaseUrl($addMediaPath = true)
     { 
-        return $this->_storeManager->getStore()->getBaseUrl(
-                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
-            ) . '/' . self::MEDIA_PATH;
+    	if ($addMediaPath == true) {
+	        return $this->_storeManager->getStore()->getBaseUrl(
+	                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+	            ) . '/' . self::MEDIA_PATH;
+       	} else {
+       	 return $this->_storeManager->getStore()->getBaseUrl(
+	                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+	            ) ;
+       	}
     }
     
     /**
