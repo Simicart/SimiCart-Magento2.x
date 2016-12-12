@@ -85,6 +85,9 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
     }
 
     public function sendIOS($collectionDevice, $data) {
+		$total = count($collectionDevice);
+        if ($total == 0)
+            return true;
         $ch = $this->getDirPEMfile($data);
         $dir = $this->getDirPEMPassfile();
         $message = $data['notice_content'];
@@ -232,7 +235,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
 
     public function sendAndroid($collectionDevice, $data) {
         if ($collectionDevice->count() == 0)
-            return false;
+            return true;
         $total = count($collectionDevice);
         $message = $data;
 
