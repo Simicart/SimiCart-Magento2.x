@@ -118,7 +118,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
         $tokenArray = array();
         $sentsuccess = true;
         foreach ($collectionDevice as $item) {
-            if ($i == 100) {
+            if ($i == 1) {
                 $result = $this->repeatSendiOS($tokenArray, $payload, $ch, $dir);
                 if (!$result)
                     $sentsuccess = false;
@@ -130,7 +130,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
             $i++;
             $totalDevice++;
         }
-        if ($i < 100)
+        if ($i <= 1)
             $result = $this->repeatSendiOS($tokenArray, $payload, $ch, $dir);
         if (!$result)
             $sentsuccess = false;
