@@ -128,11 +128,6 @@ class Device extends \Magento\Framework\Model\AbstractModel {
 
         if (!isset($device_id))
             $device_id = $this->detectMobile();
-        $existed_device = $this->getCollection()->addFieldToFilter('device_token', $deviceData->device_token)->getFirstItem();
-        if ($existed_device->getId()) {
-            //if (($existed_device->getData('storeview_id') != null) && ($existed_device->getData('storeview_id') ==  $this->_objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore()->getId()))
-            $this->setId($existed_device->getId());
-        }
         if (isset($deviceData->latitude) && isset($deviceData->longitude)) {
             $this->setData('latitude', $deviceData->latitude);
             $this->setData('longitude', $deviceData->longitude);
@@ -158,6 +153,12 @@ class Device extends \Magento\Framework\Model\AbstractModel {
             $this->setData('is_demo', 3);
         } else
             $this->setData('is_demo', $deviceData->is_demo);
+            
+        $existed_device = $this->getCollection()->addFieldToFilter('device_token', $deviceData->device_token)->getFirstItem();
+        if ($existed_device->getId()) {
+            //if (($existed_device->getData('storeview_id') != null) && ($existed_device->getData('storeview_id') ==  $this->_objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore()->getId()))
+            $this->setId($existed_device->getId());
+        }
         $this->save();
     }
 

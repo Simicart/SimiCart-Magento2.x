@@ -219,9 +219,15 @@ class Products extends Apiabstract {
         //$info['wishlist_item_id'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Wishlist')->getWishlistItemId($entity);
         //$info['product_label'] = $this->_objectManager->get('\Simi\Simiconnector\Helper\Productlabel')->getProductLabel($entity);
         $info['app_reviews'] = array(
-                'rate' => $avg,
-                'number' => $ratings[5],
-            );
+            'rate' => $avg,
+            'number' => $ratings[5],
+            '5_star_number' => $ratings[4],
+            '4_star_number' => $ratings[3],
+            '3_star_number' => $ratings[2],
+            '2_star_number' => $ratings[1],
+            '1_star_number' => $ratings[0],
+            'form_add_reviews' => $this->_objectManager->get('\Simi\Simiconnector\Helper\Review')->getReviewToAdd(),
+        );
         $this->detail_info = $this->getDetail($info);
         $this->_eventManager->dispatch('simi_simiconnector_model_api_products_show_after', array('object' => $this, 'data' => $this->detail_info));
         return $this->detail_info;
