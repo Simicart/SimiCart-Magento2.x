@@ -259,12 +259,12 @@ class Storeviews extends Apiabstract {
                     $this->_storeManager->getStore()->getCurrentCurrencyCode(), $codes
             );
             foreach ($codes as $code) {
-                if (isset($rates[$code])) {
+                //if (isset($rates[$code])) {
                     $currencies[] = array(
                         'value' => $code,
                         'title' => $options->getName($code, $locale),
                     );
-                }
+               	//}
             }
         } elseif (count($codes) == 1) {
             $currencies[] = array(

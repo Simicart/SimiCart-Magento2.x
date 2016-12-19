@@ -142,12 +142,12 @@ class Matrix extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
             'matrix_row', 'select', [
             'name' => 'matrix_row',
             'label' => __('Row Number'),
-            'options' => $this->_objectManager->get('Simi\Simiconnector\Helper\Productlist')->getMatrixRowOptions(),
+            'options' => $this->_objectManager->create('Simi\Simiconnector\Helper\Productlist')->getMatrixRowOptions(),
             'disabled' => $isElementDisabled,
             ]
         );
         
-        foreach ($this->_objectManager->get('\Magento\Store\Model\Store')->getCollection() as $storeView) {
+        foreach ($this->_objectManager->create('\Magento\Store\Model\Store')->getCollection() as $storeView) {
             if (!isset($data['storeview_scope']))
                 $data['storeview_scope'] = $storeView->getId();
             $storeviewArray[$storeView->getId()] = $storeView->getName();
@@ -161,7 +161,7 @@ class Matrix extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
             'disabled' => $isElementDisabled,
             'onchange' => 'updateMockupPreview(this.value)',
             'after_element_html' => '</br><div id="mockuppreview" style="text-align:center"></div> <script>
-            ' . $this->_objectManager->get('Simi\Simiconnector\Helper\Productlist')->autoFillMatrixRowHeight() . '
+            ' . $this->_objectManager->create('Simi\Simiconnector\Helper\Productlist')->autoFillMatrixRowHeight() . '
             function updateMockupPreview(storeview){
                 var urlsend = "' . $this->getUrl("*/*/getmockup") . '?storeview_id=" + storeview;
                 xhttp = new XMLHttpRequest();

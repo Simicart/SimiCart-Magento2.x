@@ -10,15 +10,15 @@ class Shipping extends \Simi\Simiconnector\Helper\Data
 {
     
     protected function _getCheckoutSession() {
-        return $this->_objectManager->get('Magento\Checkout\Model\Session');
+        return $this->_objectManager->create('Magento\Checkout\Model\Session');
     }
 
     public function _getOnepage() {
-        return $this->_objectManager->get('Magento\Checkout\Model\Type\Onepage');
+        return $this->_objectManager->create('Magento\Checkout\Model\Type\Onepage');
     }
     
     protected function _getCart() {
-        return $this->_objectManager->get('Magento\Checkout\Model\Cart');
+        return $this->_objectManager->create('Magento\Checkout\Model\Cart');
     }
     
     protected function _getQuote() {
@@ -31,12 +31,12 @@ class Shipping extends \Simi\Simiconnector\Helper\Data
         $method = $method_code->method;
         $cartExtension = $this->_getQuote()->getExtensionAttributes();
         if ($cartExtension === null) {
-            $cartExtension = $this->_objectManager->get('Magento\Quote\Api\Data\CartExtension');
+            $cartExtension = $this->_objectManager->create('Magento\Quote\Api\Data\CartExtension');
         }
 
         $shippingAssignments = $cartExtension->getShippingAssignments();
         if (empty($shippingAssignments)) {
-            $shippingAssignment = $this->_objectManager->get('Magento\Quote\Model\ShippingAssignmentFactory');
+            $shippingAssignment = $this->_objectManager->create('Magento\Quote\Model\ShippingAssignmentFactory');
         } else {
             $shippingAssignment = $shippingAssignments[0];
         }
@@ -50,7 +50,7 @@ class Shipping extends \Simi\Simiconnector\Helper\Data
         $cartExtension->setShippingAssignments([$shippingAssignment]);
         $quote =  $this->_getQuote()->setExtensionAttributes($cartExtension);
         
-        $this->_objectManager->get('Magento\Quote\Api\CartRepositoryInterface')->save($quote);
+        $this->_objectManager->create('Magento\Quote\Api\CartRepositoryInterface')->save($quote);
     }
 
     public function getAddress() {
@@ -58,7 +58,7 @@ class Shipping extends \Simi\Simiconnector\Helper\Data
     }
 
     public function getShippingPrice($price, $flag) {
-        return $this->_objectManager->get('Simi\Simiconnector\Helper\Price')->convertPrice($this->_objectManager->get('Magento\Tax\Helper\Data')->getShippingPrice($price, $flag, $this->getAddress()), false);
+        return $this->_objectManager->get('Simi\Simiconnector\Helper\Price')->convertPrice($this->_objectManager->create('Magento\Tax\Helper\Data')->getShippingPrice($price, $flag, $this->getAddress()), false);
     }
 
     public function getMethods() {
@@ -77,10 +77,10 @@ class Shipping extends \Simi\Simiconnector\Helper\Data
                     $select = true;
                 }
 
-                $s_fee = $this->getShippingPrice($_rate->getPrice(), $this->_objectManager->get('Magento\Tax\Helper\Data')->displayShippingPriceIncludingTax());
+                $s_fee = $this->getShippingPrice($_rate->getPrice(), $this->_objectManager->create('Magento\Tax\Helper\Data')->displayShippingPriceIncludingTax());
                 $s_fee_incl = $this->getShippingPrice($_rate->getPrice(), true);
                 
-                if ($this->_objectManager->get('Magento\Tax\Helper\Data')->displayShippingBothPrices() && $s_fee != $s_fee_incl) {
+                if ($this->_objectManager->create('Magento\Tax\Helper\Data')->displayShippingBothPrices() && $s_fee != $s_fee_incl) {
                     $list[] = array(
                         's_method_id' => $_rate->getId(),
                         's_method_code' => $_rate->getCode(),

@@ -16,7 +16,7 @@ class Orders extends Apiabstract {
     public $order_placed_info;
 
     protected function _getCart() {
-        return $this->_objectManager->get('Magento\Checkout\Model\Cart');
+        return $this->_objectManager->create('Magento\Checkout\Model\Cart');
     }
 
     protected function _getQuote() {
@@ -24,11 +24,11 @@ class Orders extends Apiabstract {
     }
 
     protected function _getCheckoutSession() {
-        return $this->_objectManager->get('Magento\Checkout\Model\Session');
+        return $this->_objectManager->create('Magento\Checkout\Model\Session');
     }
 
     public function _getOnepage() {
-        return $this->_objectManager->get('Magento\Checkout\Model\Type\Onepage');
+        return $this->_objectManager->create('Magento\Checkout\Model\Type\Onepage');
     }
 
     public function setBuilderQuery() {
@@ -37,17 +37,17 @@ class Orders extends Apiabstract {
             if ($data['resourceid'] == 'onepage') {
                 
             } else {
-                $this->builderQuery = $this->_objectManager->get('Magento\Sales\Model\Order')->load($data['resourceid']);
+                $this->builderQuery = $this->_objectManager->create('Magento\Sales\Model\Order')->load($data['resourceid']);
                 if (!$this->builderQuery->getId()) {
-                    $this->builderQuery = $this->_objectManager->get('Magento\Sales\Model\Order')->loadByIncrementId($data['resourceid']);
+                    $this->builderQuery = $this->_objectManager->create('Magento\Sales\Model\Order')->loadByIncrementId($data['resourceid']);
                 }
                 if (!$this->builderQuery->getId()) {
                     throw new \Exception(__('Cannot find the Order'), 6);
                 }
             }
         } else {
-            $this->builderQuery = $this->_objectManager->get('Magento\Sales\Model\Order')->getCollection()
-                    ->addFieldToFilter('customer_id', $this->_objectManager->get('Magento\Customer\Model\Session')->getCustomer()->getId())
+            $this->builderQuery = $this->_objectManager->create('Magento\Sales\Model\Order')->getCollection()
+                    ->addFieldToFilter('customer_id', $this->_objectManager->create('Magento\Customer\Model\Session')->getCustomer()->getId())
                     ->setOrder('entity_id', 'DESC');
         }
     }
@@ -138,7 +138,7 @@ class Orders extends Apiabstract {
         /*
          * Checkout as New Customer Data Adding
          */
-        if (!$this->_objectManager->get('Magento\Customer\Model\Session')->isLoggedIn() &&
+        if (!$this->_objectManager->create('Magento\Customer\Model\Session')->isLoggedIn() &&
                 $this->_getQuote()->getPasswordHash()) {
             $billingAddress = $quote->getBillingAddress();
             $customer = $this->_objectManager->create('Magento\Customer\Model\Data\Customer')
@@ -154,7 +154,7 @@ class Orders extends Apiabstract {
         /*
          * Place Order
          */
-        $this->_objectManager->get('Magento\Quote\Api\CartManagementInterface')->placeOrder($this->_getQuote()->getId());
+        $this->_objectManager->create('Magento\Quote\Api\CartManagementInterface')->placeOrder($this->_getQuote()->getId());
         $order = array('invoice_number' => $this->_getCheckoutSession()->getLastRealOrderId(),
             'payment_method' => $this->_getOnepage()->getQuote()->getPayment()->getMethodInstance()->getCode()
         );
@@ -163,7 +163,7 @@ class Orders extends Apiabstract {
          * save To App report
          */
         try {
-            $orderId = $this->_objectManager->get('Magento\Sales\Model\Order')->loadByIncrementId($this->_getCheckoutSession()->getLastRealOrderId())->getId();
+            $orderId = $this->_objectManager->create('Magento\Sales\Model\Order')->loadByIncrementId($this->_getCheckoutSession()->getLastRealOrderId())->getId();
             $newTransaction = $this->_objectManager->create('Simi\Simiconnector\Model\Appreport');
             $newTransaction->setOrderId($orderId);
             $newTransaction->save();
@@ -196,7 +196,7 @@ class Orders extends Apiabstract {
             $notification['notice_sanbox'] = 0;
             $notification['type'] = $this->getStoreConfig('simi_notifications/noti_purchase/noti_purchase_type');
             $notification['productID'] = $this->getStoreConfig('simi_notifications/noti_purchase/noti_purchase_product_id');
-            $notification['created_time'] = $this->_objectManager->get('\Magento\Framework\Stdlib\DateTime\DateTimeFactory')->create()->gmtDate();
+            $notification['created_time'] = $this->_objectManager->create('\Magento\Framework\Stdlib\DateTime\DateTimeFactory')->create()->gmtDate();
             $notification['notice_type'] = 3;
             $order['notification'] = $notification;
         }
@@ -218,7 +218,7 @@ class Orders extends Apiabstract {
     public function show() {
         $data = $this->getData();
         if ($data['resourceid'] == 'onepage') {
-            $customer = $this->_objectManager->get('Magento\Customer\Model\Session')->getCustomer();
+            $customer = $this->_objectManager->create('Magento\Customer\Model\Session')->getCustomer();
             $quote = $this->_getQuote();
             $list_payment = array();
             $paymentHelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Checkout\Payment');
@@ -241,7 +241,7 @@ class Orders extends Apiabstract {
         } else {
             $result = parent::show();
             if ($data['params']['reorder'] == 1) {
-                $order = $this->_objectManager->get('Magento\Sales\Model\Order')->load($data['resourceid']);
+                $order = $this->_objectManager->create('Magento\Sales\Model\Order')->load($data['resourceid']);
                 $cart = $this->_getCart();
                 $items = $order->getItemsCollection();
                 foreach ($items as $item) {
@@ -251,7 +251,7 @@ class Orders extends Apiabstract {
                 $result['message'] = __('Reorder Succeeded');
             }
             $order = $result['order'];
-            $customer = $this->_objectManager->get('Magento\Customer\Model\Session')->getCustomer();
+            $customer = $this->_objectManager->create('Magento\Customer\Model\Session')->getCustomer();
             $this->_updateOrderInformation($order, $customer);
             $result['order'] = $order;
             return $result;
@@ -264,7 +264,7 @@ class Orders extends Apiabstract {
 
     public function index() {
         $result = parent::index();
-        $customer = $this->_objectManager->get('Magento\Customer\Model\Session')->getCustomer();
+        $customer = $this->_objectManager->create('Magento\Customer\Model\Session')->getCustomer();
         foreach ($result['orders'] as $index => $order) {
             $this->_updateOrderInformation($order, $customer);
             $result['orders'][$index] = $order;
@@ -273,7 +273,7 @@ class Orders extends Apiabstract {
     }
 
     private function _updateOrderInformation(&$order, $customer) {
-        $orderModel = $this->_objectManager->get('Magento\Sales\Model\Order')->load($order['entity_id']);
+        $orderModel = $this->_objectManager->create('Magento\Sales\Model\Order')->load($order['entity_id']);
         $order['payment_method'] = $orderModel->getPayment()->getMethodInstance()->getTitle();
         $order['shipping_method'] = $orderModel->getShippingDescription();
         $order['billing_address'] = $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($orderModel->getBillingAddress(), $customer);

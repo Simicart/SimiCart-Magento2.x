@@ -213,7 +213,7 @@ class Address extends Data {
             $customer = $this->_objectManager->get('Magento\Customer\Model\Customer')
                     ->setWebsiteId($this->_storeManager->getStore()->getWebsiteId())
                     ->loadByEmail($customer_email);
-            if ($customer->getId()) {
+            if ($customer->getData('entity_id') != NULL) {
                 throw new \Exception($this->__('There is already a customer registered using this email address. Please login using this email address or enter a different email address to register your account.'), 7);
             }
         }

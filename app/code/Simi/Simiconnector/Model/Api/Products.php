@@ -139,7 +139,7 @@ class Products extends Apiabstract {
             if (++$check_limit > $limit)
                 break;
             if ($this->reload_detail_product) {
-                $entity = $this->_objectManager->get('Magento\Catalog\Model\Product')->load($entity->getId());
+                $entity = $this->_objectManager->create('Magento\Catalog\Model\Product')->load($entity->getId());
             }
             $info_detail = $entity->toArray($fields);
 

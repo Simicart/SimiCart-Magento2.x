@@ -40,7 +40,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
         }
         if (isset($data['product_id'])) {
             $productId = $data['product_id'];
-            $productName = $this->_objectManager->get('Magento\Catalog\Model\Product')->load($productId)->getName();
+            $productName = $this->_objectManager->create('Magento\Catalog\Model\Product')->load($productId)->getName();
             $data['product_name'] = $productName;
         }
         $this->checkIndex($data);

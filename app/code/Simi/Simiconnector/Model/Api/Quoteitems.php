@@ -15,11 +15,11 @@ class Quoteitems extends Apiabstract
     public $detail_list;
 
     protected function _getSession() {
-        return $this->_objectManager->get('Magento\Checkout\Model\Session');
+        return $this->_objectManager->create('Magento\Checkout\Model\Session');
     }
 
     protected function _getCart() {
-        return $this->_objectManager->get('Magento\Checkout\Model\Cart');
+        return $this->_objectManager->create('Magento\Checkout\Model\Cart');
     }
 
     protected function _getQuote() {
@@ -52,7 +52,7 @@ class Quoteitems extends Apiabstract
         }
         if (count($cartData)) {
             $filter = new \Zend_Filter_LocalizedToNormalized(
-                    ['locale' => $this->_objectManager->get('Magento\Framework\Locale\ResolverInterface')->getLocale()]
+                    ['locale' => $this->_objectManager->create('Magento\Framework\Locale\ResolverInterface')->getLocale()]
             );
             $removedItems = array();
             foreach ($cartData as $index => $data) {
@@ -102,7 +102,7 @@ class Quoteitems extends Apiabstract
         
         if (isset($params['qty'])) {
             $filter = new \Zend_Filter_LocalizedToNormalized(
-                ['locale' => $this->_objectManager->get('Magento\Framework\Locale\ResolverInterface')->getLocale()]
+                ['locale' => $this->_objectManager->create('Magento\Framework\Locale\ResolverInterface')->getLocale()]
             );
             $params['qty'] = $filter->filter($params['qty']);
         }
@@ -144,8 +144,8 @@ class Quoteitems extends Apiabstract
 
     protected function _initProduct($productId) {
         if ($productId) {
-            $storeId = $this->_objectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore()->getId();
-            return $this->_objectManager->get('Magento\Catalog\Api\ProductRepositoryInterface')->getById($productId, false, $storeId);
+            $storeId = $this->_objectManager->create('Magento\Store\Model\StoreManagerInterface')->getStore()->getId();
+            return $this->_objectManager->create('Magento\Catalog\Api\ProductRepositoryInterface')->getById($productId, false, $storeId);
         }
         return false;
     }
@@ -242,7 +242,7 @@ class Quoteitems extends Apiabstract
             
             $quoteitem = $entity->toArray($fields);
             $quoteitem['option'] = $options;
-            $quoteitem['image'] = $this->_objectManager->get('Simi\Simiconnector\Helper\Products')->getImageProduct($entity->getProduct(), null, $parameters['image_width'], $parameters['image_height']);
+            $quoteitem['image'] = $this->_objectManager->create('Simi\Simiconnector\Helper\Products')->getImageProduct($this->_objectManager->create('Magento\Catalog\Model\Product')->load($entity->getProduct()->getId()), null, $parameters['image_width'], $parameters['image_height']);
             $info[] = $quoteitem;
             $all_ids[] = $entity->getId();
         }

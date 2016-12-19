@@ -33,7 +33,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Framework\Registry $registry
     ) {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->_scopeConfig = $this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
+        $this->_scopeConfig = $this->_objectManager->create('\Magento\Framework\App\Config\ScopeConfigInterface');
         $this->filesystem = $filesystem;
         $this->mediaDirectory = $filesystem->getDirectoryWrite(DirectoryList::MEDIA);
         $this->httpFactory = $httpFactory;
@@ -55,7 +55,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
     
     public function helper($helper)
     {
-        return $this->_objectManager->get($helper);
+        return $this->_objectManager->create($helper);
     }
 
     public function currency($value, $format = true, $includeContainer = true)
@@ -81,7 +81,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
     public function formatPriceFromProduct($_product, $is_detail=false)
     {
         $priveV2 = array();
-        $_product = $this->_objectManager->get('Magento\Catalog\Model\Product')->load($_product->getId());
+        $_product = $this->_objectManager->create('Magento\Catalog\Model\Product')->load($_product->getId());
         $this->_product = $_product;
 
         $_weeeHelper = $this->helper('Magento\Weee\Helper\Data');

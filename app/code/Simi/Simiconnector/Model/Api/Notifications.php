@@ -62,7 +62,7 @@ class Notifications extends Apiabstract {
             }
             if ($notification['product_id']) {
                 $productId = $notification['product_id'];
-                $productName = $this->_objectManager->get('Magento\Catalog\Model\Product')->load($productId)->getName();
+                $productName = $this->_objectManager->create('Magento\Catalog\Model\Product')->load($productId)->getName();
                 $notification['product_name'] = $productName;
             }
             $result['notifications'][$index] = $notification;

@@ -25,7 +25,7 @@ class Productlist extends Data {
     }
 
     public function getProductCollection($listModel) {
-        $collection = $this->_objectManager->get('Magento\Catalog\Model\Product')->getCollection()
+        $collection = $this->_objectManager->create('Magento\Catalog\Model\Product')->getCollection()
                 ->addAttributeToSelect($this->_objectManager->get('Magento\Catalog\Model\Config')
                         ->getProductAttributes())
                 ->addMinimalPrice()
@@ -40,7 +40,7 @@ class Productlist extends Data {
             //Best seller
             case 2:
                 $orderItemTable = $this->_resource->getTableName('sales_order_item');
-                $collection = $this->_objectManager->get('Magento\Catalog\Model\Product')->getCollection();
+                $collection = $this->_objectManager->create('Magento\Catalog\Model\Product')->getCollection();
                 $select = $collection->getSelect()
                         ->join(array('order_item' => $orderItemTable), 'order_item.product_id = entity_id', array('order_item.product_id', 'order_item.qty_ordered'))
                         ->columns('SUM(qty_ordered) as total_ordered')
@@ -57,7 +57,7 @@ class Productlist extends Data {
             //Most Viewed
             case 3:
                 $productViewTable = $this->_resource->getTableName('report_viewed_product_aggregated_yearly');
-                $collection = $this->_objectManager->get('Magento\Catalog\Model\Product')->getCollection();
+                $collection = $this->_objectManager->create('Magento\Catalog\Model\Product')->getCollection();
                 $select = $collection->getSelect()
                         ->join(array('product_viewed' => $productViewTable), 'product_viewed.product_id = entity_id', array('product_viewed.product_id', 'product_viewed.views_num'))
                         ->columns('SUM(views_num) as total_viewed')
