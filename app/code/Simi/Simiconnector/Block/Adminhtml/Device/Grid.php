@@ -210,5 +210,19 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         return $this->getUrl('*/*/grid', ['_current' => true]);
     }
+    
+    public function _prepareMassaction()
+    {
+        $this->setMassactionIdField('device_id');
+        $this->getMassactionBlock()->addItem(
+            'delete',
+            [
+                'label' => __('Delete'),
+                'url' => $this->getUrl('*/*/massDelete'),
+                'confirm' => __('Are you sure?')
+            ]
+        );
+        return $this;
+    }
 
 }
