@@ -207,10 +207,27 @@ class Orders extends Apiabstract {
         
         $lastOrderId = $this->_getCheckoutSession()->getLastRealOrderId();
         $this->_eventManager->dispatch('simiconnector_checkout_onepage_controller_success_action', array('order_ids' => array($lastOrderId)));
-    
+    	$this->cleanCheckoutSession();
         return $result;
     }
 
+    public function cleanCheckoutSession() {
+    	try {
+          $quote = $this->_getQuote();
+          $quote->setIsActive(false);
+          $quote->delete();
+        }
+        catch (\Exception $e) {
+        	$this->_checkoutSession->clearQuote()->clearStorage();
+        }
+        $checkoutSession = $this->_getCheckoutSession();
+	$checkoutSession->clearQuote();
+	$checkoutSession->clearStorage();
+	$checkoutSession->clearHelperData();
+	$checkoutSession->resetCheckout();
+	$checkoutSession->restoreQuote();
+    
+    }
     /*
      * Return Order Detail (History and Onepage)
      */
