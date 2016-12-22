@@ -70,6 +70,7 @@ class Storeviews extends Apiabstract {
             'base' => array(
                 'country_code' => $country->getId(),
                 'country_name' => $country->getName(),
+                'magento_version' => '2',
                 'locale_identifier' => $locale,
                 'store_id' => $this->_storeManager->getStore()->getId(),
                 'store_name' => $this->_storeManager->getStore()->getName(),
