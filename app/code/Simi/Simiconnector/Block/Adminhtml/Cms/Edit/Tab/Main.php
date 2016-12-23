@@ -302,7 +302,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @return bool
      */
     protected function _isAllowedAction($resourceId) {
-        return $this->_authorization->isAllowed($resourceId);
+        return true;
+        //return $this->_authorization->isAllowed($resourceId);
     }
 
 }

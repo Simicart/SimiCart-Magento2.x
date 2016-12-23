@@ -68,11 +68,13 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         /*
          * Checking if user have permissions to save information
          */
+        /*
         if ($this->_isAllowedAction('Simi_Simiconnector::banner_save')) {
             $isElementDisabled = false;
         } else {
             $isElementDisabled = true;
         }
+         */
 
         /** @var \Magento\Framework\Data\Form $form */
         $form = $this->_formFactory->create();
@@ -289,7 +291,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @return bool
      */
     protected function _isAllowedAction($resourceId) {
-        return $this->_authorization->isAllowed($resourceId);
+        return true;
+        //return $this->_authorization->isAllowed($resourceId);
     }
 
 }

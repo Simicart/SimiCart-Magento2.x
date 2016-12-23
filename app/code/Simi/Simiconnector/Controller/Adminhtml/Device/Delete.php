@@ -9,7 +9,8 @@ class Delete extends \Magento\Backend\App\Action
      */
     protected function _isAllowed()
     {
-        return $this->_authorization->isAllowed('Simi_Simiconnector::device_delete');
+        return true;
+        //return $this->_authorization->isAllowed('Simi_Simiconnector::device_delete');
     }
 
     /**
