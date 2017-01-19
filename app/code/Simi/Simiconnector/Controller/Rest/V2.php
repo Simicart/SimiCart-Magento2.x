@@ -81,17 +81,7 @@ class V2 extends Action
             $results['errors'] = $result;
             $this->_printData($results);
         }
-        
-        exit();
         ob_end_flush();
         
     }
-    /*
-    public function execute()
-    {
-        $this->resultPage = $this->resultPageFactory->create();  
-		return $this->resultPage;
-        
-    }
-    */
 }

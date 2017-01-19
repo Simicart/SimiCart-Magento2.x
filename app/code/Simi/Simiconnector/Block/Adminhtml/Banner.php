@@ -35,7 +35,5 @@ class Banner extends \Magento\Backend\Block\Widget\Grid\Container
     protected function _isAllowedAction($resourceId)
     {
         return true;
-        //return $this->_authorization->isAllowed($resourceId);
     }
-
 }

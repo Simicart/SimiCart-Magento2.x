@@ -119,7 +119,7 @@ class Reviews extends Apiabstract
         $total = $collection->getSize();
 
         if ($offset > $total)
-            throw new Exception(__('Invalid method.'), 4);
+            throw new \Exception(__('Invalid method.'), 4);
 
         $fields = array();
         if (isset($parameters['fields']) && $parameters['fields']) {

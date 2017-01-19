@@ -4,7 +4,8 @@ namespace Simi\Simiconnector\Controller\Adminhtml\Productlist;
 
 class NewAction extends \Magento\Backend\App\Action
 {
-	/**
+
+    /**
      * @var \Magento\Backend\Model\View\Result\Forward
      */
     protected $resultForwardFactory;
@@ -20,14 +21,13 @@ class NewAction extends \Magento\Backend\App\Action
         $this->resultForwardFactory = $resultForwardFactory;
         parent::__construct($context);
     }
-	
+
     /**
      * {@inheritdoc}
      */
     protected function _isAllowed()
     {
         return true;
-        //return $this->_authorization->isAllowed('Simi_Simiconnector::productlist_save');
     }
 
     /**

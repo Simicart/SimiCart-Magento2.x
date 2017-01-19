@@ -22,8 +22,6 @@ class checkInstall extends \Magento\Framework\App\Action\Action {
             else
                 $arr["website_key"] = "0";
         }
-        echo json_encode($arr);
-        exit();
+        return $this->getResponse()->setBody(json_encode($arr));
     }
-
 }

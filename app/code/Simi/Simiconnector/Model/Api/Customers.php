@@ -90,5 +90,4 @@ class Customers extends Apiabstract
         }
         return parent::getDetail($info);
     }
-
 }

@@ -43,7 +43,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      */
     public function __construct(
     \Magento\Backend\Block\Template\Context $context, \Magento\Framework\Registry $registry, \Magento\Framework\Data\FormFactory $formFactory, \Magento\Store\Model\System\Store $systemStore, \Simi\Simiconnector\Helper\Website $websiteHelper, \Simi\Simiconnector\Model\ProductlistFactory $productlistFactory, \Magento\Framework\Json\EncoderInterface $jsonEncoder, \Magento\Catalog\Model\CategoryFactory $categoryFactory, array $data = []
-    ) {
+    ){
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_productlistFactory = $productlistFactory;
         $this->_websiteHelper = $websiteHelper;
@@ -268,5 +268,4 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         return true;
         //return $this->_authorization->isAllowed($resourceId);
     }
-
 }

@@ -58,5 +58,4 @@ class Homes extends Apiabstract
         ));
         return $information;
     }
-
 }

@@ -5,7 +5,7 @@ namespace Simi\Simiconnector\Block\Adminhtml\Cms\Edit\Tab;
 /**
  * Cms page edit form main tab
  */
-class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magento\Backend\Block\Widget\Tab\TabInterface {
+class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magento\Backend\Block\Widget\Tab\TabInterface{
 
     /**
      * @var \Magento\Framework\App\ObjectManager
@@ -50,7 +50,16 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @param array $data
      */
     public function __construct(
-    \Magento\Backend\Block\Template\Context $context, \Magento\Framework\Registry $registry, \Magento\Framework\Data\FormFactory $formFactory, \Magento\Store\Model\System\Store $systemStore, \Simi\Simiconnector\Helper\Website $websiteHelper, \Simi\Simiconnector\Model\CmsFactory $cmsFactory, \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig, \Magento\Framework\Json\EncoderInterface $jsonEncoder, \Magento\Catalog\Model\CategoryFactory $categoryFactory, array $data = []
+                \Magento\Backend\Block\Template\Context $context,
+                \Magento\Framework\Registry $registry,
+                \Magento\Framework\Data\FormFactory $formFactory,
+                \Magento\Store\Model\System\Store $systemStore,
+                \Simi\Simiconnector\Helper\Website $websiteHelper,
+                \Simi\Simiconnector\Model\CmsFactory $cmsFactory,
+                \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig,
+                \Magento\Framework\Json\EncoderInterface $jsonEncoder,
+                \Magento\Catalog\Model\CategoryFactory $categoryFactory,
+                array $data = []
     ) {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_cmsFactory = $cmsFactory;
@@ -68,7 +77,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @return $this
      */
     protected function _prepareForm() {
-        /* @var $model \Magento\Cms\Model\Page */
+        
         $model = $this->_coreRegistry->registry('cms');
 
         /*
@@ -80,7 +89,6 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             $isElementDisabled = true;
         }
 
-        /** @var \Magento\Framework\Data\Form $form */
         $form = $this->_formFactory->create();
 
         $form->setHtmlIdPrefix('');
@@ -109,23 +117,26 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         $storeResourceModel = $this->_objectManager->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
 
-        $fieldset->addField('storeview_id', 'multiselect', array(
+        $fieldset->addField('storeview_id',
+          'multiselect',
+          array(
             'name' => 'storeview_id[]',
             'label' => __('Store View'),
             'title' => __('Store View'),
             'required' => true,
             'values' => $storeResourceModel->toArray(),
-        ));
+          )
+        );
 
 
         $fieldset->addField(
-                'cms_title', 'text', [
-            'name' => 'cms_title',
+            'cms_title', 
+            'text',
+            ['name' => 'cms_title',
             'label' => __('Title'),
             'title' => __('Title'),
             'required' => true,
-            'disabled' => $isElementDisabled
-                ]
+            'disabled' => $isElementDisabled]
         );
 
         $fieldset->addField(

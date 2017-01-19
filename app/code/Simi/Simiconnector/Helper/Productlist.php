@@ -276,5 +276,4 @@ class Productlist extends Data {
                         \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
                 ) . $media_path;
     }
-
 }

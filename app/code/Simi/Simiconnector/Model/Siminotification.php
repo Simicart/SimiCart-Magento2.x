@@ -34,9 +34,7 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\Siminotification $resource,
         \Simi\Simiconnector\Model\ResourceModel\Siminotification\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
-
-    )
-    {
+    ){
 
         $this->_websiteHelper = $websiteHelper;
 
@@ -147,5 +145,4 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
         );
         return $popup;
     }
-
 }

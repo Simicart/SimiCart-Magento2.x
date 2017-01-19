@@ -54,8 +54,7 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Simi\Simiconnector\Helper\Website $websiteHelper,
 
         array $data = []
-    )
-    {
+    ){
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_collectionFactory = $collectionFactory;
         $this->moduleManager = $moduleManager;
@@ -90,7 +89,7 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
             $this->storeview_id = $storeviewId;
         }
         if (!$this->storeview_id)
-            $this->storeview_id = $this->_objectManager->get('\Magento\Store\Model\Store')->getCollection()->getFirstItem()->getId();
+            $this->storeview_id = $this->_objectManager->get('\Magento\Store\Model\Store')->getCollection()->setPageSize(1)->getFirstItem()->getId();
         $collection = $this->_collectionFactory->create()->addFieldToFilter('storeview_id',$this->storeview_id);
         $this->setCollection($collection);
         return parent::_prepareCollection();
@@ -208,8 +207,7 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @return array
      */
-    protected
-    function _getSelectedDevices()
+    protected function _getSelectedDevices()
     {
         $devices = array_keys($this->getSelectedDevices());
         return $devices;
@@ -224,8 +222,7 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @return array
      */
-    public
-    function getSelectedDevices()
+    public function getSelectedDevices()
     {
         $noticeId = $this->getRequest()->getParam('notice_id');
         if (!isset($noticeId)) {
@@ -247,5 +244,4 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
         return $proIds;
         
     }
-
 }

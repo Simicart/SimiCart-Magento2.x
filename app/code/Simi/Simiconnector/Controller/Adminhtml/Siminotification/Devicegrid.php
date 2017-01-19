@@ -9,5 +9,4 @@ class Devicegrid extends \Simi\Simiconnector\Controller\Adminhtml\Device\Grid
         $this->_view->loadLayout(false);
         $this->_view->renderLayout();
     }
-
 }

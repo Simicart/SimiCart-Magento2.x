@@ -35,8 +35,7 @@ class Simicategory extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\Simicategory $resource,
         \Simi\Simiconnector\Model\ResourceModel\Simicategory\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
-    )
-    {
+    ){
  
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_websiteHelper = $websiteHelper;
@@ -94,5 +93,4 @@ class Simicategory extends \Magento\Framework\Model\AbstractModel
             $visibilityItem->delete();
         return parent::delete();
     }
-
 }

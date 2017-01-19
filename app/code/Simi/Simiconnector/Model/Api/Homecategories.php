@@ -101,5 +101,4 @@ class Homecategories extends Apiabstract {
 
         return $category->getChildrenCategories()->addAttributeToSelect('*');
     }
-
 }

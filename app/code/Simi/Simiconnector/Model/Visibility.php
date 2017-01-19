@@ -34,6 +34,4 @@ class Visibility extends \Magento\Framework\Model\AbstractModel
     {
         $this->_init('Simi\Simiconnector\Model\ResourceModel\Visibility');
     }
-
-   
 }

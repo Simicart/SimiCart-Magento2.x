@@ -33,8 +33,7 @@ class History extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\History $resource,
         \Simi\Simiconnector\Model\ResourceModel\History\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
-    )
-    {
+    ){
 
         $this->_websiteHelper = $websiteHelper;
 
@@ -106,5 +105,4 @@ class History extends \Magento\Framework\Model\AbstractModel
         }
         return $list;
     }
-
 }

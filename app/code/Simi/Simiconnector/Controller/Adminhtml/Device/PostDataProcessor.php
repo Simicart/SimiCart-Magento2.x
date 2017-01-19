@@ -43,7 +43,7 @@ class PostDataProcessor
         $data = $inputFilter->getUnescaped();
         return $data;
     }
-
+    
     /**
      * Validate post data
      *

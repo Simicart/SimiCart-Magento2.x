@@ -161,5 +161,4 @@ class Device extends \Magento\Framework\Model\AbstractModel {
         }
         $this->save();
     }
-
 }

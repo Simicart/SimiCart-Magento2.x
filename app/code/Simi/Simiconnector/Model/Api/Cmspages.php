@@ -33,5 +33,4 @@ class Cmspages extends Apiabstract
         }
         return $result;
     }
-
 }

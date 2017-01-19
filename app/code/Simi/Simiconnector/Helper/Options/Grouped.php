@@ -22,7 +22,7 @@ class Grouped extends \Simi\Simiconnector\Helper\Options
         return $price;
     }
     
-    function getOptions($product){
+   public function getOptions($product){
         $info = array();
         $taxHelper = $this->helper('\Magento\Tax\Helper\Data');
         //Mage_Catalog_Block_Product_View_Type_Grouped

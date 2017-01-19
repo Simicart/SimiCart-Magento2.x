@@ -70,5 +70,4 @@ class Notifications extends Apiabstract {
 
         return $result;
     }
-
 }

@@ -2,8 +2,7 @@
 
 namespace Simi\Simiconnector\Controller\Adminhtml\Cms;
 
-class Grid extends \Magento\Customer\Controller\Adminhtml\Index
-{
+class Grid extends \Magento\Customer\Controller\Adminhtml\Index{
     /**
      * Customer grid action
      *

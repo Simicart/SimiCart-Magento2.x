@@ -9,20 +9,16 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @var \Magento\Framework\Registry|null
      */
-    protected
-    $_coreRegistry = null;
+    protected $_coreRegistry = null;
 
     /**
      * @var \Magento\Catalog\Model\ProductFactory
      */
-    protected
-    $_productFactory;
+    protected $_productFactory;
 
-    protected
-    $_objectManager = null;
+    protected $_objectManager = null;
 
-    protected
-    $_productlistFactory = null;
+    protected $_productlistFactory = null;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
@@ -31,16 +27,14 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @param \Magento\Framework\Registry $coreRegistry
      * @param array $data
      */
-    public
-    function __construct(
+    public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Backend\Helper\Data $backendHelper,
         \Magento\Catalog\Model\ProductFactory $productFactory,
         \Simi\Simiconnector\Model\ProductlistFactory $productlistFactory,
         \Magento\Framework\Registry $coreRegistry,
         array $data = []
-    )
-    {
+    ){
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_productFactory = $productFactory;
         $this->_productlistFactory = $productlistFactory;
@@ -51,8 +45,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * init construct
      */
-    protected
-    function _construct()
+    protected function _construct()
     {
         parent::_construct();
         $this->setId('product_grid');
@@ -66,8 +59,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    protected
-    function _addColumnFilterToCollection($column)
+    protected function _addColumnFilterToCollection($column)
     {
         // Set custom filter for in product flag
         if ($column->getId() == 'in_products') {
@@ -91,8 +83,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @return $this
      */
-    protected
-    function _prepareCollection()
+    protected function _prepareCollection()
     {
         $collection = $this->_productFactory->create()->getCollection()
                                             ->addAttributeToSelect('entity_id')
@@ -107,8 +98,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @return $this
      * @throws \Exception
      */
-    protected
-    function _prepareColumns()
+    protected function _prepareColumns()
     {
 
         $this->addColumn(
@@ -177,8 +167,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @return mixed|string
      */
-    public
-    function getGridUrl()
+    public function getGridUrl()
     {
         return $this->_getData(
             'grid_url'
@@ -194,8 +183,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @param \Magento\Catalog\Model\Product|\Magento\Framework\DataObject $row
      * @return string
      */
-    public
-    function getRowUrl($row)
+    public function getRowUrl($row)
     {
         return false;
     }
@@ -203,8 +191,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @return array
      */
-    protected
-    function _getSelectedProducts()
+    protected function _getSelectedProducts()
     {
         $products = array_keys($this->getSelectedProducts());
         return $products;
@@ -213,8 +200,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @return array
      */
-    public
-    function getSelectedProducts()
+    public function getSelectedProducts()
     {
         $productlist_id = $this->getRequest()->getParam('productlist_id');
         if (!isset($productlist_id)) {
@@ -234,7 +220,4 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         }
         return $proIds;
     }
-
-    
-
 }

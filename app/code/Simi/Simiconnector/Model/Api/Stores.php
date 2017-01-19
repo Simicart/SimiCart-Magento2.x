@@ -31,5 +31,4 @@ class Stores extends Apiabstract
         }
         return $result;
     }
-
 }

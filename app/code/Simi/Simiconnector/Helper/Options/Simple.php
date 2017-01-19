@@ -91,8 +91,6 @@ class Simple extends \Simi\Simiconnector\Helper\Options
         $options = array();
         $options['custom_options'] = $info;
         return $options;
-    }
-    
-    
+    }  
 }
 

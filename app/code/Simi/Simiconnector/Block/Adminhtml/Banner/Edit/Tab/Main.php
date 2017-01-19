@@ -45,7 +45,15 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @param array $data
      */
     public function __construct(
-    \Magento\Backend\Block\Template\Context $context, \Magento\Framework\Registry $registry, \Magento\Framework\Data\FormFactory $formFactory, \Magento\Store\Model\System\Store $systemStore, \Simi\Simiconnector\Helper\Website $websiteHelper, \Simi\Simiconnector\Model\BannerFactory $bannerFactory, \Magento\Framework\Json\EncoderInterface $jsonEncoder, \Magento\Catalog\Model\CategoryFactory $categoryFactory, array $data = []
+        \Magento\Backend\Block\Template\Context $context,
+        \Magento\Framework\Registry $registry,
+        \Magento\Framework\Data\FormFactory $formFactory,
+        \Magento\Store\Model\System\Store $systemStore,
+        \Simi\Simiconnector\Helper\Website $websiteHelper,
+        \Simi\Simiconnector\Model\BannerFactory $bannerFactory,
+        \Magento\Framework\Json\EncoderInterface $jsonEncoder,
+        \Magento\Catalog\Model\CategoryFactory $categoryFactory,
+        array $data = []
     ) {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_bannerFactory = $bannerFactory;
@@ -61,8 +69,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return $this
      */
-    protected function _prepareForm() {
-        /* @var $model \Magento\Cms\Model\Page */
+    protected function _prepareForm()
+    {
         $model = $this->_coreRegistry->registry('banner');
 
         /*
@@ -95,7 +103,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
                     ->addFieldToFilter('content_type', $typeID)
                     ->addFieldToFilter('item_id', $model->getId());
-            $storeIdArray = array();
+            $storeIdArray = [];
 
             foreach ($visibleStoreViews as $visibilityItem) {
                 $storeIdArray[] = $visibilityItem->getData('store_view_id');
@@ -105,87 +113,85 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         $storeResourceModel = $this->_objectManager->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
 
-        $fieldset->addField('storeview_id', 'multiselect', array(
+        $fieldset->addField('storeview_id', 'multiselect', [
             'name' => 'storeview_id[]',
             'label' => __('Store View'),
             'title' => __('Store View'),
             'required' => true,
             'values' => $storeResourceModel->toArray(),
-        ));
+        ]);
 
         $fieldset->addField(
                 'banner_title', 'text', [
-            'name' => 'banner_title',
-            'label' => __('Title'),
-            'title' => __('Title'),
-            'required' => true,
-            'disabled' => $isElementDisabled
+                'name' => 'banner_title',
+                'label' => __('Title'),
+                'title' => __('Title'),
+                'required' => true,
+                'disabled' => $isElementDisabled
                 ]
         );
 
-        $fieldset->addField(
-                'banner_name', 'image', [
-            'name' => 'banner_name',
-            'label' => __('Image (width:640px, height:340px)'),
-            'title' => __('Image (width:640px, height:340px)'),
-            'required' => false,
-            'disabled' => $isElementDisabled
+        $fieldset->addField('banner_name', 'image', ['name' => 'banner_name',
+                'label' => __('Image (width:640px, height:340px)'),
+                'title' => __('Image (width:640px, height:340px)'),
+                'required' => false,
+                'disabled' => $isElementDisabled
                 ]
         );
 
         $fieldset->addField(
                 'banner_name_tablet', 'image', [
-            'name' => 'banner_name_tablet',
-            'label' => __('Tablet Image (width:640px, height:340px)'),
-            'title' => __('Tablet Image (width:640px, height:340px)'),
-            'required' => false,
-            'disabled' => $isElementDisabled
+                'name' => 'banner_name_tablet',
+                'label' => __('Tablet Image (width:640px, height:340px)'),
+                'title' => __('Tablet Image (width:640px, height:340px)'),
+                'required' => false,
+                'disabled' => $isElementDisabled
                 ]
         );
 
 
         $fieldset->addField(
                 'type', 'select', [
-            'name' => 'type',
-            'label' => __('Direct viewers to'),
-            'title' => __('Direct viewers to'),
-            'required' => true,
-            'disabled' => $isElementDisabled,
-            'options' => $this->_bannerFactory->create()->toOptionTypeHash(),
-            'onchange' => 'changeType(this.value)',
+                'name' => 'type',
+                'label' => __('Direct viewers to'),
+                'title' => __('Direct viewers to'),
+                'required' => true,
+                'disabled' => $isElementDisabled,
+                'options' => $this->_bannerFactory->create()->toOptionTypeHash(),
+                'onchange' => 'changeType(this.value)',
                 ]
         );
 
         /* product + category + url */
         $fieldset->addField(
                 'product_id', 'text', [
-            'name' => 'product_id',
-            'label' => __('Product ID'),
-            'title' => __('Product ID'),
-            'required' => true,
-            'disabled' => $isElementDisabled,
-            'after_element_html' => '<a href="#" title="Show Product Grid" onclick="toogleProduct();return false;"><img id="show_product_grid" src="' . $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png') . '" title="" /></a>' . $this->getLayout()->createBlock('Simi\Simiconnector\Block\Adminhtml\Banner\Edit\Tab\Productgrid')->toHtml()
+                'name' => 'product_id',
+                'label' => __('Product ID'),
+                'title' => __('Product ID'),
+                'required' => true,
+                'disabled' => $isElementDisabled,
+                'after_element_html' => '<a href="#" title="Show Product Grid" onclick="toogleProduct();return false;"><img id="show_product_grid" src="' . $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png') . '" title="" /></a>' . $this->getLayout()->createBlock('Simi\Simiconnector\Block\Adminhtml\Banner\Edit\Tab\Productgrid')->toHtml()
                 ]
         );
 
         $fieldset->addField(
                 'new_category_parent', 'select', [
-            'label' => __('Categories'),
-            'title' => __('Categories'),
-            'required' => true,
-            'class' => 'validate-parent-category',
-            'name' => 'new_category_parent',
-            'options' => $this->_getParentCategoryOptions($new_category_parent),
+                'label' => __('Categories'),
+                'title' => __('Categories'),
+                'required' => true,
+                'class' => 'validate-parent-category',
+                'name' => 'new_category_parent',
+                'options' => $this->_getParentCategoryOptions($new_category_parent),
                 ]
         );
 
         $fieldset->addField(
                 'banner_url', 'textarea', [
-            'name' => 'banner_url',
-            'label' => __('Url'),
-            'title' => __('Url'),
-            'required' => true,
-            'disabled' => $isElementDisabled,
+                'name' => 'banner_url',
+                'label' => __('Url'),
+                'title' => __('Url'),
+                'required' => true,
+                'disabled' => $isElementDisabled,
                 ]
         );
 
@@ -193,22 +199,22 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             $data['sort_order'] = 1;
         $fieldset->addField(
                 'sort_order', 'text', [
-            'name' => 'sort_order',
-            'label' => __('Sort Order'),
-            'title' => __('Sort Order'),
-            'class' => 'validate-not-negative-number',
-            'disabled' => $isElementDisabled
+                'name' => 'sort_order',
+                'label' => __('Sort Order'),
+                'title' => __('Sort Order'),
+                'class' => 'validate-not-negative-number',
+                'disabled' => $isElementDisabled
                 ]
         );
 
         $fieldset->addField(
                 'status', 'select', [
-            'name' => 'status',
-            'label' => __('Status'),
-            'title' => __('Status'),
-            'required' => false,
-            'disabled' => $isElementDisabled,
-            'options' => $this->_bannerFactory->create()->toOptionStatusHash(),
+                'name' => 'status',
+                'label' => __('Status'),
+                'title' => __('Status'),
+                'required' => false,
+                'disabled' => $isElementDisabled,
+                'options' => $this->_bannerFactory->create()->toOptionStatusHash(),
                 ]
         );
 
@@ -230,13 +236,12 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      */
     protected function _getParentCategoryOptions($category_id) {
 
-        $items = $this->_categoryFactory->create()->getCollection()->addAttributeToSelect(
-                        'name'
-                )->addAttributeToSort(
-                        'entity_id', 'ASC'
-                )->setPageSize(
-                        3
-                )->load()->getItems();
+        $items = $this->_categoryFactory->create()
+                                        ->getCollection()->addAttributeToSelect('name')
+                                        ->addAttributeToSort('entity_id', 'ASC')
+                                        ->setPageSize(3)
+                                        ->load()
+                                        ->getItems();
 
         $result = [];
         if (count($items) === 2) {
@@ -244,7 +249,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             $result = [$item->getEntityId() => $item->getName()];
         }
 
-        if (sizeof($result) == 0 && $category_id) {
+        if (count($result) == 0 && $category_id) {
             $category = $this->_categoryFactory->create()->load($category_id);
             $result = [$category_id => $category->getName()];
         }
@@ -294,5 +299,4 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         return true;
         //return $this->_authorization->isAllowed($resourceId);
     }
-
 }

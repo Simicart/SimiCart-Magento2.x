@@ -50,8 +50,7 @@ class Matrix extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         array $data = []
-    )
-    {
+    ){
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_simicategoryFactory = $simicategoryFactory;
         $this->_websiteHelper = $websiteHelper;
@@ -231,7 +230,5 @@ class Matrix extends \Magento\Backend\Block\Widget\Form\Generic implements \Mage
     protected function _isAllowedAction($resourceId)
     {
         return true;
-        //return $this->_authorization->isAllowed($resourceId);
     }
-
 }

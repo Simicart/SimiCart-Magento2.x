@@ -35,7 +35,7 @@ class Orders extends Apiabstract {
         $data = $this->getData();
         if ($data['resourceid']) {
             if ($data['resourceid'] == 'onepage') {
-                
+                continue;
             } else {
                 $this->builderQuery = $this->_objectManager->create('Magento\Sales\Model\Order')->load($data['resourceid']);
                 if (!$this->builderQuery->getId()) {
@@ -66,7 +66,7 @@ class Orders extends Apiabstract {
             $param = $data['contents'];
             if ($param->status == 'cancel') {
                 $order->cancel();
-                $order->setState(Mage_Sales_Model_Order::STATE_CANCELED, true);
+                $order->setState(\Magento\Sales\Model\Order::STATE_CANCELED, true);
                 $order->save();
             } else {
                 $order->setState($param->status, true);
@@ -168,6 +168,7 @@ class Orders extends Apiabstract {
             $newTransaction->setOrderId($orderId);
             $newTransaction->save();
         } catch (\Exception $exc) {
+            throw new \Exception($exc->getMessage());
             
         }
 
@@ -350,6 +351,4 @@ class Orders extends Apiabstract {
         }
         return $list;
     }
-
-
 }

@@ -27,5 +27,4 @@ class Devices extends Apiabstract
         $this->builderQuery = $device;
         return $this->show();
     }
-
 }

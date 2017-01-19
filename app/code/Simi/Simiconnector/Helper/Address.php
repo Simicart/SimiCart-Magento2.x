@@ -290,5 +290,4 @@ class Address extends Data {
             return false;
         }
     }
-
 }

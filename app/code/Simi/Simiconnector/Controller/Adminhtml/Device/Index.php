@@ -23,7 +23,7 @@ class Index extends \Magento\Backend\App\Action
         parent::__construct($context);
         $this->resultPageFactory = $resultPageFactory;
     }
-	
+    
     /**
      * Check the permission to run it
      *

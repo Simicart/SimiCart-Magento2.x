@@ -45,12 +45,10 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         \Magento\Store\Model\System\Store $systemStore,
         \Simi\Simiconnector\Helper\Website $websiteHelper,
         \Simi\Simiconnector\Model\HistoryFactory $historyFactory,
-
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         array $data = []
-    )
-    {
+    ){
         $this->_historyFactory = $historyFactory;
         $this->_websiteHelper = $websiteHelper;
         $this->_systemStore = $systemStore;
@@ -188,7 +186,5 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
     protected function _isAllowedAction($resourceId)
     {
         return true;
-        //return $this->_authorization->isAllowed($resourceId);
     }
-
 }

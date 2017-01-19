@@ -221,8 +221,8 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
             curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
             $result = curl_exec($ch);
             curl_close($ch);
-        } catch (Exception $e) {
-            
+        } catch (\Exception $e) {
+            return false;
         }
 
         $re = json_decode($result);
@@ -295,5 +295,4 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
     public function getConfig($nameConfig, $storeid) {
         return $this->_scopeConfig->getValue($nameConfig, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeid);
     }
-
 }

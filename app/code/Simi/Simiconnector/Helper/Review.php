@@ -23,7 +23,7 @@ class Review extends \Simi\Simiconnector\Helper\Data
         return $avg;
     }
 
-    function getRatingStar($productId)
+    public function getRatingStar($productId)
     {
         $reviews = $this->_objectManager->get('Magento\Review\Model\Review')
             ->getResourceCollection()
@@ -175,14 +175,14 @@ class Review extends \Simi\Simiconnector\Helper\Data
                     return array(
                         'review' => $review,
                         'message' => __('Your review has been accepted for moderation.'));
-                } catch (Exception $e) {
-                    throw new Exception(__('Unable to post the review'), 4);
+                } catch (\Exception $e) {
+                    throw new \Exception(__('Unable to post the review'), 4);
                 }
             } else {
-                throw new Exception(__('Unable to post the review'), 4);
+                throw new \Exception(__('Unable to post the review'), 4);
             }
         } else {
-            throw new Exception(__('Invalid method.'), 4);
+            throw new \Exception(__('Invalid method.'), 4);
         }
 
     }

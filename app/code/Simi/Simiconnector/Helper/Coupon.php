@@ -35,5 +35,4 @@ class Coupon extends \Simi\Simiconnector\Helper\Data
         }
         return $message;
     }
-
 }

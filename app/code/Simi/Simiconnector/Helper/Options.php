@@ -76,7 +76,6 @@ class Options extends \Magento\Framework\App\Helper\AbstractHelper
                 return $this->helper('Download')->getOptions($product);
                 break;
         }
-    }
-    
+    } 
 }
 

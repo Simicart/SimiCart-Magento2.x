@@ -58,6 +58,5 @@ class Instantcontact extends \Simi\Simiconnector\Helper\Data
         }
         return $emails;
     }
-    
 }
 

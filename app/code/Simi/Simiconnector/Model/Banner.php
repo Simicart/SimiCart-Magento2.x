@@ -105,5 +105,4 @@ class Banner extends \Magento\Framework\Model\AbstractModel
             $visibilityItem->delete();
         return parent::delete();
     }
-
 }

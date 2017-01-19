@@ -101,9 +101,9 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             $_weeeTaxAttributes = $_weeeHelper->getProductWeeeAttributesForRenderer($_product, null, null, null, true);
             $_weeeTaxAmountInclTaxes = $_weeeTaxAmount;
             
-            if ($_weeeHelper->isTaxable()) {
+            // if ($_weeeHelper->isTaxable()) {
                 //$_weeeTaxAmountInclTaxes = $_weeeHelper->getAmountInclTaxes($_weeeTaxAttributes);
-            }
+            // }
             $_weeeTaxAmount = $this->convertPrice($_weeeTaxAmount);
             $_weeeTaxAmountInclTaxes = $this->convertPrice($_weeeTaxAmountInclTaxes);
 
@@ -437,7 +437,6 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
     public function setWeePrice(&$price, $wee)
     {
         $price['wee'] = $wee;
-    }
-    
+    } 
 }
 

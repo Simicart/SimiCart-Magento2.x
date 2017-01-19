@@ -88,9 +88,10 @@ class Save extends \Magento\Backend\App\Action
                     $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
                             ->addFieldToFilter('content_type', $typeID)
                             ->addFieldToFilter('item_id', $model->getId());
-                    foreach ($visibleStoreViews as $visibilityItem) {
-                        $visibilityItem->delete();
-                    }
+                    // foreach ($visibleStoreViews as $visibilityItem) {
+                    //     $visibilityItem->delete();
+                    // }
+                    $visibleStoreViews->walk('delete');
                     foreach ($data['storeview_id'] as $storeViewId){
                         $visibilityItem = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility');
                         $visibilityItem->setData('content_type',$typeID);                        

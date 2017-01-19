@@ -34,8 +34,7 @@ class Productlist extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\Productlist $resource,
         \Simi\Simiconnector\Model\ResourceModel\Productlist\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
-    )
-    {
+    ){
 
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_websiteHelper = $websiteHelper;
@@ -93,5 +92,4 @@ class Productlist extends \Magento\Framework\Model\AbstractModel
             $visibilityItem->delete();
         return parent::delete();
     }
-
 }

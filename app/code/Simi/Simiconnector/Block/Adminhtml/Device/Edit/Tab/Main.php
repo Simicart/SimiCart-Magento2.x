@@ -55,8 +55,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         array $data = []
-    )
-    {
+    ){
         $this->_deviceFactory = $deviceFactory;
         $this->_bannerFactory = $bannerFactory;
         $this->_websiteHelper = $websiteHelper;
@@ -224,7 +223,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             $result = [$item->getEntityId() => $item->getName()];
         }
 
-        if(sizeof($result) == 0 && $category_id){
+        if(count($result) == 0 && $category_id){
             $category = $this->_categoryFactory->create()->load($category_id);
             $result = [$category_id => $category->getName()];
         }
@@ -279,5 +278,4 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         return true;
         //return $this->_authorization->isAllowed($resourceId);
     }
-
 }

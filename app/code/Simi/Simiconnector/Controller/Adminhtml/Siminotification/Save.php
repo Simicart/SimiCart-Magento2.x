@@ -98,7 +98,6 @@ class Save extends \Magento\Backend\App\Action
             } catch (\RuntimeException $e) {
                 $this->messageManager->addError($e->getMessage());
             } catch (\Exception $e) {
-                var_dump($e->getMessage());exit;
                 $this->messageManager->addException($e, __('Something went wrong while saving the data.'));
             }
 

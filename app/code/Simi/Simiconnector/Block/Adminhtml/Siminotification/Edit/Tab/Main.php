@@ -85,7 +85,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $data = $model->getData();
 
         if (!isset($data['storeview_id'])) {
-            $data['storeview_id'] = $this->_objectManager->get('\Magento\Store\Model\Store')->getCollection()->getFirstItem()->getId();
+            $data['storeview_id'] = $this->_objectManager->get('\Magento\Store\Model\Store')->getCollection()->setPageSize(1)->getFirstItem()->getId();
         } 
         $data['storeview_selected'] = $data['storeview_id'];
         $fieldset->addField(
@@ -314,7 +314,5 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
     protected function _isAllowedAction($resourceId)
     {
         return true;
-        //return $this->_authorization->isAllowed($resourceId);
     }
-
 }

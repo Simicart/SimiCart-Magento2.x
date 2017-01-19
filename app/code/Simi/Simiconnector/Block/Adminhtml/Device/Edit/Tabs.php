@@ -16,5 +16,4 @@ class Tabs extends \Magento\Backend\Block\Widget\Tabs
         $this->setDestElementId('edit_form');
         $this->setTitle(__('Device Information'));
     }
-
 }

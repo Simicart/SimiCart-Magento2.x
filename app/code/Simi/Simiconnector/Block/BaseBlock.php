@@ -25,9 +25,7 @@ class BaseBlock extends \Magento\Framework\View\Element\Template
      * @param \Simi\Simiconnector\Block\Context $context
 	 * @param \Magento\Framework\UrlFactory $urlFactory
      */
-    public function __construct( \Simi\Simiconnector\Block\Context $context
-	)
-    {
+    public function __construct( \Simi\Simiconnector\Block\Context $context){
         $this->_devToolHelper = $context->getSimiconnectorHelper();
 		$this->_config = $context->getConfig();
         $this->_urlApp=$context->getUrlFactory()->create();
@@ -84,7 +82,7 @@ class BaseBlock extends \Magento\Framework\View\Element\Template
 				return true;
 			}
 			else {
-				$remoteIp=$_SERVER['REMOTE_ADDR'];
+				$remoteIp = $_SERVER['REMOTE_ADDR'];
 				if (strpos($allowedIps,$remoteIp) !== false) {
 					return true;
 				}
@@ -92,5 +90,4 @@ class BaseBlock extends \Magento\Framework\View\Element\Template
 		}
 		return false;
 	}
-	
 }

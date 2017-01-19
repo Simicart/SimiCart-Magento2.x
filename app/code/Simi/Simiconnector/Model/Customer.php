@@ -10,8 +10,8 @@ use Magento\Framework\Stdlib\Cookie\PhpCookieManager;
 /**
  * Simiconnector Model
  *
- * @method \Simi\Simiconnector\Model\Resource\Page _getResource()
- * @method \Simi\Simiconnector\Model\Resource\Page getResource()
+ * @method \Simi\Simiconnector\Model\ResourceModel\Page _getResource()
+ * @method \Simi\Simiconnector\Model\ResourceModel\Page getResource()
  */
 class Customer extends \Magento\Framework\Model\AbstractModel {
 
@@ -123,7 +123,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel {
             $customer->setChangePassword(1);
             $oldPass = $this->_getSession()->getCustomer()->getPasswordHash();
             if ($newPass != $confPass) {
-                throw new InputException(__('Password confirmation doesn\'t match entered password.'));
+                throw new \Magento\Framework\Exception\InputException(__('Password confirmation doesn\'t match entered password.'));
             }
             $customer->setPassword($newPass);
             $customer->setConfirmation($confPass);
@@ -249,5 +249,4 @@ class Customer extends \Magento\Framework\Model\AbstractModel {
         }
         return $this->cookieMetadataFactory;
     }
-
 }

@@ -79,5 +79,4 @@ class Homeproductlists extends Apiabstract
         }
         return $dataArray;
     }
-
 }

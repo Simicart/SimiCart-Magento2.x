@@ -256,5 +256,4 @@ class Products extends Apiabstract {
         $this->builderQuery = $this->_helperProduct->getBuilderQuery();
         $this->_sortOrders = $this->_helperProduct->getStoreQrders();
     }
-
 }

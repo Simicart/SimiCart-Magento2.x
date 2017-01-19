@@ -19,7 +19,7 @@ class Addresses extends Apiabstract
     public function setBuilderQuery() {
         $data = $this->getData();
         if ($data['resourceid']) {
-            
+            continue;
         } else {
             if (!$this->_objectManager->get('Magento\Customer\Model\Session')->isLoggedIn()) {
                 throw new \Exception(__('You have not logged in'), 4);
@@ -131,5 +131,4 @@ class Addresses extends Apiabstract
         }
         return parent::show();
     }
-
 }

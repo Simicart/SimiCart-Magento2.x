@@ -1259,8 +1259,6 @@ class InstallSchema implements InstallSchemaInterface
         );
         $installer->getConnection()->createTable($table_taskbar);
         // end create table simiconnector Taskbar
-		
-		
         $installer->endSetup();
 
     }

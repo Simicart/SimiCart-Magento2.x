@@ -10,23 +10,19 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
     /**
      * @var \Magento\Framework\Registry|null
      */
-    protected
-            $_coreRegistry = null;
+    protected $_coreRegistry = null;
 
     /**
      * @var \Magento\Catalog\Model\ProductFactory
      */
-    protected
-            $_productFactory;
+    protected $_productFactory;
 
     /**
      * @var \Simi\Simiconnector\Model\Banner
      */
-    protected
-            $_siminotificationFactory = null;
+    protected $_siminotificationFactory = null;
     
-    protected  
-            $_objectManager;
+    protected $_objectManager;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
@@ -35,13 +31,12 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
      * @param \Magento\Framework\Registry $coreRegistry
      * @param array $data
      */
-    public
-            function __construct(
-    \Magento\Backend\Block\Template\Context $context, 
-    \Magento\Backend\Helper\Data $backendHelper, 
-    \Magento\Catalog\Model\ProductFactory $productFactory, 
-    \Simi\Simiconnector\Model\Siminotification $siminotificationFactory, 
-    \Magento\Framework\Registry $coreRegistry, array $data = []
+    public function __construct(
+        \Magento\Backend\Block\Template\Context $context, 
+        \Magento\Backend\Helper\Data $backendHelper, 
+        \Magento\Catalog\Model\ProductFactory $productFactory, 
+        \Simi\Simiconnector\Model\Siminotification $siminotificationFactory, 
+        \Magento\Framework\Registry $coreRegistry, array $data = []
     ) {
 
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -54,8 +49,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
     /**
      * init construct
      */
-    protected
-            function _construct() {
+    protected function _construct() {
         parent::_construct();
         $this->setId('product_grid');
         $this->setDefaultSort('entity_id');
@@ -67,8 +61,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    protected
-            function _addColumnFilterToCollection($column) {
+    protected function _addColumnFilterToCollection($column) {
         // Set custom filter for in product flag
         if ($column->getId() == 'in_products') {
             $productIds = $this->_getSelectedProducts();
@@ -91,8 +84,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
     /**
      * @return $this
      */
-    protected
-            function _prepareCollection() {
+    protected function _prepareCollection() {
         $collection = $this->_productFactory->create()->getCollection()
                 ->addAttributeToSelect('entity_id')
                 ->addAttributeToSelect('name')
@@ -106,8 +98,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
      * @return $this
      * @throws \Exception
      */
-    protected
-            function _prepareColumns() {
+    protected function _prepareColumns() {
         $this->addColumn(
                 'in_products', [
             'type' => 'radio',
@@ -157,8 +148,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
     /**
      * @return mixed|string
      */
-    public
-            function getGridUrl() {
+    public function getGridUrl() {
         return $this->_getData(
                         'grid_url'
                 ) ? $this->_getData(
@@ -172,16 +162,14 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
      * @param \Magento\Catalog\Model\Product|\Magento\Framework\DataObject $row
      * @return string
      */
-    public
-            function getRowUrl($row) {
+    public function getRowUrl($row) {
         return false;
     }
 
     /**
      * @return array
      */
-    protected
-            function _getSelectedProducts() {
+    protected function _getSelectedProducts() {
         $products = array_keys($this->getSelectedProducts());
         return $products;
     }
@@ -189,8 +177,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
     /**
      * @return array
      */
-    public
-            function getSelectedProducts() {
+    public function getSelectedProducts() {
         $notice_id = $this->getRequest()->getParam('notice_id');
         if (!isset($notice_id)) {
             $notice_id = 0;
@@ -207,5 +194,4 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
         }
         return $proIds;
     }
-
 }

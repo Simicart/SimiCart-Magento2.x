@@ -20,11 +20,6 @@ class Transactions extends \Magento\Backend\Block\Widget\Grid\Container
         $this->_addButtonLabel = __('Add New App Transactions');
         parent::_construct();
         $this->buttonList->remove('add');
-//        if ($this->_isAllowedAction('Simi_Simiconnector::save')) {
-//            $this->buttonList->update('add', 'label', __('Add New Connector'));
-//        } else {
-//            $this->buttonList->remove('add');
-//        }
     }
     
     /**
@@ -36,6 +31,5 @@ class Transactions extends \Magento\Backend\Block\Widget\Grid\Container
     protected function _isAllowedAction($resourceId)
     {
         return true;
-        //return $this->_authorization->isAllowed($resourceId);
     }
 }

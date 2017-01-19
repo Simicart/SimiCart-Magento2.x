@@ -2,8 +2,7 @@
 
 namespace Simi\Simiconnector\Controller\Adminhtml\Cms;
 
-class Delete extends \Magento\Backend\App\Action
-{
+class Delete extends \Magento\Backend\App\Action{
     /**
      * {@inheritdoc}
      */

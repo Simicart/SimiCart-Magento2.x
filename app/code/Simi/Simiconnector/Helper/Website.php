@@ -36,8 +36,7 @@ class Website extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Store\Model\WebsiteRepositoryFactory $websiteRepositoryFactory,
         \Magento\Framework\App\Request\Http $request,
         \Magento\Directory\Model\ResourceModel\Country\CollectionFactory $countryCollectionFactory
-    )
-    {
+    ){
         $this->_request = $request;
         $this->_websiteFactory = $websiteFactory;
         $this->_websiteRepositoryFactory = $websiteRepositoryFactory;

@@ -241,5 +241,4 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         return true;
         //return $this->_authorization->isAllowed($resourceId);
     }
-
 }

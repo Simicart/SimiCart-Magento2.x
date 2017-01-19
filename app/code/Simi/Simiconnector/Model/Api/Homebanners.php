@@ -61,5 +61,4 @@ class Homebanners extends Apiabstract
         }
         return $result;
     }
-
 }

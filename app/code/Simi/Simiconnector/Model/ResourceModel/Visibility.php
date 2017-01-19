@@ -16,6 +16,4 @@ class Visibility extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
     {
         $this->_init('simiconnector_visibility', 'entity_id');
     }
-
-  
 }

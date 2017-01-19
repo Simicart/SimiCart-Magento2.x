@@ -48,8 +48,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Simi\Simiconnector\Helper\Website $websiteHelper,
         array $data = []
-    )
-    {
+    ){
         $this->_collectionFactory = $collectionFactory;
         $this->moduleManager = $moduleManager;
         $this->_resource = $resourceConnection;
@@ -171,5 +170,4 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         return $this->_websiteHelper->getWebsiteIdFromUrl();
     }
-
 }

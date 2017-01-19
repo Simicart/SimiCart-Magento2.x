@@ -22,7 +22,7 @@ class Configurable extends \Simi\Simiconnector\Helper\Options
         return $price;
     }
     
-    function getOptions($product){
+    public function getOptions($product){
         $layout = $this->_objectManager->get('Magento\Framework\View\LayoutInterface');
         $block = $layout->createBlock('Magento\ConfigurableProduct\Block\Product\View\Type\Configurable');
         

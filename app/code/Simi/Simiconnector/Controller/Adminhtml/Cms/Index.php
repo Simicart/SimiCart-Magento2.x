@@ -5,8 +5,7 @@ namespace Simi\Simiconnector\Controller\Adminhtml\Cms;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 
-class Index extends \Magento\Backend\App\Action
-{
+class Index extends \Magento\Backend\App\Action{
 	/**
      * @var PageFactory
      */

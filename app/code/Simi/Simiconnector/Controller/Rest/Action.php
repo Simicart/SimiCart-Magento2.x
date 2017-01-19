@@ -42,7 +42,7 @@ class Action extends \Magento\Framework\App\Action\Action
         $this->setData($result);
         $this->_eventManager->dispatch($this->getRequest()->getFullActionName(), array('object' => $this, 'data' => $result));
         $this->_data = $this->getData();
-        echo json_encode($this->_data);
+        return $this->getResponse()->setBody(json_encode($this->_data));
     }
 
     protected function isHeader() {

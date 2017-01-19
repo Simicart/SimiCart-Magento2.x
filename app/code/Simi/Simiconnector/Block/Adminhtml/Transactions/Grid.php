@@ -152,5 +152,4 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         return $this->getUrl('*/transactions/grid', ['_current' => true]);
     }
-
 }

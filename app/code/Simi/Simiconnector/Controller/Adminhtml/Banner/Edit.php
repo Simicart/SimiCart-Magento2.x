@@ -4,8 +4,7 @@ namespace Simi\Simiconnector\Controller\Adminhtml\Banner;
 
 use Magento\Backend\App\Action;
 
-class Edit extends \Magento\Backend\App\Action
-{
+class Edit extends \Magento\Backend\App\Action {
     /**
      * Core registry
      *

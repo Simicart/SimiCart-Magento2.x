@@ -9,20 +9,17 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @var \Magento\Framework\Registry|null
      */
-    protected
-    $_coreRegistry = null;
+    protected $_coreRegistry = null;
 
     /**
      * @var \Magento\Catalog\Model\ProductFactory
      */
-    protected
-    $_productFactory;
+    protected $_productFactory;
 
     /**
      * @var \Simi\Simiconnector\Model\Banner
      */
-    protected
-    $_bannerFactory = null;
+    protected $_bannerFactory = null;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
@@ -31,16 +28,14 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @param \Magento\Framework\Registry $coreRegistry
      * @param array $data
      */
-    public
-    function __construct(
+    public function __construct(
         \Magento\Backend\Block\Template\Context $context,
         \Magento\Backend\Helper\Data $backendHelper,
         \Magento\Catalog\Model\ProductFactory $productFactory,
         \Simi\Simiconnector\Model\BannerFactory $bannerFactory,
         \Magento\Framework\Registry $coreRegistry,
         array $data = []
-    )
-    {
+    ){
 
         $this->_productFactory = $productFactory;
         $this->_bannerFactory = $bannerFactory;
@@ -51,8 +46,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * init construct
      */
-    protected
-    function _construct()
+    protected function _construct()
     {
         parent::_construct();
         $this->setId('product_grid');
@@ -66,8 +60,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    protected
-    function _addColumnFilterToCollection($column)
+    protected function _addColumnFilterToCollection($column)
     {
         // Set custom filter for in product flag
         if ($column->getId() == 'in_products') {
@@ -91,14 +84,12 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @return $this
      */
-    protected
-    function _prepareCollection()
+    protected function _prepareCollection()
     {
         $collection = $this->_productFactory->create()->getCollection()
-                                            ->addAttributeToSelect('entity_id')
-                                            ->addAttributeToSelect('name')
-                                            ->addAttributeToSelect('sku')
-                        ;
+                            ->addAttributeToSelect('entity_id')
+                            ->addAttributeToSelect('name')
+                            ->addAttributeToSelect('sku');
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -107,56 +98,47 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @return $this
      * @throws \Exception
      */
-    protected
-    function _prepareColumns()
+    protected function _prepareColumns()
     {
 
         $this->addColumn(
             'in_products',
-            [
-                'type' => 'radio',
-                'html_name' => 'products_id',
-                'required' => true,
-                'values' => $this->_getSelectedProducts(),
-                'align' => 'center',
-                'index' => 'entity_id',
-                'header_css_class' => 'col-select',
-                'column_css_class' => 'col-select'
-            ]
-        );
+            ['type' => 'radio',
+            'html_name' => 'products_id',
+            'required' => true,
+            'values' => $this->_getSelectedProducts(),
+            'align' => 'center',
+            'index' => 'entity_id',
+            'header_css_class' => 'col-select',
+            'column_css_class' => 'col-select'
+            ]);
 
         $this->addColumn(
             'entity_id',
-            [
-                'header' => __('ID'),
-                'index' => 'entity_id',
-                'width' => '20px',
-                'header_css_class' => 'col-name',
-                'column_css_class' => 'col-name'
-            ]
-        );
+            ['header' => __('ID'),
+            'index' => 'entity_id',
+            'width' => '20px',
+            'header_css_class' => 'col-name',
+            'column_css_class' => 'col-name'
+            ]);
 
 
         $this->addColumn(
             'name',
-            [
-                'header' => __('Name'),
-                'index' => 'name',
-                'header_css_class' => 'col-name',
-                'column_css_class' => 'col-name'
-            ]
-        );
+            ['header' => __('Name'),
+            'index' => 'name',
+            'header_css_class' => 'col-name',
+            'column_css_class' => 'col-name'
+            ]);
 
 
         $this->addColumn(
             'sku',
-            [
-                'header' => __('SKU'),
-                'index' => 'sku',
-                'header_css_class' => 'col-sku',
-                'column_css_class' => 'col-sku'
-            ]
-        );
+            ['header' => __('SKU'),
+            'index' => 'sku',
+            'header_css_class' => 'col-sku',
+            'column_css_class' => 'col-sku'
+            ]);
 
 
         return parent::_prepareColumns();
@@ -165,25 +147,23 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @return mixed|string
      */
-    public
-    function getGridUrl()
+    public function getGridUrl()
     {
         return $this->_getData(
             'grid_url'
-        ) ? $this->_getData(
+            ) ? $this->_getData(
             'grid_url'
-        ) : $this->getUrl(
+            ) : $this->getUrl(
             'simiconnector/*/productgrid',
             ['_current' => true]
-        );
-    }
+            );
+        }
 
     /**
      * @param \Magento\Catalog\Model\Product|\Magento\Framework\DataObject $row
      * @return string
      */
-    public
-    function getRowUrl($row)
+    public function getRowUrl($row)
     {
         return false;
     }
@@ -191,8 +171,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @return array
      */
-    protected
-    function _getSelectedProducts()
+    protected function _getSelectedProducts()
     {
         $products = array_keys($this->getSelectedProducts());
         return $products;
@@ -201,8 +180,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @return array
      */
-    public
-    function getSelectedProducts()
+    public function getSelectedProducts()
     {
         $banner_id = $this->getRequest()->getParam('id');
         if (!isset($tm_id)) {

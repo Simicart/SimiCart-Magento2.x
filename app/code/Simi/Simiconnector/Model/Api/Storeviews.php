@@ -207,7 +207,7 @@ class Storeviews extends Apiabstract {
         return $this->getDetail($this->storeviewInfo);
     }
 
-    function getLocale() {
+    public function getLocale() {
         $resolver = $this->_objectManager->get('Magento\Framework\Locale\Resolver');
         return $resolver->getLocale();
     }
@@ -312,5 +312,4 @@ class Storeviews extends Apiabstract {
         $storeAPIModel->pluralKey = 'stores';
         return $storeAPIModel->index();
     }
-
 }

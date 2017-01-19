@@ -185,5 +185,4 @@ class Total extends Data
     public function getShippingExcludeTax($total) {
         return $total->getAddress()->getShippingAmount();
     }
-
 }

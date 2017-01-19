@@ -58,5 +58,4 @@ class Categories extends Apiabstract
     public function show() {
         return $this->index();
     }
-    
 }

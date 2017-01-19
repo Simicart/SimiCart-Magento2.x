@@ -7,5 +7,4 @@ use Simi\Simiconnector\Block\BaseBlock;
 class V2 extends BaseBlock
 {
 	public $hello='Hello World';
-	
 }

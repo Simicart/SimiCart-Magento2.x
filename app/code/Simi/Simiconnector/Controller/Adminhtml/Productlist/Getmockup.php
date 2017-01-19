@@ -47,8 +47,9 @@ class Getmockup extends \Magento\Backend\App\Action
      */
     public function execute()
     {
+
         $storeviewid = $this->getRequest()->getParam('storeview_id');
-        echo $this->_objectManager->create('Simi\Simiconnector\Helper\Productlist')->getMatrixLayoutMockup($storeviewid, $this);
-        exit();
+        $output= $this->_objectManager->create('Simi\Simiconnector\Helper\Productlist')->getMatrixLayoutMockup($storeviewid, $this);
+        return $this->getResponse()->setBody($output);
     }
 }

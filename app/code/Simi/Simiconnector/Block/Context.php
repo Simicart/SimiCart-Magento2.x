@@ -179,5 +179,4 @@ class Context extends \Magento\Framework\View\Element\Template\Context
 	public function getUrlFactory(){
 		return $this->_urlFactory;
 	}
-
 }

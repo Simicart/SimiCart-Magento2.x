@@ -36,5 +36,4 @@ class Productgrid extends \Magento\Catalog\Controller\Adminhtml\Product
             ->setProducts($this->getRequest()->getPost('products', null));
         return $resultLayout;
     }
-    
 }

@@ -266,5 +266,4 @@ class Quoteitems extends Apiabstract
         $result['quote_id'] = $session->getQuoteId();
         return $result;
     }
-
 }
