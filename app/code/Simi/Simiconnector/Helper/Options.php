@@ -5,7 +5,6 @@
  */
 namespace Simi\Simiconnector\Helper;
 
-
 class Options extends \Magento\Framework\App\Helper\AbstractHelper
 {
 
@@ -60,22 +59,21 @@ class Options extends \Magento\Framework\App\Helper\AbstractHelper
             case \Magento\Catalog\Model\Product\Type::TYPE_SIMPLE:
                 return $this->helper('Simple')->getOptions($product);
                 break;
-            case \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE :
+            case \Magento\Catalog\Model\Product\Type::TYPE_BUNDLE:
                 return $this->helper('Bundle')->getOptions($product);
                 break;
-            case 'grouped' :
+            case 'grouped':
                 return $this->helper('Grouped')->getOptions($product);
                 break;
-            case 'configurable' :
+            case 'configurable':
                 return $this->helper('Configurable')->getOptions($product);
                 break;
-            case \Magento\Catalog\Model\Product\Type::TYPE_VIRTUAL :
+            case \Magento\Catalog\Model\Product\Type::TYPE_VIRTUAL:
                 return $this->helper('Simple')->getOptions($product);
                 break;
-            case "downloadable" :
+            case "downloadable":
                 return $this->helper('Download')->getOptions($product);
                 break;
         }
-    } 
+    }
 }
-

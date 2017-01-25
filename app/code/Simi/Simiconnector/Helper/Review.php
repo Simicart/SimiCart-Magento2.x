@@ -5,7 +5,6 @@
  */
 namespace Simi\Simiconnector\Helper;
 
-
 class Review extends \Simi\Simiconnector\Helper\Data
 {
     public function getTotalRate($rates)
@@ -16,10 +15,11 @@ class Review extends \Simi\Simiconnector\Helper\Data
 
     public function getAvgRate($rates, $total)
     {
-        if ($rates[5] != 0)
+        if ($rates[5] != 0) {
             $avg = $total / $rates[5];
-        else
+        } else {
             $avg = 0;
+        }
         return $avg;
     }
 
@@ -35,7 +35,7 @@ class Review extends \Simi\Simiconnector\Helper\Data
         /**
          * Getting numbers ratings/reviews
          */
-        $star = array();
+        $star = [];
         $star[0] = 0;
         $star[1] = 0;
         $star[2] = 0;
@@ -94,46 +94,46 @@ class Review extends \Simi\Simiconnector\Helper\Data
         $block = $this->_objectManager->get('Magento\Review\Block\Form');
         $is_allow = $block->getAllowWriteReviewFlag();
         if ($is_allow) {
-            $info = array();
-            $rates = array();
+            $info = [];
+            $rates = [];
             if ($block->getRatings() && $block->getRatings()->getSize()) {
                 foreach ($block->getRatings() as $_rating) {
-                    $_options = array();
+                    $_options = [];
                     foreach ($_rating->getOptions() as $_option) {
-                        $_options[] = array(
+                        $_options[] = [
                             'key' => $_rating->getId(),
                             'value' => $_option->getId(),
-                        );
+                        ];
                     }
-                    $rates[] = array(
+                    $rates[] = [
                         'rate_code' => $block->escapeHtml($_rating->getRatingCode()),
                         'rate_options' => $_options,
-                    );
+                    ];
                 }
             }
-            $info[] = array('rates' => $rates, 'form_review' => array(
+            $info[] = ['rates' => $rates, 'form_review' => [
                 'key_1' => 'nickname',
                 'key_2' => 'title',
-                'key_3' => 'detail',                 
-                'form_key'=> array(
-                     array(
+                'key_3' => 'detail',
+                'form_key'=> [
+                     [
                          'key' => 'nickname',
                          'value' => 'Nickname'
-                     ),
-                     array(
+                     ],
+                     [
                          'key' => 'title',
                          'value' => 'Title'
-                     ),
-                     array(
+                     ],
+                     [
                          'key' => 'detail',
                          'value' => 'Detail'
-                     ),
-                )),
-            );
+                     ],
+                ]],
+            ];
 
             return $info;
         } else {
-            return array($block->__('Only registered users can write reviews'));
+            return [$block->__('Only registered users can write reviews')];
         }
     }
 
@@ -161,7 +161,7 @@ class Review extends \Simi\Simiconnector\Helper\Data
                         ->setStatusId(\Magento\Review\Model\Review::STATUS_PENDING)
                         ->setCustomerId($this->_objectManager->get('Magento\Customer\Model\Session')->getCustomerId())
                         ->setStoreId($this->_storeManager->getStore()->getId())
-                        ->setStores(array($this->_storeManager->getStore()->getId()))
+                        ->setStores([$this->_storeManager->getStore()->getId()])
                         ->save();
                     foreach ($rating as $ratingId => $optionId) {
                         $this->_objectManager->get('Magento\Review\Model\Rating')
@@ -172,9 +172,9 @@ class Review extends \Simi\Simiconnector\Helper\Data
                     }
 
                     $review->aggregate();
-                    return array(
+                    return [
                         'review' => $review,
-                        'message' => __('Your review has been accepted for moderation.'));
+                        'message' => __('Your review has been accepted for moderation.')];
                 } catch (\Exception $e) {
                     throw new \Exception(__('Unable to post the review'), 4);
                 }
@@ -184,6 +184,5 @@ class Review extends \Simi\Simiconnector\Helper\Data
         } else {
             throw new \Exception(__('Invalid method.'), 4);
         }
-
     }
 }

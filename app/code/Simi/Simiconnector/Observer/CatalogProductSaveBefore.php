@@ -16,7 +16,8 @@ class CatalogProductSaveBefore implements ObserverInterface
     private $_objectManager;
     public $new_added_product_sku = '';
     
-    public function __construct() {
+    public function __construct()
+    {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
     }
 
@@ -31,24 +32,30 @@ class CatalogProductSaveBefore implements ObserverInterface
     }
     
     
-    public function sendNotificationProductChangePrice($observer) {
+    public function sendNotificationProductChangePrice($observer)
+    {
         $helper = $this->_objectManager->get('Simi\Simiconnector\Helper\Siminotification');
         $storeViewCollection = $this->_objectManager->get('\Magento\Store\Model\Store')->getCollection();
         foreach ($storeViewCollection as $storeview) {
             $storeviewId = $storeview->getId();
             if ($helper->getConfig('simi_notifications/notice_price/noti_price_enable', $storeviewId)) {
                 $newProduct = $observer->getProduct();
-                if (!in_array($storeview->getWebsiteId(), $newProduct->getWebsiteIds()))
+                if (!in_array($storeview->getWebsiteId(), $newProduct->getWebsiteIds())) {
                     continue;
+                }
                 $newPrice = $newProduct->getData('price');
                 $newSpecialPrice = $newProduct->getData('special_price');
                 $oldProduct = $this->_objectManager->create('Magento\Catalog\Model\Product')->load($newProduct->getId());
                 $oldPrice = $oldProduct->getData('price');
                 $oldSpecialPrice = $oldProduct->getData('special_price');
                 if ($oldSpecialPrice != $newSpecialPrice && $newProduct->getId() > 0 && $newProduct->getStatus() == '1' && $newProduct->getVisibility() != '1') {
-                    $data = array();
+                    $data = [];
                     $content = __(
-                            $helper->getConfig('simi_notifications/notice_price/noti_price_message', $storeviewId), $newProduct->getName(), $this->formatPrice($oldSpecialPrice), $this->formatPrice($newSpecialPrice));
+                        $helper->getConfig('simi_notifications/notice_price/noti_price_message', $storeviewId),
+                        $newProduct->getName(),
+                        $this->formatPrice($oldSpecialPrice),
+                        $this->formatPrice($newSpecialPrice)
+                    );
                     $data['website_id'] = $helper->getConfig('simi_notifications/notice_price/noti_price_website', $storeviewId);
                     $data['show_popup'] = $helper->getConfig('simi_notifications/notice_price/noti_price_showpopup', $storeviewId);
                     $data['notice_title'] = $helper->getConfig('simi_notifications/notice_price/noti_price_title', $storeviewId);
@@ -70,9 +77,13 @@ class CatalogProductSaveBefore implements ObserverInterface
                         $helper->sendNotice($data);
                     }
                 } elseif ($oldPrice != $newPrice && $newProduct->getId() > 0 && $newProduct->getStatus() == '1' && $newProduct->getVisibility() != '1') {
-                    $data = array();
+                    $data = [];
                     $content = __(
-                    $helper->getConfig('simi_notifications/notice_price/noti_price_message', $storeviewId), $newProduct->getName(), $this->formatPrice($oldPrice), $this->formatPrice($newPrice));
+                        $helper->getConfig('simi_notifications/notice_price/noti_price_message', $storeviewId),
+                        $newProduct->getName(),
+                        $this->formatPrice($oldPrice),
+                        $this->formatPrice($newPrice)
+                    );
                     $data['website_id'] = $helper->getConfig('simi_notifications/notice_price/noti_price_website', $storeviewId);
                     $data['show_popup'] = $helper->getConfig('simi_notifications/notice_price/noti_price_showpopup', $storeviewId);
                     $data['notice_title'] = $helper->getConfig('simi_notifications/notice_price/noti_price_title', $storeviewId);
@@ -100,7 +111,8 @@ class CatalogProductSaveBefore implements ObserverInterface
         }
     }
 
-    public function sendNotificationNewProduct($observer) {
+    public function sendNotificationNewProduct($observer)
+    {
         if ($this->new_added_product_sku == '') {
             return;
         }
@@ -110,14 +122,17 @@ class CatalogProductSaveBefore implements ObserverInterface
             $storeviewId = $storeview->getId();
             if ($helper->getConfig('simi_notifications/noti_new_product/new_product_enable', $storeviewId)) {
                 $newProduct = $observer->getProduct();
-                if (!in_array($storeview->getWebsiteId(), $newProduct->getWebsiteIds()))
+                if (!in_array($storeview->getWebsiteId(), $newProduct->getWebsiteIds())) {
                     continue;
+                }
                 $lastProductId = $this->_objectManager->create('Magento\Catalog\Model\Product')->getCollection()
-                                ->setOrder('entity_id', 'desc')->getFirstItem()->getId();
+                                ->setOrder('entity_id', 'desc')->setPageSize(1)->getFirstItem()->getId();
                 if ($newProduct->getId() && $newProduct->getId() == $lastProductId && $newProduct->getStatus() == '1' && $newProduct->getVisibility() != '1' && $newProduct->getSku() == $this->new_added_product_sku) {
                     $content = __(
-                            $helper->getConfig('simi_notifications/noti_new_product/new_product_message', $storeviewId), $newProduct->getName());
-                    $data = array();
+                        $helper->getConfig('simi_notifications/noti_new_product/new_product_message', $storeviewId),
+                        $newProduct->getName()
+                    );
+                    $data = [];
                     $data['website_id'] = $helper->getConfig('simi_notifications/noti_new_product/new_product_website', $storeviewId);
                     $data['show_popup'] = $helper->getConfig('simi_notifications/noti_new_product/new_product_showpopup', $storeviewId);
                     $data['notice_title'] = $helper->getConfig('simi_notifications/noti_new_product/new_product_title', $storeviewId);
@@ -143,33 +158,40 @@ class CatalogProductSaveBefore implements ObserverInterface
         }
     }
 
-    public function getCategoryName($categoryId) {
+    public function getCategoryName($categoryId)
+    {
         $category = $this->_objectManager->create('\Magento\Catalog\Model\Category')->load($categoryId);
-        if (!$category->getId())
+        if (!$category->getId()) {
             return '';
+        }
         $categoryName = $category->getName();
         return $categoryName;
     }
 
-    public function getCategoryChildrenCount($categoryId) {
+    public function getCategoryChildrenCount($categoryId)
+    {
         $category = $this->_objectManager->create('\Magento\Catalog\Model\Category')->load($categoryId);
-        if (!$category->getId())
+        if (!$category->getId()) {
             return 0;
+        }
         $categoryChildrenCount = $category->getChildrenCount();
-        if ($categoryChildrenCount > 0)
+        if ($categoryChildrenCount > 0) {
             $categoryChildrenCount = 1;
-        else
+        } else {
             $categoryChildrenCount = 0;
+        }
         return $categoryChildrenCount;
     }
 
-    public function formatPrice($price) {
+    public function formatPrice($price)
+    {
         return $price;
     }
 
-    public function getAllDeviceToPush($storeview_id) {
-        $idArray = array();
-        $tokenArray = array();
+    public function getAllDeviceToPush($storeview_id)
+    {
+        $idArray = [];
+        $tokenArray = [];
         foreach ($this->_objectManager->get('Simi\Simiconnector\Model\Device')->getCollection()->addFieldToFilter('storeview_id', $storeview_id) as $device) {
             if (!in_array($device->getData('device_token'), $idArray)) {
                 $idArray[] = $device->getId();

@@ -36,7 +36,7 @@ class Website extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Store\Model\WebsiteRepositoryFactory $websiteRepositoryFactory,
         \Magento\Framework\App\Request\Http $request,
         \Magento\Directory\Model\ResourceModel\Country\CollectionFactory $countryCollectionFactory
-    ){
+    ) {
         $this->_request = $request;
         $this->_websiteFactory = $websiteFactory;
         $this->_websiteRepositoryFactory = $websiteRepositoryFactory;
@@ -50,10 +50,11 @@ class Website extends \Magento\Framework\App\Helper\AbstractHelper
     public function getWebsiteIdFromUrl()
     {
         $website_id = $this->_request->getParam('website_id');
-        if ($website_id != null)
+        if ($website_id != null) {
             return $website_id;
-        else
+        } else {
             return $this->getDefaultWebsite()->getId();
+        }
     }
 
     /**
@@ -68,14 +69,16 @@ class Website extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @return \Magento\Store\Model\ResourceModel\Website\Collection
      */
-    public function getWebsiteCollection(){
+    public function getWebsiteCollection()
+    {
         return $this->_websiteFactory->create();
     }
 
     /**
      * @return \Magento\Directory\Model\ResourceModel\Country\Collection
      */
-    public function getCountryCollection(){
+    public function getCountryCollection()
+    {
         return $this->_countryCollectionFactory->create();
     }
 }

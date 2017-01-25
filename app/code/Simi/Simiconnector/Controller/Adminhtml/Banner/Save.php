@@ -46,8 +46,9 @@ class Save extends \Magento\Backend\App\Action
             if ($id) {
                 $model->load($id);
             }
-            if(isset($data['new_category_parent']))
+            if (isset($data['new_category_parent'])) {
                 $data['category_id'] = $data['new_category_parent'];
+            }
 
             
             $is_delete_banner = isset($data['banner_name']['delete']) ? $data['banner_name']['delete'] : false;
@@ -67,7 +68,7 @@ class Save extends \Magento\Backend\App\Action
                 if ($is_delete_banner && $model->getBannerName()) {
                     $model->setBannerName('');
                 } else {
-                    $imageFile = $imageHelper->uploadImage('banner_name','banner');
+                    $imageFile = $imageHelper->uploadImage('banner_name', 'banner');
                     if ($imageFile) {
                         $model->setBannerName($imageFile);
                     }
@@ -75,14 +76,14 @@ class Save extends \Magento\Backend\App\Action
                 if ($is_delete_banner_tablet && $model->getBannerNameTablet()) {
                     $model->setBannerNameTablet('');
                 } else {
-                    $imageFileTablet = $imageHelper->uploadImage('banner_name_tablet','banner');
+                    $imageFileTablet = $imageHelper->uploadImage('banner_name_tablet', 'banner');
                     if ($imageFile) {
                         $model->setBannerNameTablet($imageFileTablet);
                     }
                 }
                 $model->save();
                 
-                $simiconnectorhelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');                
+                $simiconnectorhelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');
                 if ($data['storeview_id'] && is_array($data['storeview_id'])) {
                     $typeID = $simiconnectorhelper->getVisibilityTypeId('banner');
                     $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
@@ -92,13 +93,13 @@ class Save extends \Magento\Backend\App\Action
                     //     $visibilityItem->delete();
                     // }
                     $visibleStoreViews->walk('delete');
-                    foreach ($data['storeview_id'] as $storeViewId){
+                    foreach ($data['storeview_id'] as $storeViewId) {
                         $visibilityItem = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility');
-                        $visibilityItem->setData('content_type',$typeID);                        
-                        $visibilityItem->setData('item_id',$model->getId());
-                        $visibilityItem->setData('store_view_id',$storeViewId);
+                        $visibilityItem->setData('content_type', $typeID);
+                        $visibilityItem->setData('item_id', $model->getId());
+                        $visibilityItem->setData('store_view_id', $storeViewId);
                         $visibilityItem->save();
-                    }                        
+                    }
                 }
                 
                 $this->messageManager->addSuccess(__('The Data has been saved.'));

@@ -5,7 +5,6 @@
  */
 namespace Simi\Simiconnector\Model\ResourceModel\Visibility;
 
-
 class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\AbstractCollection
 {
     /**

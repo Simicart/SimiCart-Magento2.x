@@ -5,27 +5,28 @@
 
 namespace Simi\Simiconnector\Model\Api;
 
-
 class Addresses extends Apiabstract
 {
     
     protected $_DEFAULT_ORDER = 'entity_id';
 
-    public function setSingularKey($singularKey) {
+    public function setSingularKey($singularKey)
+    {
         $this->singularKey = 'Address';
         return $this;
     }
 
-    public function setBuilderQuery() {
+    public function setBuilderQuery()
+    {
         $data = $this->getData();
         if ($data['resourceid']) {
-            continue;
+            return;
         } else {
             if (!$this->_objectManager->get('Magento\Customer\Model\Session')->isLoggedIn()) {
                 throw new \Exception(__('You have not logged in'), 4);
             } else {
                 $customer = $this->_objectManager->get('Magento\Customer\Model\Session')->getCustomer();
-                $addressArray = array();
+                $addressArray = [];
                 $billing = $customer->getPrimaryBillingAddress();
                 if ($billing) {
                     $addressArray[] = $billing->getId();
@@ -38,7 +39,7 @@ class Addresses extends Apiabstract
                     $addressArray[] = $index;
                 }
                 $this->builderQuery = $this->_objectManager->create('Magento\Customer\Model\Address')->getCollection()
-                        ->addFieldToFilter('entity_id', array('in' => $addressArray));
+                        ->addFieldToFilter('entity_id', ['in' => $addressArray]);
             }
         }
     }
@@ -47,7 +48,8 @@ class Addresses extends Apiabstract
      * Add Address
      */
 
-    public function store() {
+    public function store()
+    {
         $data = $this->getData();
         $address = $this->_objectManager->get('Simi\Simiconnector\Model\Address')->saveAddress($data);
         $this->builderQuery = $address;
@@ -58,7 +60,8 @@ class Addresses extends Apiabstract
      * Edit Address
      */
 
-    public function update() {
+    public function update()
+    {
         $data = $this->getData();
         $address = $this->_objectManager->get('Simi\Simiconnector\Model\Address')->saveAddress($data);
         $this->builderQuery = $address;
@@ -66,10 +69,25 @@ class Addresses extends Apiabstract
     }
 
     /*
+     * Remove Address
+     */
+
+    public function destroy() {
+        $data = $this->getData();
+        if ($data['resourceid']) {
+           $this->builderQuery = $this->_objectManager->create('Magento\Customer\Model\Address')->load($data['resourceid']);
+           $this->builderQuery->delete();
+           return $this->show();
+        }
+        throw new \Exception(__('No Address ID sent'), 4);
+    }
+    
+    /*
      * Get Address Detail
      */
 
-    public function index() {
+    public function index()
+    {
         $result = parent::index();
         $customer = $this->_objectManager->get('Magento\Customer\Model\Session')->getCustomer();
         $addresses = $result['addresses'];
@@ -85,12 +103,13 @@ class Addresses extends Apiabstract
      * Geocoding
      */
 
-    public function show() {
+    public function show()
+    {
         $data = $this->getData();
         if ($data['resourceid']) {
             if ($data['resourceid'] == 'geocoding') {
-                $result = array();
-                $addressDetail = array();
+                $result = [];
+                $addressDetail = [];
                 $longitude = $data['params']['longitude'];
                 $latitude = $data['params']['latitude'];
                 $dataresult = $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getLocationInfo($latitude, $longitude);

@@ -34,7 +34,7 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\Siminotification $resource,
         \Simi\Simiconnector\Model\ResourceModel\Siminotification\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
-    ){
+    ) {
 
         $this->_websiteHelper = $websiteHelper;
 
@@ -59,11 +59,12 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
     /**
      * @return array Website
      */
-    public function toOptionStoreviewHash(){
+    public function toOptionStoreviewHash()
+    {
         $storeViewCollection = \Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Store\Model\Store')->getCollection();
-        $list = array();
-        if(sizeof($storeViewCollection) > 0){
-            foreach($storeViewCollection as $storeView){
+        $list = [];
+        if (sizeof($storeViewCollection) > 0) {
+            foreach ($storeViewCollection as $storeView) {
                 $list[$storeView->getId()] = $storeView->getName();
             }
         }
@@ -73,12 +74,13 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
     /**
      * @return array Website
      */
-    public function toOptionWebsiteHash(){
+    public function toOptionWebsiteHash()
+    {
         $website_collection = $this->_websiteHelper->getWebsiteCollection();
-        $list = array();
+        $list = [];
         $list[0] = __('All');
-        if(sizeof($website_collection) > 0){
-            foreach($website_collection as $website){
+        if (sizeof($website_collection) > 0) {
+            foreach ($website_collection as $website) {
                 $list[$website->getId()] = $website->getName();
             }
         }
@@ -88,12 +90,13 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
     /**
      * @return array Website
      */
-    public function toOptionCountryHash(){
+    public function toOptionCountryHash()
+    {
         $country_collection = $this->_websiteHelper->getCountryCollection();
-        $list = array();
+        $list = [];
         $list[] = __('All Countries');
-        if(sizeof($country_collection) > 0){
-            foreach($country_collection as $country){
+        if (sizeof($country_collection) > 0) {
+            foreach ($country_collection as $country) {
                 $list[$country->getId()] = $country->getName();
             }
         }
@@ -103,46 +106,50 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
     /**
      * @return array Siminotifications
      */
-    public function toOptionDeviceHash(){
-        $devices = array(
+    public function toOptionDeviceHash()
+    {
+        $devices = [
             '0' => __('All'),
             '1' => __('iOs'),
             '2' => __('Android'),
-        );
+        ];
         return $devices;
     }
 
     /**
      * @return array Type
      */
-    public function toOptionTypeHash(){
-        $platform = array(
+    public function toOptionTypeHash()
+    {
+        $platform = [
             '1' => __('Product In-app'),
             '2' => __('Category In-app'),
             '3' => __('Website Page'),
-        );
+        ];
         return $platform;
     }
 
     /**
      * @return array Sandbox
      */
-    public function toOptionSanboxHash(){
-        $sandbox = array(
+    public function toOptionSanboxHash()
+    {
+        $sandbox = [
             '1' => __('Test App'),
             '2' => __('Live App'),
-        );
+        ];
         return $sandbox;
     }
 
     /**
      * @return array Popup
      */
-    public function toOptionPopupHash(){
-        $popup = array(
+    public function toOptionPopupHash()
+    {
+        $popup = [
             '0' => __('No'),
             '1' => __('Yes'),
-        );
+        ];
         return $popup;
     }
 }

@@ -24,7 +24,7 @@ class Download extends \Simi\Simiconnector\Helper\Options
     
     public function getOptions($product)
     {
-        $info = array();
+        $info = [];
         $taxHelper  = $this->helper('Magento\Tax\Helper\Data');
         
         $layout = $this->_objectManager->get('Magento\Framework\View\LayoutInterface');
@@ -34,20 +34,20 @@ class Download extends \Simi\Simiconnector\Helper\Options
         $_links = $block->getLinks();
         $_linksPurchasedSeparately = $block->getLinksPurchasedSeparately();
         $_isRequired = $block->getLinkSelectionRequired();
-        if ($product->isSaleable() && $block->hasLinks()){
-            $item = array(
+        if ($product->isSaleable() && $block->hasLinks()) {
+            $item = [
                 'title' => $block->getLinksTitle(),
                 'type' => 'checkbox',
                 'position' => '0',
                 'links_purchased_separately' => $_linksPurchasedSeparately,
                 'isRequired' => $_isRequired,
-            );
+            ];
 
             foreach ($_links as $_link) {
-                $value = array(
+                $value = [
                     'id' => $_link->getId(),
                     'title' => $block->escapeHtml($_link->getTitle()),
-                );
+                ];
 
                 $price = $_link->getPrice();
                 $_priceInclTax = $this->currency($this->getPrice($product, $price, true), false, false);
@@ -66,10 +66,10 @@ class Download extends \Simi\Simiconnector\Helper\Options
             }
             $info[] = $item;
         }
-        $options = array();
+        $options = [];
         $options['download_sample'] = $this->getSampleData($product);
         $options['download_options'] = $info;
-        if(!is_null($product->getOptions()) && count($product->getOptions())){
+        if (!is_null($product->getOptions()) && count($product->getOptions())) {
             $custom_options =  $this->_objectManager->get('Simi\Simiconnector\Helper\Options\Simple')->getOptions($product);
             $options['custom_options'] = $custom_options['custom_options'];
         }
@@ -77,22 +77,23 @@ class Download extends \Simi\Simiconnector\Helper\Options
     }
 
 
-    public function getSampleData($product){
-        $info = array();
+    public function getSampleData($product)
+    {
+        $info = [];
         
         $layout = $this->_objectManager->get('Magento\Framework\View\LayoutInterface');
         $block = $layout->createBlock('Magento\Downloadable\Block\Catalog\Product\Samples');
         $block->setProduct($product);
-        if ($block->hasSamples()){
+        if ($block->hasSamples()) {
             $_samples = $block->getSamples();
-            $item = array(
+            $item = [
                 'title' => $block->getSamplesTitle(),
-            );
-            foreach ($_samples as $_sample){
-                $value = array(
+            ];
+            foreach ($_samples as $_sample) {
+                $value = [
                     'url' => $block->getSampleUrl($_sample),
                     'title' => $block->escapeHtml($_sample->getTitle()),
-                );
+                ];
                 $item['value'][] = $value;
                 $info[] = $item;
             }

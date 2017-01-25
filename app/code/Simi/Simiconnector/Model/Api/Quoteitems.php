@@ -5,7 +5,6 @@
 
 namespace Simi\Simiconnector\Model\Api;
 
-
 class Quoteitems extends Apiabstract
 {
     
@@ -14,19 +13,23 @@ class Quoteitems extends Apiabstract
     protected $_removed_items;
     public $detail_list;
 
-    protected function _getSession() {
+    protected function _getSession()
+    {
         return $this->_objectManager->create('Magento\Checkout\Model\Session');
     }
 
-    protected function _getCart() {
+    protected function _getCart()
+    {
         return $this->_objectManager->create('Magento\Checkout\Model\Cart');
     }
 
-    protected function _getQuote() {
+    protected function _getQuote()
+    {
         return $this->_getCart()->getQuote();
     }
 
-    public function setBuilderQuery() {
+    public function setBuilderQuery()
+    {
         $quote = $this->_getQuote();
         $this->builderQuery = $quote->getItemsCollection();
     }
@@ -35,7 +38,8 @@ class Quoteitems extends Apiabstract
      * Change Qty, Add/remove Coupon Code
      */
 
-    public function update() {
+    public function update()
+    {
         $data = $this->getData();
         $parameters = (array) $data['contents'];
         if (isset($parameters['coupon_code'])) {
@@ -45,16 +49,17 @@ class Quoteitems extends Apiabstract
         return $this->index();
     }
 
-    private function _updateItems($parameters) {
-        $cartData = array();
+    private function _updateItems($parameters)
+    {
+        $cartData = [];
         foreach ($parameters as $index => $qty) {
-            $cartData[$index] = array('qty' => $qty);
+            $cartData[$index] = ['qty' => $qty];
         }
         if (count($cartData)) {
             $filter = new \Zend_Filter_LocalizedToNormalized(
-                    ['locale' => $this->_objectManager->create('Magento\Framework\Locale\ResolverInterface')->getLocale()]
+                ['locale' => $this->_objectManager->create('Magento\Framework\Locale\ResolverInterface')->getLocale()]
             );
-            $removedItems = array();
+            $removedItems = [];
             foreach ($cartData as $index => $data) {
                 if (isset($data['qty'])) {
                     $cartData[$index]['qty'] = $filter->filter(trim($data['qty']));
@@ -78,12 +83,14 @@ class Quoteitems extends Apiabstract
      * Add To Cart
      */
 
-    public function store() {
+    public function store()
+    {
         $this->addToCart();
         return $this->index();
     }
 
-    public function addToCart() {
+    public function addToCart()
+    {
         $data = $this->getData();
         $cart = $this->_getCart();
 
@@ -111,12 +118,13 @@ class Quoteitems extends Apiabstract
         $cart->addProduct($product, $params);
         $cart->save();
         $this->_getSession()->setCartWasUpdated(true);
-        $this->_eventManager->dispatch('checkout_cart_add_product_complete', array('product' => $product, 'request' => $controller->getRequest(), 'response' => $controller->getResponse()));
+        $this->_eventManager->dispatch('checkout_cart_add_product_complete', ['product' => $product, 'request' => $controller->getRequest(), 'response' => $controller->getResponse()]);
         $this->_RETURN_MESSAGE = __('You added %1 to your shopping cart.', $product->getName());
     }
 
-    public function convertParams($params) {
-        $convertList = array(
+    public function convertParams($params)
+    {
+        $convertList = [
             //Custom Option (Simple/Virtual/Downloadable)
             'options',
             //Configurable Product
@@ -127,13 +135,13 @@ class Quoteitems extends Apiabstract
             'bundle_option',
             //Bundle Product Qty
             'bundle_option_qty',
-        );
+        ];
         foreach ($convertList as $type) {
             if (!isset($params[$type])) {
                 continue;
             }
             $params[$type] = (array) $params[$type];
-            $convertedParam = array();
+            $convertedParam = [];
             foreach ($params[$type] as $index => $item) {
                 $convertedParam[(int) $index] = $item;
             }
@@ -142,7 +150,8 @@ class Quoteitems extends Apiabstract
         return $params;
     }
 
-    protected function _initProduct($productId) {
+    protected function _initProduct($productId)
+    {
         if ($productId) {
             $storeId = $this->_objectManager->create('Magento\Store\Model\StoreManagerInterface')->getStore()->getId();
             return $this->_objectManager->create('Magento\Catalog\Api\ProductRepositoryInterface')->getById($productId, false, $storeId);
@@ -154,15 +163,17 @@ class Quoteitems extends Apiabstract
      * Return Cart Detail
      */
 
-    public function show() {
+    public function show()
+    {
         return $this->index();
     }
 
-    public function index() {
+    public function index()
+    {
         $this->_getQuote()->collectTotals()->save();
         $collection = $this->builderQuery;
-        $collection->addFieldToFilter('item_id', array('nin' => $this->_removed_items))
-                ->addFieldToFilter('parent_item_id', array('null' => true));
+        $collection->addFieldToFilter('item_id', ['nin' => $this->_removed_items])
+                ->addFieldToFilter('parent_item_id', ['null' => true]);
 
         $this->filter();
         $data = $this->getData();
@@ -183,15 +194,15 @@ class Quoteitems extends Apiabstract
         }
         $collection->setPageSize($offset + $limit);
 
-        $all_ids = array();
-        $info = array();
+        $all_ids = [];
+        $info = [];
         $total = $collection->getSize();
 
         if ($offset > $total) {
             throw new \Exception(__('Invalid method.'), 4);
         }
 
-        $fields = array();
+        $fields = [];
         if (isset($parameters['fields']) && $parameters['fields']) {
             $fields = explode(',', $parameters['fields']);
         }
@@ -210,8 +221,9 @@ class Quoteitems extends Apiabstract
             if (++$check_limit > $limit)
                 break;
             */
-            if ($entity->getData('parent_item_id') != NULL)
+            if ($entity->getData('parent_item_id') != null) {
                 continue;
+            }
 
             if ($this->_removed_items) {
                 if (in_array($entity->getData('item_id'), $this->_removed_items)) {
@@ -219,7 +231,7 @@ class Quoteitems extends Apiabstract
                 }
             }
 
-            $options = array();
+            $options = [];
             
             if ($entity->getProductType() == "configurable") {
                 $block = $this->_objectManager->get('Magento\ConfigurableProduct\Block\Cart\Item\Renderer\Configurable');
@@ -247,7 +259,7 @@ class Quoteitems extends Apiabstract
             $all_ids[] = $entity->getId();
         }
         $this->detail_list = $this->getList($info, $all_ids, $total, $limit, $offset);
-        $this->_eventManager->dispatch('simi_simiconnector_model_api_quoteitems_index_after', array('object' => $this, 'data' => $this->detail_list));
+        $this->_eventManager->dispatch('simi_simiconnector_model_api_quoteitems_index_after', ['object' => $this, 'data' => $this->detail_list]);
         return $this->detail_list;
     }
 
@@ -255,11 +267,12 @@ class Quoteitems extends Apiabstract
      * Add Message
      */
 
-    public function getList($info, $all_ids, $total, $page_size, $from) {
+    public function getList($info, $all_ids, $total, $page_size, $from)
+    {
         $result = parent::getList($info, $all_ids, $total, $page_size, $from);
         $result['total'] = $this->_objectManager->get('Simi\Simiconnector\Helper\Total')->getTotal();
         if ($this->_RETURN_MESSAGE) {
-            $result['message'] = array($this->_RETURN_MESSAGE);
+            $result['message'] = [$this->_RETURN_MESSAGE];
         }
         $session = $this->_getSession();
         $result['cart_total'] = $this->_getCart()->getItemsCount();

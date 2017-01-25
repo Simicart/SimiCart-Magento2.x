@@ -5,20 +5,21 @@
 
 namespace Simi\Simiconnector\Model\Api;
 
-
 class Homes extends Apiabstract
 {
     protected $_DEFAULT_ORDER = 'sort_order';
 
-    public function setBuilderQuery() {
-        
+    public function setBuilderQuery()
+    {
     }
 
-    public function index() {
+    public function index()
+    {
         return $this->show();
     }
 
-    public function show() {
+    public function show()
+    {
         $data = $this->getData();
         /*
          * Get Banners
@@ -44,18 +45,18 @@ class Homes extends Apiabstract
         $productlists = $this->_objectManager->get('Simi\Simiconnector\Model\Api\Homeproductlists');
         $productlists->builderQuery = $productlists->getCollection();
         if ($data['resourceid'] == 'lite') {
-            $productlists->SHOW_PRODUCT_ARRAY = FALSE;
+            $productlists->SHOW_PRODUCT_ARRAY = false;
         }
         $productlists->setPluralKey('homeproductlists');
         $productlists->setData($this->getData());
         $productlists = $productlists->index();
 
 
-        $information = array('home' => array(
+        $information = ['home' => [
                 'homebanners' => $banners,
                 'homecategories' => $categories,
                 'homeproductlists' => $productlists,
-        ));
+        ]];
         return $information;
     }
 }

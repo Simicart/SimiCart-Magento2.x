@@ -8,7 +8,7 @@ namespace Simi\Simiconnector\Model;
 class Server
 {
     protected $_helper;
-    protected $_data = array();
+    protected $_data = [];
     protected $_method = 'callApi';
     public $eventManager;
     public $objectManager;
@@ -17,12 +17,13 @@ class Server
     public function __construct(
         \Magento\Framework\Registry $registry
     ) {
-	$this->_coreRegistry = $registry;
+        $this->_coreRegistry = $registry;
     }
     
     public function init(
-            \Simi\Simiconnector\Controller\Rest\Action $controller)
-    {   
+        \Simi\Simiconnector\Controller\Rest\Action $controller
+    ) {
+    
         $this->initialize($controller);
         return $this;
     }
@@ -57,8 +58,9 @@ class Server
             throw new \Exception(__('Invalid method.'), 4);
         }
 
-        if (!isset($data['resource'])) 
+        if (!isset($data['resource'])) {
             throw new \Exception(__('Invalid method.'), 4);
+        }
         $className = 'Simi\\'.ucfirst($data['module']).'\Model\Api\\'.ucfirst($data['resource']);
         if (!class_exists($className)) {
             throw new \Exception(__('Invalid method.'), 4);
@@ -66,8 +68,8 @@ class Server
         
         $model = $this->objectManager->get('Simi\\'.$data['module'].'\Model\Api\\'.$data['resource']);
 
-        if (is_callable(array(&$model, $this->_method))) {
-            return call_user_func_array(array(&$model, $this->_method), array($data));
+        if (is_callable([&$model, $this->_method])) {
+            return call_user_func_array([&$model, $this->_method], [$data]);
         }
         throw new \Exception(__('Resource cannot callable.'), 4);
     }
@@ -99,7 +101,7 @@ class Server
         $params = $controller->getRequest()->getQuery();
         $zendHTTPRequestHttp = new \Zend_Controller_Request_Http;
         $contents = $zendHTTPRequestHttp->getRawBody();
-        $contents_array = array();
+        $contents_array = [];
         if ($contents && strlen($contents)) {
             $contents_paser = urldecode($contents);
             $contents = json_decode($contents_paser);
@@ -114,7 +116,7 @@ class Server
         } elseif ($controller->getRequest()->isDelete()) {
             $is_method = 4;
         }
-        $this->_data = array(
+        $this->_data = [
             'resource' => $resource,
             'resourceid' => $resourceid,
             'nestedresource' => $nestedresource,
@@ -125,8 +127,8 @@ class Server
             'is_method' => $is_method,
             'module' => $module,
             'controller' => $controller,
-        );
+        ];
         $this->_coreRegistry->register('simidata', $this->_data);
-        $this->eventManager->dispatch('simi_simiconnector_model_server_initialize', array('object' => $this, 'data' => $this->_data));
+        $this->eventManager->dispatch('simi_simiconnector_model_server_initialize', ['object' => $this, 'data' => $this->_data]);
     }
 }

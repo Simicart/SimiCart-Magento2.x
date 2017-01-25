@@ -33,9 +33,12 @@
       
         <!-- rich content -->
         <add id="Simi_Simiconnector::richcontent" title="Rich Content" module="Simi_Simiconnector" sortOrder="499" parent="Simi_Simiconnector::simiconnector" resource="Simi_Simiconnector::richcontent"/>
+        <add id="Simi_Simiconnector::simivideo" title="Videos" module="Simi_Simiconnector" sortOrder="10" parent="Simi_Simiconnector::richcontent" action="simiconnector/simivideo/" resource="Simi_Simiconnector::manage"/>
+        <add id="Simi_Simiconnector::simiproductlabel" title="Product Labels" module="Simi_Simiconnector" sortOrder="20" parent="Simi_Simiconnector::richcontent" action="simiconnector/simiproductlabel/" resource="Simi_Simiconnector::manage"/>
         
         <!-- user experience -->
         <add id="Simi_Simiconnector::userexperience" title="User Experience" module="Simi_Simiconnector" sortOrder="599" parent="Simi_Simiconnector::simiconnector" resource="Simi_Simiconnector::userexperience"/>
+        <add id="Simi_Simiconnector::simibarcode" title="Manage QR and Barcodes" module="Simi_Simiconnector" sortOrder="10" parent="Simi_Simiconnector::userexperience" action="simiconnector/simibarcode/" resource="Simi_Simiconnector::manage"/>
         
         <!--
         <add id="Simi_Simiconnector::app" title="Apps" module="Simi_Simiconnector" sortOrder="10" parent="Simi_Simiconnector::simiconnector_settings" action="simiconnector/index/" resource="Simi_Simiconnector::app"/>

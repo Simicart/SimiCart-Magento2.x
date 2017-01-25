@@ -5,7 +5,8 @@ namespace Simi\Simiconnector\Block\Adminhtml\Simicategory\Edit\Tab;
 /**
  * Cms page edit form main tab
  */
-class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magento\Backend\Block\Widget\Tab\TabInterface {
+class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magento\Backend\Block\Widget\Tab\TabInterface
+{
 
     protected $_objectManager;
 
@@ -42,7 +43,15 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @param array $data
      */
     public function __construct(
-    \Magento\Backend\Block\Template\Context $context, \Magento\Framework\Registry $registry, \Magento\Framework\Data\FormFactory $formFactory, \Magento\Store\Model\System\Store $systemStore, \Simi\Simiconnector\Helper\Website $websiteHelper, \Simi\Simiconnector\Model\SimicategoryFactory $simicategoryFactory, \Magento\Framework\Json\EncoderInterface $jsonEncoder, \Magento\Catalog\Model\CategoryFactory $categoryFactory, array $data = []
+        \Magento\Backend\Block\Template\Context $context,
+        \Magento\Framework\Registry $registry,
+        \Magento\Framework\Data\FormFactory $formFactory,
+        \Magento\Store\Model\System\Store $systemStore,
+        \Simi\Simiconnector\Helper\Website $websiteHelper,
+        \Simi\Simiconnector\Model\SimicategoryFactory $simicategoryFactory,
+        \Magento\Framework\Json\EncoderInterface $jsonEncoder,
+        \Magento\Catalog\Model\CategoryFactory $categoryFactory,
+        array $data = []
     ) {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_simicategoryFactory = $simicategoryFactory;
@@ -58,7 +67,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return $this
      */
-    protected function _prepareForm() {
+    protected function _prepareForm()
+    {
         /* @var $model \Magento\Cms\Model\Page */
         $model = $this->_coreRegistry->registry('simicategory');
 
@@ -90,7 +100,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
                     ->addFieldToFilter('content_type', $typeID)
                     ->addFieldToFilter('item_id', $model->getId());
-            $storeIdArray = array();
+            $storeIdArray = [];
 
             foreach ($visibleStoreViews as $visibilityItem) {
                 $storeIdArray[] = $visibilityItem->getData('store_view_id');
@@ -100,17 +110,19 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         $storeResourceModel = $this->_objectManager->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
 
-        $fieldset->addField('storeview_id', 'multiselect', array(
+        $fieldset->addField('storeview_id', 'multiselect', [
             'name' => 'storeview_id[]',
             'label' => __('Store View'),
             'title' => __('Store View'),
             'required' => true,
             'values' => $storeResourceModel->toArray(),
-        ));
+        ]);
 
 
         $fieldset->addField(
-                'simicategory_filename', 'image', [
+            'simicategory_filename',
+            'image',
+            [
             'name' => 'simicategory_filename',
             'label' => __('Image (width:220px, height:220px)'),
             'title' => __('Image (width:220px, height:220px)'),
@@ -119,7 +131,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-                'simicategory_filename_tablet', 'image', [
+            'simicategory_filename_tablet',
+            'image',
+            [
             'name' => 'simicategory_filename_tablet',
             'label' => __('Tablet Image (width:220px, height:220px)'),
             'title' => __('Tablet Image (width:220px, height:220px)'),
@@ -128,7 +142,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-                'new_category_parent', 'select', [
+            'new_category_parent',
+            'select',
+            [
             'label' => __('Categories'),
             'title' => __('Categories'),
             'required' => true,
@@ -138,10 +154,13 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 ]
         );
 
-        if (!isset($data['sort_order']))
+        if (!isset($data['sort_order'])) {
             $data['sort_order'] = 1;
+        }
         $fieldset->addField(
-                'sort_order', 'text', [
+            'sort_order',
+            'text',
+            [
             'name' => 'sort_order',
             'label' => __('Sort Order'),
             'title' => __('Sort Order'),
@@ -151,7 +170,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-                'status', 'select', [
+            'status',
+            'select',
+            [
             'name' => 'status',
             'label' => __('Status'),
             'title' => __('Status'),
@@ -174,15 +195,17 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return array
      */
-    protected function _getParentCategoryOptions($category_id) {
+    protected function _getParentCategoryOptions($category_id)
+    {
 
         $items = $this->_categoryFactory->create()->getCollection()->addAttributeToSelect(
-                        'name'
-                )->addAttributeToSort(
-                        'entity_id', 'ASC'
-                )->setPageSize(
-                        3
-                )->load()->getItems();
+            'name'
+        )->addAttributeToSort(
+            'entity_id',
+            'ASC'
+        )->setPageSize(
+            3
+        )->load()->getItems();
 
         $result = [];
         if (count($items) === 2) {
@@ -203,7 +226,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return string
      */
-    public function getTabLabel() {
+    public function getTabLabel()
+    {
         return __('Simicategory Information');
     }
 
@@ -212,21 +236,24 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return string
      */
-    public function getTabTitle() {
+    public function getTabTitle()
+    {
         return __('Simicategory Information');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function canShowTab() {
+    public function canShowTab()
+    {
         return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isHidden() {
+    public function isHidden()
+    {
         return false;
     }
 

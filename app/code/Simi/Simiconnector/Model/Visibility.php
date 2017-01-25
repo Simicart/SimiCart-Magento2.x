@@ -5,8 +5,6 @@
 
 namespace Simi\Simiconnector\Model;
 
-
-
 class Visibility extends \Magento\Framework\Model\AbstractModel
 {
 

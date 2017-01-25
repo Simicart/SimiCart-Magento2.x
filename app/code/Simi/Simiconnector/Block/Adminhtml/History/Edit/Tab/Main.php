@@ -48,7 +48,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         array $data = []
-    ){
+    ) {
         $this->_historyFactory = $historyFactory;
         $this->_websiteHelper = $websiteHelper;
         $this->_systemStore = $systemStore;
@@ -133,7 +133,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             $result = [$item->getEntityId() => $item->getName()];
         }
 
-        if(sizeof($result) == 0 && $category_id){
+        if (sizeof($result) == 0 && $category_id) {
             $category = $this->_categoryFactory->create()->load($category_id);
             $result = [$category_id => $category->getName()];
         }

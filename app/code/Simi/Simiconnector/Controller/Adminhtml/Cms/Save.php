@@ -61,15 +61,16 @@ class Save extends \Magento\Backend\App\Action
                 if ($is_delete_banner && $model->getCmsImage()) {
                     $model->setCmsImage('');
                 } else {
-                    $imageFile = $imageHelper->uploadImage('cms_image','cms');
+                    $imageFile = $imageHelper->uploadImage('cms_image', 'cms');
                     if ($imageFile) {
                         $model->setCmsImage($imageFile);
                     }
                 }
-                if (isset($data['new_category_parent']))
-                    $model->setData('category_id',$data['new_category_parent']);
+                if (isset($data['new_category_parent'])) {
+                    $model->setData('category_id', $data['new_category_parent']);
+                }
                 $model->save();
-                $simiconnectorhelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');                
+                $simiconnectorhelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');
                 if ($data['storeview_id'] && is_array($data['storeview_id'])) {
                     $typeID = $simiconnectorhelper->getVisibilityTypeId('cms');
                     $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
@@ -78,13 +79,13 @@ class Save extends \Magento\Backend\App\Action
                     foreach ($visibleStoreViews as $visibilityItem) {
                         $visibilityItem->delete();
                     }
-                    foreach ($data['storeview_id'] as $storeViewId){
+                    foreach ($data['storeview_id'] as $storeViewId) {
                         $visibilityItem = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility');
-                        $visibilityItem->setData('content_type',$typeID);                        
-                        $visibilityItem->setData('item_id',$model->getId());
-                        $visibilityItem->setData('store_view_id',$storeViewId);
+                        $visibilityItem->setData('content_type', $typeID);
+                        $visibilityItem->setData('item_id', $model->getId());
+                        $visibilityItem->setData('store_view_id', $storeViewId);
                         $visibilityItem->save();
-                    }                        
+                    }
                 }
                  
                 

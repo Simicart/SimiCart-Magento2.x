@@ -6,36 +6,40 @@
 
 namespace Simi\Simiconnector\Helper;
 
-class Customer extends Data {
+class Customer extends Data
+{
 
-    protected function _getSession() {
+    protected function _getSession()
+    {
         return $this->_objectManager->get('Magento\Customer\Model\Session');
     }
 
-    public function renewCustomerSesssion($data) {
+    public function renewCustomerSesssion($data)
+    {
         if (isset($data['params']['quote_id']) && $data['params']['quote_id']) {
             $checkoutsession = $this->_objectManager->get('Magento\Checkout\Model\Session');
             $checkoutsession->setQuoteId($data['params']['quote_id']);
         }
-        if (($data['resource'] == 'customers') && (($data['resourceid'] == 'login') || ($data['resourceid'] == 'sociallogin')))
+        if (($data['resource'] == 'customers') && (($data['resourceid'] == 'login') || ($data['resourceid'] == 'sociallogin'))) {
             return;
-        if (isset($data['contents_array']['email']) && isset($data['contents_array']['password']))
-        {
+        }
+        if (isset($data['contents_array']['email']) && isset($data['contents_array']['password'])) {
             $data['params']['email'] = $data['contents_array']['email'];
             $data['params']['password'] = $data['contents_array']['password'];
         }
         
-        if ((!$data['params']['email']) || (!$data['params']['password']))
+        if ((!$data['params']['email']) || (!$data['params']['password'])) {
             return;
+        }
         try {
             $this->loginByEmailAndPass($data['params']['email'], $data['params']['password']);
         } catch (\Exception $e) {
             return;
-            
         }
     }
 
-    public function loginByEmailAndPass($username, $password) {
+    public function loginByEmailAndPass($username, $password)
+    {
         $websiteId = $this->_storeManager->getStore()->getWebsiteId();
         $customer = $this->_objectManager->get('Magento\Customer\Model\Customer')
                 ->setWebsiteId($websiteId);
@@ -45,20 +49,22 @@ class Customer extends Data {
                 $this->loginByCustomer($customer);
                 return true;
             }
-        } else if ($customer->authenticate($username, $password)) {
+        } elseif ($customer->authenticate($username, $password)) {
             $this->loginByCustomer($customer);
             return true;
         }
         return false;
     }
         
-    public function getCustomerByEmail($email) {
+    public function getCustomerByEmail($email)
+    {
         return $this->_objectManager->get('Magento\Customer\Model\Customer')
                         ->setWebsiteId($this->_storeManager->getStore()->getWebsiteId())
                         ->loadByEmail($email);
     }
 
-    public function loginByCustomer($customer) {
+    public function loginByCustomer($customer)
+    {
         $this->_getSession()->setCustomerAsLoggedIn($customer);
     }
 
@@ -70,7 +76,8 @@ class Customer extends Data {
      * 
      */
 
-    public function applyDataToCustomer(&$customer, $data) {
+    public function applyDataToCustomer(&$customer, $data)
+    {
         if (isset($data->day) && $data->day != "") {
             $birthday = $data->year . "-" . $data->month . "-" . $data->day;
             $customer->setDob($birthday);
@@ -99,7 +106,8 @@ class Customer extends Data {
         }
     }
 
-    public function validateSimiPass($username, $password) {
+    public function validateSimiPass($username, $password)
+    {
         if ($password == md5($this->_objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')
                                 ->getValue('simiconnector/general/secret_key') . $username)) {
             return true;

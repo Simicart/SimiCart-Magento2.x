@@ -6,45 +6,52 @@
 
 namespace Simi\Simiconnector\Helper\Checkout;
 
-class Payment extends \Simi\Simiconnector\Helper\Data {
+class Payment extends \Simi\Simiconnector\Helper\Data
+{
 
     public $detail;
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct();
         $this->_setListPayment();
         $this->setListCase();
     }
 
-    protected function _getCart() {
+    protected function _getCart()
+    {
         return $this->_objectManager->get('Magento\Checkout\Model\Cart');
     }
 
-    protected function _getQuote() {
+    protected function _getQuote()
+    {
         return $this->_getCart()->getQuote();
     }
 
-    public function _getOnepage() {
+    public function _getOnepage()
+    {
         return $this->_objectManager->get('Magento\Checkout\Model\Type\Onepage');
     }
 
-    protected function _getConfig() {
+    protected function _getConfig()
+    {
         return $this->_objectManager->get('Magento\Payment\Model\Config');
     }
 
-    protected $_listPayment = array();
+    protected $_listPayment = [];
     protected $_listCase;
 
-    public function savePaymentMethod($data) {
-        $method = array('method' => strtolower($data->method));
+    public function savePaymentMethod($data)
+    {
+        $method = ['method' => strtolower($data->method)];
         if (isset($data->cc_type) && $data->cc_type) {
-            $method = array('method' => strtolower($data->method),
+            $method = ['method' => strtolower($data->method),
                 'cc_type' => $data->cc_type,
                 'cc_number' => $data->cc_number,
                 'cc_exp_month' => $data->cc_exp_month,
                 'cc_exp_year' => $data->cc_exp_year,
                 'cc_cid' => $data->cc_cid,
-            );
+            ];
         }
         $this->_getOnepage()->savePayment($method);
     }
@@ -54,17 +61,19 @@ class Payment extends \Simi\Simiconnector\Helper\Data {
      * @param $method_code
      * @param $type
      */
-    public function addPaymentMethod($method_code, $type) {
+    public function addPaymentMethod($method_code, $type)
+    {
         $this->_listPayment[] = $method_code;
         $this->_listPayment = array_unique($this->_listPayment);
         $this->_listCase[$method_code] = $type;
     }
 
-    public function getMethods() {
+    public function getMethods()
+    {
         /*
          * Dispatch event simiconnector_add_payment_method
          */
-        $this->_objectManager->get('\Magento\Framework\Event\ManagerInterface')->dispatch('simiconnector_add_payment_method', array('object' => $this));
+        $this->_objectManager->get('\Magento\Framework\Event\ManagerInterface')->dispatch('simiconnector_add_payment_method', ['object' => $this]);
 
         $quote = $this->_getQuote();
         $store = $quote ? $quote->getStoreId() : null;
@@ -82,7 +91,8 @@ class Payment extends \Simi\Simiconnector\Helper\Data {
         return $methods;
     }
 
-    protected function _canUseMethod($method, $quote) {
+    protected function _canUseMethod($method, $quote)
+    {
         if (!$method->canUseForCountry($quote->getBillingAddress()->getCountry())) {
             return false;
         }
@@ -104,13 +114,15 @@ class Payment extends \Simi\Simiconnector\Helper\Data {
         return true;
     }
 
-    protected function _getListPaymentNoUse() {
-        return array(
+    protected function _getListPaymentNoUse()
+    {
+        return [
             'authorizenet_directpost'
-        );
+        ];
     }
 
-    protected function _setListPayment() {
+    protected function _setListPayment()
+    {
         $this->_listPayment[] = 'transfer_mobile';
         $this->_listPayment[] = 'cashondelivery';
         $this->_listPayment[] = 'checkmo';
@@ -119,27 +131,31 @@ class Payment extends \Simi\Simiconnector\Helper\Data {
         $this->_listPayment[] = 'phoenix_cashondelivery';
     }
 
-    protected function _getListPayment() {
+    protected function _getListPayment()
+    {
         return $this->_listPayment;
     }
 
-    protected function _assignMethod($method, $quote) {
+    protected function _assignMethod($method, $quote)
+    {
         $method->setInfoInstance($quote->getPayment());
         return $this;
     }
 
-    public function setListCase() {
-        $this->_listCase = array(
+    public function setListCase()
+    {
+        $this->_listCase = [
             'banktransfer' => 0,
             'transfer_mobile' => 0,
             'cashondelivery' => 0,
             'checkmo' => 0,
             'free' => 0,
             'phoenix_cashondelivery' => 0,
-        );
+        ];
     }
 
-    public function getDetailsPayment($method) {
+    public function getDetailsPayment($method)
+    {
         $code = $method->getCode();
         $list = $this->getListCase();
 
@@ -148,7 +164,7 @@ class Payment extends \Simi\Simiconnector\Helper\Data {
             $type = $list[$code];
         }
 
-        $detail = array();
+        $detail = [];
         if ($type == 0) {
             if ($code == "checkmo") {
                 $detail['payment_method'] = strtoupper($method->getCode());
@@ -169,13 +185,16 @@ class Payment extends \Simi\Simiconnector\Helper\Data {
             $detail['is_show_name'] = '0';
             $detail['show_type'] = 1;
         } elseif ($type == 2) {
-            $m_code = strtoupper($method->getCode());            
-            if ($method->getConfigData('business_account'))
+            $m_code = strtoupper($method->getCode());
+            if ($method->getConfigData('business_account')) {
                 $detail['email'] = $method->getConfigData('business_account');
-            if ($method->getConfigData('client_id'))
+            }
+            if ($method->getConfigData('client_id')) {
                 $detail['client_id'] = $method->getConfigData('client_id');
-            if ($method->getConfigData('is_sandbox'))
+            }
+            if ($method->getConfigData('is_sandbox')) {
                 $detail['is_sandbox'] = $method->getConfigData('is_sandbox');
+            }
             $detail['payment_method'] = $m_code;
             $detail['title'] = $method->getConfigData('title');
             $detail['show_type'] = 2;
@@ -193,32 +212,33 @@ class Payment extends \Simi\Simiconnector\Helper\Data {
             $detail['p_method_selected'] = true;
         }
         $this->detail = $detail;
-        $this->_objectManager->get('\Magento\Framework\Event\ManagerInterface')->dispatch('simiconnector_change_payment_detail', array('object' => $this));
+        $this->_objectManager->get('\Magento\Framework\Event\ManagerInterface')->dispatch('simiconnector_change_payment_detail', ['object' => $this]);
         return $this->detail;
     }
 
-    public function getListCase() {
+    public function getListCase()
+    {
         return $this->_listCase;
     }
 
-    public function getCcAvailableTypes($method) {
+    public function getCcAvailableTypes($method)
+    {
         $types = $this->_getConfig()->getCcTypes();
         $availableTypes = $method->getConfigData('cctypes');
-        $cc_types = array();
+        $cc_types = [];
         if ($availableTypes) {
             $availableTypes = explode(',', $availableTypes);
             foreach ($types as $code => $name) {
                 if (!in_array($code, $availableTypes)) {
                     unset($types[$code]);
                 } else {
-                    $cc_types[] = array(
+                    $cc_types[] = [
                         'cc_code' => $code,
                         'cc_name' => $name,
-                    );
+                    ];
                 }
             }
         }
         return $cc_types;
     }
-
 }

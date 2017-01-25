@@ -35,7 +35,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Simi\Simiconnector\Model\BannerFactory $bannerFactory,
         \Magento\Framework\Registry $coreRegistry,
         array $data = []
-    ){
+    ) {
 
         $this->_productFactory = $productFactory;
         $this->_bannerFactory = $bannerFactory;
@@ -52,7 +52,6 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->setId('product_grid');
         $this->setDefaultSort('entity_id');
         $this->setUseAjax(true);
-
     }
 
     /**
@@ -111,37 +110,41 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
             'index' => 'entity_id',
             'header_css_class' => 'col-select',
             'column_css_class' => 'col-select'
-            ]);
+            ]
+        );
 
-        $this->addColumn(
-            'entity_id',
-            ['header' => __('ID'),
-            'index' => 'entity_id',
-            'width' => '20px',
-            'header_css_class' => 'col-name',
-            'column_css_class' => 'col-name'
-            ]);
-
-
-        $this->addColumn(
-            'name',
-            ['header' => __('Name'),
-            'index' => 'name',
-            'header_css_class' => 'col-name',
-            'column_css_class' => 'col-name'
-            ]);
+            $this->addColumn(
+                'entity_id',
+                ['header' => __('ID'),
+                'index' => 'entity_id',
+                'width' => '20px',
+                'header_css_class' => 'col-name',
+                'column_css_class' => 'col-name'
+                ]
+            );
 
 
-        $this->addColumn(
-            'sku',
-            ['header' => __('SKU'),
-            'index' => 'sku',
-            'header_css_class' => 'col-sku',
-            'column_css_class' => 'col-sku'
-            ]);
+            $this->addColumn(
+                'name',
+                ['header' => __('Name'),
+                'index' => 'name',
+                'header_css_class' => 'col-name',
+                'column_css_class' => 'col-name'
+                ]
+            );
 
 
-        return parent::_prepareColumns();
+            $this->addColumn(
+                'sku',
+                ['header' => __('SKU'),
+                'index' => 'sku',
+                'header_css_class' => 'col-sku',
+                'column_css_class' => 'col-sku'
+                ]
+            );
+
+
+            return parent::_prepareColumns();
     }
 
     /**
@@ -151,13 +154,13 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         return $this->_getData(
             'grid_url'
-            ) ? $this->_getData(
+        ) ? $this->_getData(
             'grid_url'
-            ) : $this->getUrl(
+        ) : $this->getUrl(
             'simiconnector/*/productgrid',
             ['_current' => true]
-            );
-        }
+        );
+    }
 
     /**
      * @param \Magento\Catalog\Model\Product|\Magento\Framework\DataObject $row
@@ -188,19 +191,17 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         }
 
         $banner = $this->_bannerFactory->create()->load($banner_id);
-        $products = array();
-        if($banner->getId()){
-            $products = array($banner->getProductId());
+        $products = [];
+        if ($banner->getId()) {
+            $products = [$banner->getProductId()];
         }
 
-        $proIds = array();
+        $proIds = [];
 
         foreach ($products as $product) {
-            $proIds[$product] = array('id' => $product);
+            $proIds[$product] = ['id' => $product];
         }
 
         return $proIds;
     }
-
-
 }

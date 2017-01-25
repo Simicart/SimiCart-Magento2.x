@@ -31,4 +31,3 @@ class Showandhideoption implements \Magento\Framework\Option\ArrayInterface
         return [4 => __('Required'), 3=> __('Optional'),  0 => __('Hide')];
     }
 }
-

@@ -30,4 +30,4 @@ class Platform implements \Magento\Framework\Option\ArrayInterface
     {
         return ['0' => __('All'), '1' => __('IOS'), '2'=> __('Android')];
     }
-}            
+}

@@ -8,7 +8,7 @@ namespace Simi\Simiconnector\Controller\Rest;
 class V2 extends Action
 {
 
-	/**
+    /**
      * @var \Magento\Framework\App\Cache\TypeListInterface
      */
     protected $_cacheTypeList;
@@ -36,7 +36,7 @@ class V2 extends Action
      * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
      */
     public function __construct(
-       \Magento\Framework\App\Action\Context $context,
+        \Magento\Framework\App\Action\Context $context,
         \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList,
         \Magento\Framework\App\Cache\StateInterface $cacheState,
         \Magento\Framework\App\Cache\Frontend\Pool $cacheFrontendPool,
@@ -48,7 +48,7 @@ class V2 extends Action
         $this->_cacheFrontendPool = $cacheFrontendPool;
         $this->resultPageFactory = $resultPageFactory;
     }
-	
+    
     /**
      * Flush cache storage
      *
@@ -57,31 +57,30 @@ class V2 extends Action
     {
         parent::execute();
         ob_start();
-        try{
+        try {
             $result = $this->_getServer()
                 ->init($this)->run();
             $this->_printData($result);
-        }catch (\Exception $e){
-            $results = array();
-            $result = array();
+        } catch (\Exception $e) {
+            $results = [];
+            $result = [];
             if (is_array($e->getMessage())) {
                 $messages = $e->getMessage();
                 foreach ($messages as $message) {
-                    $result[] = array(
+                    $result[] = [
                         'code' => $e->getCode(),
                         'message' => $message,
-                    );
+                    ];
                 }
             } else {
-                $result[] = array(
+                $result[] = [
                     'code' => $e->getCode(),
                     'message' => $e->getMessage(),
-                );
+                ];
             }
             $results['errors'] = $result;
             $this->_printData($results);
         }
         ob_end_flush();
-        
     }
 }

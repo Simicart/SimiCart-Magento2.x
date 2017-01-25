@@ -8,13 +8,14 @@ namespace Simi\Simiconnector\Helper;
 use Magento\Framework\App\Filesystem\DirectoryList;
 
 class Products extends \Magento\Framework\App\Helper\AbstractHelper
-{   
+{
+
     protected $_objectManager;
     protected $_storeManager;
     
     protected $builderQuery;
-    protected $_data = array();
-    protected $_sortOrders = array();
+    protected $_data = [];
+    protected $_sortOrders = [];
     
     public $category;
     public $productStatus;
@@ -31,7 +32,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Framework\HTTP\Adapter\FileTransferFactory $httpFactory,
         \Magento\MediaStorage\Model\File\UploaderFactory $fileUploaderFactory,
         \Magento\Framework\Filesystem\Io\File $ioFile,
-        \Magento\Store\Model\StoreManagerInterface $storeManager,    
+        \Magento\Store\Model\StoreManagerInterface $storeManager,
         \Magento\Catalog\Model\Product\Attribute\Source\Status $productStatus,
         \Magento\Catalog\Model\Product\Visibility $productVisibility,
         \Magento\Framework\Image\Factory $imageFactory
@@ -67,10 +68,11 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function getProduct($product_id)
     {
-		$this->builderQuery = $this->_objectManager->create('Magento\Catalog\Model\Product')->load($product_id);
-        if(!$this->builderQuery->getId())
-			throw new \Exception(__('Resource cannot callable.'), 6);
-		return $this->builderQuery;
+        $this->builderQuery = $this->_objectManager->create('Magento\Catalog\Model\Product')->load($product_id);
+        if (!$this->builderQuery->getId()) {
+            throw new \Exception(__('Resource cannot callable.'), 6);
+        }
+        return $this->builderQuery;
     }
 
     /**
@@ -101,14 +103,14 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             }
             if (isset($filter['layer'])) {
                 $filter_layer = $filter['layer'];
-                $params = array();
+                $params = [];
                 foreach ($filter_layer as $key => $value) {
                     $params[(string)$key] = (string)$value;
                 }
                 $controller->getRequest()->setParams($params);
             }
         }
-		
+        
         $collection = $this->_objectManager->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
         $collection->addAttributeToSelect('*')
             ->addStoreFilter()
@@ -116,12 +118,11 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             ->addFinalPrice();
         $collection = $this->_filter($collection, $parameters);
         $this->builderQuery = $collection;
-                
     }
     
     protected function _filter($collection, $params)
     {
-        if (isset($params['filter']['layer']))
+        if (isset($params['filter']['layer'])) {
             foreach ($params['filter']['layer'] as $key => $value) {
                 if ($key == 'price') {
                     $value = explode('-', $value);
@@ -139,6 +140,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                     $collection->addAttributeToFilter($key, ['finset' => $value]);
                 }
             }
+        }
 
         //category
         if ($this->category) {
@@ -146,33 +148,34 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         }
         
         //related products
-        if(isset($params['filter']['related_to_id'])){
+        if (isset($params['filter']['related_to_id'])) {
             $product = $this->getProduct($params['filter']['related_to_id']);
-            $allIds = array();
+            $allIds = [];
             foreach ($product->getRelatedProducts() as $relatedProduct) {
                 $allIds[] = $relatedProduct->getId();
             }
-            if (count($allIds) > 0)
+            if (count($allIds) > 0) {
                 $collection->addFieldToFilter('entity_id', ['in' => $allIds]);
+            }
         }
 
         //search
-        if(isset($params['filter']['q'])){
+        if (isset($params['filter']['q'])) {
             $searchCollection = $this->_objectManager
                 ->create('Magento\CatalogSearch\Model\ResourceModel\Fulltext\SearchCollection');
             $searchCollection->addSearchFilter($params['filter']['q']);
-            $ids = array();
-            foreach($searchCollection as $item){
+            $ids = [];
+            foreach ($searchCollection as $item) {
                 $ids[] = $item->getId();
             }
-            if (count($ids)>0)
+            if (count($ids)>0) {
                 $collection->addFieldToFilter('entity_id', ['in' => $ids]);
+            }
 
                 $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
-                $collection->setVisibility(array('3', '4'));
-				//$collection->getVisibleInSearchIds($this->productVisibility->getVisibleInSiteIds());
-        }
-        else {
+                $collection->setVisibility(['3', '4']);
+                //$collection->getVisibleInSearchIds($this->productVisibility->getVisibleInSiteIds());
+        } else {
             $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
             $collection->setVisibility($this->productVisibility->getVisibleInSiteIds());
         }
@@ -185,9 +188,10 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     
     
     public function getLayerNavigator($collection = null, $parameters = null)
-    {   
-        if(!$collection)
+    {
+        if (!$collection) {
             $collection = $this->builderQuery;
+        }
         
         $attributeCollection = $this->_objectManager
             ->create('Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection');
@@ -196,54 +200,60 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 ->addFieldToFilter('is_visible_on_front', 1);
         
         $allProductIds = $collection->getAllIds();
-		$arrayIDs = array();
-		foreach ($allProductIds as $allProductId) {
-			$arrayIDs[$allProductId] = '1';
-		}
+        $arrayIDs = [];
+        foreach ($allProductIds as $allProductId) {
+            $arrayIDs[$allProductId] = '1';
+        }
         $layerFilters = [];
         $i = 0;
-			
-		$titleFilters = array();
-        foreach($attributeCollection as $attribute){
+            
+        $titleFilters = [];
+        foreach ($attributeCollection as $attribute) {
             $attributeOptions = [];
             $attributeValues = $collection->getAllAttributeValues($attribute->getAttributeCode());
-			if ($attribute->getData('is_visible') != '1')
-				continue;
-			if ($attribute->getData('is_filterable') != '1')
-				continue;
-			if ($attribute->getData('is_visible_on_front') != '1')
-				continue;
-			if ($attribute->getData('used_in_product_listing') != '1')
-				continue;
-			/*
+            if ($attribute->getData('is_visible') != '1') {
+                continue;
+            }
+            if ($attribute->getData('is_filterable') != '1') {
+                continue;
+            }
+            if ($attribute->getData('is_visible_on_front') != '1') {
+                continue;
+            }
+            if ($attribute->getData('used_in_product_listing') != '1') {
+                continue;
+            }
+            /*
 			if ($attribute->getData('is_global') != '2')
 				continue;
 			*/
-			if (in_array($attribute->getDefaultFrontendLabel(), $titleFilters))
-				continue;
-            foreach($attributeValues as $productId => $optionIds){
-                if(isset($arrayIDs[$productId]) && ($arrayIDs[$productId]!= null)){
+            if (in_array($attribute->getDefaultFrontendLabel(), $titleFilters)) {
+                continue;
+            }
+            foreach ($attributeValues as $productId => $optionIds) {
+                if (isset($arrayIDs[$productId]) && ($arrayIDs[$productId]!= null)) {
                     $optionIds = explode(',', $optionIds[0]);
-                    foreach($optionIds as $optionId){
-                        if(isset($attributeOptions[$optionId]))
+                    foreach ($optionIds as $optionId) {
+                        if (isset($attributeOptions[$optionId])) {
                             $attributeOptions[$optionId]++;
-                        else
+                        } else {
                             $attributeOptions[$optionId] = 0;
+                        }
                     }
                 }
             }
-			
+            
             $options = $attribute->getSource()->getAllOptions();
             $filters = [];
-            foreach($options as $option){
-                if($option['value'] && isset($attributeOptions[$option['value']]) && $attributeOptions[$option['value']]){
+            foreach ($options as $option) {
+                if ($option['value'] && isset($attributeOptions[$option['value']]) && $attributeOptions[$option['value']]) {
                     $option['count'] = $attributeOptions[$option['value']];
-					$filters[] = $option;
+                    $filters[] = $option;
                 }
             }
             
-            if(count($filters) > 1){
-				$titleFilters[] = $attribute->getDefaultFrontendLabel();
+            if (count($filters) > 1) {
+                $titleFilters[] = $attribute->getDefaultFrontendLabel();
                 $layerFilters[] = [
                     'attribute' => $attribute->getAttributeCode(),
                     'title' => $attribute->getDefaultFrontendLabel(),
@@ -256,25 +266,26 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         $filters = [];
         $totalCount = 0;
         $maxIndex = 0;
-        if(count($priceRanges['counts'])>0)
+        if (count($priceRanges['counts'])>0) {
             $maxIndex = max(array_keys($priceRanges['counts']));
-        foreach($priceRanges['counts'] as $index => $count){
-            if($index === '' || $index == 1){
+        }
+        foreach ($priceRanges['counts'] as $index => $count) {
+            if ($index === '' || $index == 1) {
                 $index = 1;
                 $totalCount += $count;
-            }else{
+            } else {
                 $totalCount = $count;
             }
-            if(isset($params['layer']['price'])){
+            if (isset($params['layer']['price'])) {
                 $prices = explode('-', $params['layer']['price']);
                 $fromPrice = $prices[0];
                 $toPrice = $prices[1];
-            }else{
+            } else {
                 $fromPrice = $priceRanges['range']*($index-1);
                 $toPrice = $index == $maxIndex?'':$priceRanges['range']*($index);
             }
 
-            if($index >= 1){
+            if ($index >= 1) {
                 $filters[$index] = [
                     'value' => $fromPrice.'-'.$toPrice,
                     'label' => $this->_renderRangeLabel($fromPrice, $toPrice),
@@ -288,14 +299,14 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             'title' => __('Price'),
             'filter' => array_values($filters),
         ];
-		
+        
         // category
         if ($this->category) {
             $childrenCategories = $this->category->getChildrenCategories();
             $collection->addCountToCategories($childrenCategories);
             $filters = [];
-            foreach($childrenCategories as $childCategory){
-                if($childCategory->getProductCount()){
+            foreach ($childrenCategories as $childCategory) {
+                if ($childCategory->getProductCount()) {
                     $filters[] = [
                         'label' => $childCategory->getName(),
                         'value' => $childCategory->getId(),
@@ -311,25 +322,23 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             ];
         }
         
-        $selectedFilters = array();
-        $selectableFilters = array();
-        foreach ($layerFilters as $layerFilter){
-            if ((count($layerFilter['filter']) == 1) &&($collection->count()>1)) 
-            {
+        $selectedFilters = [];
+        $selectableFilters = [];
+        foreach ($layerFilters as $layerFilter) {
+            if ((count($layerFilter['filter']) == 1) && ($collection->count()>1)) {
                 $layerFilter['label'] = $layerFilter['filter'][0]['label'];
                 $layerFilter['value'] = $layerFilter['filter'][0]['value'];
                 unset($layerFilter['filter']);
                 $selectedFilters[] = $layerFilter;
-            }
-            else 
+            } else {
                 $selectableFilters[] = $layerFilter;
+            }
         }
-        $layerArray = array('layer_filter'=>$selectableFilters);
+        $layerArray = ['layer_filter'=>$selectableFilters];
         if (count($selectedFilters)>0) {
             $layerArray['layer_state']=$selectedFilters;
         }
         return $layerArray;
-		
     }
     
     /*
@@ -338,7 +347,8 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
      * @param @collection \Magento\Catalog\Model\ResourceModel\Product\Collection
      * @return array
      */
-    protected function _getPriceRanges($collection){
+    protected function _getPriceRanges($collection)
+    {
         $maxPrice = $collection->getMaxPrice();
         $index = 1;
         do {
@@ -383,14 +393,12 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                     ->setImageFile($file)
                     ->resize($width, $height)
                     ->getUrl();
-            
             }
             return $this->_objectManager->get('Magento\Catalog\Helper\Image')
                 ->init($product, 'product_page_image_medium')
                 ->setImageFile($product->getFile())
                 ->resize($width, $height)
                 ->getUrl();
-            
         }
         if ($file) {
                 return $this->_objectManager->get('Magento\Catalog\Helper\Image')
@@ -398,8 +406,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                     ->setImageFile($file)
                     ->resize(600, 600)
                     ->getUrl();
-            
-            }
+        }
         return $this->_objectManager->get('Magento\Catalog\Helper\Image')
             ->init($product, 'product_page_image_medium')
             ->setImageFile($product->getFile())
@@ -409,8 +416,10 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     
     public function setStoreOrders($block_list, $block_toolbar, $is_search = 0)
     {
-        if (!$block_toolbar->isExpanded()) return;
-        $sort_orders = array();
+        if (!$block_toolbar->isExpanded()) {
+            return;
+        }
+        $sort_orders = [];
 
         if ($sort = $block_list->getSortBy()) {
             $block_toolbar->setDefaultOrder($sort);
@@ -423,9 +432,9 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         
         if ($is_search == 1) {
             unset($availableOrders['position']);
-            $availableOrders = array_merge(array(
+            $availableOrders = array_merge([
                 'relevance' => __('Relevance')
-            ), $availableOrders);
+            ], $availableOrders);
 
             $block_toolbar->setAvailableOrders($availableOrders)
                 ->setDefaultDirection('desc')
@@ -435,47 +444,47 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         foreach ($availableOrders as $_key => $_order) {
             if ($block_toolbar->isOrderCurrent($_key)) {
                 if ($block_toolbar->getCurrentDirection() == 'desc') {
-                    $sort_orders[] = array(
+                    $sort_orders[] = [
                         'key' => $_key,
                         'value' => $_order,
                         'direction' => 'asc',
                         'default' => '0'
-                    );
+                    ];
 
-                    $sort_orders[] = array(
+                    $sort_orders[] = [
                         'key' => $_key,
                         'value' => $_order,
                         'direction' => 'desc',
                         'default' => '1'
-                    );
+                    ];
                 } else {
-                    $sort_orders[] = array(
+                    $sort_orders[] = [
                         'key' => $_key,
                         'value' => $_order,
                         'direction' => 'asc',
                         'default' => '1'
-                    );
-                    $sort_orders[] = array(
+                    ];
+                    $sort_orders[] = [
                         'key' => $_key,
                         'value' => $_order,
                         'direction' => 'desc',
                         'default' => '0'
-                    );
+                    ];
                 }
             } else {
-                $sort_orders[] = array(
+                $sort_orders[] = [
                     'key' => $_key,
                     'value' => $_order,
                     'direction' => 'asc',
                     'default' => '0'
-                );
+                ];
 
-                $sort_orders[] = array(
+                $sort_orders[] = [
                     'key' => $_key,
                     'value' => $_order,
                     'direction' => 'desc',
                     'default' => '0'
-                );
+                ];
             }
         }
         $this->_sortOrders = $sort_orders;
@@ -491,4 +500,3 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         return $this->_sortOrders;
     }
 }
-

@@ -33,7 +33,7 @@ class History extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\History $resource,
         \Simi\Simiconnector\Model\ResourceModel\History\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
-    ){
+    ) {
 
         $this->_websiteHelper = $websiteHelper;
 
@@ -58,48 +58,52 @@ class History extends \Magento\Framework\Model\AbstractModel
     /**
      * @return array Devices
      */
-    public function toOptionDeviceHash(){
-        $devices = array(
+    public function toOptionDeviceHash()
+    {
+        $devices = [
             '0' => __('All'),
             '1' => __('iOs'),
             '2' => __('Android'),
-        );
+        ];
         return $devices;
     }
 
     /**
      * @return array Types
      */
-    public function toOptionTypeHash(){
-        $devices = array(
+    public function toOptionTypeHash()
+    {
+        $devices = [
             '0' => __('Custom'),
             '1' => __('Price Updates'),
             '2' => __('New Product'),
             '3' => __('Order Purchase'),
-        );
+        ];
         return $devices;
     }
 
     /**
      * @return array Status
      */
-    public function toOptionStatusHash(){
-        $devices = array(
+    public function toOptionStatusHash()
+    {
+        $devices = [
             '0' => __('Unsuccessfully'),
             '1' => __('Successfully'),
-        );
+        ];
         return $devices;
     }
 
     /**
      * @return array Website
      */
-    public function toOptionWebsiteHash(){
+    public function toOptionWebsiteHash()
+    {
         $website_collection = $this->_websiteHelper->getWebsiteCollection();
-        $list = array();
+        $list = [];
         $list[0] = __('All');
-        if(sizeof($website_collection) > 0){
-            foreach($website_collection as $website){
+        if (sizeof($website_collection) > 0) {
+            foreach ($website_collection as $website) {
                 $list[$website->getId()] = $website->getName();
             }
         }

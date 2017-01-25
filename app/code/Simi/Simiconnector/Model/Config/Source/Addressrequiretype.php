@@ -30,4 +30,4 @@ class Addressrequiretype implements \Magento\Framework\Option\ArrayInterface
     {
         return [ 1, 'label' => __('Required'), 2 => __('Optional'),  3 => __('Hide')];
     }
-}    
+}

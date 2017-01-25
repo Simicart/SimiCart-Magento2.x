@@ -5,7 +5,8 @@ namespace Simi\Simiconnector\Block\Adminhtml\Cms\Edit\Tab;
 /**
  * Cms page edit form main tab
  */
-class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magento\Backend\Block\Widget\Tab\TabInterface{
+class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magento\Backend\Block\Widget\Tab\TabInterface
+{
 
     /**
      * @var \Magento\Framework\App\ObjectManager
@@ -50,16 +51,16 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @param array $data
      */
     public function __construct(
-                \Magento\Backend\Block\Template\Context $context,
-                \Magento\Framework\Registry $registry,
-                \Magento\Framework\Data\FormFactory $formFactory,
-                \Magento\Store\Model\System\Store $systemStore,
-                \Simi\Simiconnector\Helper\Website $websiteHelper,
-                \Simi\Simiconnector\Model\CmsFactory $cmsFactory,
-                \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig,
-                \Magento\Framework\Json\EncoderInterface $jsonEncoder,
-                \Magento\Catalog\Model\CategoryFactory $categoryFactory,
-                array $data = []
+        \Magento\Backend\Block\Template\Context $context,
+        \Magento\Framework\Registry $registry,
+        \Magento\Framework\Data\FormFactory $formFactory,
+        \Magento\Store\Model\System\Store $systemStore,
+        \Simi\Simiconnector\Helper\Website $websiteHelper,
+        \Simi\Simiconnector\Model\CmsFactory $cmsFactory,
+        \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig,
+        \Magento\Framework\Json\EncoderInterface $jsonEncoder,
+        \Magento\Catalog\Model\CategoryFactory $categoryFactory,
+        array $data = []
     ) {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_cmsFactory = $cmsFactory;
@@ -76,7 +77,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return $this
      */
-    protected function _prepareForm() {
+    protected function _prepareForm()
+    {
         
         $model = $this->_coreRegistry->registry('cms');
 
@@ -107,7 +109,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
                     ->addFieldToFilter('content_type', $typeID)
                     ->addFieldToFilter('item_id', $model->getId());
-            $storeIdArray = array();
+            $storeIdArray = [];
 
             foreach ($visibleStoreViews as $visibilityItem) {
                 $storeIdArray[] = $visibilityItem->getData('store_view_id');
@@ -117,20 +119,21 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         $storeResourceModel = $this->_objectManager->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
 
-        $fieldset->addField('storeview_id',
-          'multiselect',
-          array(
+        $fieldset->addField(
+            'storeview_id',
+            'multiselect',
+            [
             'name' => 'storeview_id[]',
             'label' => __('Store View'),
             'title' => __('Store View'),
             'required' => true,
             'values' => $storeResourceModel->toArray(),
-          )
+            ]
         );
 
 
         $fieldset->addField(
-            'cms_title', 
+            'cms_title',
             'text',
             ['name' => 'cms_title',
             'label' => __('Title'),
@@ -140,7 +143,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-                'cms_content', 'editor', [
+            'cms_content',
+            'editor',
+            [
             'name' => 'cms_content',
             'label' => __('Content'),
             'title' => __('Content'),
@@ -151,10 +156,13 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 ]
         );
 
-        if (!isset($data['sort_order']))
+        if (!isset($data['sort_order'])) {
             $data['sort_order'] = 1;
+        }
         $fieldset->addField(
-                'sort_order', 'text', [
+            'sort_order',
+            'text',
+            [
             'name' => 'sort_order',
             'label' => __('Sort Order'),
             'title' => __('Sort Order'),
@@ -164,7 +172,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-                'cms_status', 'select', [
+            'cms_status',
+            'select',
+            [
             'name' => 'cms_status',
             'label' => __('Status'),
             'title' => __('Status'),
@@ -176,16 +186,18 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
 
         $fieldset->addField(
-                'type', 'select', [
+            'type',
+            'select',
+            [
             'name' => 'type',
             'label' => __('Show Block On'),
             'title' => __('Show Block On'),
             'required' => false,
             'disabled' => $isElementDisabled,
-            'options' => array(
+            'options' => [
                 '1' => __('Left Menu'),
                 '2' => __('Category In-app'),
-            ),
+            ],
             'onchange' => 'toogleType()'
                 ]
         );
@@ -205,7 +217,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
           );
          */
         $fieldset->addField(
-                'new_category_parent', 'select', [
+            'new_category_parent',
+            'select',
+            [
             'label' => __('Categories'),
             'title' => __('Categories'),
             'class' => 'validate-parent-category',
@@ -217,7 +231,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
 
         $fieldset->addField(
-                'cms_image', 'image', [
+            'cms_image',
+            'image',
+            [
             'name' => 'cms_image',
             'label' => __('Image (width:64px, height:64px)'),
             'title' => __('Image (width:64px, height:64px)'),
@@ -239,7 +255,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
      * @return mixed
      */
-    protected function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element) {
+    protected function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element)
+    {
         $element->setWysiwyg(true);
         $element->setConfig($this->_wysiwygConfig->getConfig($element));
         return parent::_getElementHtml($element);
@@ -250,15 +267,17 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return array
      */
-    protected function _getParentCategoryOptions($category_id) {
+    protected function _getParentCategoryOptions($category_id)
+    {
 
         $items = $this->_categoryFactory->create()->getCollection()->addAttributeToSelect(
-                        'name'
-                )->addAttributeToSort(
-                        'entity_id', 'ASC'
-                )->setPageSize(
-                        3
-                )->load()->getItems();
+            'name'
+        )->addAttributeToSort(
+            'entity_id',
+            'ASC'
+        )->setPageSize(
+            3
+        )->load()->getItems();
 
         $result = [];
         if (count($items) === 2) {
@@ -279,7 +298,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return string
      */
-    public function getTabLabel() {
+    public function getTabLabel()
+    {
         return __('Cms Information');
     }
 
@@ -288,21 +308,24 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return string
      */
-    public function getTabTitle() {
+    public function getTabTitle()
+    {
         return __('Cms Information');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function canShowTab() {
+    public function canShowTab()
+    {
         return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isHidden() {
+    public function isHidden()
+    {
         return false;
     }
 
@@ -312,9 +335,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @param string $resourceId
      * @return bool
      */
-    protected function _isAllowedAction($resourceId) {
+    protected function _isAllowedAction($resourceId)
+    {
         return true;
         //return $this->_authorization->isAllowed($resourceId);
     }
-
 }

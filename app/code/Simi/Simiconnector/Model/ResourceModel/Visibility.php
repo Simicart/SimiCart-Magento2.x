@@ -4,7 +4,6 @@
  */
 namespace Simi\Simiconnector\Model\ResourceModel;
 
-
 class Visibility extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
     /**

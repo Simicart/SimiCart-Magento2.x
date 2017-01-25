@@ -6,33 +6,38 @@
 
 namespace Simi\Simiconnector\Helper;
 
-class Siminotification extends \Simi\Simiconnector\Helper\Data {
+class Siminotification extends \Simi\Simiconnector\Helper\Data
+{
 
-    public function sendNotice($data) {
+    public function sendNotice($data)
+    {
         $trans = $this->send($data);
         // update notification history
         $history = $this->_objectManager->get('Simi\Simiconnector\Model\History');
-        if (!$trans)
+        if (!$trans) {
             $data['status'] = 0;
-        else
+        } else {
             $data['status'] = 1;
+        }
 
         $history->setData($data);
         $history->save();
         return $trans;
     }
 
-    public function send(&$data) {
+    public function send(&$data)
+    {
         if (isset($data['category_id'])) {
             $categoryId = $data['category_id'];
             $category = $this->_objectManager->get('\Magento\Catalog\Model\Category')->load($categoryId);
             $categoryChildrenCount = $category->getChildrenCount();
             $categoryName = $category->getName();
             $data['category_name'] = $categoryName;
-            if ($categoryChildrenCount > 0)
+            if ($categoryChildrenCount > 0) {
                 $categoryChildrenCount = 1;
-            else
+            } else {
                 $categoryChildrenCount = 0;
+            }
             $data['has_child'] = $categoryChildrenCount;
             if (!$data['has_child']) {
                 $data['has_child'] = '';
@@ -46,8 +51,8 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
         $this->checkIndex($data);
         $deviceArray = explode(',', str_replace(' ', '', $data['devices_pushed']));
 
-        $collectionDevice = $this->_objectManager->get('Simi\Simiconnector\Model\Device')->getCollection()->addFieldToFilter('device_id', array('in' => $deviceArray));
-        $collectionDevice2 = $this->_objectManager->get('Simi\Simiconnector\Model\Device')->getCollection()->addFieldToFilter('device_id', array('in' => $deviceArray));
+        $collectionDevice = $this->_objectManager->get('Simi\Simiconnector\Model\Device')->getCollection()->addFieldToFilter('device_id', ['in' => $deviceArray]);
+        $collectionDevice2 = $this->_objectManager->get('Simi\Simiconnector\Model\Device')->getCollection()->addFieldToFilter('device_id', ['in' => $deviceArray]);
 
         switch ($data['notice_sanbox']) {
             case '1':
@@ -64,34 +69,37 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
         if ((int) $data['device_id'] != 0) {
             if ((int) $data['device_id'] == 2) {
                 //send android
-                $collectionDevice->addFieldToFilter('plaform_id', array('eq' => 3));
+                $collectionDevice->addFieldToFilter('plaform_id', ['eq' => 3]);
                 return $this->sendAndroid($collectionDevice, $data);
             } else {
                 //send IOS
-                $collectionDevice->addFieldToFilter('plaform_id', array('neq' => 3));
+                $collectionDevice->addFieldToFilter('plaform_id', ['neq' => 3]);
                 return $this->sendIOS($collectionDevice, $data);
             }
         } else {
             //send all
-            $collectionDevice->addFieldToFilter('plaform_id', array('neq' => 3));
-            $collectionDevice2->addFieldToFilter('plaform_id', array('eq' => 3));
+            $collectionDevice->addFieldToFilter('plaform_id', ['neq' => 3]);
+            $collectionDevice2->addFieldToFilter('plaform_id', ['eq' => 3]);
             $resultIOS = $this->sendIOS($collectionDevice, $data);
             $resultAndroid = $this->sendAndroid($collectionDevice2, $data);
-            if ($resultIOS || $resultAndroid)
+            if ($resultIOS || $resultAndroid) {
                 return true;
-            else
+            } else {
                 return false;
+            }
         }
     }
 
-    public function sendIOS($collectionDevice, $data) {
-		$total = count($collectionDevice);
-        if ($total == 0)
+    public function sendIOS($collectionDevice, $data)
+    {
+        $total = count($collectionDevice);
+        if ($total == 0) {
             return true;
+        }
         $ch = $this->getDirPEMfile($data);
         $dir = $this->getDirPEMPassfile();
         $message = $data['notice_content'];
-        $body['aps'] = array(
+        $body['aps'] = [
             'alert' => $data['notice_title'],
             'sound' => 'default',
             'badge' => 1,
@@ -107,7 +115,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
             'height' => $data['height'],
             'width' => $data['width'],
             'show_popup' => $data['show_popup'],
-        );
+        ];
         /*
           echo 'iOS push:';
           zend_debug::dump($body);
@@ -118,32 +126,38 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
         $totalDevice = 0;
 
         $i = 0;
-        $tokenArray = array();
+        $tokenArray = [];
         $sentsuccess = true;
         foreach ($collectionDevice as $item) {
             if ($i == 1) {
                 $result = $this->repeatSendiOS($tokenArray, $payload, $ch, $dir);
-                if (!$result)
+                if (!$result) {
                     $sentsuccess = false;
+                }
                 $i = 0;
-                $tokenArray = array();
+                $tokenArray = [];
             }
-            if (strlen($item->getDeviceToken()) < 70)
+            if (strlen($item->getDeviceToken()) < 70) {
                 $tokenArray[] = $item->getDeviceToken();
+            }
             $i++;
             $totalDevice++;
         }
-        if ($i <= 1)
+        if ($i <= 1) {
             $result = $this->repeatSendiOS($tokenArray, $payload, $ch, $dir);
-        if (!$result)
+        }
+        if (!$result) {
             $sentsuccess = false;
+        }
 
-        if ($sentsuccess)
+        if ($sentsuccess) {
             $this->_objectManager->get('\Magento\Framework\Message\ManagerInterface')->addSuccess(__('Message successfully delivered to %1 devices (IOS)', $totalDevice));
+        }
         return true;
     }
 
-    public function repeatSendiOS($tokenArray, $payload, $ch, $dir) {
+    public function repeatSendiOS($tokenArray, $payload, $ch, $dir)
+    {
         $ctx = @stream_context_create();
         @stream_context_set_option($ctx, 'ssl', 'local_cert', $ch);
         $fp = @stream_socket_client('ssl://gateway.push.apple.com:2195', $err, $errstr, 60, STREAM_CLIENT_CONNECT | STREAM_CLIENT_PERSISTENT, $ctx);
@@ -164,7 +178,8 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
         return true;
     }
 
-    public function repeatSendAnddroid($total, $collectionDevice, $message) {
+    public function repeatSendAnddroid($total, $collectionDevice, $message)
+    {
         $size = $total;
         $total-= 1;
         while (true) {
@@ -192,22 +207,23 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
         }
     }
 
-    public function sendTurnAnroid($collectionDevice, $from, $to, $message) {
-        $registrationIDs = array();
+    public function sendTurnAnroid($collectionDevice, $from, $to, $message)
+    {
+        $registrationIDs = [];
         for ($i = $from; $i <= $to; $i++) {
             $item = $collectionDevice[$i];
             $registrationIDs[] = $item['device_token'];
         }
         $url = 'https://android.googleapis.com/gcm/send';
-        $fields = array(
+        $fields = [
             'registration_ids' => $registrationIDs,
-            'data' => array("message" => $message),
-        );
+            'data' => ["message" => $message],
+        ];
 
         $api_key = $this->getConfig('simi_notifications/notification/android_secret_key', $collectionDevice[0]['storeview_id']);
-        $headers = array(
+        $headers = [
             'Authorization: key=' . $api_key,
-            'Content-Type: application/json');
+            'Content-Type: application/json'];
 
         $result = '';
         try {
@@ -227,15 +243,17 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
 
         $re = json_decode($result);
 
-        if ($re == NULL || $re->success == 0) {
+        if ($re == null || $re->success == 0) {
             return false;
         }
         return true;
     }
 
-    public function sendAndroid($collectionDevice, $data) {
-        if ($collectionDevice->count() == 0)
+    public function sendAndroid($collectionDevice, $data)
+    {
+        if ($collectionDevice->count() == 0) {
             return true;
+        }
         $total = count($collectionDevice);
         $message = $data;
 
@@ -243,7 +261,8 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
         return true;
     }
 
-    public function checkIndex(&$data) {
+    public function checkIndex(&$data)
+    {
         if (!isset($data['type'])) {
             $data['type'] = '';
         }
@@ -273,13 +292,15 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
         }
     }
 
-    public function getDirPEMfile($data) {
+    public function getDirPEMfile($data)
+    {
         switch ($data['notice_sanbox']) {
-            case '1': 
-                if (!$this->getConfig("simi_notifications/notification/upload_pem_file_test", $data['storeview_id']))
+            case '1':
+                if (!$this->getConfig("simi_notifications/notification/upload_pem_file_test", $data['storeview_id'])) {
                     return BP . '/app/code/Simi/Simiconnector/view/adminhtml/web/pem/' . 'push.pem';
-                else
+                } else {
                     return BP . '/pub/media/simi/simiconnector/pem/' . $this->getConfig("simi_notifications/notification/upload_pem_file_test", $data['storeview_id']);
+                }
                 break;
             case '2':
                 return BP . '/pub/media/simi/simiconnector/pem/manual' . $this->getConfig("simi_notifications/notification/upload_pem_file", $data['storeview_id']);
@@ -288,11 +309,13 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data {
         }
     }
 
-    public function getDirPEMPassfile() {
+    public function getDirPEMPassfile()
+    {
         return BP . '/pub/media/simi/simiconnector/pem/pass_pem.config';
     }
 
-    public function getConfig($nameConfig, $storeid) {
+    public function getConfig($nameConfig, $storeid)
+    {
         return $this->_scopeConfig->getValue($nameConfig, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeid);
     }
 }

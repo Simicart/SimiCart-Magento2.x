@@ -2,7 +2,6 @@
 
 namespace Simi\Simiconnector\Controller\Adminhtml\Device;
 
-
 use Magento\Backend\App\Action\Context;
 use Magento\Ui\Component\MassAction\Filter;
 use Magento\Framework\Controller\ResultFactory;
@@ -31,7 +30,7 @@ class MassDelete extends \Magento\Backend\App\Action
     {
         $deviceIds = $this->getRequest()->getParam('massaction');
         $collection = $this->_objectManager->get('Simi\Simiconnector\Model\Device')
-                ->getCollection()->addFieldToFilter('device_id', array('in', $deviceIds));
+                ->getCollection()->addFieldToFilter('device_id', ['in', $deviceIds]);
         $deviceDeleted = 0;
         foreach ($collection->getItems() as $device) {
             $device->delete();

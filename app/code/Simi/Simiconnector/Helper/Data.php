@@ -64,12 +64,12 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      *
      * @var array
      */
-    protected $_imageSize   = array(
+    protected $_imageSize   = [
         'minheight'     => self::MIN_HEIGHT,
         'minwidth'      => self::MIN_WIDTH,
         'maxheight'     => self::MAX_HEIGHT,
         'maxwidth'      => self::MAX_WIDTH,
-    );
+    ];
     
     /**
      * @var \Magento\Framework\Filesystem\Directory\WriteInterface
@@ -127,7 +127,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /**
      * @param \Magento\Framework\App\Helper\Context $context
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_scopeConfig = $this->_objectManager->create('\Magento\Framework\App\Config\ScopeConfigInterface');
         $this->filesystem = $this->_objectManager->create('\Magento\Framework\Filesystem');
@@ -144,7 +145,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /*
      * Get Store Config Value
      */
-    public function getStoreConfig($path) {
+    public function getStoreConfig($path)
+    {
         return $this->_scopeConfig->getValue($path);
     }
     
@@ -157,7 +159,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function removeImage($imageFile)
     {
         $io = $this->_ioFile;
-        $io->open(array('path' => $this->getBaseDir()));
+        $io->open(['path' => $this->getBaseDir()]);
         if ($io->fileExists($imageFile)) {
             return $io->rm($imageFile);
         }
@@ -196,7 +198,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
 
         $io = $this->_ioFile;
         $io->checkAndCreateFolder($cacheDir);
-        $io->open(array('path' => $cacheDir));
+        $io->open(['path' => $cacheDir]);
         if ($io->fileExists($imageFile)) {
             return $cacheUrl . $imageFile;
         }
@@ -261,16 +263,16 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @return string
      */
     public function getBaseUrl($addMediaPath = true)
-    { 
-    	if ($addMediaPath == true) {
-	        return $this->_storeManager->getStore()->getBaseUrl(
-	                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
-	            ) . '/' . self::MEDIA_PATH;
-       	} else {
-       	 return $this->_storeManager->getStore()->getBaseUrl(
-	                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
-	            ) ;
-       	}
+    {
+        if ($addMediaPath == true) {
+            return $this->_storeManager->getStore()->getBaseUrl(
+                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+            ) . '/' . self::MEDIA_PATH;
+        } else {
+            return $this->_storeManager->getStore()->getBaseUrl(
+                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+            );
+        }
     }
     
     /**
@@ -285,7 +287,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /*
      * Visibility Id for Different Types
      */
-    public function getVisibilityTypeId($contentTypeName) {
+    public function getVisibilityTypeId($contentTypeName)
+    {
         switch ($contentTypeName) {
             case 'cms':
                 $typeId = 1;
@@ -302,7 +305,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             case 'storelocator':
                 $typeId = 5;
                 break;
-            default :
+            default:
                 $typeId = 0;
                 break;
         }

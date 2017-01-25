@@ -5,7 +5,8 @@ namespace Simi\Simiconnector\Block\Adminhtml\Banner\Edit\Tab;
 /**
  * Cms page edit form main tab
  */
-class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magento\Backend\Block\Widget\Tab\TabInterface {
+class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magento\Backend\Block\Widget\Tab\TabInterface
+{
 
     /**
      * @var \Magento\Framework\App\ObjectManager
@@ -122,7 +123,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         ]);
 
         $fieldset->addField(
-                'banner_title', 'text', [
+            'banner_title',
+            'text',
+            [
                 'name' => 'banner_title',
                 'label' => __('Title'),
                 'title' => __('Title'),
@@ -136,11 +139,12 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 'title' => __('Image (width:640px, height:340px)'),
                 'required' => false,
                 'disabled' => $isElementDisabled
-                ]
-        );
+                ]);
 
         $fieldset->addField(
-                'banner_name_tablet', 'image', [
+            'banner_name_tablet',
+            'image',
+            [
                 'name' => 'banner_name_tablet',
                 'label' => __('Tablet Image (width:640px, height:340px)'),
                 'title' => __('Tablet Image (width:640px, height:340px)'),
@@ -151,7 +155,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
 
         $fieldset->addField(
-                'type', 'select', [
+            'type',
+            'select',
+            [
                 'name' => 'type',
                 'label' => __('Direct viewers to'),
                 'title' => __('Direct viewers to'),
@@ -164,7 +170,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         /* product + category + url */
         $fieldset->addField(
-                'product_id', 'text', [
+            'product_id',
+            'text',
+            [
                 'name' => 'product_id',
                 'label' => __('Product ID'),
                 'title' => __('Product ID'),
@@ -175,7 +183,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-                'new_category_parent', 'select', [
+            'new_category_parent',
+            'select',
+            [
                 'label' => __('Categories'),
                 'title' => __('Categories'),
                 'required' => true,
@@ -186,7 +196,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-                'banner_url', 'textarea', [
+            'banner_url',
+            'textarea',
+            [
                 'name' => 'banner_url',
                 'label' => __('Url'),
                 'title' => __('Url'),
@@ -195,10 +207,13 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 ]
         );
 
-        if (!isset($data['sort_order']))
+        if (!isset($data['sort_order'])) {
             $data['sort_order'] = 1;
+        }
         $fieldset->addField(
-                'sort_order', 'text', [
+            'sort_order',
+            'text',
+            [
                 'name' => 'sort_order',
                 'label' => __('Sort Order'),
                 'title' => __('Sort Order'),
@@ -208,7 +223,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-                'status', 'select', [
+            'status',
+            'select',
+            [
                 'name' => 'status',
                 'label' => __('Status'),
                 'title' => __('Status'),
@@ -234,7 +251,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return array
      */
-    protected function _getParentCategoryOptions($category_id) {
+    protected function _getParentCategoryOptions($category_id)
+    {
 
         $items = $this->_categoryFactory->create()
                                         ->getCollection()->addAttributeToSelect('name')
@@ -262,7 +280,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return string
      */
-    public function getTabLabel() {
+    public function getTabLabel()
+    {
         return __('Banner Information');
     }
 
@@ -271,21 +290,24 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return string
      */
-    public function getTabTitle() {
+    public function getTabTitle()
+    {
         return __('Banner Information');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function canShowTab() {
+    public function canShowTab()
+    {
         return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isHidden() {
+    public function isHidden()
+    {
         return false;
     }
 
@@ -295,7 +317,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @param string $resourceId
      * @return bool
      */
-    protected function _isAllowedAction($resourceId) {
+    protected function _isAllowedAction($resourceId)
+    {
         return true;
         //return $this->_authorization->isAllowed($resourceId);
     }

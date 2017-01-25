@@ -8,9 +8,10 @@ namespace Simi\Simiconnector\Model\Api;
 class Homeproductlists extends Apiabstract
 {
     protected $_DEFAULT_ORDER = 'sort_order';
-    public $SHOW_PRODUCT_ARRAY = TRUE;
+    public $SHOW_PRODUCT_ARRAY = true;
     
-    public function setBuilderQuery() {
+    public function setBuilderQuery()
+    {
         $data = $this->getData();
         if ($data['resourceid']) {
             $this->builderQuery = $this->_objectManager->get('Simi\Simiconnector\Model\Productlist')->load($data['resourceid']);
@@ -19,22 +20,25 @@ class Homeproductlists extends Apiabstract
         }
     }
 
-    public function getCollection() {
+    public function getCollection()
+    {
         $typeID = $this->_objectManager->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('productlist');
         $visibilityTable = $this->_resource->getTableName('simiconnector_visibility');
-        $listCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Productlist')->getCollection()->addFieldToFilter('list_status','1');
+        $listCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Productlist')->getCollection()->addFieldToFilter('list_status', '1');
         $listCollection->getSelect()
-                ->join(array('visibility' => $visibilityTable), 'visibility.item_id = main_table.productlist_id AND visibility.content_type = ' . $typeID . ' AND visibility.store_view_id =' . $this->_storeManager->getStore()->getId());
+                ->join(['visibility' => $visibilityTable], 'visibility.item_id = main_table.productlist_id AND visibility.content_type = ' . $typeID . ' AND visibility.store_view_id =' . $this->_storeManager->getStore()->getId());
         return $listCollection;
     }
 
-    public function show() {
+    public function show()
+    {
         $result = parent::show();
         $result['homeproductlist'] = $this->_addInfo($result['homeproductlist']);
         return $result;
     }
 
-    public function index() {
+    public function index()
+    {
         $result = parent::index();
         foreach ($result['homeproductlists'] as $index => $item) {
             $result['homeproductlists'][$index] = $this->_addInfo($item);
@@ -43,12 +47,14 @@ class Homeproductlists extends Apiabstract
     }
 
     
-    private function _addInfo($dataArray) {
+    private function _addInfo($dataArray)
+    {
         $listHelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Productlist');
         $listModel = $this->_objectManager->get('Simi\Simiconnector\Model\Productlist')->load($dataArray['productlist_id']);
         
-        if (!isset($dataArray['list_image_tablet']) || !$dataArray['list_image_tablet'])
+        if (!isset($dataArray['list_image_tablet']) || !$dataArray['list_image_tablet']) {
                 $dataArray['list_image_tablet'] = $dataArray['list_image'];
+        }
         
         $imagesize = @getimagesize(BP.'/pub/media/'.$dataArray['list_image']);
         $dataArray['width'] = $imagesize[0];

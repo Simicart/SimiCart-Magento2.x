@@ -12,21 +12,21 @@ class Edit extends \Magento\Backend\App\Action
      * @var \Magento\Framework\Registry
      */
     protected $_coreRegistry = null;
-	
-	/**
+    
+    /**
      * @var \Magento\Framework\View\Result\PageFactory
      */
     protected $resultPageFactory;
 
     /**
      * @param Action\Context $context
-	 * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
+     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
      * @param \Magento\Framework\Registry $registry
      */
     public function __construct(Action\Context $context, \Magento\Framework\View\Result\PageFactory $resultPageFactory, \Magento\Framework\Registry $registry)
     {
         $this->resultPageFactory = $resultPageFactory;
-		$this->_coreRegistry = $registry;
+        $this->_coreRegistry = $registry;
         parent::__construct($context);
     }
 
@@ -77,7 +77,7 @@ class Edit extends \Magento\Backend\App\Action
             $model->load($id);
             if (!$model->getId()) {
                 $this->messageManager->addError(__('This simicategory no longer exists.'));
-				/** \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
+                /** \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
                 $resultRedirect = $this->resultRedirectFactory->create();
                 return $resultRedirect->setPath('*/*/');
             }
@@ -93,7 +93,7 @@ class Edit extends \Magento\Backend\App\Action
         $this->_coreRegistry->register('simicategory', $model);
 
         // 5. Build edit form
-		/** @var \Magento\Backend\Model\View\Result\Page $resultPage */
+        /** @var \Magento\Backend\Model\View\Result\Page $resultPage */
         $resultPage = $this->_initAction();
         $resultPage->addBreadcrumb(
             $id ? __('Edit Simicategory') : __('New Simicategory'),

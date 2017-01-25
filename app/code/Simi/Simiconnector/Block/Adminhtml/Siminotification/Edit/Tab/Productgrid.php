@@ -5,7 +5,8 @@ namespace Simi\Simiconnector\Block\Adminhtml\Siminotification\Edit\Tab;
 /**
  * @SuppressWarnings(PHPMD.DepthOfInheritance)
  */
-class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
+class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
+{
 
     /**
      * @var \Magento\Framework\Registry|null
@@ -32,11 +33,12 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
      * @param array $data
      */
     public function __construct(
-        \Magento\Backend\Block\Template\Context $context, 
-        \Magento\Backend\Helper\Data $backendHelper, 
-        \Magento\Catalog\Model\ProductFactory $productFactory, 
-        \Simi\Simiconnector\Model\Siminotification $siminotificationFactory, 
-        \Magento\Framework\Registry $coreRegistry, array $data = []
+        \Magento\Backend\Block\Template\Context $context,
+        \Magento\Backend\Helper\Data $backendHelper,
+        \Magento\Catalog\Model\ProductFactory $productFactory,
+        \Simi\Simiconnector\Model\Siminotification $siminotificationFactory,
+        \Magento\Framework\Registry $coreRegistry,
+        array $data = []
     ) {
 
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
@@ -49,7 +51,8 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
     /**
      * init construct
      */
-    protected function _construct() {
+    protected function _construct()
+    {
         parent::_construct();
         $this->setId('product_grid');
         $this->setDefaultSort('entity_id');
@@ -61,7 +64,8 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    protected function _addColumnFilterToCollection($column) {
+    protected function _addColumnFilterToCollection($column)
+    {
         // Set custom filter for in product flag
         if ($column->getId() == 'in_products') {
             $productIds = $this->_getSelectedProducts();
@@ -84,12 +88,12 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
     /**
      * @return $this
      */
-    protected function _prepareCollection() {
+    protected function _prepareCollection()
+    {
         $collection = $this->_productFactory->create()->getCollection()
                 ->addAttributeToSelect('entity_id')
                 ->addAttributeToSelect('name')
-                ->addAttributeToSelect('sku')
-        ;
+                ->addAttributeToSelect('sku');
         $this->setCollection($collection);
         parent::_prepareCollection();
     }
@@ -98,9 +102,11 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
      * @return $this
      * @throws \Exception
      */
-    protected function _prepareColumns() {
+    protected function _prepareColumns()
+    {
         $this->addColumn(
-                'in_products', [
+            'in_products',
+            [
             'type' => 'radio',
             'html_name' => 'products_id',
             'required' => true,
@@ -113,7 +119,8 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
         );
 
         $this->addColumn(
-                'entity_id', [
+            'entity_id',
+            [
             'header' => __('ID'),
             'index' => 'entity_id',
             'width' => '20px',
@@ -124,7 +131,8 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
 
 
         $this->addColumn(
-                'name', [
+            'name',
+            [
             'header' => __('Name'),
             'index' => 'name',
             'header_css_class' => 'col-name',
@@ -134,7 +142,8 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
 
 
         $this->addColumn(
-                'sku', [
+            'sku',
+            [
             'header' => __('SKU'),
             'index' => 'sku',
             'header_css_class' => 'col-sku',
@@ -148,13 +157,15 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
     /**
      * @return mixed|string
      */
-    public function getGridUrl() {
+    public function getGridUrl()
+    {
         return $this->_getData(
-                        'grid_url'
-                ) ? $this->_getData(
-                        'grid_url'
-                ) : $this->getUrl(
-                        'simiconnector/*/productgrid', ['_current' => true]
+            'grid_url'
+        ) ? $this->_getData(
+            'grid_url'
+        ) : $this->getUrl(
+            'simiconnector/*/productgrid',
+            ['_current' => true]
         );
     }
 
@@ -162,14 +173,16 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
      * @param \Magento\Catalog\Model\Product|\Magento\Framework\DataObject $row
      * @return string
      */
-    public function getRowUrl($row) {
+    public function getRowUrl($row)
+    {
         return false;
     }
 
     /**
      * @return array
      */
-    protected function _getSelectedProducts() {
+    protected function _getSelectedProducts()
+    {
         $products = array_keys($this->getSelectedProducts());
         return $products;
     }
@@ -177,20 +190,21 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended {
     /**
      * @return array
      */
-    public function getSelectedProducts() {
+    public function getSelectedProducts()
+    {
         $notice_id = $this->getRequest()->getParam('notice_id');
         if (!isset($notice_id)) {
             $notice_id = 0;
         }
         $siminotification = $this->_objectManager->get('Simi\Simiconnector\Model\Siminotification')->load($notice_id);
-        $products = array();
+        $products = [];
         if ($siminotification->getId()) {
-            $products = array($siminotification->getProductId());
+            $products = [$siminotification->getProductId()];
         }
-        $proIds = array();
+        $proIds = [];
 
         foreach ($products as $product) {
-            $proIds[$product] = array('id' => $product);
+            $proIds[$product] = ['id' => $product];
         }
         return $proIds;
     }

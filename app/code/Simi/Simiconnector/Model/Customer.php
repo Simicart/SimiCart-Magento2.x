@@ -83,13 +83,13 @@ class Customer extends \Magento\Framework\Model\AbstractModel {
 
     public function register($data) {
         $data = $data['contents'];
-        $message = array();
+        $message = [];
         $checkCustomer = $this->getCustomerByEmail($data->email);
         if ($checkCustomer->getId()) {
             throw new \Exception(__('Account is already exist'), 4);
         }
         $customer = $this->_createCustomer($data);
-        $result = array();
+        $result = [];
         $result['user_id'] = $customer->getId();
         $session = $this->_getSession();
         if ($customer->isConfirmationRequired()) {
@@ -104,7 +104,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel {
 
     public function updateProfile($data) {
         $data = $data['contents'];
-        $result = array();
+        $result = [];
         $currPass = $data->old_password;
         $newPass = $data->new_password;
         $confPass = $data->com_password;
@@ -113,11 +113,11 @@ class Customer extends \Magento\Framework\Model\AbstractModel {
         $customer->setWebsiteId($this->_storeManager->getStore()->getWebsiteId());
         $customer->loadByEmail($data->email);
 
-        $customerData = array(
+        $customerData = [
             'firstname' => $data->firstname,
             'lastname' => $data->lastname,
             'email' => $data->email,
-        );
+        ];
 
         if ($data->change_password == 1) {
             $customer->setChangePassword(1);
@@ -160,17 +160,19 @@ class Customer extends \Magento\Framework\Model\AbstractModel {
                 ->setEntity($customer);
         $customerErrors = $customerForm->validateData($customer->getData());
         if ($customerErrors !== true) {
-            if (is_array($customerErrors))
+            if (is_array($customerErrors)) {
                 throw new \Exception($customerErrors[0], 4);
-            else
+            } else {
                 throw new \Exception($customerErrors, 4);
+            }
         } else {
             $customerForm->compactData($customerData);
         }
 
 
-        if (is_array($customerErrors))
+        if (is_array($customerErrors)) {
             throw new \Exception(__('Invalid profile information'), 4);
+        }
         $customer->setConfirmation(null);
         $customer->save();
         $this->_getSession()->setCustomer($customer);
@@ -188,18 +190,26 @@ class Customer extends \Magento\Framework\Model\AbstractModel {
 
     public function socialLogin($data) {
         $data = (object) $data['params'];
-        if (!isset($data->password) || !$this->_objectManager->get('Simi\Simiconnector\Helper\Customer')->validateSimiPass($data->email, $data->password))
+        if (!isset($data->password) || !$this->_objectManager->get('Simi\Simiconnector\Helper\Customer')->validateSimiPass($data->email, $data->password)) {
             throw new \Exception(__('Password is not Valid'), 4);
-        if (!$data->email)
+        }
+        if (!$data->email) {
             throw new \Exception(__('Cannot Get Your Email'), 4);
+        }
         $customer = $this->_objectManager->get('Simi\Simiconnector\Helper\Customer')->getCustomerByEmail($data->email);
         if (!$customer->getId()) {
-            if (!$data->firstname)
+            if (!$data->firstname) {
                 $data->firstname = __('Firstname');
-            if (!$data->lastname)
+            }
+            if (!$data->lastname) {
                 $data->lastname = __('Lastname');
+            }
             $customer = $this->_createCustomer($data);
-            $customer->sendPasswordReminderEmail();
+            try {
+                $customer->sendPasswordReminderEmail();
+            } catch (\Exception $e) {
+                
+            }
         }
         $this->_objectManager->get('Simi\Simiconnector\Helper\Customer')->loginByCustomer($customer);
         return $customer;
@@ -227,11 +237,16 @@ class Customer extends \Magento\Framework\Model\AbstractModel {
         }
         $customer->setPassword($data->password);
         $customer->save();
-        
-        if (isset($data->news_letter) && ($data->news_letter == '1'))
-            $this->_objectManager->get('Magento\Newsletter\Model\Subscriber')->subscribe($data->email);
-        else
-            $this->_objectManager->get('Magento\Newsletter\Model\Subscriber')->loadByEmail($data->email)->unsubscribe();
+        try {
+            $customer->sendPasswordReminderEmail();
+            if (isset($data->news_letter) && ($data->news_letter == '1')) {
+                $this->_objectManager->get('Magento\Newsletter\Model\Subscriber')->subscribe($data->email);
+            } else {
+                $this->_objectManager->get('Magento\Newsletter\Model\Subscriber')->loadByEmail($data->email)->unsubscribe();
+            }
+        } catch (\Exception $e) {
+            
+        }
 
         return $customer;
     }

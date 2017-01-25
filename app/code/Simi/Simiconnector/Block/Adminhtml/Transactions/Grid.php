@@ -64,9 +64,9 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         $orderGrid_table = $this->_resource->getTableName('sales_order_grid');
 
         $collection->join(
-            array('ordergrid' => $orderGrid_table),
+            ['ordergrid' => $orderGrid_table],
             'main_table.order_id = ordergrid.entity_id',
-            array('*')
+            ['*']
         );
         $this->setCollection($collection);
 

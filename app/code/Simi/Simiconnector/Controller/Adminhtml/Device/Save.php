@@ -61,7 +61,7 @@ class Save extends \Magento\Backend\App\Action
                 if ($is_delete_device && $model->getBannerName()) {
                     $model->setBannerName('');
                 } else {
-                    $imageFile = $imageHelper->uploadImage('device_name','device');
+                    $imageFile = $imageHelper->uploadImage('device_name', 'device');
                     if ($imageFile) {
                         $model->setBannerName($imageFile);
                     }

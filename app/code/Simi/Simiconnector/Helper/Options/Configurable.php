@@ -22,16 +22,17 @@ class Configurable extends \Simi\Simiconnector\Helper\Options
         return $price;
     }
     
-    public function getOptions($product){
+    public function getOptions($product)
+    {
         $layout = $this->_objectManager->get('Magento\Framework\View\LayoutInterface');
         $block = $layout->createBlock('Magento\ConfigurableProduct\Block\Product\View\Type\Configurable');
         
         $block->setProduct($product);
-        $options = array();
+        $options = [];
         $configurable_options = json_decode($block->getJsonConfig());
         $options['configurable_options'] = $configurable_options;
         
-        if(!is_null($product->getOptions()) && count($product->getOptions())){
+        if (!is_null($product->getOptions()) && count($product->getOptions())) {
             $custom_options = $this->helper('Simi\Simiconnector\Helper\Options\Simple')->getOptions($product);
             $options['custom_options'] = $custom_options['custom_options'];
         }

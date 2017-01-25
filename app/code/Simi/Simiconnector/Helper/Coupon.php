@@ -5,16 +5,17 @@
  */
 namespace Simi\Simiconnector\Helper;
 
-
 class Coupon extends \Simi\Simiconnector\Helper\Data
 {
     
-    protected function _getCart() {
+    protected function _getCart()
+    {
         return $this->_objectManager->get('Magento\Checkout\Model\Cart');
     }
 
 
-    public function setCoupon($couponCode) {
+    public function setCoupon($couponCode)
+    {
         $this->_getCart()->getQuote()->getShippingAddress()->setCollectShippingRates(true);
         $this->_getCart()->getQuote()->setCouponCode(strlen($couponCode) ? $couponCode : '')
                 ->collectTotals()

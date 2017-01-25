@@ -23,7 +23,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         \Magento\Backend\Block\Widget\Context $context,
         \Magento\Framework\Registry $registry,
         array $data = []
-    ){
+    ) {
         $this->_coreRegistry = $registry;
         parent::__construct($context, $data);
     }
@@ -101,11 +101,12 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      */
     protected function _getSaveAndContinueUrl()
     {
-        return $this->getUrl('simiconnector/*/save',
-                    ['_current' => true,
+        return $this->getUrl(
+            'simiconnector/*/save',
+            ['_current' => true,
                     'back' => 'edit',
                     'active_tab' =>'{{tab_id}}']
-                );
+        );
     }
 
     /**

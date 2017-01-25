@@ -34,7 +34,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Simi\Simiconnector\Model\ProductlistFactory $productlistFactory,
         \Magento\Framework\Registry $coreRegistry,
         array $data = []
-    ){
+    ) {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_productFactory = $productFactory;
         $this->_productlistFactory = $productlistFactory;
@@ -51,7 +51,6 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->setId('product_grid');
         $this->setDefaultSort('entity_id');
         $this->setUseAjax(true);
-
     }
 
     /**
@@ -88,8 +87,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         $collection = $this->_productFactory->create()->getCollection()
                                             ->addAttributeToSelect('entity_id')
                                             ->addAttributeToSelect('name')
-                                            ->addAttributeToSelect('sku')
-                        ;
+                                            ->addAttributeToSelect('sku');
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -208,15 +206,15 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         }
 
         $productlist = $this->_productlistFactory->create()->load($productlist_id);
-        $products = array();
-        if($productlist->getId()){
-            $products = explode(',',  str_replace(' ', '', $productlist->getData('list_products')));
+        $products = [];
+        if ($productlist->getId()) {
+            $products = explode(',', str_replace(' ', '', $productlist->getData('list_products')));
         }
 
-        $proIds = array();
+        $proIds = [];
 
         foreach ($products as $product) {
-            $proIds[$product] = array('id' => $product);
+            $proIds[$product] = ['id' => $product];
         }
         return $proIds;
     }

@@ -5,8 +5,9 @@ namespace Simi\Simiconnector\Controller\Adminhtml\Banner;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\View\Result\PageFactory;
 
-class Index extends \Magento\Backend\App\Action{
-	/**
+class Index extends \Magento\Backend\App\Action
+{
+    /**
      * @var PageFactory
      */
     protected $resultPageFactory;
@@ -22,7 +23,7 @@ class Index extends \Magento\Backend\App\Action{
         parent::__construct($context);
         $this->resultPageFactory = $resultPageFactory;
     }
-	
+    
     /**
      * Check the permission to run it
      *

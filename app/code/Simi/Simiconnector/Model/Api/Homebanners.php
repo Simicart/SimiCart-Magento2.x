@@ -9,7 +9,8 @@ class Homebanners extends Apiabstract
 {
     protected $_DEFAULT_ORDER = 'sort_order';
 
-    public function setBuilderQuery() {
+    public function setBuilderQuery()
+    {
         $data = $this->getData();
         if ($data['resourceid']) {
             $this->builderQuery = $this->_objectManager->get('Simi\Simiconnector\Model\Cms')->load($data['resourceid']);
@@ -18,24 +19,25 @@ class Homebanners extends Apiabstract
         }
     }
 
-    public function getCollection() {
+    public function getCollection()
+    {
         $typeID = $this->_objectManager->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('banner');
         $visibilityTable = $this->_resource->getTableName('simiconnector_visibility');
-        $bannerCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Banner')->getCollection()->addFieldToFilter('status','1');
+        $bannerCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Banner')->getCollection()->addFieldToFilter('status', '1');
         $bannerCollection->getSelect()
-                ->join(array('visibility' => $visibilityTable), 'visibility.item_id = main_table.banner_id AND visibility.content_type = ' . $typeID . ' AND visibility.store_view_id =' . $this->_storeManager->getStore()->getId());
+                ->join(['visibility' => $visibilityTable], 'visibility.item_id = main_table.banner_id AND visibility.content_type = ' . $typeID . ' AND visibility.store_view_id =' . $this->_storeManager->getStore()->getId());
 
         $this->builderQuery = $bannerCollection;
         return $bannerCollection;
     }
 
-    public function index() {
+    public function index()
+    {
         $result = parent::index();
         foreach ($result['homebanners'] as $index => $item) {
-            
-            
-            if (!$item['banner_name_tablet'])
+            if (!$item['banner_name_tablet']) {
                 $item['banner_name_tablet'] = $item['banner_name'];
+            }
             
             if ($item['banner_name']) {
                 $imagesize = @getimagesize(BP.'/pub/media/'.$item['banner_name']);

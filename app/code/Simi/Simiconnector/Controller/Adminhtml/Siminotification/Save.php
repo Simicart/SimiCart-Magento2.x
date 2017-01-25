@@ -46,8 +46,9 @@ class Save extends \Magento\Backend\App\Action
             if ($id) {
                 $model->load($id);
             }
-            if(isset($data['new_category_parent']))
+            if (isset($data['new_category_parent'])) {
                 $data['category_id'] = $data['new_category_parent'];
+            }
 
             $is_delete_siminotification = isset($data['image_url']['delete']) ? $data['image_url']['delete'] : false;
             $data['image_url'] = isset($data['image_url']['value']) ? $data['image_url']['value'] : '';
@@ -66,7 +67,7 @@ class Save extends \Magento\Backend\App\Action
                 if ($is_delete_siminotification && $model->getImageUrl()) {
                     $model->setImageUrl('');
                 } else {
-                    $imageFile = $imageHelper->uploadImage('image_url','siminotification');
+                    $imageFile = $imageHelper->uploadImage('image_url', 'siminotification');
                     if ($imageFile) {
                         $model->setImageUrl($imageFile);
                     }
@@ -83,7 +84,7 @@ class Save extends \Magento\Backend\App\Action
                     $data['siminotification_type'] = 0;
                     $data['notice_type'] = 0;
                     $data['notice_id'] = $model->getId();
-                    if($model->getImageUrl()){
+                    if ($model->getImageUrl()) {
                         $data['image_url'] = $imageHelper->getBaseUrl(false).$model->getImageUrl();
                         $list = @getimagesize($data['image_url']);
                         $data['width'] = $list[0];
@@ -107,5 +108,4 @@ class Save extends \Magento\Backend\App\Action
         }
         $this->_redirect('*/*/');
     }
-    
 }

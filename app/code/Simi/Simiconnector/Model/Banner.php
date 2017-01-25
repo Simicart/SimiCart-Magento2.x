@@ -34,8 +34,8 @@ class Banner extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\Banner $resource,
         \Simi\Simiconnector\Model\ResourceModel\Banner\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
-    )
-    {
+    ) {
+    
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_websiteHelper = $websiteHelper;
 
@@ -61,48 +61,53 @@ class Banner extends \Magento\Framework\Model\AbstractModel
     /**
      * @return array Type
      */
-    public function toOptionTypeHash(){
-        $platform = array(
+    public function toOptionTypeHash()
+    {
+        $platform = [
             '1' => __('Product In-app'),
             '2' => __('Category In-app'),
             '3' => __('Website Page'),
-        );
+        ];
         return $platform;
     }
 
     /**
      * @return array Status
      */
-    public function toOptionStatusHash(){
-        $status = array(
+    public function toOptionStatusHash()
+    {
+        $status = [
             '1' => __('Enable'),
             '2' => __('Disabled'),
-        );
+        ];
         return $status;
     }
 
     /**
      * @return array Website
      */
-    public function toOptionWebsiteHash(){
+    public function toOptionWebsiteHash()
+    {
         $website_collection = $this->_websiteHelper->getWebsiteCollection();
-        $list = array();
+        $list = [];
         $list[0] = __('All');
-        if(sizeof($website_collection) > 0){
-            foreach($website_collection as $website){
+        if (sizeof($website_collection) > 0) {
+            foreach ($website_collection as $website) {
                 $list[$website->getId()] = $website->getName();
             }
         }
         return $list;
     }
     
-    public function delete() {
+    public function delete()
+    {
         $typeID = $this->_objectManager->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('banner');
         $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
                             ->addFieldToFilter('content_type', $typeID)
                             ->addFieldToFilter('item_id', $this->getId());
-        foreach ($visibleStoreViews as $visibilityItem)
+        foreach ($visibleStoreViews as $visibilityItem) {
             $visibilityItem->delete();
+        }
         return parent::delete();
     }
 }

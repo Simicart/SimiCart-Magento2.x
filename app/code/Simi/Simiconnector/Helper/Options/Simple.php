@@ -5,7 +5,6 @@
  */
 namespace Simi\Simiconnector\Helper\Options;
 
-
 class Simple extends \Simi\Simiconnector\Helper\Options
 {
     
@@ -27,7 +26,7 @@ class Simple extends \Simi\Simiconnector\Helper\Options
     
     public function getOptions($product)
     {
-        $info = array();
+        $info = [];
         $taxHelper = $this->helper('Magento\Tax\Helper\Data');
         $layout = $this->_objectManager->get('Magento\Framework\View\LayoutInterface');
         $block_product = $layout->createBlock('Magento\Swatches\Block\Product\Renderer\Configurable\Interceptor');
@@ -35,22 +34,22 @@ class Simple extends \Simi\Simiconnector\Helper\Options
         
         
         foreach ($options as $option) {
-            $item = array();
+            $item = [];
             $item['id'] = $option->getId();
             $item['title'] = $option->getTitle();
             $item['type'] = $option->getType();
             $item['position'] = $option->getSortOrder();
             $item['isRequired'] = $option->getIsRequire();
-            if($option->getType() == "file"){
+            if ($option->getType() == "file") {
                 $item['file_extension'] = $option->getFileExtension();
             }
             if ($option->getGroupByType() == \Magento\Catalog\Model\Product\Option::OPTION_GROUP_SELECT) {
                 foreach ($option->getValues() as $value) {
                     /* @var $value Mage_Catalog_Model_Product_Option_Value */
-                    $item_value = array(
+                    $item_value = [
                         'id' => $value->getId(),
                         'title' => $value->getTitle(),
-                    );
+                    ];
                     $price = $value->getPrice(true);
                             
                     $_priceInclTax = $this->currency($this->getPrice($product, $price, true), false, false);
@@ -69,7 +68,7 @@ class Simple extends \Simi\Simiconnector\Helper\Options
                     $item['values'][] = $item_value;
                 }
             } else {
-                $item_value = array();
+                $item_value = [];
                 $price = $option->getPrice(true);
                 $_priceInclTax = $this->currency($this->getPrice($product, $price, true), false, false);
                 $_priceExclTax = $this->currency($this->getPrice($product, $price), false, false);
@@ -88,9 +87,8 @@ class Simple extends \Simi\Simiconnector\Helper\Options
 
             $info[] = $item;
         }
-        $options = array();
+        $options = [];
         $options['custom_options'] = $info;
         return $options;
-    }  
+    }
 }
-

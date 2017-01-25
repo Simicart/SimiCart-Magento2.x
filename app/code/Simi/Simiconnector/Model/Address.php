@@ -11,8 +11,8 @@ namespace Simi\Simiconnector\Model;
 class Address extends \Magento\Framework\Model\AbstractModel
 {
     
-    protected  $_objectManager;
-    protected  $_storeManager;
+    protected $_objectManager;
+    protected $_storeManager;
 
 
 
@@ -28,26 +28,29 @@ class Address extends \Magento\Framework\Model\AbstractModel
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
     
-    protected function _getSession() {
+    protected function _getSession()
+    {
         return $this->_objectManager->get('Magento\Customer\Model\Session');
     }
 
-    protected function _helperAddress() {
+    protected function _helperAddress()
+    {
         return $this->_objectManager->get('Simi\Simiconnector\Helper\Address');
     }
 
     /*
      * Save Customer Address
      */
-    public function saveAddress($data) {
-        $data = $data['contents'];        
+    public function saveAddress($data)
+    {
+        $data = $data['contents'];
         $address = $this->_helperAddress()->convertDataAddress($data);
         $address['id'] = isset($data->entity_id) == true ? $data->entity_id : null;
         return $this->saveAddressCustomer($address);
-        
     }
 
-    public function saveAddressCustomer($data) {
+    public function saveAddressCustomer($data)
+    {
         $errors = false;
         $customer = $this->_getSession()->getCustomer();
         $address = $this->_objectManager->create('Magento\Customer\Model\Address');
@@ -76,9 +79,10 @@ class Address extends \Magento\Framework\Model\AbstractModel
             $address->save();
             return $address;
         } else {
-            if (is_array($addressErrors))
-                throw new \Exception($addressErrors[0],7);
-            throw new \Exception(__('Can not save address customer'),7);
+            if (is_array($addressErrors)) {
+                throw new \Exception($addressErrors[0], 7);
+            }
+            throw new \Exception(__('Can not save address customer'), 7);
         }
     }
 }

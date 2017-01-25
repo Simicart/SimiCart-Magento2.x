@@ -6,21 +6,23 @@
 
 namespace Simi\Simiconnector\Model\Api;
 
-class Notifications extends Apiabstract {
+class Notifications extends Apiabstract
+{
 
     protected $_DEFAULT_ORDER = 'notice_id';
 
-    public function setBuilderQuery() {
-		$data = $this->getData();
+    public function setBuilderQuery()
+    {
+        $data = $this->getData();
         if ($data['resourceid']) {
             $this->builderQuery = $this->_objectManager->get('\Simi\Simiconnector\Model\Siminotification')->load($data['resourceid']);
         } else {
-		$deviceModel = $this->_objectManager->get('\Simi\Simiconnector\Model\Device')->getCollection()->addFieldToFilter('device_token', $data['params']['device_token'])->getFirstItem();
+            $deviceModel = $this->_objectManager->get('\Simi\Simiconnector\Model\Device')->getCollection()->addFieldToFilter('device_token', $data['params']['device_token'])->setPageSize(1)->getFirstItem();
             if (!($deviceModel->getId())) {
                 $this->builderQuery = $this->_objectManager->get('\Simi\Simiconnector\Model\Siminotification')->getCollection();
                 return;
             }
-            $shownList = array();
+            $shownList = [];
             foreach ($this->_objectManager->get('\Simi\Simiconnector\Model\History')->getCollection() as $noticeHistory) {
                 $noticeId = $noticeHistory->getData('notice_id');
                 if ($noticeId && !in_array($noticeId, $shownList)) {
@@ -29,17 +31,19 @@ class Notifications extends Apiabstract {
                     }
                 }
             }
-            $this->builderQuery = $this->_objectManager->get('\Simi\Simiconnector\Model\Siminotification')->getCollection()->addFieldToFilter('notice_id', array('in' => $shownList));
+            $this->builderQuery = $this->_objectManager->get('\Simi\Simiconnector\Model\Siminotification')->getCollection()->addFieldToFilter('notice_id', ['in' => $shownList]);
         }
     }
 
-    public function index() {
+    public function index()
+    {
         $result = parent::index();
         foreach ($result['notifications'] as $index => $notification) {
-            if (!$notification['type'])
+            if (!$notification['type']) {
                 $notification['type'] = '1';
+            }
             if ($notification['image_url']) {
-				$imageHelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');
+                $imageHelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');
                 $notification['image_url'] = $imageHelper->getBaseUrl(false) . $notification['image_url'];
                 $list = @getimagesize($notification['image_url']);
                 $notification['width'] = $list[0];
@@ -51,10 +55,11 @@ class Notifications extends Apiabstract {
                 $categoryChildrenCount = $category->getChildrenCount();
                 $categoryName = $category->getName();
                 $notification['category_name'] = $categoryName;
-                if ($categoryChildrenCount > 0)
+                if ($categoryChildrenCount > 0) {
                     $categoryChildrenCount = 1;
-                else
+                } else {
                     $categoryChildrenCount = 0;
+                }
                 $notification['has_child'] = $categoryChildrenCount;
                 if (!$notification['has_child']) {
                     $notification['has_child'] = '';

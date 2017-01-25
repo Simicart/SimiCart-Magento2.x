@@ -2,8 +2,9 @@
 
 namespace Simi\Simiconnector\Controller\Adminhtml\Banner;
 
-class NewAction extends \Magento\Backend\App\Action{
-	/**
+class NewAction extends \Magento\Backend\App\Action
+{
+    /**
      * @var \Magento\Backend\Model\View\Result\Forward
      */
     protected $resultForwardFactory;
@@ -19,7 +20,7 @@ class NewAction extends \Magento\Backend\App\Action{
         $this->resultForwardFactory = $resultForwardFactory;
         parent::__construct($context);
     }
-	
+    
     /**
      * {@inheritdoc}
      */

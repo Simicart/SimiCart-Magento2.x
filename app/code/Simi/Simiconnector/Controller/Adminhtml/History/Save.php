@@ -61,7 +61,7 @@ class Save extends \Magento\Backend\App\Action
                 if ($is_delete_history && $model->getBannerName()) {
                     $model->setBannerName('');
                 } else {
-                    $imageFile = $imageHelper->uploadImage('history_name','history');
+                    $imageFile = $imageHelper->uploadImage('history_name', 'history');
                     if ($imageFile) {
                         $model->setBannerName($imageFile);
                     }

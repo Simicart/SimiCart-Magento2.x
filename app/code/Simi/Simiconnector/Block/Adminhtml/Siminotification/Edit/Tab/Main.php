@@ -5,7 +5,8 @@ namespace Simi\Simiconnector\Block\Adminhtml\Siminotification\Edit\Tab;
 /**
  * Cms page edit form main tab
  */
-class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magento\Backend\Block\Widget\Tab\TabInterface {
+class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magento\Backend\Block\Widget\Tab\TabInterface
+{
 
     /**
      * @var \Magento\Store\Model\System\Store
@@ -41,7 +42,15 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @param array $data
      */
     public function __construct(
-    \Magento\Backend\Block\Template\Context $context, \Magento\Framework\Registry $registry, \Magento\Framework\Data\FormFactory $formFactory, \Magento\Store\Model\System\Store $systemStore, \Simi\Simiconnector\Helper\Website $websiteHelper, \Simi\Simiconnector\Model\SiminotificationFactory $siminotificationFactory, \Magento\Framework\Json\EncoderInterface $jsonEncoder, \Magento\Catalog\Model\CategoryFactory $categoryFactory, array $data = []
+        \Magento\Backend\Block\Template\Context $context,
+        \Magento\Framework\Registry $registry,
+        \Magento\Framework\Data\FormFactory $formFactory,
+        \Magento\Store\Model\System\Store $systemStore,
+        \Simi\Simiconnector\Helper\Website $websiteHelper,
+        \Simi\Simiconnector\Model\SiminotificationFactory $siminotificationFactory,
+        \Magento\Framework\Json\EncoderInterface $jsonEncoder,
+        \Magento\Catalog\Model\CategoryFactory $categoryFactory,
+        array $data = []
     ) {
         $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $this->_siminotificationFactory = $siminotificationFactory;
@@ -57,7 +66,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return $this
      */
-    protected function _prepareForm() {
+    protected function _prepareForm()
+    {
         /* @var $model \Magento\Cms\Model\Page */
         $model = $this->_coreRegistry->registry('siminotification');
         /*
@@ -86,10 +96,12 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         if (!isset($data['storeview_id'])) {
             $data['storeview_id'] = $this->_objectManager->get('\Magento\Store\Model\Store')->getCollection()->setPageSize(1)->getFirstItem()->getId();
-        } 
+        }
         $data['storeview_selected'] = $data['storeview_id'];
         $fieldset->addField(
-                'storeview_selected', 'select', [
+            'storeview_selected',
+            'select',
+            [
             'name' => 'storeview_selected',
             'label' => __('Store View'),
             'title' => __('Store View'),
@@ -101,7 +113,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-                'notice_sanbox', 'select', [
+            'notice_sanbox',
+            'select',
+            [
             'name' => 'notice_sanbox',
             'label' => __('Send To'),
             'title' => __('Send To'),
@@ -110,34 +124,42 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'options' => $this->_siminotificationFactory->create()->toOptionSanboxHash(),
                 ]
         );
-        if (isset($data['device_id']))
+        if (isset($data['device_id'])) {
             $data['device_type'] = $data['device_id'];
+        }
         $fieldset->addField(
-                'device_type', 'select', [
+            'device_type',
+            'select',
+            [
             'label' => __('Device Type'),
             'title' => __('Device Type'),
             'name' => 'device_type',
             'disabled' => $isElementDisabled,
-            'options' => array(
+            'options' => [
                 0 => __('All'),
                 1 => __('IOS'),
                 2 => __('Android'),
-            ),
-        ]);
-
-        $fieldset->addField(
-                'show_popup', 'select', [
-            'name' => 'show_popup',
-            'label' => __('Show Popup'),
-            'title' => __('Show Popup'),
-            'required' => true,
-            'disabled' => $isElementDisabled,
-            'options' => $this->_siminotificationFactory->create()->toOptionPopupHash(),
+            ],
                 ]
         );
 
+                $fieldset->addField(
+                    'show_popup',
+                    'select',
+                    [
+                    'name' => 'show_popup',
+                    'label' => __('Show Popup'),
+                    'title' => __('Show Popup'),
+                    'required' => true,
+                    'disabled' => $isElementDisabled,
+                    'options' => $this->_siminotificationFactory->create()->toOptionPopupHash(),
+                    ]
+                );
+
         $fieldset->addField(
-                'notice_title', 'text', [
+            'notice_title',
+            'text',
+            [
             'name' => 'notice_title',
             'label' => __('Title'),
             'title' => __('Title'),
@@ -147,7 +169,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-                'image_url', 'image', [
+            'image_url',
+            'image',
+            [
             'name' => 'image_url',
             'label' => __('Image'),
             'title' => __('Image'),
@@ -157,7 +181,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-                'notice_content', 'textarea', [
+            'notice_content',
+            'textarea',
+            [
             'name' => 'notice_content',
             'label' => __('Message'),
             'title' => __('Message'),
@@ -167,7 +193,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-                'type', 'select', [
+            'type',
+            'select',
+            [
             'name' => 'type',
             'label' => __('Direct viewers to'),
             'title' => __('Direct viewers to'),
@@ -179,7 +207,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-                'product_id', 'text', [
+            'product_id',
+            'text',
+            [
             'name' => 'product_id',
             'label' => __('Product ID'),
             'title' => __('Product ID'),
@@ -190,7 +220,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-                'new_category_parent', 'select', [
+            'new_category_parent',
+            'select',
+            [
             'label' => __('Categories'),
             'title' => __('Categories'),
             'required' => true,
@@ -201,7 +233,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         $fieldset->addField(
-                'notice_url', 'textarea', [
+            'notice_url',
+            'textarea',
+            [
             'name' => 'notice_url',
             'label' => __('Url'),
             'title' => __('Url'),
@@ -212,7 +246,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
 
         $fieldset->addField(
-                'created_time', 'label', [
+            'created_time',
+            'label',
+            [
             'name' => 'created_time',
             'label' => __('Created Date'),
             'title' => __('Created Date'),
@@ -225,7 +261,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
 
         $_fieldset->addField(
-                'devices_pushed', 'textarea', [
+            'devices_pushed',
+            'textarea',
+            [
             'name' => 'devices_pushed',
             'label' => __('Device IDs'),
             'title' => __('Device IDs'),
@@ -249,15 +287,17 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return array
      */
-    protected function _getParentCategoryOptions($category_id) {
+    protected function _getParentCategoryOptions($category_id)
+    {
 
         $items = $this->_categoryFactory->create()->getCollection()->addAttributeToSelect(
-                        'name'
-                )->addAttributeToSort(
-                        'entity_id', 'ASC'
-                )->setPageSize(
-                        3
-                )->load()->getItems();
+            'name'
+        )->addAttributeToSort(
+            'entity_id',
+            'ASC'
+        )->setPageSize(
+            3
+        )->load()->getItems();
 
         $result = [];
         if (count($items) === 2) {
@@ -278,7 +318,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return string
      */
-    public function getTabLabel() {
+    public function getTabLabel()
+    {
         return __('Siminotification Information');
     }
 
@@ -287,21 +328,24 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return string
      */
-    public function getTabTitle() {
+    public function getTabTitle()
+    {
         return __('Siminotification Information');
     }
 
     /**
      * {@inheritdoc}
      */
-    public function canShowTab() {
+    public function canShowTab()
+    {
         return true;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function isHidden() {
+    public function isHidden()
+    {
         return false;
     }
 
