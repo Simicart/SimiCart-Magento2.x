@@ -45,7 +45,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         $this->priceCurrency        = $priceCurrency;
         $this->priceHelper          = $pricingHelper;
         $this->coreRegistry        = $registry;
-        parent::__construct($context, $simiObjectManager);
+        parent::__construct($context);
     }
 
     public function getData()

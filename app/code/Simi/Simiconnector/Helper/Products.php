@@ -35,7 +35,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         $this->storeManager     = $this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
         $this->productStatus     = $productStatus;
         $this->productVisibility = $productVisibility;
-        parent::__construct($context, $simiObjectManager);
+        parent::__construct($context);
     }
 
     public function setData($data)

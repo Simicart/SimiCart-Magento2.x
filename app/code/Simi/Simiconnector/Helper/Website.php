@@ -46,7 +46,7 @@ class Website extends \Magento\Framework\App\Helper\AbstractHelper
         $this->websiteFactory           = $websiteFactory;
         $this->websiteRepositoryFactory = $websiteRepositoryFactory;
         $this->countryCollectionFactory = $countryCollectionFactory;
-        parent::__construct($context, $simiObjectManager);
+        parent::__construct($context);
     }
 
     /**

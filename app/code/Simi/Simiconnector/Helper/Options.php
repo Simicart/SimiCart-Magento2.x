@@ -39,7 +39,7 @@ class Options extends \Magento\Framework\App\Helper\AbstractHelper
         $this->catalogHelper       = $catalogData;
         $this->priceCurrency        = $priceCurrency;
         $this->priceHelper          = $pricingHelper;
-        parent::__construct($context, $simiObjectManager);
+        parent::__construct($context);
     }
 
     public function helper($helper)
