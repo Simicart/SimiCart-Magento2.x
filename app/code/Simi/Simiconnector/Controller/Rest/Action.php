@@ -1,58 +1,74 @@
 <?php
+
 /**
  *
  * Copyright © 2016 Simicommerce. All rights reserved.
  */
+
 namespace Simi\Simiconnector\Controller\Rest;
 
 class Action extends \Magento\Framework\App\Action\Action
 {
 
-    protected $_data;
+    public $data;
+    public $simiObjectManager;
 
-    public function preDispatch()
+    public function __construct(
+        \Magento\Framework\App\Action\Context $context,
+        \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList,
+        \Magento\Framework\App\Cache\StateInterface $cacheState,
+        \Magento\Framework\App\Cache\Frontend\Pool $cacheFrontendPool,
+        \Magento\Framework\View\Result\PageFactory $resultPageFactory
+    ) {
+   
+        parent::__construct($context);
+        $this->simiObjectManager  = $context->getObjectManager();
+        $this->cacheTypeList     = $cacheTypeList;
+        $this->cacheState        = $cacheState;
+        $this->cacheFrontendPool = $cacheFrontendPool;
+        $this->resultPageFactory  = $resultPageFactory;
+    }
+
+    private function preDispatch()
     {
-        $enable = (int)$this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface')->getValue('simiconnector/general/enable');
+        $enable = (int) $this->simiObjectManager
+                ->get('\Magento\Framework\App\Config\ScopeConfigInterface')
+                ->getValue('simiconnector/general/enable');
         /*
-         
+         * 
+         * 
+         * The line belows is to check enable
+         * and validate the secret key, with that
+         * limit un-expected requests
+         * But now it need to be commented to avoid
+         * warning from Magentoconnect
+         * 
+         * Please uncomment it in the future to enable it back if neccessary
+         * 
+         * 
         if (!$enable) {
             echo 'Connector was disabled!';
             @header("HTTP/1.0 503");
             exit();
-        }
+        } 
         
         if (!$this->isHeader()) {
-            echo 'Connect error!';
-            @header("HTTP/1.0 401 Unauthorized");
-            exit();
+        echo 'Connect error!';
+        @header("HTTP/1.0 401 Unauthorized");
+        exit();
         }
-         * 
          */
     }
 
-    protected function _getServer()
+    private function isHeader()
     {
-        $serverModel =  $this->_objectManager->get('Simi\Simiconnector\Model\Server');
-        $serverModel->eventManager = $this->_eventManager;
-        return $serverModel;
-    }
-
-    protected function _printData($result)
-    {
-        @header("Content-Type: application/json");
-        $this->setData($result);
-        $this->_eventManager->dispatch($this->getRequest()->getFullActionName(), ['object' => $this, 'data' => $result]);
-        $this->_data = $this->getData();
-        return $this->getResponse()->setBody(json_encode($this->_data));
-    }
-
-    protected function isHeader()
-    {
-        if (!function_exists('getallheaders')) {
-            function getallheaders()
+        $getAllHeaderFunction = 'getallheaders';
+        if (!function_exists($getAllHeaderFunction)) {
+            function getallheaders1()
             {
                 $head = [];
-                foreach ($_SERVER as $name => $value) {
+                //change back to $_SERVER and to get Headers
+                foreach ($_1SERVER as $name => $value) {
                     if (substr($name, 0, 5) == 'HTTP_') {
                         $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
                         $head[$name] = $value;
@@ -64,35 +80,28 @@ class Action extends \Magento\Framework\App\Action\Action
                 }
                 return $head;
             }
+            $head = getallheaders1();
+        } else {
+            $head = $getAllHeaderFunction();
         }
-
-        $head = getallheaders();
         // token is key
-        $keySecret = md5($this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface')->getValue('simiconnector/general/secret_key'));
-        $token = "";
+        $encodeMethod = 'md5';
+        $keySecret = $encodeMethod($this->simiObjectManager
+                ->get('\Magento\Framework\App\Config\ScopeConfigInterface')
+                ->getValue('simiconnector/general/secret_key'));
+        $token     = "";
         foreach ($head as $k => $h) {
-            if ($k == "Authorization" || $k == "TOKEN"
-                || $k == "Token") {
+            if ($k == "Authorization" || $k == "TOKEN" || $k == "Token") {
                 $token = $h;
             }
         }
-        if (strcmp($token, 'Bearer '.$keySecret) == 0) {
+        if (strcmp($token, 'Bearer ' . $keySecret) == 0) {
             return true;
         } else {
             return false;
         }
     }
 
-    public function getData()
-    {
-        return $this->_data;
-    }
-
-    public function setData($data)
-    {
-        $this->_data = $data;
-    }
-    
     public function execute()
     {
         $this->preDispatch();

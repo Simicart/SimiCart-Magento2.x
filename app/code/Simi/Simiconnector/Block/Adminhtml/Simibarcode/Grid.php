@@ -1,4 +1,5 @@
 <?php
+
 namespace Simi\Simiconnector\Block\Adminhtml\Simibarcode;
 
 /**
@@ -6,32 +7,31 @@ namespace Simi\Simiconnector\Block\Adminhtml\Simibarcode;
  */
 class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
 {
+
     /**
      * @var \Simi\Simiconnector\Model\Simibarcode
      */
-    protected $_barcodeFactory;
+    public $barcodeFactory;
 
     /**
      * @var \Simi\Simiconnector\Model\ResourceModel\Simibarcode\CollectionFactory
      */
-    protected $_collectionFactory;
+    public $collectionFactory;
 
     /**
      * @var \Magento\Framework\Module\Manager
      */
-    protected $moduleManager;
+    public $moduleManager;
 
     /**
      * @var order model
      */
-    protected $_resource;
+    public $resource;
 
     /**
      * @var \Simi\Simiconnector\Helper\Website
-     **/
-    protected $_websiteHelper;
-
-
+     * */
+    public $websiteHelper;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
@@ -49,28 +49,26 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\Module\Manager $moduleManager,
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Simi\Simiconnector\Helper\Website $websiteHelper,
-
         array $data = []
-    )
-    {
-        $this->_collectionFactory = $collectionFactory;
-        $this->moduleManager = $moduleManager;
-        $this->_resource = $resourceConnection;
-        $this->_barcodeFactory = $simibarcodeFactory;
-        $this->_websiteHelper = $websiteHelper;
+    ) {
+   
+        $this->collectionFactory = $collectionFactory;
+        $this->moduleManager      = $moduleManager;
+        $this->resource          = $resourceConnection;
+        $this->barcodeFactory    = $simibarcodeFactory;
+        $this->websiteHelper      = $websiteHelper;
 
         parent::__construct($context, $backendHelper, $data);
     }
-
 
     /**
      * Prepare collection
      *
      * @return \Magento\Backend\Block\Widget\Grid
      */
-    protected function _prepareCollection()
+    public function _prepareCollection()
     {
-        $collection = $this->_collectionFactory->create();
+        $collection = $this->collectionFactory->create();
         $this->setCollection($collection);
 
         return parent::_prepareCollection();
@@ -81,68 +79,68 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      *
      * @return \Magento\Backend\Block\Widget\Grid\Extended
      */
-    protected function _prepareColumns()
+    public function _prepareColumns()
     {
         $this->addColumn('barcode_id', [
             'header' => __('ID'),
-            'align' => 'right',
-            'width' => '50px',
-            'index' => 'barcode_id',
+            'align'  => 'right',
+            'width'  => '50px',
+            'index'  => 'barcode_id',
         ]);
 
         $this->addColumn('barcode', [
             'header' => __('Barcode'),
-            'align' => 'left',
-            'index' => 'barcode'
+            'align'  => 'left',
+            'index'  => 'barcode'
         ]);
-        
+
         $this->addColumn('qrcode', [
             'header' => __('QRcode'),
-            'align' => 'left',
-            'index' => 'qrcode'
+            'align'  => 'left',
+            'index'  => 'qrcode'
         ]);
 
         $this->addColumn('product_sku', [
             'header' => __('Product SKU'),
-            'align' => 'left',
-            'index' => 'product_sku'
+            'align'  => 'left',
+            'index'  => 'product_sku'
         ]);
-        
+
         $this->addColumn('created_date', [
             'header' => __('Created Date'),
-            'align' => 'left',
-            'type' => 'datetime',
-            'index' => 'created_date'
+            'align'  => 'left',
+            'type'   => 'datetime',
+            'index'  => 'created_date'
         ]);
-                
+
         $this->addColumn('barcode_status', [
-            'type' => 'options',
-            'header' => __('Status'),
-            'index' => 'barcode_status',
-            'options' => $this->_barcodeFactory->create()->toOptionStatusHash(),
+            'type'    => 'options',
+            'header'  => __('Status'),
+            'index'   => 'barcode_status',
+            'options' => $this->barcodeFactory->create()->toOptionStatusHash(),
         ]);
-        
+
         $this->addColumn(
             'action',
             [
-                'header' => __('View'),
-                'type' => 'action',
-                'getter' => 'getId',
-                'actions' => [
-                    [
-                        'caption' => __('Edit'),
-                        'url' => [
-                            'base' => '*/*/edit',
-                            'params' => ['store' => $this->getRequest()->getParam('store')]
-                        ],
-                        'field' => 'barcode_id'
-                    ]
-                ],
-                'sortable' => false,
-                'filter' => false,
-                'header_css_class' => 'col-action',
-                'column_css_class' => 'col-action',
-            ]
+            'header'           => __('View'),
+            'type'             => 'action',
+            'getter'           => 'getId',
+            'actions'          => [
+                [
+                    'caption' => __('Edit'),
+                    'url'     => [
+                        'base'   => '*/*/edit',
+                        'params' => ['store' => $this->getRequest()->getParam('store')]
+                    ],
+                    'field'   => 'barcode_id'
+                ]
+            ],
+            'sortable'         => false,
+            'filter'           => false,
+            'header_css_class' => 'col-action',
+            'column_css_class' => 'col-action',
+                ]
         );
 
         return parent::_prepareColumns();
@@ -157,7 +155,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/edit', [
-            'barcode_id' => $row->getId()
+                    'barcode_id' => $row->getId()
         ]);
     }
 
@@ -170,19 +168,18 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         return $this->getUrl('*/*/grid', ['_current' => true]);
     }
-    
+
     public function _prepareMassaction()
     {
         $this->setMassactionIdField('barcode_id');
         $this->getMassactionBlock()->addItem(
             'delete',
             [
-                'label' => __('Delete'),
-                'url' => $this->getUrl('*/*/massDelete'),
-                'confirm' => __('Are you sure?')
-            ]
+            'label'   => __('Delete'),
+            'url'     => $this->getUrl('*/*/massDelete'),
+            'confirm' => __('Are you sure?')
+                ]
         );
         return $this;
     }
-
 }

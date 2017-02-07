@@ -10,11 +10,12 @@ namespace Simi\Simiconnector\Model;
  */
 class Siminotification extends \Magento\Framework\Model\AbstractModel
 {
+
     /**
      * @var \Simi\Simiconnector\Helper\Website
-     **/
-    protected $_websiteHelper;
-
+     * */
+    public $websiteHelper;
+    public $simiObjectManager;
 
     /**
      * @param \Magento\Framework\Model\Context $context
@@ -30,13 +31,14 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
+        \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         \Magento\Framework\Registry $registry,
         \Simi\Simiconnector\Model\ResourceModel\Siminotification $resource,
         \Simi\Simiconnector\Model\ResourceModel\Siminotification\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
     ) {
-
-        $this->_websiteHelper = $websiteHelper;
+        $this->simiObjectManager = $simiObjectManager;
+        $this->websiteHelper    = $websiteHelper;
 
         parent::__construct(
             $context,
@@ -45,13 +47,13 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
             $resourceCollection
         );
     }
-    
+
     /**
      * Initialize resource model
      *
      * @return void
      */
-    protected function _construct()
+    public function _construct()
     {
         $this->_init('Simi\Simiconnector\Model\ResourceModel\Siminotification');
     }
@@ -61,25 +63,25 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
      */
     public function toOptionStoreviewHash()
     {
-        $storeViewCollection = \Magento\Framework\App\ObjectManager::getInstance()->get('\Magento\Store\Model\Store')->getCollection();
-        $list = [];
-        if (sizeof($storeViewCollection) > 0) {
+        $storeViewCollection = $this->simiObjectManager->get('\Magento\Store\Model\Store')->getCollection();
+        $list                = [];
+        if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($storeViewCollection) > 0) {
             foreach ($storeViewCollection as $storeView) {
                 $list[$storeView->getId()] = $storeView->getName();
             }
         }
         return $list;
     }
-    
+
     /**
      * @return array Website
      */
     public function toOptionWebsiteHash()
     {
-        $website_collection = $this->_websiteHelper->getWebsiteCollection();
-        $list = [];
-        $list[0] = __('All');
-        if (sizeof($website_collection) > 0) {
+        $website_collection = $this->websiteHelper->getWebsiteCollection();
+        $list               = [];
+        $list[0]            = __('All');
+        if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($website_collection) > 0) {
             foreach ($website_collection as $website) {
                 $list[$website->getId()] = $website->getName();
             }
@@ -92,10 +94,10 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
      */
     public function toOptionCountryHash()
     {
-        $country_collection = $this->_websiteHelper->getCountryCollection();
-        $list = [];
-        $list[] = __('All Countries');
-        if (sizeof($country_collection) > 0) {
+        $country_collection = $this->websiteHelper->getCountryCollection();
+        $list               = [];
+        $list[]             = __('All Countries');
+        if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($country_collection) > 0) {
             foreach ($country_collection as $country) {
                 $list[$country->getId()] = $country->getName();
             }

@@ -1,4 +1,5 @@
 <?php
+
 namespace Simi\Simiconnector\Block\Adminhtml\Simicategory;
 
 /**
@@ -6,30 +7,31 @@ namespace Simi\Simiconnector\Block\Adminhtml\Simicategory;
  */
 class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
 {
+
     /**
      * @var \Simi\Simiconnector\Model\Simicategory
      */
-    protected $_simicategoryFactory;
+    public $simicategoryFactory;
 
     /**
      * @var \Simi\Simiconnector\Model\ResourceModel\Simicategory\CollectionFactory
      */
-    protected $_collectionFactory;
+    public $collectionFactory;
 
     /**
      * @var \Magento\Framework\Module\Manager
      */
-    protected $moduleManager;
+    public $moduleManager;
 
     /**
      * @var order model
      */
-    protected $_resource;
+    public $resource;
 
     /**
      * @var \Simi\Simiconnector\Helper\Website
-     **/
-    protected $_websiteHelper;
+     * */
+    public $websiteHelper;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
@@ -49,18 +51,19 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Simi\Simiconnector\Helper\Website $websiteHelper,
         array $data = []
     ) {
-        $this->_collectionFactory = $collectionFactory;
-        $this->moduleManager = $moduleManager;
-        $this->_resource = $resourceConnection;
-        $this->_simicategoryFactory = $simicategoryFactory;
-        $this->_websiteHelper = $websiteHelper;
+   
+        $this->collectionFactory   = $collectionFactory;
+        $this->moduleManager        = $moduleManager;
+        $this->resource            = $resourceConnection;
+        $this->simicategoryFactory = $simicategoryFactory;
+        $this->websiteHelper        = $websiteHelper;
         parent::__construct($context, $backendHelper, $data);
     }
 
     /**
      * @return void
      */
-    protected function _construct()
+    public function _construct()
     {
         parent::_construct();
         $this->setId('simicategoryGrid');
@@ -75,10 +78,10 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      *
      * @return \Magento\Backend\Block\Widget\Grid
      */
-    protected function _prepareCollection()
+    public function _prepareCollection()
     {
-        $webId = $this->getWebsiteIdFromUrl();
-        $collection = $this->_collectionFactory->create();
+        $webId      = $this->getWebsiteIdFromUrl();
+        $collection = $this->collectionFactory->create();
 
         $this->setCollection($collection);
 
@@ -90,52 +93,51 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      *
      * @return \Magento\Backend\Block\Widget\Grid\Extended
      */
-    protected function _prepareColumns()
+    public function _prepareColumns()
     {
         $this->addColumn('simicategory_id', [
             'header' => __('ID'),
-            'index' => 'simicategory_id',
+            'index'  => 'simicategory_id',
         ]);
 
         $this->addColumn('simicategory_name', [
             'header' => __('Category Name'),
-            'index' => 'simicategory_name',
+            'index'  => 'simicategory_name',
         ]);
 
-        
         $this->addColumn('sort_order', [
             'header' => __('Sort Order'),
-            'index' => 'sort_order',
+            'index'  => 'sort_order',
         ]);
 
         $this->addColumn('status', [
-            'type' => 'options',
-            'header' => __('Status'),
-            'index' => 'status',
-            'options' => $this->_simicategoryFactory->create()->toOptionStatusHash(),
+            'type'    => 'options',
+            'header'  => __('Status'),
+            'index'   => 'status',
+            'options' => $this->simicategoryFactory->create()->toOptionStatusHash(),
         ]);
 
         $this->addColumn(
             'action',
             [
-                'header' => __('View'),
-                'type' => 'action',
-                'getter' => 'getId',
-                'actions' => [
-                    [
-                        'caption' => __('Edit'),
-                        'url' => [
-                            'base' => '*/*/edit',
-                            'params' => ['store' => $this->getRequest()->getParam('store')]
-                        ],
-                        'field' => 'simicategory_id'
-                    ]
-                ],
-                'sortable' => false,
-                'filter' => false,
-                'header_css_class' => 'col-action',
-                'column_css_class' => 'col-action',
-            ]
+            'header'           => __('View'),
+            'type'             => 'action',
+            'getter'           => 'getId',
+            'actions'          => [
+                [
+                    'caption' => __('Edit'),
+                    'url'     => [
+                        'base'   => '*/*/edit',
+                        'params' => ['store' => $this->getRequest()->getParam('store')]
+                    ],
+                    'field'   => 'simicategory_id'
+                ]
+            ],
+            'sortable'         => false,
+            'filter'           => false,
+            'header_css_class' => 'col-action',
+            'column_css_class' => 'col-action',
+                ]
         );
 
         return parent::_prepareColumns();
@@ -150,7 +152,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/edit', [
-            'simicategory_id' => $row->getId()
+                    'simicategory_id' => $row->getId()
         ]);
     }
 
@@ -169,6 +171,6 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function getWebsiteIdFromUrl()
     {
-        return $this->_websiteHelper->getWebsiteIdFromUrl();
+        return $this->websiteHelper->getWebsiteIdFromUrl();
     }
 }

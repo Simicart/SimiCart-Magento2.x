@@ -1,4 +1,5 @@
 <?php
+
 namespace Simi\Simiconnector\Block\Adminhtml\Simivideo;
 
 /**
@@ -7,12 +8,13 @@ namespace Simi\Simiconnector\Block\Adminhtml\Simivideo;
  */
 class Edit extends \Magento\Backend\Block\Widget\Form\Container
 {
+
     /**
      * Core registry
      *
      * @var \Magento\Framework\Registry
      */
-    protected $_coreRegistry = null;
+    public $coreRegistry = null;
 
     /**
      * @param \Magento\Backend\Block\Widget\Context $context
@@ -23,9 +25,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         \Magento\Backend\Block\Widget\Context $context,
         \Magento\Framework\Registry $registry,
         array $data = []
-    )
-    {
-        $this->_coreRegistry = $registry;
+    ) {
+   
+        $this->coreRegistry = $registry;
         parent::__construct($context, $data);
     }
 
@@ -34,9 +36,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      *
      * @return void
      */
-    protected function _construct()
+    public function _construct()
     {
-        $this->_objectId = 'video_id';
+        $this->_objectId   = 'video_id';
         $this->_blockGroup = 'Simi_Simiconnector';
         $this->_controller = 'adminhtml_simivideo';
 
@@ -47,14 +49,14 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
             $this->buttonList->add(
                 'saveandcontinue',
                 [
-                    'label' => __('Save and Continue Edit'),
-                    'class' => 'save',
-                    'data_attribute' => [
-                        'mage-init' => [
-                            'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
-                        ],
-                    ]
-                ],
+                'label'          => __('Save and Continue Edit'),
+                'class'          => 'save',
+                'data_attribute' => [
+                    'mage-init' => [
+                        'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
+                    ],
+                ]
+                    ],
                 -100
             );
         } else {
@@ -75,8 +77,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      */
     public function getHeaderText()
     {
-        if ($this->_coreRegistry->registry('simivideo')->getId()) {
-            return __("Edit Video '%1'", $this->escapeHtml($this->_coreRegistry->registry('simivideo')->getId()));
+        if ($this->coreRegistry->registry('simivideo')->getId()) {
+            return __("Edit Video '%1'", $this->escapeHtml($this->coreRegistry->registry('simivideo')->getId()));
         } else {
             return __('New Video');
         }
@@ -88,10 +90,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      * @param string $resourceId
      * @return bool
      */
-    protected function _isAllowedAction($resourceId)
+    public function _isAllowedAction($resourceId)
     {
         return true;
-        //return $this->_authorization->isAllowed($resourceId);
     }
 
     /**
@@ -100,9 +101,10 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      *
      * @return string
      */
-    protected function _getSaveAndContinueUrl()
+    public function _getSaveAndContinueUrl()
     {
-        return $this->getUrl('simiconnector/*/save', ['_current' => true, 'back' => 'edit', 'active_tab' => '{{tab_id}}']);
+        return $this->getUrl('simiconnector/*/save', ['_current' => true,
+            'back' => 'edit', 'active_tab' => '{{tab_id}}']);
     }
 
     /**
@@ -110,10 +112,10 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      *
      * @return \Magento\Framework\View\Element\AbstractBlock
      */
-    protected function _prepareLayout()
+    public function _prepareLayout()
     {
         $arrow_down_img = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png');
-        $arrow_up_img = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_up.png');
+        $arrow_up_img   = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_up.png');
 
         $productJsUpdateFunction = '
                     function selectProduct(e) {
@@ -129,18 +131,18 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                             removeValueFromField(vl);
                         }
                     }
-                    
+                   
                     function removeValueFromField(vl){
                         if($("product_ids").value.search(vl) == 0){
                                 if ($("product_ids").value.search(vl+", ") != -1)
                                     $("product_ids").value = $("product_ids").value.replace(vl+", ","");
-                                else 
+                                else
                                     $("product_ids").value = $("product_ids").value.replace(vl,"");
                             }else{
                                 $("product_ids").value = $("product_ids").value.replace(", "+ vl,"");
                             }
                     }
-                    
+                   
 
                     function checkboxAllChecked(el){
                         var product_grid_trs = document.querySelectorAll(".admin__control-checkbox");
@@ -150,7 +152,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                                 e.checked = el.checked;
                         }
                     }
-                    
+                   
                     function toogleCheckAllProduct(){
                         var product_grid_trs = document.querySelectorAll(".admin__control-checkbox");
                         var el = product_grid_trs[0];
@@ -166,10 +168,10 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                             }
                         }
                     }
-                    
+                   
         ';
-        
-        $this->_formScripts[] = $productJsUpdateFunction."
+
+        $this->_formScripts[] = $productJsUpdateFunction . "
             function toggleEditor() {
                 if (tinyMCE.getInstanceById('page_content') == null) {
                     tinyMCE.execCommand('mceAddControl', false, 'page_content');
@@ -184,10 +186,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
 
                 // default: hide product grid
                 document.getElementById('product_grid').style.display = 'none';
-                
+               
             }, false);
-            
-
+           
 
             function toogleProduct(){
                 var product_grid = document.getElementById('product_grid');

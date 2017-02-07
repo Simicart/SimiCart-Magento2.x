@@ -11,23 +11,23 @@ abstract class Apiabstract
 
     public $FILTER_RESULT = true;
 
-    const DEFAULT_DIR = 'asc';
+    const DEFAULT_DIR   = 'asc';
     const DEFAULT_LIMIT = 15;
-    const DIR = 'dir';
-    const ORDER = 'order';
-    const PAGE = 'page';
-    const LIMIT = 'limit';
-    const OFFSET = 'offset';
-    const FILTER = 'filter';
-    const ALL_IDS = 'all_ids';
-    const LIMIT_COUNT = 200;
-    const MEDIA_PATH = 'Simiconnector';
+    const DIR           = 'dir';
+    const ORDER         = 'order';
+    const PAGE          = 'page';
+    const LIMIT         = 'limit';
+    const OFFSET        = 'offset';
+    const FILTER        = 'filter';
+    const ALL_IDS       = 'all_ids';
+    const LIMIT_COUNT   = 200;
+    const MEDIA_PATH    = 'Simiconnector';
 
-    protected $_DEFAULT_ORDER = 'entity_id';
-    protected $_objectManager;
-    protected $_storeManager;
-    protected $_scopeConfig;
-    protected $_resource;
+    public $DEFAULT_ORDER = 'entity_id';
+    public $simiObjectManager;
+    public $storeManager;
+    public $scopeConfig;
+    public $resource;
     public $storeRepository;
     public $storeCookieManager;
 
@@ -36,21 +36,21 @@ abstract class Apiabstract
      *
      * @var string
      */
-    protected $_helper;
+    public $helper;
 
     /**
      * Singular key.
      *
      * @var string
      */
-    protected $singularKey;
+    public $singularKey;
 
     /**
      * Plural key.
      *
      * @var string
      */
-    protected $pluralKey;
+    public $pluralKey;
     /**
      *
      */
@@ -58,37 +58,38 @@ abstract class Apiabstract
     /**
      * @var collection Magento
      */
-    protected $builderQuery = null;
-    protected $_data;
-    protected $_eventManager;
+    public $builderQuery = null;
+    public $data;
+    public $eventManager;
 
     abstract public function setBuilderQuery();
 
-    public function __construct()
-    {
-        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->_scopeConfig = $this->_objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
-        $this->_storeManager = $this->_objectManager->get('\Magento\Store\Model\StoreManagerInterface');
-        $this->storeRepository = $this->_objectManager->get('\Magento\Store\Api\StoreRepositoryInterface');
-        $this->storeCookieManager = $this->_objectManager->get('\Magento\Store\Api\StoreCookieManagerInterface');
-        $this->_resource = $this->_objectManager->get('\Magento\Framework\App\ResourceConnection');
-        $this->_eventManager = $this->_objectManager->get('\Magento\Framework\Event\ManagerInterface');
+    public function __construct(
+        \Magento\Framework\ObjectManagerInterface $simiObjectManager
+    ) {
+        $this->simiObjectManager  = $simiObjectManager;
+        $this->scopeConfig       = $this->simiObjectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
+        $this->storeManager      = $this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
+        $this->storeRepository    = $this->simiObjectManager->get('\Magento\Store\Api\StoreRepositoryInterface');
+        $this->storeCookieManager = $this->simiObjectManager->get('\Magento\Store\Api\StoreCookieManagerInterface');
+        $this->resource          = $this->simiObjectManager->get('\Magento\Framework\App\ResourceConnection');
+        $this->eventManager      = $this->simiObjectManager->get('\Magento\Framework\Event\ManagerInterface');
         return $this;
     }
 
     public function setDataValue($data)
     {
-        $this->_data = $data;
+        $this->data = $data;
     }
 
     public function setData($data)
     {
-        $this->_data = $data;
+        $this->data = $data;
     }
 
     public function getData()
     {
-        return $this->_data;
+        return $this->data;
     }
 
     /**
@@ -139,9 +140,9 @@ abstract class Apiabstract
     {
         $collection = $this->builderQuery;
         $this->filter();
-        $data = $this->getData();
+        $data       = $this->getData();
         $parameters = $data['params'];
-        $page = 1;
+        $page       = 1;
         if (isset($parameters[self::PAGE]) && $parameters[self::PAGE]) {
             $page = $parameters[self::PAGE];
         }
@@ -158,11 +159,11 @@ abstract class Apiabstract
         $collection->setPageSize($offset + $limit);
 
         $all_ids = [];
-        $info = [];
-        $total = $collection->getSize();
+        $info    = [];
+        $total   = $collection->getSize();
 
         if ($offset > $total) {
-            throw new \Exception(__('Invalid method.'), 4);
+            throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid method.'), 4);
         }
 
         $fields = [];
@@ -170,7 +171,7 @@ abstract class Apiabstract
             $fields = explode(',', $parameters['fields']);
         }
 
-        $check_limit = 0;
+        $check_limit  = 0;
         $check_offset = 0;
 
         foreach ($collection as $entity) {
@@ -181,7 +182,7 @@ abstract class Apiabstract
                 break;
             }
 
-            $info[] = $entity->toArray($fields);
+            $info[]    = $entity->toArray($fields);
             $all_ids[] = $entity->getId();
         }
         return $this->getList($info, $all_ids, $total, $limit, $offset);
@@ -189,10 +190,10 @@ abstract class Apiabstract
 
     public function show()
     {
-        $entity = $this->builderQuery;
-        $data = $this->getData();
+        $entity     = $this->builderQuery;
+        $data       = $this->getData();
         $parameters = $data['params'];
-        $fields = [];
+        $fields     = [];
         if (isset($parameters['fields']) && $parameters['fields']) {
             $fields = explode(',', $parameters['fields']);
         }
@@ -241,11 +242,11 @@ abstract class Apiabstract
     public function getList($info, $all_ids, $total, $page_size, $from)
     {
         return [
-            'all_ids' => $all_ids,
+            'all_ids'             => $all_ids,
             $this->getPluralKey() => $this->motifyFields($info),
-            'total' => $total,
-            'page_size' => $page_size,
-            'from' => $from,
+            'total'               => $total,
+            'page_size'           => $page_size,
+            'from'                => $from,
         ];
     }
 
@@ -254,30 +255,30 @@ abstract class Apiabstract
         return [$this->getSingularKey() => $this->motifyFields($info)];
     }
 
-    protected function filter()
+    public function filter()
     {
         if (!$this->FILTER_RESULT) {
             return;
         }
-        $data = $this->_data;
+        $data       = $this->data;
         $parameters = $data['params'];
-        $query = $this->builderQuery;
+        $query      = $this->builderQuery;
         $this->_whereFilter($query, $parameters);
         $this->_order($parameters);
 
         return $query;
     }
 
-    protected function _order($parameters)
+    public function _order($parameters)
     {
         $query = $this->builderQuery;
-        $order = isset($parameters[self::ORDER]) ? $parameters[self::ORDER] : $this->_DEFAULT_ORDER;
+        $order = isset($parameters[self::ORDER]) ? $parameters[self::ORDER] : $this->DEFAULT_ORDER;
         $order = str_replace('|', '.', $order);
-        $dir = isset($parameters[self::DIR]) ? $parameters[self::DIR] : self::DEFAULT_DIR;
+        $dir   = isset($parameters[self::DIR]) ? $parameters[self::DIR] : self::DEFAULT_DIR;
         $query->setOrder($order, $dir);
     }
 
-    protected function _whereFilter(&$query, $parameters)
+    public function _whereFilter(&$query, $parameters)
     {
         if (isset($parameters[self::FILTER])) {
             foreach ($parameters[self::FILTER] as $key => $value) {
@@ -286,7 +287,7 @@ abstract class Apiabstract
                     foreach ($value as $k => $v) {
                         $filters[] = $this->_addCondition($k, $v, true);
                     }
-                    if (count($filters)) {
+                    if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($filters)) {
                         $query->addAttributeToFilter($filters);
                     }
                 } else {
@@ -297,19 +298,20 @@ abstract class Apiabstract
         }
     }
 
-    protected function _addCondition($key, $value, $isOr = false)
+    public function _addCondition($key, $value, $isOr = false)
     {
         $key = str_replace('|', '.', $key);
         if (is_array($value)) {
             foreach ($value as $operator => $v) {
                 if ($operator == 'in' || $operator == 'nin') {
-                    return $isOr ? ['attribute' => $key, $operator => explode(',', $v)] : [$operator => explode(',', $v)];
+                    return $isOr ?
+                            ['attribute' => $key, $operator => explode(',', $v)] : [$operator => explode(',', $v)];
                 } else {
                     return $isOr ? ['attribute' => $key, $operator => $v] : [$operator => $v];
                 }
             }
         } else {
-            if (strlen($value) > 0) {
+            if ($value && ($value != '')) {
                 return $isOr ? ['attribute' => $key, 'eq' => $value] : ['eq' => $value];
             }
         }
@@ -321,7 +323,7 @@ abstract class Apiabstract
 
     public function getStoreConfig($path)
     {
-        return $this->_scopeConfig->getValue($path);
+        return $this->scopeConfig->getValue($path);
     }
 
     /**
@@ -329,15 +331,15 @@ abstract class Apiabstract
      */
     public function getMediaUrl($media_path)
     {
-        return $this->_storeManager->getStore()->getBaseUrl(
+        return $this->storeManager->getStore()->getBaseUrl(
             \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
         ) . $media_path;
     }
 
     //Max update to get fields
-    protected function motifyFields($content)
+    public function motifyFields($content)
     {
-        $data = $this->getData();
+        $data       = $this->getData();
         $parameters = $data['params'];
         if (isset($parameters['fields']) && $parameters['fields']) {
             $fields = explode(',', $parameters['fields']);
@@ -353,8 +355,8 @@ abstract class Apiabstract
         }
     }
 
-    protected function renewCustomerSesssion($data)
+    public function renewCustomerSesssion($data)
     {
-        $this->_objectManager->get('Simi\Simiconnector\Helper\Customer')->renewCustomerSesssion($data);
+        $this->simiObjectManager->get('Simi\Simiconnector\Helper\Customer')->renewCustomerSesssion($data);
     }
 }

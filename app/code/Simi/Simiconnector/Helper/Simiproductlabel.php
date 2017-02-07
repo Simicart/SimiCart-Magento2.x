@@ -3,14 +3,15 @@
 /**
  * Connector data helper
  */
-namespace Simi\Simiconnector\Helper;
 
+namespace Simi\Simiconnector\Helper;
 
 class Simiproductlabel extends \Simi\Simiconnector\Helper\Data
 {
+
     public function getPositionId()
     {
-        return array(
+        return [
             1 => __('Top-left'),
             2 => __('Top-center'),
             3 => __('Top-right'),
@@ -20,7 +21,7 @@ class Simiproductlabel extends \Simi\Simiconnector\Helper\Data
             7 => __('Bottom-left'),
             8 => __('Bottom-center'),
             9 => __('Bottom-right'),
-        );
+        ];
     }
 
     public function getPositionOptions()
@@ -37,30 +38,35 @@ class Simiproductlabel extends \Simi\Simiconnector\Helper\Data
             ['value' => 9, 'label' => __('Bottom-right')],
         ];
     }
-    
-    public function getProductLabel($product) {
+
+    public function getProductLabel($product)
+    {
         if ($this->getStoreConfig('simiconnector/productlabel/enable') != '1') {
             return;
         }
-        
-        foreach ($this->_objectManager->get('Simi\Simiconnector\Model\Simiproductlabel')->getCollection()->setOrder('priority','DESC') as $productLabel) {
-            if($productLabel->getData('status') != 1)
+
+        foreach ($this->simiObjectManager->get('Simi\Simiconnector\Model\Simiproductlabel')
+                ->getCollection()->setOrder('priority', 'DESC') as $productLabel) {
+            if ($productLabel->getData('status') != 1) {
                 continue;
-            if($productLabel->getData('storeview_id') != $this->_storeManager->getStore()->getId())
+            }
+            if ($productLabel->getData('storeview_id') != $this->storeManager->getStore()->getId()) {
                 continue;
+            }
             foreach (explode(',', str_replace(' ', '', $productLabel->getData('product_ids'))) as $productId) {
                 if ($product->getId() == $productId) {
-                    return array(
-                        'name'=> $productLabel->getData('name'),
-                        'label_id'=> $productLabel->getData('label_id'),
-                        'description'=> $productLabel->getData('description'),
-                        'text'=> $productLabel->getData('text'),
-                        'image'=> $this->_storeManager->getStore()->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA) . $productLabel->getData('image'),
-                        'position'=> $productLabel->getData('position'),
-                        );                    
+                    return [
+                        'name'        => $productLabel->getData('name'),
+                        'label_id'    => $productLabel->getData('label_id'),
+                        'description' => $productLabel->getData('description'),
+                        'text'        => $productLabel->getData('text'),
+                        'image'       => $this->storeManager->getStore()
+                            ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA)
+                            . $productLabel->getData('image'),
+                        'position'    => $productLabel->getData('position'),
+                    ];
                 }
             }
-            
         }
     }
 }

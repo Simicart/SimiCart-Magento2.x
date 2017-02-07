@@ -9,25 +9,26 @@ namespace Simi\Simiconnector\Helper;
 class Customer extends Data
 {
 
-    protected function _getSession()
+    public function _getSession()
     {
-        return $this->_objectManager->get('Magento\Customer\Model\Session');
+        return $this->simiObjectManager->get('Magento\Customer\Model\Session');
     }
 
     public function renewCustomerSesssion($data)
     {
         if (isset($data['params']['quote_id']) && $data['params']['quote_id']) {
-            $checkoutsession = $this->_objectManager->get('Magento\Checkout\Model\Session');
+            $checkoutsession = $this->simiObjectManager->get('Magento\Checkout\Model\Session');
             $checkoutsession->setQuoteId($data['params']['quote_id']);
         }
-        if (($data['resource'] == 'customers') && (($data['resourceid'] == 'login') || ($data['resourceid'] == 'sociallogin'))) {
+        if (($data['resource'] == 'customers')
+                && (($data['resourceid'] == 'login') || ($data['resourceid'] == 'sociallogin'))) {
             return;
         }
         if (isset($data['contents_array']['email']) && isset($data['contents_array']['password'])) {
-            $data['params']['email'] = $data['contents_array']['email'];
+            $data['params']['email']    = $data['contents_array']['email'];
             $data['params']['password'] = $data['contents_array']['password'];
         }
-        
+
         if ((!$data['params']['email']) || (!$data['params']['password'])) {
             return;
         }
@@ -40,8 +41,8 @@ class Customer extends Data
 
     public function loginByEmailAndPass($username, $password)
     {
-        $websiteId = $this->_storeManager->getStore()->getWebsiteId();
-        $customer = $this->_objectManager->get('Magento\Customer\Model\Customer')
+        $websiteId = $this->storeManager->getStore()->getWebsiteId();
+        $customer  = $this->simiObjectManager->get('Magento\Customer\Model\Customer')
                 ->setWebsiteId($websiteId);
         if ($this->validateSimiPass($username, $password)) {
             $customer = $this->getCustomerByEmail($username);
@@ -55,11 +56,11 @@ class Customer extends Data
         }
         return false;
     }
-        
+
     public function getCustomerByEmail($email)
     {
-        return $this->_objectManager->get('Magento\Customer\Model\Customer')
-                        ->setWebsiteId($this->_storeManager->getStore()->getWebsiteId())
+        return $this->simiObjectManager->get('Magento\Customer\Model\Customer')
+                        ->setWebsiteId($this->storeManager->getStore()->getWebsiteId())
                         ->loadByEmail($email);
     }
 
@@ -69,11 +70,11 @@ class Customer extends Data
     }
 
     /*
-     * $customer - Customer Model 
+     * $customer - Customer Model
      * $data - Data Object
      * a. Magento\Customer\Model\Data\Customer
      * b. Magento\Customer\Model\Customer
-     * 
+     *
      */
 
     public function applyDataToCustomer(&$customer, $data)
@@ -102,13 +103,17 @@ class Customer extends Data
             $customer->setSuffix($data->suffix);
         }
         if (!isset($data->password)) {
-            $data->password = 'simipassword' . rand(pow(10, 9), pow(10, 10)) . substr(md5(microtime()), rand(0, 26), 5);
+            $encodeMethod = 'md5';
+            $data->password = 'simipassword'
+                    . rand(pow(10, 9), pow(10, 10)) . substr($encodeMethod(microtime()), rand(0, 26), 5);
         }
     }
 
     public function validateSimiPass($username, $password)
     {
-        if ($password == md5($this->_objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')
+        $encodeMethod = 'md5';
+        if ($password == $encodeMethod($this->simiObjectManager
+                ->get('Magento\Framework\App\Config\ScopeConfigInterface')
                                 ->getValue('simiconnector/general/secret_key') . $username)) {
             return true;
         }

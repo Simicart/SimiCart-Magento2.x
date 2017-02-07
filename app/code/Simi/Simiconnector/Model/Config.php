@@ -1,7 +1,9 @@
 <?php
+
 /**
  * Copyright © 2016 Simicommerce. All rights reserved.
  */
+
 namespace Simi\Simiconnector\Model;
 
 /**
@@ -13,31 +15,37 @@ class Config extends \Magento\Framework\DataObject
     /**
      * @var \Magento\Store\Model\StoreManagerInterface
      */
-    protected $_storeManager;
+    public $storeManager;
+
     /**
      * @var \Magento\Framework\App\Config\ScopeConfigInterface
      */
-    protected $_scopeConfig;
+    public $scopeConfig;
+
     /**
      * @var \Magento\Framework\App\Config\ValueInterface
      */
-    protected $_backendModel;
+    public $backendModel;
+
     /**
      * @var \Magento\Framework\DB\Transaction
      */
-    protected $_transaction;
+    public $transaction;
+
     /**
      * @var \Magento\Framework\App\Config\ValueFactory
      */
-    protected $_configValueFactory;
+    public $configValueFactory;
+
     /**
-     * @var int $_storeId
+     * @var int $storeId
      */
-    protected $_storeId;
+    public $storeId;
+
     /**
-     * @var string $_storeCode
+     * @var string $storeCode
      */
-    protected $_storeCode;
+    public $storeCode;
 
     /**
      * @param \Magento\Store\Model\StoreManagerInterface $storeManager,
@@ -55,25 +63,26 @@ class Config extends \Magento\Framework\DataObject
         \Magento\Framework\App\Config\ValueFactory $configValueFactory,
         array $data = []
     ) {
+   
         parent::__construct($data);
-        $this->_storeManager = $storeManager;
-        $this->_scopeConfig = $scopeConfig;
-        $this->_backendModel = $backendModel;
-        $this->_transaction = $transaction;
-        $this->_configValueFactory = $configValueFactory;
-        $this->_storeId=(int)$this->_storeManager->getStore()->getId();
-        $this->_storeCode=$this->_storeManager->getStore()->getCode();
+        $this->storeManager       = $storeManager;
+        $this->scopeConfig        = $scopeConfig;
+        $this->backendModel       = $backendModel;
+        $this->transaction        = $transaction;
+        $this->configValueFactory = $configValueFactory;
+        $this->storeId            = (int) $this->storeManager->getStore()->getId();
+        $this->storeCode          = $this->storeManager->getStore()->getCode();
     }
-    
+
     /**
      * Function for getting Config value of current store
      * @param string $path,
      */
     public function getCurrentStoreConfigValue($path)
     {
-        return $this->_scopeConfig->getValue($path, 'store', $this->_storeCode);
+        return $this->scopeConfig->getValue($path, 'store', $this->storeCode);
     }
-    
+
     /**
      * Function for setting Config value of current store
      * @param string $path,
@@ -82,15 +91,15 @@ class Config extends \Magento\Framework\DataObject
     public function setCurrentStoreConfigValue($path, $value)
     {
         $data = [
-                    'path' => $path,
-                    'scope' =>  'stores',
-                    'scope_id' => $this->_storeId,
-                    'scope_code' => $this->_storeCode,
-                    'value' => $value,
-                ];
+            'path'       => $path,
+            'scope'      => 'stores',
+            'scope_id'   => $this->storeId,
+            'scope_code' => $this->storeCode,
+            'value'      => $value,
+        ];
 
-        $this->_backendModel->addData($data);
-        $this->_transaction->addObject($this->_backendModel);
-        $this->_transaction->save();
+        $this->backendModel->addData($data);
+        $this->transaction->addObject($this->backendModel);
+        $this->transaction->save();
     }
 }

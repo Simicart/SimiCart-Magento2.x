@@ -1,4 +1,5 @@
 <?php
+
 namespace Simi\Simiconnector\Block\Adminhtml\Device;
 
 /**
@@ -7,12 +8,13 @@ namespace Simi\Simiconnector\Block\Adminhtml\Device;
  */
 class Edit extends \Magento\Backend\Block\Widget\Form\Container
 {
+
     /**
      * Core registry
      *
      * @var \Magento\Framework\Registry
      */
-    protected $_coreRegistry = null;
+    public $coreRegistry = null;
 
     /**
      * @param \Magento\Backend\Block\Widget\Context $context
@@ -24,8 +26,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         \Magento\Framework\Registry $registry,
         array $data = []
     ) {
-    
-        $this->_coreRegistry = $registry;
+        $this->coreRegistry = $registry;
         parent::__construct($context, $data);
     }
 
@@ -34,10 +35,10 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      *
      * @return void
      */
-    protected function _construct()
+    public function _construct()
     {
 
-        $this->_objectId = 'device_id';
+        $this->_objectId   = 'device_id';
         $this->_blockGroup = 'Simi_Simiconnector';
         $this->_controller = 'adminhtml_device';
 
@@ -60,8 +61,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      */
     public function getHeaderText()
     {
-        if ($this->_coreRegistry->registry('device')->getId()) {
-            return __("Edit Device '%1'", $this->escapeHtml($this->_coreRegistry->registry('device')->getId()));
+        if ($this->coreRegistry->registry('device')->getId()) {
+            return __("Edit Device '%1'", $this->escapeHtml($this->coreRegistry->registry('device')->getId()));
         } else {
             return __('New Device');
         }
@@ -73,10 +74,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      * @param string $resourceId
      * @return bool
      */
-    protected function _isAllowedAction($resourceId)
+    public function _isAllowedAction($resourceId)
     {
         return true;
-        //return $this->_authorization->isAllowed($resourceId);
     }
 
     /**
@@ -85,9 +85,10 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      *
      * @return string
      */
-    protected function _getSaveAndContinueUrl()
+    public function _getSaveAndContinueUrl()
     {
-        return $this->getUrl('simiconnector/*/save', ['_current' => true, 'back' => 'edit', 'active_tab' => '{{tab_id}}']);
+        return $this->getUrl('simiconnector/*/save', ['_current' => true,
+            'back' => 'edit', 'active_tab' => '{{tab_id}}']);
     }
 
     /**
@@ -95,7 +96,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      *
      * @return \Magento\Framework\View\Element\AbstractBlock
      */
-    protected function _prepareLayout()
+    public function _prepareLayout()
     {
         $this->_formScripts[] = "
             function toggleEditor() {

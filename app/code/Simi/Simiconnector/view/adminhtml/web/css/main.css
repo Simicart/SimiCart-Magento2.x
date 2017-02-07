@@ -28,5 +28,5 @@
 }
 
 #edit_form .mage-suggest:after{
-content: '\e013';
+    content: '\e013';
 }

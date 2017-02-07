@@ -2,39 +2,39 @@
 
 namespace Simi\Simiconnector\Controller\Adminhtml\Simibarcode;
 
-
 use Magento\Backend\App\Action\Context;
 use Magento\Ui\Component\MassAction\Filter;
 use Magento\Framework\Controller\ResultFactory;
 
 class MassDelete extends \Magento\Backend\App\Action
 {
+
     /**
      * @param Context $context
      * @param Filter $filter
      * @param CollectionFactory $collectionFactory
      */
-    
-    protected $_objectManager;
-    protected $filter;
-    
+    public $simiObjectManager;
+    public $filter;
+
     public function __construct(
         Context $context,
         Filter $filterObject
     ) {
-        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->filter = $filterObject;
+   
+        $this->simiObjectManager = $context->getObjectManager();
+        $this->filter            = $filterObject;
         parent::__construct($context);
     }
 
     public function execute()
     {
-        $barcodeIds = $this->getRequest()->getParam('massaction');
-        $collection = $this->_objectManager->get('Simi\Simiconnector\Model\Simibarcode')
-                ->getCollection()->addFieldToFilter('barcode_id', array('in', $barcodeIds));
+        $barcodeIds     = $this->getRequest()->getParam('massaction');
+        $collection     = $this->simiObjectManager->get('Simi\Simiconnector\Model\Simibarcode')
+                        ->getCollection()->addFieldToFilter('barcode_id', ['in', $barcodeIds]);
         $barcodeDeleted = 0;
         foreach ($collection->getItems() as $barcode) {
-            $barcode->delete();
+            $this->deleteCode($barcode);
             $barcodeDeleted++;
         }
         $this->messageManager->addSuccess(
@@ -42,5 +42,9 @@ class MassDelete extends \Magento\Backend\App\Action
         );
 
         return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/index');
+    }
+    private function deleteCode($codeModel)
+    {
+        $codeModel->delete();
     }
 }

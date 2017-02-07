@@ -9,23 +9,26 @@ namespace Simi\Simiconnector\Model\Api;
 class Homecategories extends Apiabstract
 {
 
-    protected $_DEFAULT_ORDER = 'sort_order';
-    protected $_visible_array;
+    public $DEFAULT_ORDER = 'sort_order';
+    public $visible_array;
 
     public function setSingularKey($singularKey)
     {
-        $this->singularKey = 'Homecategory';
+        if ($singularKey != 'Homecategory') {
+            $this->singularKey = 'Homecategory';
+        }
         return $this;
     }
 
     public function setBuilderQuery()
     {
         if ($this->getStoreConfig('simiconnector/general/categories_in_app')) {
-            $this->_visible_array = explode(',', $this->getStoreConfig('simiconnector/general/categories_in_app'));
+            $this->visible_array = explode(',', $this->getStoreConfig('simiconnector/general/categories_in_app'));
         }
         $data = $this->getData();
         if ($data['resourceid']) {
-            $this->builderQuery = $this->_objectManager->get('Simi\Simiconnector\Model\Simicategory')->load($data['resourceid']);
+            $this->builderQuery = $this->simiObjectManager
+                    ->get('Simi\Simiconnector\Model\Simicategory')->load($data['resourceid']);
         } else {
             $this->builderQuery = $this->getCollection();
         }
@@ -33,47 +36,54 @@ class Homecategories extends Apiabstract
 
     public function getCollection()
     {
-        $typeID = $this->_objectManager->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('homecategory');
-        $visibilityTable = $this->_resource->getTableName('simiconnector_visibility');
-        $simicategoryCollection = $this->_objectManager->get('Simi\Simiconnector\Model\Simicategory')->getCollection()->addFieldToFilter('status', '1');
-        $simicategoryCollection->getSelect()
-                ->join(['visibility' => $visibilityTable], 'visibility.item_id = main_table.simicategory_id AND visibility.content_type = ' . $typeID . ' AND visibility.store_view_id =' . $this->_storeManager->getStore()->getId());
-        $this->builderQuery = $simicategoryCollection;
+        $typeID                 = $this->simiObjectManager
+                ->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('homecategory');
+        $visibilityTable        = $this->resource->getTableName('simiconnector_visibility');
+        $simicategoryCollection = $this->simiObjectManager
+                ->get('Simi\Simiconnector\Model\Simicategory')->getCollection()->addFieldToFilter('status', '1')
+                ->applyAPICollectionFilter($visibilityTable, $typeID, $this->storeManager
+                        ->getStore()->getId());
+        $this->builderQuery     = $simicategoryCollection;
         return $simicategoryCollection;
     }
 
     public function index()
     {
         $result = parent::index();
-        $data = $this->getData();
+        $data   = $this->getData();
 
         foreach ($result['homecategories'] as $index => $item) {
             if (!$item['simicategory_filename_tablet']) {
                 $item['simicategory_filename_tablet'] = $item['simicategory_filename'];
             }
+            try {
+                $imagesize                     = getimagesize(BP . '/pub/media/' . $item['simicategory_filename']);
+                $item['width']                 = $imagesize[0];
+                $item['height']                = $imagesize[1];
+                $item['simicategory_filename'] = $this->getMediaUrl($item['simicategory_filename']);
 
-            $imagesize = @getimagesize(BP . '/pub/media/' . $item['simicategory_filename']);
-            $item['width'] = $imagesize[0];
-            $item['height'] = $imagesize[1];
-            $item['simicategory_filename'] = $this->getMediaUrl($item['simicategory_filename']);
-
-            if ($item['simicategory_filename_tablet']) {
-                $imagesize = @getimagesize(BP . '/pub/media/' . $item['simicategory_filename_tablet']);
-                $item['width_tablet'] = $imagesize[0];
-                $item['height_tablet'] = $imagesize[1];
-                $item['simicategory_filename_tablet'] = $this->getMediaUrl($item['simicategory_filename_tablet']);
+                if ($item['simicategory_filename_tablet']) {
+                    $imagesize                            = getimagesize(BP . '/pub/media/' .
+                            $item['simicategory_filename_tablet']);
+                    $item['width_tablet']                 = $imagesize[0];
+                    $item['height_tablet']                = $imagesize[1];
+                    $item['simicategory_filename_tablet'] = $this->getMediaUrl($item['simicategory_filename_tablet']);
+                }
+            } catch (\Exception $e) {
+                $item['function_warning'] = true;
             }
-            $categoryModel = $this->_objectManager->create('\Magento\Catalog\Model\Category')->load($item['category_id']);
+            $categoryModel    = $this->loadCategoryWithId($item['category_id']);
             $item['cat_name'] = $categoryModel->getName();
-            $childCollection = $this->getVisibleChildren($item['category_id']);
-            if ($childCollection->count() > 0) {
+            $childCollection  = $this->getVisibleChildren($item['category_id']);
+            if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countCollection($childCollection)) {
                 $item['has_children'] = true;
                 if ($data['params']['get_child_cat']) {
                     $childArray = [];
                     foreach ($childCollection as $childCat) {
-                        $childInfo = $childCat->toArray();
+                        $childInfo            = $childCat->toArray();
                         $grandchildCollection = $this->getVisibleChildren($childCat->getId());
-                        if ($grandchildCollection->count() > 0) {
+                        if ($this->simiObjectManager
+                                ->get('Simi\Simiconnector\Helper\Data')->countCollection($grandchildCollection) > 0) {
                             $childInfo['has_children'] = true;
                         } else {
                             $childInfo['has_children'] = false;
@@ -89,6 +99,13 @@ class Homecategories extends Apiabstract
         }
         return $result;
     }
+    
+    public function loadCategoryWithId($id)
+    {
+        $categoryModel    = $this->simiObjectManager
+                ->create('\Magento\Catalog\Model\Category')->load($id);
+        return $categoryModel;
+    }
 
     /*
      * @param Cat ID
@@ -97,14 +114,16 @@ class Homecategories extends Apiabstract
 
     public function getVisibleChildren($catId)
     {
-        $category = $this->_objectManager->create('\Magento\Catalog\Model\Category')->load($catId);
+        $category = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')->load($catId);
         if (is_array($category->getChildrenCategories())) {
             $childArray = $category->getChildrenCategories();
-            $idArray = [];
+            $idArray    = [];
             foreach ($childArray as $childArrayItem) {
                 $idArray[] = $childArrayItem->getId();
             }
-            return $this->_objectManager->create('\Magento\Catalog\Model\Category')->getCollection()->addAttributeToSelect('*')->addFieldToFilter('entity_id', ['in' => $idArray]);
+            return $this->simiObjectManager
+                    ->create('\Magento\Catalog\Model\Category')->getCollection()
+                    ->addAttributeToSelect('*')->addFieldToFilter('entity_id', ['in' => $idArray]);
         }
 
         return $category->getChildrenCategories()->addAttributeToSelect('*');

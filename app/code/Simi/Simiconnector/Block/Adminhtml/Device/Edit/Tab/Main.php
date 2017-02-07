@@ -1,4 +1,5 @@
 <?php
+
 namespace Simi\Simiconnector\Block\Adminhtml\Device\Edit\Tab;
 
 /**
@@ -6,36 +7,36 @@ namespace Simi\Simiconnector\Block\Adminhtml\Device\Edit\Tab;
  */
 class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magento\Backend\Block\Widget\Tab\TabInterface
 {
+
     /**
      * @var \Magento\Store\Model\System\Store
      */
-    protected $_systemStore;
+    public $systemStore;
 
     /**
      * @var \Simi\Simiconnector\Helper\Website
-     **/
-    protected $_websiteHelper;
+     * */
+    public $websiteHelper;
 
     /**
      * @var \Simi\Simiconnector\Model\Device
      */
-    protected $_deviceFactory;
+    public $deviceFactory;
 
     /**
      * @var \Simi\Simiconnector\Model\Banner
      */
-    protected $_bannerFactory;
-
+    public $bannerFactory;
 
     /**
      * @var \Magento\Framework\Json\EncoderInterface
      */
-    protected $_jsonEncoder;
+    public $jsonEncoder;
 
     /**
      * @var \Magento\Catalog\Model\CategoryFactory
      */
-    protected $_categoryFactory;
+    public $categoryFactory;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
@@ -56,12 +57,13 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         array $data = []
     ) {
-        $this->_deviceFactory = $deviceFactory;
-        $this->_bannerFactory = $bannerFactory;
-        $this->_websiteHelper = $websiteHelper;
-        $this->_systemStore = $systemStore;
-        $this->_jsonEncoder = $jsonEncoder;
-        $this->_categoryFactory = $categoryFactory;
+   
+        $this->deviceFactory  = $deviceFactory;
+        $this->bannerFactory   = $bannerFactory;
+        $this->websiteHelper   = $websiteHelper;
+        $this->systemStore     = $systemStore;
+        $this->jsonEncoder     = $jsonEncoder;
+        $this->categoryFactory = $categoryFactory;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
@@ -70,9 +72,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return $this
      */
-    protected function _prepareForm()
+    public function _prepareForm()
     {
-        /* @var $model \Magento\Cms\Model\Page */
+        
         $model = $this->_coreRegistry->registry('device');
 
         /*
@@ -96,101 +98,100 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'storeview_id',
             'select',
             [
-                'name' => 'storeview_id',
-                'label' => __('Store View'),
-                'title' => __('Store View'),
-                'required' => false,
-                'disabled' => $isElementDisabled,
-                'options' => $this->_deviceFactory->create()->toOptionStoreviewHash(),
-            ]
+            'name'     => 'storeview_id',
+            'label'    => __('Store View'),
+            'title'    => __('Store View'),
+            'required' => false,
+            'disabled' => $isElementDisabled,
+            'options'  => $this->deviceFactory->create()->toOptionStoreviewHash(),
+                ]
         );
 
         $fieldset->addField(
             'plaform_id',
             'select',
             [
-                'name' => 'plaform_id',
-                'label' => __('Device Type'),
-                'title' => __('Device Type'),
-                'required' => false,
-                'disabled' => $isElementDisabled,
-                'options' => $this->_deviceFactory->create()->toOptionDeviceHash(),
-            ]
+            'name'     => 'plaform_id',
+            'label'    => __('Device Type'),
+            'title'    => __('Device Type'),
+            'required' => false,
+            'disabled' => $isElementDisabled,
+            'options'  => $this->deviceFactory->create()->toOptionDeviceHash(),
+                ]
         );
 
         $fieldset->addField(
             'country',
             'label',
             [
-                'name' => 'country',
-                'label' => __('Country'),
-                'title' => __('Country'),
-                'required' => false,
-                'disabled' => $isElementDisabled,
-            ]
+            'name'     => 'country',
+            'label'    => __('Country'),
+            'title'    => __('Country'),
+            'required' => false,
+            'disabled' => $isElementDisabled,
+                ]
         );
 
         $fieldset->addField(
             'state',
             'label',
             [
-                'name' => 'state',
-                'label' => __('State/Province'),
-                'title' => __('State/Province'),
-                'required' => false,
-                'disabled' => $isElementDisabled,
-            ]
+            'name'     => 'state',
+            'label'    => __('State/Province'),
+            'title'    => __('State/Province'),
+            'required' => false,
+            'disabled' => $isElementDisabled,
+                ]
         );
 
         $fieldset->addField(
             'city',
             'label',
             [
-                'name' => 'city',
-                'label' => __('City'),
-                'title' => __('City'),
-                'required' => false,
-                'disabled' => $isElementDisabled,
-            ]
+            'name'     => 'city',
+            'label'    => __('City'),
+            'title'    => __('City'),
+            'required' => false,
+            'disabled' => $isElementDisabled,
+                ]
         );
 
         $fieldset->addField(
             'device_token',
             'label',
             [
-                'name' => 'device_token',
-                'label' => __('Device Token'),
-                'title' => __('Device Token'),
-                'required' => false,
-                'disabled' => $isElementDisabled,
-            ]
+            'name'     => 'device_token',
+            'label'    => __('Device Token'),
+            'title'    => __('Device Token'),
+            'required' => false,
+            'disabled' => $isElementDisabled,
+                ]
         );
 
         $fieldset->addField(
             'is_demo',
             'select',
             [
-                'name' => 'is_demo',
-                'label' => __('Is Demo'),
-                'title' => __('Is Demo'),
-                'required' => false,
-                'disabled' => $isElementDisabled,
-                'options' => $this->_deviceFactory->create()->toOptionDemoHash(),
-            ]
+            'name'     => 'is_demo',
+            'label'    => __('Is Demo'),
+            'title'    => __('Is Demo'),
+            'required' => false,
+            'disabled' => $isElementDisabled,
+            'options'  => $this->deviceFactory->create()->toOptionDemoHash(),
+                ]
         );
 
         $fieldset->addField(
             'created_time',
             'label',
             [
-                'name' => 'created_time',
-                'label' => __('Created Date'),
-                'title' => __('Created Date'),
-                'required' => false,
-                'disabled' => $isElementDisabled,
-            ]
+            'name'     => 'created_time',
+            'label'    => __('Created Date'),
+            'title'    => __('Created Date'),
+            'required' => false,
+            'disabled' => $isElementDisabled,
+                ]
         );
-
 
         $this->_eventManager->dispatch('adminhtml_device_edit_tab_main_prepare_form', ['form' => $form]);
 
@@ -205,10 +206,10 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return array
      */
-    protected function _getParentCategoryOptions($category_id)
+    public function _getParentCategoryOptions($category_id)
     {
 
-        $items = $this->_categoryFactory->create()->getCollection()->addAttributeToSelect(
+        $items = $this->categoryFactory->create()->getCollection()->addAttributeToSelect(
             'name'
         )->addAttributeToSort(
             'entity_id',
@@ -219,13 +220,13 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         $result = [];
         if (count($items) === 2) {
-            $item = array_pop($items);
+            $item   = array_pop($items);
             $result = [$item->getEntityId() => $item->getName()];
         }
 
-        if (count($result) == 0 && $category_id) {
-            $category = $this->_categoryFactory->create()->load($category_id);
-            $result = [$category_id => $category->getName()];
+        if (empty($result) && $category_id) {
+            $category = $this->categoryFactory->create()->load($category_id);
+            $result   = [$category_id => $category->getName()];
         }
 
         return $result;
@@ -273,9 +274,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @param string $resourceId
      * @return bool
      */
-    protected function _isAllowedAction($resourceId)
+    public function _isAllowedAction($resourceId)
     {
         return true;
-        //return $this->_authorization->isAllowed($resourceId);
     }
 }

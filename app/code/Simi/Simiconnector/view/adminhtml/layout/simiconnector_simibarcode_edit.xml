@@ -10,7 +10,7 @@
             <block class="Simi\Simiconnector\Block\Adminhtml\Simibarcode\Edit" name="banner.edit"/>
         </referenceContainer>
         <referenceContainer name="left">
-            <block class="Simi\Simiconnector\Block\Adminhtml\Simibarcode\Edit\Tabs" name="simibarcode_edit_tabs">                
+            <block class="Simi\Simiconnector\Block\Adminhtml\Simibarcode\Edit\Tabs" name="simibarcode_edit_tabs">               
             </block>
         </referenceContainer>
 

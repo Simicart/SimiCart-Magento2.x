@@ -1,8 +1,10 @@
 <?php
+
 /**
  *
  * Copyright © 2016 Simicommerce. All rights reserved.
  */
+
 namespace Simi\Simiconnector\Controller\Rest;
 
 class V2 extends Action
@@ -11,44 +13,23 @@ class V2 extends Action
     /**
      * @var \Magento\Framework\App\Cache\TypeListInterface
      */
-    protected $_cacheTypeList;
+    public $cacheTypeList;
 
     /**
      * @var \Magento\Framework\App\Cache\StateInterface
      */
-    protected $_cacheState;
+    public $cacheState;
 
     /**
      * @var \Magento\Framework\App\Cache\Frontend\Pool
      */
-    protected $_cacheFrontendPool;
+    public $cacheFrontendPool;
 
     /**
      * @var \Magento\Framework\View\Result\PageFactory
      */
-    protected $resultPageFactory;
+    public $resultPageFactory;
 
-    /**
-     * @param Action\Context $context
-     * @param \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList
-     * @param \Magento\Framework\App\Cache\StateInterface $cacheState
-     * @param \Magento\Framework\App\Cache\Frontend\Pool $cacheFrontendPool
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
-     */
-    public function __construct(
-        \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList,
-        \Magento\Framework\App\Cache\StateInterface $cacheState,
-        \Magento\Framework\App\Cache\Frontend\Pool $cacheFrontendPool,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory
-    ) {
-        parent::__construct($context);
-        $this->_cacheTypeList = $cacheTypeList;
-        $this->_cacheState = $cacheState;
-        $this->_cacheFrontendPool = $cacheFrontendPool;
-        $this->resultPageFactory = $resultPageFactory;
-    }
-    
     /**
      * Flush cache storage
      *
@@ -59,22 +40,22 @@ class V2 extends Action
         ob_start();
         try {
             $result = $this->_getServer()
-                ->init($this)->run();
+                            ->init($this)->run();
             $this->_printData($result);
         } catch (\Exception $e) {
             $results = [];
-            $result = [];
+            $result  = [];
             if (is_array($e->getMessage())) {
                 $messages = $e->getMessage();
                 foreach ($messages as $message) {
                     $result[] = [
-                        'code' => $e->getCode(),
+                        'code'    => $e->getCode(),
                         'message' => $message,
                     ];
                 }
             } else {
                 $result[] = [
-                    'code' => $e->getCode(),
+                    'code'    => $e->getCode(),
                     'message' => $e->getMessage(),
                 ];
             }
@@ -82,5 +63,36 @@ class V2 extends Action
             $this->_printData($results);
         }
         ob_end_flush();
+    }
+    
+    private function _getServer()
+    {
+        $serverModel               = $this->simiObjectManager->get('Simi\Simiconnector\Model\Server');
+        $serverModel->eventManager = $this->_eventManager;
+        return $serverModel;
+    }
+
+    private function _printData($result)
+    {
+        try {
+            $this->getResponse()->setHeader('Content-Type', 'application/json');
+            $this->setData($result);
+            $this->_eventManager
+                    ->dispatch($this->getRequest()->getFullActionName(), ['object' => $this, 'data' => $result]);
+            $this->data = $this->getData();
+            return $this->getResponse()->setBody(json_encode($this->data));
+        } catch (\Exception $e) {
+            return;
+        }
+    }
+    
+    private function getData()
+    {
+        return $this->data;
+    }
+
+    private function setData($data)
+    {
+        $this->data = $data;
     }
 }

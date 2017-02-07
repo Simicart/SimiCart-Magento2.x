@@ -8,32 +8,33 @@ use Magento\Framework\Controller\ResultFactory;
 
 class MassDelete extends \Magento\Backend\App\Action
 {
+
     /**
      * @param Context $context
      * @param Filter $filter
      * @param CollectionFactory $collectionFactory
      */
-    
-    protected $_objectManager;
-    protected $filter;
-    
+    public $simiObjectManager;
+    public $filter;
+
     public function __construct(
         Context $context,
         Filter $filterObject
     ) {
-        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->filter = $filterObject;
+   
+        $this->simiObjectManager = $context->getObjectManager();
+        $this->filter            = $filterObject;
         parent::__construct($context);
     }
 
     public function execute()
     {
-        $deviceIds = $this->getRequest()->getParam('massaction');
-        $collection = $this->_objectManager->get('Simi\Simiconnector\Model\Device')
-                ->getCollection()->addFieldToFilter('device_id', ['in', $deviceIds]);
+        $deviceIds     = $this->getRequest()->getParam('massaction');
+        $collection    = $this->simiObjectManager->get('Simi\Simiconnector\Model\Device')
+                        ->getCollection()->addFieldToFilter('device_id', ['in', $deviceIds]);
         $deviceDeleted = 0;
         foreach ($collection->getItems() as $device) {
-            $device->delete();
+            $this->deleteDevice($device);
             $deviceDeleted++;
         }
         $this->messageManager->addSuccess(
@@ -41,5 +42,10 @@ class MassDelete extends \Magento\Backend\App\Action
         );
 
         return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/index');
+    }
+    
+    private function deleteDevice($deviceModel)
+    {
+        $deviceModel->delete();
     }
 }

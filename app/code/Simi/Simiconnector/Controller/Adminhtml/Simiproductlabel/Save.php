@@ -4,58 +4,33 @@ namespace Simi\Simiconnector\Controller\Adminhtml\Simiproductlabel;
 
 use Magento\Backend\App\Action;
 
-class Save extends \Magento\Backend\App\Action {
-
-    /**
-     * @var PostDataProcessor
-     */
-    protected $dataProcessor;
-
-    /**
-     * @param Action\Context $context
-     * @param PostDataProcessor $dataProcessor
-     */
-    public function __construct(Action\Context $context, PostDataProcessor $dataProcessor) {
-        $this->dataProcessor = $dataProcessor;
-        parent::__construct($context);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function _isAllowed() {
-        return true;
-    }
-
+class Save extends \Magento\Backend\App\Action
+{
     /**
      * Save action
      *
      * @return void
      */
-    public function execute() {
+    public function execute()
+    {
         $data = $this->getRequest()->getPostValue();
         if ($data) {
-            $data = $this->dataProcessor->filter($data);
-            $model = $this->_objectManager->create('Simi\Simiconnector\Model\Simiproductlabel');
+            $simiObjectManager = $this->_objectManager;
+            $model = $simiObjectManager->create('Simi\Simiconnector\Model\Simiproductlabel');
 
             $id = $this->getRequest()->getParam('label_id');
             if ($id) {
                 $model->load($id);
             }
-            
+
             $is_delete_productlabel = isset($data['image']['delete']) ? $data['image']['delete'] : false;
-            $data['image'] = isset($data['image']['value']) ? $data['image']['value'] : '';
+            $data['image']          = isset($data['image']['value']) ? $data['image']['value'] : '';
 
             $model->addData($data);
-            $model->setData('name',$data['label_name']);
-
-            if (!$this->dataProcessor->validate($data)) {
-                $this->_redirect('*/*/edit', ['label_id' => $model->getId(), '_current' => true]);
-                return;
-            }
+            $model->setData('name', $data['label_name']);
 
             try {
-                $imageHelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');
+                $imageHelper = $simiObjectManager->get('Simi\Simiconnector\Helper\Data');
                 if ($is_delete_productlabel && $model->getImage()) {
                     $model->setListImage('');
                 } else {
@@ -66,7 +41,7 @@ class Save extends \Magento\Backend\App\Action {
                 }
                 $model->save();
                 $this->messageManager->addSuccess(__('The Data has been saved.'));
-                $this->_objectManager->get('Magento\Backend\Model\Session')->setFormData(false);
+                $simiObjectManager->get('Magento\Backend\Model\Session')->setFormData(false);
                 if ($this->getRequest()->getParam('back')) {
                     $this->_redirect('*/*/edit', ['label_id' => $model->getId(), '_current' => true]);
                     return;
@@ -87,5 +62,4 @@ class Save extends \Magento\Backend\App\Action {
         }
         $this->_redirect('*/*/');
     }
-
 }

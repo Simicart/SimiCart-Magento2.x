@@ -12,8 +12,8 @@ class History extends \Magento\Framework\Model\AbstractModel
 {
     /**
      * @var \Simi\Simiconnector\Helper\Website
-     **/
-    protected $_websiteHelper;
+     * */
+    public $websiteHelper;
 
     /**
      * @param \Magento\Framework\Model\Context $context
@@ -34,8 +34,7 @@ class History extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\History\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
     ) {
-
-        $this->_websiteHelper = $websiteHelper;
+        $this->websiteHelper = $websiteHelper;
 
         parent::__construct(
             $context,
@@ -50,7 +49,7 @@ class History extends \Magento\Framework\Model\AbstractModel
      *
      * @return void
      */
-    protected function _construct()
+    public function _construct()
     {
         $this->_init('Simi\Simiconnector\Model\ResourceModel\History');
     }
@@ -99,10 +98,10 @@ class History extends \Magento\Framework\Model\AbstractModel
      */
     public function toOptionWebsiteHash()
     {
-        $website_collection = $this->_websiteHelper->getWebsiteCollection();
-        $list = [];
-        $list[0] = __('All');
-        if (sizeof($website_collection) > 0) {
+        $website_collection = $this->websiteHelper->getWebsiteCollection();
+        $list               = [];
+        $list[0]            = __('All');
+        if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($website_collection) > 0) {
             foreach ($website_collection as $website) {
                 $list[$website->getId()] = $website->getName();
             }

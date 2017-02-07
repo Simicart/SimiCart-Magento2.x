@@ -1,4 +1,5 @@
 <?php
+
 namespace Simi\Simiconnector\Block\Adminhtml\Cms;
 
 /**
@@ -7,12 +8,13 @@ namespace Simi\Simiconnector\Block\Adminhtml\Cms;
  */
 class Edit extends \Magento\Backend\Block\Widget\Form\Container
 {
+
     /**
      * Core registry
      *
      * @var \Magento\Framework\Registry
      */
-    protected $_coreRegistry = null;
+    public $coreRegistry = null;
 
     /**
      * @param \Magento\Backend\Block\Widget\Context $context
@@ -24,7 +26,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         \Magento\Framework\Registry $registry,
         array $data = []
     ) {
-        $this->_coreRegistry = $registry;
+   
+        $this->coreRegistry = $registry;
         parent::__construct($context, $data);
     }
 
@@ -33,10 +36,10 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      *
      * @return void
      */
-    protected function _construct()
+    public function _construct()
     {
 
-        $this->_objectId = 'cms_id';
+        $this->_objectId   = 'cms_id';
         $this->_blockGroup = 'Simi_Simiconnector';
         $this->_controller = 'adminhtml_cms';
 
@@ -47,14 +50,14 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
             $this->buttonList->add(
                 'saveandcontinue',
                 [
-                    'label' => __('Save and Continue Edit'),
-                    'class' => 'save',
-                    'data_attribute' => [
-                        'mage-init' => [
-                            'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
-                        ],
-                    ]
-                ],
+                'label'          => __('Save and Continue Edit'),
+                'class'          => 'save',
+                'data_attribute' => [
+                    'mage-init' => [
+                        'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
+                    ],
+                ]
+                    ],
                 -100
             );
         } else {
@@ -75,8 +78,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      */
     public function getHeaderText()
     {
-        if ($this->_coreRegistry->registry('cms')->getId()) {
-            return __("Edit Cms '%1'", $this->escapeHtml($this->_coreRegistry->registry('cms')->getId()));
+        if ($this->coreRegistry->registry('cms')->getId()) {
+            return __("Edit Cms '%1'", $this->escapeHtml($this->coreRegistry->registry('cms')->getId()));
         } else {
             return __('New Cms');
         }
@@ -88,7 +91,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      * @param string $resourceId
      * @return bool
      */
-    protected function _isAllowedAction($resourceId)
+    public function _isAllowedAction($resourceId)
     {
         return true;
     }
@@ -99,13 +102,13 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      *
      * @return string
      */
-    protected function _getSaveAndContinueUrl()
+    public function _getSaveAndContinueUrl()
     {
         return $this->getUrl(
             'simiconnector/*/save',
-            ['_current' => true,
-                    'back' => 'edit',
-                    'active_tab' =>'{{tab_id}}']
+            ['_current'   => true,
+                    'back'       => 'edit',
+                    'active_tab' => '{{tab_id}}']
         );
     }
 
@@ -114,7 +117,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      *
      * @return \Magento\Framework\View\Element\AbstractBlock
      */
-    protected function _prepareLayout()
+    public function _prepareLayout()
     {
         $this->_formScripts[] = "
             function toggleEditor() {
@@ -124,15 +127,15 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                     tinyMCE.execCommand('mceRemoveControl', false, 'page_content');
                 }
             };
-            
+           
             document.addEventListener('DOMContentLoaded', function(){
                 toogleType();
             }, false);
-            
+           
             function toogleType(){
-            
-                if(type.value == 2){                    
-                    document.querySelectorAll('.field-cms_image')[0].style.display = 'none';           
+           
+                if(type.value == 2){                   
+                    document.querySelectorAll('.field-cms_image')[0].style.display = 'none';          
                     document.querySelectorAll('.field-new_category_parent')[0].style.display = 'block';
                     document.querySelectorAll('#new_category_parent')[0].classList.add('required-entry');
                 } else {
@@ -143,7 +146,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                     document.querySelectorAll('.field-cms_image')[0].style.display = 'block';
                 }
             };
-            
+           
         ";
         return parent::_prepareLayout();
     }

@@ -3,27 +3,28 @@
 /**
  * Shipping helper
  */
+
 namespace Simi\Simiconnector\Helper\Checkout;
 
 class Shipping extends \Simi\Simiconnector\Helper\Data
 {
-    
-    protected function _getCheckoutSession()
+
+    public function _getCheckoutSession()
     {
-        return $this->_objectManager->create('Magento\Checkout\Model\Session');
+        return $this->simiObjectManager->create('Magento\Checkout\Model\Session');
     }
 
     public function _getOnepage()
     {
-        return $this->_objectManager->create('Magento\Checkout\Model\Type\Onepage');
+        return $this->simiObjectManager->create('Magento\Checkout\Model\Type\Onepage');
     }
-    
-    protected function _getCart()
+
+    public function _getCart()
     {
-        return $this->_objectManager->create('Magento\Checkout\Model\Cart');
+        return $this->simiObjectManager->create('Magento\Checkout\Model\Cart');
     }
-    
-    protected function _getQuote()
+
+    public function _getQuote()
     {
         return $this->_getCart()->getQuote();
     }
@@ -33,15 +34,15 @@ class Shipping extends \Simi\Simiconnector\Helper\Data
         if (!isset($method_code->method)) {
             return;
         }
-        $method = $method_code->method;
+        $method        = $method_code->method;
         $cartExtension = $this->_getQuote()->getExtensionAttributes();
         if ($cartExtension === null) {
-            $cartExtension = $this->_objectManager->create('Magento\Quote\Api\Data\CartExtension');
+            $cartExtension = $this->simiObjectManager->create('Magento\Quote\Api\Data\CartExtension');
         }
 
         $shippingAssignments = $cartExtension->getShippingAssignments();
         if (empty($shippingAssignments)) {
-            $shippingAssignment = $this->_objectManager->create('Magento\Quote\Model\ShippingAssignmentFactory');
+            $shippingAssignment = $this->simiObjectManager->create('Magento\Quote\Model\ShippingAssignmentFactory');
         } else {
             $shippingAssignment = $shippingAssignments[0];
         }
@@ -53,9 +54,9 @@ class Shipping extends \Simi\Simiconnector\Helper\Data
         $shipping->setMethod($method);
         $shippingAssignment->setShipping($shipping);
         $cartExtension->setShippingAssignments([$shippingAssignment]);
-        $quote =  $this->_getQuote()->setExtensionAttributes($cartExtension);
-        
-        $this->_objectManager->create('Magento\Quote\Api\CartRepositoryInterface')->save($quote);
+        $quote = $this->_getQuote()->setExtensionAttributes($cartExtension);
+
+        $this->simiObjectManager->create('Magento\Quote\Api\CartRepositoryInterface')->save($quote);
     }
 
     public function getAddress()
@@ -65,14 +66,16 @@ class Shipping extends \Simi\Simiconnector\Helper\Data
 
     public function getShippingPrice($price, $flag)
     {
-        return $this->_objectManager->get('Simi\Simiconnector\Helper\Price')->convertPrice($this->_objectManager->create('Magento\Tax\Helper\Data')->getShippingPrice($price, $flag, $this->getAddress()), false);
+        return $this->simiObjectManager->get('Simi\Simiconnector\Helper\Price')
+                ->convertPrice($this->simiObjectManager->create('Magento\Tax\Helper\Data')
+                        ->getShippingPrice($price, $flag, $this->getAddress()), false);
     }
 
     public function getMethods()
     {
         $shipping = $this->_getCheckoutSession()->getQuote()->getShippingAddress();
         $shipping->collectShippingRates();
-        $methods = $shipping->getGroupedAllShippingRates();
+        $methods  = $shipping->getGroupedAllShippingRates();
 
         $list = [];
         foreach ($methods as $_ccode => $_carrier) {
@@ -85,31 +88,33 @@ class Shipping extends \Simi\Simiconnector\Helper\Data
                     $select = true;
                 }
 
-                $s_fee = $this->getShippingPrice($_rate->getPrice(), $this->_objectManager->create('Magento\Tax\Helper\Data')->displayShippingPriceIncludingTax());
+                $s_fee      = $this->getShippingPrice($_rate->getPrice(), $this->simiObjectManager
+                        ->create('Magento\Tax\Helper\Data')->displayShippingPriceIncludingTax());
                 $s_fee_incl = $this->getShippingPrice($_rate->getPrice(), true);
-                
-                if ($this->_objectManager->create('Magento\Tax\Helper\Data')->displayShippingBothPrices() && $s_fee != $s_fee_incl) {
+
+                if ($this->simiObjectManager->create('Magento\Tax\Helper\Data')
+                        ->displayShippingBothPrices() && $s_fee != $s_fee_incl) {
                     $list[] = [
-                        's_method_id' => $_rate->getId(),
-                        's_method_code' => $_rate->getCode(),
-                        's_method_title' => $_rate->getCarrierTitle(),
-                        's_method_fee' => $s_fee,
+                        's_method_id'           => $_rate->getId(),
+                        's_method_code'         => $_rate->getCode(),
+                        's_method_title'        => $_rate->getCarrierTitle(),
+                        's_method_fee'          => $s_fee,
                         's_method_fee_incl_tax' => $s_fee_incl,
-                        's_method_name' => $_rate->getMethodTitle(),
-                        's_method_selected' => $select,
-                        's_carrier_code'=> $_rate->getCarrier(),
-                        's_carrier_title'=> $_rate->getCarrierTitle(),
+                        's_method_name'         => $_rate->getMethodTitle(),
+                        's_method_selected'     => $select,
+                        's_carrier_code'        => $_rate->getCarrier(),
+                        's_carrier_title'       => $_rate->getCarrierTitle(),
                     ];
                 } else {
                     $list[] = [
-                        's_method_id' => $_rate->getId(),
-                        's_method_code' => $_rate->getCode(),
-                        's_method_title' => $_rate->getCarrierTitle(),
-                        's_method_fee' => $s_fee,
-                        's_method_name' => $_rate->getMethodTitle(),
+                        's_method_id'       => $_rate->getId(),
+                        's_method_code'     => $_rate->getCode(),
+                        's_method_title'    => $_rate->getCarrierTitle(),
+                        's_method_fee'      => $s_fee,
+                        's_method_name'     => $_rate->getMethodTitle(),
                         's_method_selected' => $select,
-                        's_carrier_code'=> $_rate->getCarrier(),
-                        's_carrier_title'=> $_rate->getCarrierTitle(),
+                        's_carrier_code'    => $_rate->getCarrier(),
+                        's_carrier_title'   => $_rate->getCarrierTitle(),
                     ];
                 }
             }

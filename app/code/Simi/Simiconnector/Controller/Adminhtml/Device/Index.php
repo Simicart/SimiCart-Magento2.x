@@ -7,10 +7,11 @@ use Magento\Framework\View\Result\PageFactory;
 
 class Index extends \Magento\Backend\App\Action
 {
+
     /**
      * @var PageFactory
      */
-    protected $resultPageFactory;
+    public $resultPageFactory;
 
     /**
      * @param Context $context
@@ -20,19 +21,9 @@ class Index extends \Magento\Backend\App\Action
         Context $context,
         PageFactory $resultPageFactory
     ) {
+   
         parent::__construct($context);
         $this->resultPageFactory = $resultPageFactory;
-    }
-    
-    /**
-     * Check the permission to run it
-     *
-     * @return bool
-     */
-    protected function _isAllowed()
-    {
-        return true;
-        //return $this->_authorization->isAllowed('Simi_Simiconnector::device_save');
     }
 
     /**

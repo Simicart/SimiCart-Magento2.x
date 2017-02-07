@@ -4,6 +4,7 @@ namespace Simi\Simiconnector\Controller\Adminhtml\Simibarcode;
 
 class Grid extends \Magento\Customer\Controller\Adminhtml\Index
 {
+
     /**
      * Customer grid action
      *

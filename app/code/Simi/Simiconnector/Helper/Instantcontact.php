@@ -3,28 +3,27 @@
 /**
  * Connector data helper
  */
+
 namespace Simi\Simiconnector\Helper;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 
 class Instantcontact extends \Simi\Simiconnector\Helper\Data
 {
-    
-    
+
     public function getConfig($value)
     {
         return $this->getStoreConfig("simiconnector/instant_contact/" . $value);
     }
-    
-    
+
     public function getStoreConfig($path)
     {
-        return $this->_scopeConfig->getValue($path);
+        return $this->scopeConfig->getValue($path);
     }
-    
+
     public function isEnabled()
     {
-        if ($this->getConfig('enable')==1) {
+        if ($this->getConfig('enable') == 1) {
             return true;
         }
         return false;
@@ -33,11 +32,11 @@ class Instantcontact extends \Simi\Simiconnector\Helper\Data
     public function getContacts()
     {
         $data = [
-            'email' => $this->_getEmails(),
-            'phone' => $this->_getPhoneNumbers(),
-            'message' => $this->_getMessageNumbers(),
-            'website' => $this->getConfig("website"),
-            'style' => $this->getConfig("style"),
+            'email'       => $this->_getEmails(),
+            'phone'       => $this->_getPhoneNumbers(),
+            'message'     => $this->_getMessageNumbers(),
+            'website'     => $this->getConfig("website"),
+            'style'       => $this->getConfig("style"),
             'activecolor' => $this->getConfig("icon_color")
         ];
 
@@ -49,7 +48,6 @@ class Instantcontact extends \Simi\Simiconnector\Helper\Data
         return explode(",", str_replace(' ', '', $this->getConfig("phone")));
     }
 
-   
     public function _getMessageNumbers()
     {
         return explode(",", str_replace(' ', '', $this->getConfig("message")));

@@ -8,13 +8,14 @@ namespace Simi\Simiconnector\Model;
  * @method \Simi\Simiconnector\Model\Resource\Page _getResource()
  * @method \Simi\Simiconnector\Model\Resource\Page getResource()
  */
-class Simiproductlabel extends \Magento\Framework\Model\AbstractModel {
+class Simiproductlabel extends \Magento\Framework\Model\AbstractModel
+{
 
     /**
      * @var \Simi\Simiconnector\Helper\Website
      * */
-    protected $_websiteHelper;
-    protected $_objectManager;
+    public $websiteHelper;
+    public $simiObjectManager;
 
     /**
      * @param \Magento\Framework\Model\Context $context
@@ -29,13 +30,19 @@ class Simiproductlabel extends \Magento\Framework\Model\AbstractModel {
      * @param ResourceModel\Key\CollectionFactory $keyCollection
      */
     public function __construct(
-    \Magento\Framework\Model\Context $context, \Magento\Framework\Registry $registry, \Simi\Simiconnector\Model\ResourceModel\Simiproductlabel $resource, \Simi\Simiconnector\Model\ResourceModel\Simiproductlabel\Collection $resourceCollection, \Simi\Simiconnector\Helper\Website $websiteHelper
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \Simi\Simiconnector\Model\ResourceModel\Simiproductlabel $resource,
+        \Simi\Simiconnector\Model\ResourceModel\Simiproductlabel\Collection $resourceCollection,
+        \Simi\Simiconnector\Helper\Website $websiteHelper
     ) {
-
-        $this->_websiteHelper = $websiteHelper;
+        $this->websiteHelper = $websiteHelper;
 
         parent::__construct(
-                $context, $registry, $resource, $resourceCollection
+            $context,
+            $registry,
+            $resource,
+            $resourceCollection
         );
     }
 
@@ -44,19 +51,20 @@ class Simiproductlabel extends \Magento\Framework\Model\AbstractModel {
      *
      * @return void
      */
-    protected function _construct() {
+    public function _construct()
+    {
         $this->_init('Simi\Simiconnector\Model\ResourceModel\Simiproductlabel');
     }
 
     /**
      * @return array Status
      */
-    public function toOptionStatusHash() {
-        $status = array(
+    public function toOptionStatusHash()
+    {
+        $status = [
             '1' => __('Enable'),
             '2' => __('Disabled'),
-        );
+        ];
         return $status;
     }
-
 }

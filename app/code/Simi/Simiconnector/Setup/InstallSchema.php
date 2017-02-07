@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © 2016 Simi. All rights reserved.
  */
@@ -14,22 +15,23 @@ use Magento\Framework\Setup\SchemaSetupInterface;
  */
 class InstallSchema implements InstallSchemaInterface
 {
+
     /**
      * {@inheritdoc}
      */
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
-    
+        $installer = $context;
         $installer = $setup;
         $installer->startSetup();
 
-        
         /**
          * Creating table simicategory
          */
         $table_key_name = $installer->getTable('simiconnector_simicategory');
         if ($installer->getConnection()->isTableExists($table_key_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_simicategory'));
+            $installer->getConnection()
+                    ->dropTable($installer->getConnection()->getTableName('simiconnector_simicategory'));
         }
         $table_key = $installer->getConnection()->newTable(
             $table_key_name
@@ -272,7 +274,8 @@ class InstallSchema implements InstallSchemaInterface
          */
         $table_key_name = $installer->getTable('simiconnector_product_list');
         if ($installer->getConnection()->isTableExists($table_key_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_product_list'));
+            $installer->getConnection()
+                    ->dropTable($installer->getConnection()->getTableName('simiconnector_product_list'));
         }
         $table_key = $installer->getConnection()->newTable(
             $table_key_name
@@ -358,13 +361,13 @@ class InstallSchema implements InstallSchemaInterface
         $installer->getConnection()->createTable($table_key);
         // end create table simiconnector_product_list
 
-        
         /**
          * Creating table simiconnector_visibility
          */
         $table_key_name = $installer->getTable('simiconnector_visibility');
         if ($installer->getConnection()->isTableExists($table_key_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_visibility'));
+            $installer->getConnection()
+                    ->dropTable($installer->getConnection()->getTableName('simiconnector_visibility'));
         }
         $table_key = $installer->getConnection()->newTable(
             $table_key_name
@@ -395,8 +398,7 @@ class InstallSchema implements InstallSchemaInterface
         );
         $installer->getConnection()->createTable($table_key);
         // end create table simiconnector_visibility
-        
-        
+
         /**
          * Creating table simiconnector device
          */
@@ -524,8 +526,6 @@ class InstallSchema implements InstallSchemaInterface
         $installer->getConnection()->createTable($table_device);
         // end create table simiconnector device
 
-        
-        
         /**
          * Creating table simiconnector notice
          */
@@ -670,7 +670,8 @@ class InstallSchema implements InstallSchemaInterface
          */
         $table_notice_name = $installer->getTable('simiconnector_notice_history');
         if ($installer->getConnection()->isTableExists($table_notice_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_notice_history'));
+            $installer->getConnection()
+                    ->dropTable($installer->getConnection()->getTableName('simiconnector_notice_history'));
         }
         $table_notice = $installer->getConnection()->newTable(
             $table_notice_name
@@ -821,13 +822,14 @@ class InstallSchema implements InstallSchemaInterface
         );
         $installer->getConnection()->createTable($table_notice);
         // end create table simiconnector notice history
-        
+
         /**
          * Creating table simiconnector barcode
          */
         $table_barcode_name = $installer->getTable('simiconnector_simibarcode');
         if ($installer->getConnection()->isTableExists($table_barcode_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_simibarcode'));
+            $installer->getConnection()
+                    ->dropTable($installer->getConnection()->getTableName('simiconnector_simibarcode'));
         }
         $table_barcode = $installer->getConnection()->newTable(
             $table_barcode_name
@@ -882,7 +884,7 @@ class InstallSchema implements InstallSchemaInterface
         );
         $installer->getConnection()->createTable($table_barcode);
         // end create table simiconnector barcode
-        
+
         /**
          * Creating table simiconnector Videos
          */
@@ -937,14 +939,14 @@ class InstallSchema implements InstallSchemaInterface
         );
         $installer->getConnection()->createTable($table_video);
         // end create table simiconnector Video
-        
-                
+
         /**
          * Creating table simiconnector Transactions
          */
         $table_transaction_name = $installer->getTable('simiconnector_transactions');
         if ($installer->getConnection()->isTableExists($table_transaction_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_transactions'));
+            $installer->getConnection()
+                    ->dropTable($installer->getConnection()->getTableName('simiconnector_transactions'));
         }
         $table_transaction = $installer->getConnection()->newTable(
             $table_transaction_name
@@ -963,13 +965,14 @@ class InstallSchema implements InstallSchemaInterface
         );
         $installer->getConnection()->createTable($table_transaction);
         // end create table simiconnector Transactions
-        
+
         /**
          * Creating table simiconnector Productlabels
          */
         $table_label_name = $installer->getTable('simiconnector_productlabels');
         if ($installer->getConnection()->isTableExists($table_label_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_productlabels'));
+            $installer->getConnection()
+                    ->dropTable($installer->getConnection()->getTableName('simiconnector_productlabels'));
         }
         $table_label = $installer->getConnection()->newTable(
             $table_label_name
@@ -1114,7 +1117,7 @@ class InstallSchema implements InstallSchemaInterface
         );
         $installer->getConnection()->createTable($table_label);
         // end create table simiconnector Productlabels
-        
+
         /**
          * Creating table simiconnector Taskbar
          */

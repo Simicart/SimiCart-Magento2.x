@@ -11,37 +11,37 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
     /**
      * @var \Magento\Framework\App\ObjectManager
      */
-    protected $_objectManager;
+    public $simiObjectManager;
 
     /**
      * @var \Magento\Store\Model\System\Store
      */
-    protected $_systemStore;
+    public $systemStore;
 
     /**
      * @var \Simi\Simiconnector\Helper\Website
      * */
-    protected $_websiteHelper;
+    public $websiteHelper;
 
     /**
      * @var \Simi\Simiconnector\Model\Cms
      */
-    protected $_cmsFactory;
+    public $cmsFactory;
 
     /**
      * @var \Magento\Framework\Json\EncoderInterface
      */
-    protected $_jsonEncoder;
+    public $jsonEncoder;
 
     /**
      * @var \Magento\Catalog\Model\CategoryFactory
      */
-    protected $_categoryFactory;
+    public $categoryFactory;
 
     /**
      * @var \Magento\Cms\Model\Wysiwyg\ConfigFactory
      */
-    protected $_wysiwygConfig;
+    public $wysiwygConfig;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
@@ -60,15 +60,17 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         \Magento\Cms\Model\Wysiwyg\Config $wysiwygConfig,
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
+        \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         array $data = []
     ) {
-        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->_cmsFactory = $cmsFactory;
-        $this->_websiteHelper = $websiteHelper;
-        $this->_systemStore = $systemStore;
-        $this->_jsonEncoder = $jsonEncoder;
-        $this->_categoryFactory = $categoryFactory;
-        $this->_wysiwygConfig = $wysiwygConfig;
+   
+        $this->simiObjectManager = $simiObjectManager;
+        $this->cmsFactory       = $cmsFactory;
+        $this->websiteHelper     = $websiteHelper;
+        $this->systemStore       = $systemStore;
+        $this->jsonEncoder       = $jsonEncoder;
+        $this->categoryFactory   = $categoryFactory;
+        $this->wysiwygConfig    = $wysiwygConfig;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
@@ -77,9 +79,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return $this
      */
-    protected function _prepareForm()
+    public function _prepareForm()
     {
-        
+
         $model = $this->_coreRegistry->registry('cms');
 
         /*
@@ -96,7 +98,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $form->setHtmlIdPrefix('');
         $htmlIdPrefix = $form->getHtmlIdPrefix();
 
-        $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Cms Information')]);
+        $fieldset            = $form->addFieldset('base_fieldset', ['legend' => __('Cms Information')]);
         $new_category_parent = false;
 
         $data = $model->getData();
@@ -104,12 +106,13 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             $fieldset->addField('cms_id', 'hidden', ['name' => 'cms_id']);
             $new_category_parent = $model->getData('category_id');
 
-            $simiconnectorhelper = $this->_objectManager->get('Simi\Simiconnector\Helper\Data');
-            $typeID = $simiconnectorhelper->getVisibilityTypeId('cms');
-            $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+            $simiconnectorhelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data');
+            $typeID              = $simiconnectorhelper->getVisibilityTypeId('cms');
+            $visibleStoreViews   = $this->simiObjectManager
+                    ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
                     ->addFieldToFilter('content_type', $typeID)
                     ->addFieldToFilter('item_id', $model->getId());
-            $storeIdArray = [];
+            $storeIdArray        = [];
 
             foreach ($visibleStoreViews as $visibilityItem) {
                 $storeIdArray[] = $visibilityItem->getData('store_view_id');
@@ -117,27 +120,27 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             $data['storeview_id'] = implode(',', $storeIdArray);
         }
 
-        $storeResourceModel = $this->_objectManager->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
+        $storeResourceModel = $this->simiObjectManager
+                ->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
 
         $fieldset->addField(
             'storeview_id',
             'multiselect',
             [
-            'name' => 'storeview_id[]',
-            'label' => __('Store View'),
-            'title' => __('Store View'),
+            'name'     => 'storeview_id[]',
+            'label'    => __('Store View'),
+            'title'    => __('Store View'),
             'required' => true,
-            'values' => $storeResourceModel->toArray(),
-            ]
+            'values'   => $storeResourceModel->toOptionArray(),
+                ]
         );
-
 
         $fieldset->addField(
             'cms_title',
             'text',
-            ['name' => 'cms_title',
-            'label' => __('Title'),
-            'title' => __('Title'),
+            ['name'     => 'cms_title',
+            'label'    => __('Title'),
+            'title'    => __('Title'),
             'required' => true,
             'disabled' => $isElementDisabled]
         );
@@ -146,13 +149,13 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'cms_content',
             'editor',
             [
-            'name' => 'cms_content',
-            'label' => __('Content'),
-            'title' => __('Content'),
+            'name'     => 'cms_content',
+            'label'    => __('Content'),
+            'title'    => __('Content'),
             'required' => true,
-            'style' => 'height: 500px',
+            'style'    => 'height: 500px',
             'disabled' => $isElementDisabled,
-            'config' => $this->_wysiwygConfig->getConfig()
+            'config'   => $this->wysiwygConfig->getConfig()
                 ]
         );
 
@@ -163,10 +166,10 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'sort_order',
             'text',
             [
-            'name' => 'sort_order',
-            'label' => __('Sort Order'),
-            'title' => __('Sort Order'),
-            'class' => 'validate-not-negative-number',
+            'name'     => 'sort_order',
+            'label'    => __('Sort Order'),
+            'title'    => __('Sort Order'),
+            'class'    => 'validate-not-negative-number',
             'disabled' => $isElementDisabled
                 ]
         );
@@ -175,26 +178,25 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'cms_status',
             'select',
             [
-            'name' => 'cms_status',
-            'label' => __('Status'),
-            'title' => __('Status'),
+            'name'     => 'cms_status',
+            'label'    => __('Status'),
+            'title'    => __('Status'),
             'required' => false,
             'disabled' => $isElementDisabled,
-            'options' => $this->_cmsFactory->create()->toOptionStatusHash(),
+            'options'  => $this->cmsFactory->create()->toOptionStatusHash(),
                 ]
         );
-
 
         $fieldset->addField(
             'type',
             'select',
             [
-            'name' => 'type',
-            'label' => __('Show Block On'),
-            'title' => __('Show Block On'),
+            'name'     => 'type',
+            'label'    => __('Show Block On'),
+            'title'    => __('Show Block On'),
             'required' => false,
             'disabled' => $isElementDisabled,
-            'options' => [
+            'options'  => [
                 '1' => __('Left Menu'),
                 '2' => __('Category In-app'),
             ],
@@ -202,46 +204,29 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 ]
         );
 
-        /*
-          $fieldset->addField(
-          'category_id',
-          'select',
-          [
-          'label' => __('Category ID'),
-          'title' => __('Category ID'),
-          'required' => true,
-          'class' => 'validate-parent-category',
-          'name' => 'new_category_parent',
-          'options' => $this->_getParentCategoryOptions($new_category_parent),
-          ]
-          );
-         */
         $fieldset->addField(
             'new_category_parent',
             'select',
             [
-            'label' => __('Categories'),
-            'title' => __('Categories'),
-            'class' => 'validate-parent-category',
-            'name' => 'new_category_parent',
+            'label'   => __('Categories'),
+            'title'   => __('Categories'),
+            'class'   => 'validate-parent-category',
+            'name'    => 'new_category_parent',
             'options' => $this->_getParentCategoryOptions($new_category_parent),
                 ]
         );
-
-
 
         $fieldset->addField(
             'cms_image',
             'image',
             [
-            'name' => 'cms_image',
-            'label' => __('Image (width:64px, height:64px)'),
-            'title' => __('Image (width:64px, height:64px)'),
+            'name'     => 'cms_image',
+            'label'    => __('Image (width:64px, height:64px)'),
+            'title'    => __('Image (width:64px, height:64px)'),
             'required' => false,
             'disabled' => $isElementDisabled
                 ]
         );
-
 
         $this->_eventManager->dispatch('adminhtml_cms_edit_tab_main_prepare_form', ['form' => $form]);
 
@@ -255,10 +240,10 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
      * @return mixed
      */
-    protected function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element)
+    public function _getElementHtml(\Magento\Framework\Data\Form\Element\AbstractElement $element)
     {
         $element->setWysiwyg(true);
-        $element->setConfig($this->_wysiwygConfig->getConfig($element));
+        $element->setConfig($this->wysiwygConfig->getConfig($element));
         return parent::_getElementHtml($element);
     }
 
@@ -267,10 +252,10 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      *
      * @return array
      */
-    protected function _getParentCategoryOptions($category_id)
+    public function _getParentCategoryOptions($category_id)
     {
 
-        $items = $this->_categoryFactory->create()->getCollection()->addAttributeToSelect(
+        $items = $this->categoryFactory->create()->getCollection()->addAttributeToSelect(
             'name'
         )->addAttributeToSort(
             'entity_id',
@@ -281,13 +266,13 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         $result = [];
         if (count($items) === 2) {
-            $item = array_pop($items);
+            $item   = array_pop($items);
             $result = [$item->getEntityId() => $item->getName()];
         }
 
-        if (sizeof($result) == 0 && $category_id) {
-            $category = $this->_categoryFactory->create()->load($category_id);
-            $result = [$category_id => $category->getName()];
+        if (empty($result) && $category_id) {
+            $category = $this->categoryFactory->create()->load($category_id);
+            $result   = [$category_id => $category->getName()];
         }
 
         return $result;
@@ -335,9 +320,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      * @param string $resourceId
      * @return bool
      */
-    protected function _isAllowedAction($resourceId)
+    public function _isAllowedAction($resourceId)
     {
         return true;
-        //return $this->_authorization->isAllowed($resourceId);
     }
 }

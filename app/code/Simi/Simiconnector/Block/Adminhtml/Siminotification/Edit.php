@@ -1,4 +1,5 @@
 <?php
+
 namespace Simi\Simiconnector\Block\Adminhtml\Siminotification;
 
 /**
@@ -7,12 +8,13 @@ namespace Simi\Simiconnector\Block\Adminhtml\Siminotification;
  */
 class Edit extends \Magento\Backend\Block\Widget\Form\Container
 {
+
     /**
      * Core registry
      *
      * @var \Magento\Framework\Registry
      */
-    protected $_coreRegistry = null;
+    public $coreRegistry = null;
 
     /**
      * @param \Magento\Backend\Block\Widget\Context $context
@@ -24,7 +26,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         \Magento\Framework\Registry $registry,
         array $data = []
     ) {
-        $this->_coreRegistry = $registry;
+   
+        $this->coreRegistry = $registry;
         parent::__construct($context, $data);
     }
 
@@ -33,10 +36,10 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      *
      * @return void
      */
-    protected function _construct()
+    public function _construct()
     {
 
-        $this->_objectId = 'notice_id';
+        $this->_objectId   = 'notice_id';
         $this->_blockGroup = 'Simi_Simiconnector';
         $this->_controller = 'adminhtml_siminotification';
 
@@ -47,14 +50,14 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
             $this->buttonList->add(
                 'saveandcontinue',
                 [
-                    'label' => __('Save and Continue Edit'),
-                    'class' => 'save',
-                    'data_attribute' => [
-                        'mage-init' => [
-                            'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
-                        ],
-                    ]
-                ],
+                'label'          => __('Save and Continue Edit'),
+                'class'          => 'save',
+                'data_attribute' => [
+                    'mage-init' => [
+                        'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
+                    ],
+                ]
+                    ],
                 -100
             );
         } else {
@@ -77,8 +80,11 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      */
     public function getHeaderText()
     {
-        if ($this->_coreRegistry->registry('siminotification')->getId()) {
-            return __("Edit Notification '%1'", $this->escapeHtml($this->_coreRegistry->registry('siminotification')->getId()));
+        if ($this->coreRegistry->registry('siminotification')->getId()) {
+            return __(
+                "Edit Notification '%1'",
+                $this->escapeHtml($this->coreRegistry->registry('siminotification')->getId())
+            );
         } else {
             return __('New Notification');
         }
@@ -90,10 +96,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      * @param string $resourceId
      * @return bool
      */
-    protected function _isAllowedAction($resourceId)
+    public function _isAllowedAction($resourceId)
     {
         return true;
-        //return $this->_authorization->isAllowed($resourceId);
     }
 
     /**
@@ -102,9 +107,10 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      *
      * @return string
      */
-    protected function _getSaveAndContinueUrl()
+    public function _getSaveAndContinueUrl()
     {
-        return $this->getUrl('simiconnector/*/save', ['_current' => true, 'back' => 'edit', 'active_tab' => '{{tab_id}}']);
+        return $this->getUrl('simiconnector/*/save', ['_current' => true,
+            'back' => 'edit', 'active_tab' => '{{tab_id}}']);
     }
 
     /**
@@ -112,16 +118,16 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      *
      * @return \Magento\Framework\View\Element\AbstractBlock
      */
-    protected function _prepareLayout()
+    public function _prepareLayout()
     {
         $arrow_down_img = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png');
-        $arrow_up_img = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_up.png');
+        $arrow_up_img   = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_up.png');
 
         $deviceJsUpdateFunction = '
                     /*
                         device selecting functions
                     */
-                    
+                   
                     function selectDevice(e) {
                         var vl = e.value;
                         if(e.checked == true){
@@ -135,13 +141,13 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                             removeValueFromField(vl);
                         }
                     }
-                    
-                    
+                   
+                   
                     function removeValueFromField(vl){
                         if($("devices_pushed").value.search(vl) == 0){
                                 if ($("devices_pushed").value.search(vl+", ") != -1)
                                     $("devices_pushed").value = $("devices_pushed").value.replace(vl+", ","");
-                                else 
+                                else
                                     $("devices_pushed").value = $("devices_pushed").value.replace(vl,"");
                             }else{
                                 $("devices_pushed").value = $("devices_pushed").value.replace(", "+ vl,"");
@@ -156,7 +162,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                                 e.checked = el.checked;
                         }
                     }
-                    
+                   
                     function toogleCheckAllDevice(){
                         var device_grid_trs = document.querySelectorAll(".simi-device-checkbox");
                         var el = device_grid_trs[0];
@@ -172,24 +178,25 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                             }
                         }
                     }
-                    
+                   
                     /*
                         device listing functions
                     */
 
-                    function clearDevices(){                    
+                    function clearDevices(){                   
                         $("deviceGrid").style.display == "none";
                         toggleMainDevices(2);
                     }
                     function updateNumberSeleced(){
                         $("note_devices_pushed_number").update($("devices_pushed").value.split(", ").size());
                     }
-                    
+                   
                     function toggleMainDevices(check){
                         var cate = $("deviceGrid");
                         if($("deviceGrid").style.display == "none" || (check ==1) || (check == 2)){
-                            var url = "' . $this->getUrl('simiconnector/*/devicegrid') . '?storeview_id="+$("storeview_selected").value;                        
-                            if(check == 1){
+                            var url = "'
+                . $this->getUrl('simiconnector/*/devicegrid') . '?storeview_id="+$("storeview_selected").value;
+                    if(check == 1){
                                 $("devices_pushed").value = $("devices_all_ids").value;
                             }else if(check == 2){
                                 $("devices_pushed").value = "";
@@ -202,22 +209,22 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                                     parameters: parameters,
                                     onComplete:function(transport){
                                         $("deviceGrid").update(transport.responseText);
-                                        $("deviceGrid").style.display = "block"; 
+                                        $("deviceGrid").style.display = "block";
                                     }
                                 });
                             if(cate.style.display == "none"){
                                 cate.style.display = "";
                             }else{
                                 cate.style.display = "none";
-                            } 
+                            }
                         }else{
-                            cate.style.display = "none";                    
+                            cate.style.display = "none";                   
                         }
                         updateNumberSeleced();
                     };
-        ' ;
-        
-        $this->_formScripts[] = $deviceJsUpdateFunction."
+        ';
+
+        $this->_formScripts[] = $deviceJsUpdateFunction . "
             function toggleEditor() {
                 if (tinyMCE.getInstanceById('page_content') == null) {
                     tinyMCE.execCommand('mceAddControl', false, 'page_content');
@@ -233,7 +240,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
 
                 // default: hidden product grid
                 document.getElementById('product_grid').style.display = 'none';
-                
+               
                 // hide Device Grid
                 document.getElementById('deviceGrid').style.display = 'none';
 
@@ -313,7 +320,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                         document.querySelectorAll('.field-new_category_parent')[0].style.display = 'none';
                         document.querySelectorAll('#new_category_parent')[0].classList.remove('required-entry');
                         document.querySelectorAll('#new_category_parent')[1].classList.remove('required-entry');
-                        
+                       
                         document.querySelectorAll('.field-notice_url')[0].style.display = 'none';
                         document.querySelectorAll('#notice_url')[0].classList.remove('required-entry');
                 }
@@ -330,7 +337,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                     device_choose_img.src = '$arrow_down_img';
                 }
             }
-            
+           
 
         ";
         return parent::_prepareLayout();

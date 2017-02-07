@@ -4,10 +4,11 @@ namespace Simi\Simiconnector\Controller\Adminhtml\Cms;
 
 class NewAction extends \Magento\Backend\App\Action
 {
+
     /**
      * @var \Magento\Backend\Model\View\Result\Forward
      */
-    protected $resultForwardFactory;
+    public $resultForwardFactory;
 
     /**
      * @param \Magento\Backend\App\Action\Context $context
@@ -17,18 +18,8 @@ class NewAction extends \Magento\Backend\App\Action
         \Magento\Backend\App\Action\Context $context,
         \Magento\Backend\Model\View\Result\ForwardFactory $resultForwardFactory
     ) {
-        
         $this->resultForwardFactory = $resultForwardFactory;
         parent::__construct($context);
-    }
-    
-    /**
-     * {@inheritdoc}
-     */
-    protected function _isAllowed()
-    {
-        return true;
-        //return $this->_authorization->isAllowed('Simi_Simiconnector::cms_save');
     }
 
     /**

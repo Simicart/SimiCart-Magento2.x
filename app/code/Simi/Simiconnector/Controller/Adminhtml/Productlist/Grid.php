@@ -4,6 +4,7 @@ namespace Simi\Simiconnector\Controller\Adminhtml\Productlist;
 
 class Grid extends \Magento\Customer\Controller\Adminhtml\Index
 {
+
     /**
      * Customer grid action
      *

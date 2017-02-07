@@ -1,4 +1,5 @@
 <?php
+
 namespace Simi\Simiconnector\Block\Adminhtml\Simicategory;
 
 /**
@@ -7,12 +8,13 @@ namespace Simi\Simiconnector\Block\Adminhtml\Simicategory;
  */
 class Edit extends \Magento\Backend\Block\Widget\Form\Container
 {
+
     /**
      * Core registry
      *
      * @var \Magento\Framework\Registry
      */
-    protected $_coreRegistry = null;
+    public $coreRegistry = null;
 
     /**
      * @param \Magento\Backend\Block\Widget\Context $context
@@ -24,7 +26,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         \Magento\Framework\Registry $registry,
         array $data = []
     ) {
-        $this->_coreRegistry = $registry;
+   
+        $this->coreRegistry = $registry;
         parent::__construct($context, $data);
     }
 
@@ -33,10 +36,10 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      *
      * @return void
      */
-    protected function _construct()
+    public function _construct()
     {
 
-        $this->_objectId = 'simicategory_id';
+        $this->_objectId   = 'simicategory_id';
         $this->_blockGroup = 'Simi_Simiconnector';
         $this->_controller = 'adminhtml_simicategory';
 
@@ -47,14 +50,14 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
             $this->buttonList->add(
                 'saveandcontinue',
                 [
-                    'label' => __('Save and Continue Edit'),
-                    'class' => 'save',
-                    'data_attribute' => [
-                        'mage-init' => [
-                            'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
-                        ],
-                    ]
-                ],
+                'label'          => __('Save and Continue Edit'),
+                'class'          => 'save',
+                'data_attribute' => [
+                    'mage-init' => [
+                        'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
+                    ],
+                ]
+                    ],
                 -100
             );
         } else {
@@ -75,8 +78,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      */
     public function getHeaderText()
     {
-        if ($this->_coreRegistry->registry('simicategory')->getId()) {
-            return __("Edit Simicategory '%1'", $this->escapeHtml($this->_coreRegistry->registry('simicategory')->getId()));
+        if ($this->coreRegistry->registry('simicategory')->getId()) {
+            return __("Edit Simicategory '%1'", $this
+                    ->escapeHtml($this->coreRegistry->registry('simicategory')->getId()));
         } else {
             return __('New Simicategory');
         }
@@ -88,10 +92,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      * @param string $resourceId
      * @return bool
      */
-    protected function _isAllowedAction($resourceId)
+    public function _isAllowedAction($resourceId)
     {
         return true;
-        //return $this->_authorization->isAllowed($resourceId);
     }
 
     /**
@@ -100,9 +103,10 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      *
      * @return string
      */
-    protected function _getSaveAndContinueUrl()
+    public function _getSaveAndContinueUrl()
     {
-        return $this->getUrl('simiconnector/*/save', ['_current' => true, 'back' => 'edit', 'active_tab' => '{{tab_id}}']);
+        return $this
+                ->getUrl('simiconnector/*/save', ['_current' => true, 'back' => 'edit', 'active_tab' => '{{tab_id}}']);
     }
 
     /**
@@ -110,7 +114,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      *
      * @return \Magento\Framework\View\Element\AbstractBlock
      */
-    protected function _prepareLayout()
+    public function _prepareLayout()
     {
         $this->_formScripts[] = "
             function toggleEditor() {

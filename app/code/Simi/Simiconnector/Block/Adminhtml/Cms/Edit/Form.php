@@ -1,4 +1,5 @@
 <?php
+
 namespace Simi\Simiconnector\Block\Adminhtml\Cms\Edit;
 
 /**
@@ -7,18 +8,19 @@ namespace Simi\Simiconnector\Block\Adminhtml\Cms\Edit;
  */
 class Form extends \Magento\Backend\Block\Widget\Form\Generic
 {
+
     /**
      * Prepare form
      *
      * @return $this
      */
-    protected function _prepareForm()
+    public function _prepareForm()
     {
         /** @var \Magento\Framework\Data\Form $form */
         $form = $this->_formFactory->create(
-            ['data' => ['id' => 'edit_form',
-                        'action' => $this->getData('action'),
-                        'method' => 'post',
+            ['data' => ['id'      => 'edit_form',
+                        'action'  => $this->getData('action'),
+                        'method'  => 'post',
                         'enctype' =>
                         'multipart/form-data']]
         );

@@ -1,4 +1,5 @@
 <?php
+
 namespace Simi\Simiconnector\Block\Adminhtml\Productlist\Edit\Tab;
 
 /**
@@ -6,19 +7,18 @@ namespace Simi\Simiconnector\Block\Adminhtml\Productlist\Edit\Tab;
  */
 class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
 {
+
     /**
      * @var \Magento\Framework\Registry|null
      */
-    protected $_coreRegistry = null;
+    public $coreRegistry = null;
 
     /**
      * @var \Magento\Catalog\Model\ProductFactory
      */
-    protected $_productFactory;
-
-    protected $_objectManager = null;
-
-    protected $_productlistFactory = null;
+    public $productFactory;
+    public $simiObjectManager   = null;
+    public $productlistFactory = null;
 
     /**
      * @param \Magento\Backend\Block\Template\Context $context
@@ -33,19 +33,21 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Catalog\Model\ProductFactory $productFactory,
         \Simi\Simiconnector\Model\ProductlistFactory $productlistFactory,
         \Magento\Framework\Registry $coreRegistry,
+        \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         array $data = []
     ) {
-        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->_productFactory = $productFactory;
-        $this->_productlistFactory = $productlistFactory;
-        $this->_coreRegistry = $coreRegistry;
+   
+        $this->simiObjectManager   = $simiObjectManager;
+        $this->productFactory     = $productFactory;
+        $this->productlistFactory = $productlistFactory;
+        $this->coreRegistry       = $coreRegistry;
         parent::__construct($context, $backendHelper, $data);
     }
 
     /**
      * init construct
      */
-    protected function _construct()
+    public function _construct()
     {
         parent::_construct();
         $this->setId('product_grid');
@@ -58,7 +60,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @return $this
      * @throws \Magento\Framework\Exception\LocalizedException
      */
-    protected function _addColumnFilterToCollection($column)
+    public function _addColumnFilterToCollection($column)
     {
         // Set custom filter for in product flag
         if ($column->getId() == 'in_products') {
@@ -82,12 +84,12 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @return $this
      */
-    protected function _prepareCollection()
+    public function _prepareCollection()
     {
-        $collection = $this->_productFactory->create()->getCollection()
-                                            ->addAttributeToSelect('entity_id')
-                                            ->addAttributeToSelect('name')
-                                            ->addAttributeToSelect('sku');
+        $collection = $this->productFactory->create()->getCollection()
+                ->addAttributeToSelect('entity_id')
+                ->addAttributeToSelect('name')
+                ->addAttributeToSelect('sku');
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -96,68 +98,67 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @return $this
      * @throws \Exception
      */
-    protected function _prepareColumns()
+    public function _prepareColumns()
     {
 
         $this->addColumn(
             'in_products',
             [
-                'type' => 'checkbox',
-                'html_name' => 'products_id',
-                'required' => true,
-                'values' => $this->_getSelectedProducts(),
-                'align' => 'center',
-                'index' => 'entity_id',
-                'header_css_class' => 'col-select',
-                'column_css_class' => 'col-select',
-                'renderer'  => '\Simi\Simiconnector\Block\Adminhtml\Productlist\Edit\Tab\Productrender',
-            ]
+            'type'             => 'checkbox',
+            'html_name'        => 'products_id',
+            'required'         => true,
+            'values'           => $this->_getSelectedProducts(),
+            'align'            => 'center',
+            'index'            => 'entity_id',
+            'header_css_class' => 'col-select',
+            'column_css_class' => 'col-select',
+            'renderer'         => '\Simi\Simiconnector\Block\Adminhtml\Productlist\Edit\Tab\Productrender',
+                ]
         );
 
         $this->addColumn(
             'entity_id',
             [
-                'header' => __('ID'),
-                'index' => 'entity_id',
-                'width' => '20px',
-                'header_css_class' => 'col-name',
-                'column_css_class' => 'col-name'
-            ]
+            'header'           => __('ID'),
+            'index'            => 'entity_id',
+            'width'            => '20px',
+            'header_css_class' => 'col-name',
+            'column_css_class' => 'col-name'
+                ]
         );
-
 
         $this->addColumn(
             'name',
             [
-                'header' => __('Name'),
-                'index' => 'name',
-                'header_css_class' => 'col-name',
-                'column_css_class' => 'col-name'
-            ]
+            'header'           => __('Name'),
+            'index'            => 'name',
+            'header_css_class' => 'col-name',
+            'column_css_class' => 'col-name'
+                ]
         );
-        
+
         $this->addColumn(
             'type_id',
             [
-                'header' => __('Type'),
-                'type' => 'options',
-                'index' => 'type_id',
-                'options' => $this->_objectManager->get('\Magento\Catalog\Model\Product\Type')->getOptionArray(),
-                'header_css_class' => 'col-type',
-                'column_css_class' => 'col-type'
-            ]
+            'header'           => __('Type'),
+            'type'             => 'options',
+            'index'            => 'type_id',
+            'options'          => $this->simiObjectManager
+                ->get('\Magento\Catalog\Model\Product\Type')->getOptionArray(),
+            'header_css_class' => 'col-type',
+            'column_css_class' => 'col-type'
+                ]
         );
 
         $this->addColumn(
             'sku',
             [
-                'header' => __('SKU'),
-                'index' => 'sku',
-                'header_css_class' => 'col-sku',
-                'column_css_class' => 'col-sku'
-            ]
+            'header'           => __('SKU'),
+            'index'            => 'sku',
+            'header_css_class' => 'col-sku',
+            'column_css_class' => 'col-sku'
+                ]
         );
-
 
         return parent::_prepareColumns();
     }
@@ -189,7 +190,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     /**
      * @return array
      */
-    protected function _getSelectedProducts()
+    public function _getSelectedProducts()
     {
         $products = array_keys($this->getSelectedProducts());
         return $products;
@@ -205,8 +206,8 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
             $productlist_id = 0;
         }
 
-        $productlist = $this->_productlistFactory->create()->load($productlist_id);
-        $products = [];
+        $productlist = $this->productlistFactory->create()->load($productlist_id);
+        $products    = [];
         if ($productlist->getId()) {
             $products = explode(',', str_replace(' ', '', $productlist->getData('list_products')));
         }

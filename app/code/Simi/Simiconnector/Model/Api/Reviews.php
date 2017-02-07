@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © 2016 Simi. All rights reserved.
  */
@@ -7,22 +8,21 @@ namespace Simi\Simiconnector\Model\Api;
 
 class Reviews extends Apiabstract
 {
-    
-    protected $_helper;
-    protected $_allow_filter_core = false;
+
+    public $helper;
+    public $allow_filter_core = false;
 
     public function setBuilderQuery()
     {
-        // TODO: Implement setBuilderQuery() method.
-        $this->_helper = $this->_objectManager->get('\Simi\Simiconnector\Helper\Review');
-        $data = $this->getData();
-        $parameters = $data['params'];
+        $this->helper = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Review');
+        $data          = $this->getData();
+        $parameters    = $data['params'];
         if ($data['resourceid']) {
-            $this->builderQuery = $this->_helper->getReview($data['resourceid']);
+            $this->builderQuery = $this->helper->getReview($data['resourceid']);
         } else {
             if (isset($parameters[self::FILTER])) {
-                $filter = $parameters[self::FILTER];
-                $this->builderQuery =  $this->_helper->getReviews($filter['product_id']);
+                $filter             = $parameters[self::FILTER];
+                $this->builderQuery = $this->helper->getReviews($filter['product_id']);
             }
         }
     }
@@ -31,11 +31,11 @@ class Reviews extends Apiabstract
      * @return collection
      * override
      */
-    protected function filter()
+    public function filter()
     {
-        $data = $this->_data;
+        $data       = $this->data;
         $parameters = $data['params'];
-        if ($this->_allow_filter_core) {
+        if ($this->allow_filter_core) {
             $query = $this->builderQuery;
             $this->_whereFilter($query, $parameters);
         }
@@ -51,17 +51,17 @@ class Reviews extends Apiabstract
      */
     public function store()
     {
-        $data = $this->getData();
-        $content = $data['contents_array'];
-        $review = $this->_helper->saveReview($content);
-        $entity = $review['review'];
+        $data       = $this->getData();
+        $content    = $data['contents_array'];
+        $review     = $this->helper->saveReview($content);
+        $entity     = $review['review'];
         $parameters = $data['params'];
-        $fields = [];
+        $fields     = [];
         if (isset($parameters['fields']) && $parameters['fields']) {
             $fields = explode(',', $parameters['fields']);
         }
-        $info = $entity->toArray($fields);
-        $detail = $this->getDetail($info);
+        $info              = $entity->toArray($fields);
+        $detail            = $this->getDetail($info);
         $detail['message'] = $review['message'];
         return $detail;
     }
@@ -78,12 +78,12 @@ class Reviews extends Apiabstract
     public function getListReview($info, $all_ids, $total, $page_size, $from, $count)
     {
         return [
-            'all_ids' => $all_ids,
+            'all_ids'             => $all_ids,
             $this->getPluralKey() => $info,
-            'total' => $total,
-            'page_size' => $page_size,
-            'from' => $from,
-            'count' => $count,
+            'total'               => $total,
+            'page_size'           => $page_size,
+            'from'                => $from,
+            'count'               => $count,
         ];
     }
 
@@ -96,37 +96,26 @@ class Reviews extends Apiabstract
     {
         $collection = $this->builderQuery;
         $this->filter();
-        $data = $this->getData();
+        $data       = $this->getData();
         $parameters = $data['params'];
-        $page = 1;
-        if (isset($parameters[self::PAGE]) && $parameters[self::PAGE]) {
-            $page = $parameters[self::PAGE];
-        }
-
+        $page       = 1;
         $limit = self::DEFAULT_LIMIT;
-        if (isset($parameters[self::LIMIT]) && $parameters[self::LIMIT]) {
-            $limit = $parameters[self::LIMIT];
-        }
-
-        $offset = $limit * ($page - 1);
-        if (isset($parameters[self::OFFSET]) && $parameters[self::OFFSET]) {
-            $offset = $parameters[self::OFFSET];
-        }
-        $collection->setPageSize($offset + $limit);
-        $all_ids = $collection->getAllIds();
-        $info = [];
-        $total = $collection->getSize();
-
+        $offset = 0;
+        $this->setPageSize($parameters, $limit, $offset, $collection, $page);
+        $all_ids = [];
+        $info    = [];
+        $total   = $collection->getSize();
+        
         if ($offset > $total) {
-            throw new \Exception(__('Invalid method.'), 4);
+            throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid method.'), 4);
         }
-
+        
         $fields = [];
         if (isset($parameters['fields']) && $parameters['fields']) {
             $fields = explode(',', $parameters['fields']);
         }
-        $star = [];
-        $count = null;
+        $star    = [];
+        $count   = null;
         $star[0] = 0;
         $star[1] = 0;
         $star[2] = 0;
@@ -134,7 +123,7 @@ class Reviews extends Apiabstract
         $star[4] = 0;
         $star[5] = 0;
 
-        $check_limit = 0;
+        $check_limit  = 0;
         $check_offset = 0;
         foreach ($collection as $entity) {
             if (++$check_offset <= $offset) {
@@ -143,31 +132,20 @@ class Reviews extends Apiabstract
             if (++$check_limit > $limit) {
                 break;
             }
-            $star[5]++;
+            $star[5] ++;
             $y = 0;
             foreach ($entity->getRatingVotes() as $vote) {
                 $y += ($vote->getPercent() / 20);
             }
-            $x = (int) ($y / count($entity->getRatingVotes()));
-            $info_detail = $entity->toArray($fields);
+            $x                          = (int) ($y / $this->simiObjectManager
+                    ->get('Simi\Simiconnector\Helper\Data')->countArray($entity->getRatingVotes()));
+            $info_detail                = $entity->toArray($fields);
             $info_detail['rate_points'] = $x;
-            $info[] = $info_detail;
+            $info[]                     = $info_detail;
 
             $z = $y % 3;
             $x = $z < 5 ? $x : $x + 1;
-            if ($x == 1) {
-                $star[0]++;
-            } elseif ($x == 2) {
-                $star[1]++;
-            } elseif ($x == 3) {
-                $star[2]++;
-            } elseif ($x == 4) {
-                $star[3]++;
-            } elseif ($x == 5) {
-                $star[4]++;
-            } elseif ($x == 0) {
-                $star[5]--;
-            }
+            $this->applyStarCount($x, $star);
         }
         $count = [
             '1_star' => $star[0],
@@ -178,6 +156,47 @@ class Reviews extends Apiabstract
         ];
         return $this->getListReview($info, $all_ids, $total, $limit, $offset, $count);
     }
+    
+    private function setPageSize($parameters, &$limit, &$offset, $collection, &$page)
+    {
+        if (isset($parameters[self::PAGE]) && $parameters[self::PAGE]) {
+            $page = $parameters[self::PAGE];
+        }
+        if (isset($parameters[self::LIMIT]) && $parameters[self::LIMIT]) {
+            $limit = $parameters[self::LIMIT];
+        }
+        $offset = $limit * ($page - 1);
+        if (isset($parameters[self::OFFSET]) && $parameters[self::OFFSET]) {
+            $offset = $parameters[self::OFFSET];
+        }
+        $collection->setPageSize($offset + $limit);
+    }
+    
+    private function applyStarCount($x, &$star)
+    {
+        switch ($x) {
+            case 1:
+                $star[0] ++;
+                break;
+            case 2:
+                $star[1] ++;
+                break;
+            case 3:
+                $star[2] ++;
+                break;
+            case 4:
+                $star[3] ++;
+                break;
+            case 5:
+                $star[4] ++;
+                break;
+            case 0:
+                $star[5] --;
+                break;
+            default:
+                break;
+        }
+    }
 
     /**
      * @return array
@@ -185,10 +204,10 @@ class Reviews extends Apiabstract
      */
     public function show()
     {
-        $entity = $this->builderQuery;
-        $data = $this->getData();
+        $entity     = $this->builderQuery;
+        $data       = $this->getData();
         $parameters = $data['params'];
-        $fields = [];
+        $fields     = [];
         if (isset($parameters['fields']) && $parameters['fields']) {
             $fields = explode(',', $parameters['fields']);
         }

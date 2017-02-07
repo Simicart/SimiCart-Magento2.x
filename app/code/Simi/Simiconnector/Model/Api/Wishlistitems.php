@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Copyright © 2016 Simi. All rights reserved.
  */
@@ -7,48 +8,57 @@ namespace Simi\Simiconnector\Model\Api;
 
 class Wishlistitems extends Apiabstract
 {
-    protected $_DEFAULT_ORDER = 'wishlist_item_id';
-    protected $_RETURN_MESSAGE;
-    protected $_RETURN_URL;
-    protected $_WISHLIST;
 
-    public function setBuilderQuery() {
-        $data = $this->getData();
-        $customer = $this->_objectManager->get('Magento\Customer\Model\Session')->getCustomer();
+    public $DEFAULT_ORDER = 'wishlist_item_id';
+    public $RETURN_MESSAGE;
+    public $RETURN_URL;
+    public $WISHLIST;
+
+    public function setBuilderQuery()
+    {
+        $data     = $this->getData();
+        $customer = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
         if ($customer->getId() && ($customer->getId() != '')) {
-            $this->_WISHLIST = $this->_objectManager->get('Magento\Wishlist\Model\Wishlist')->loadByCustomerId($customer->getId(), true);
+            $this->WISHLIST = $this->simiObjectManager
+                    ->get('Magento\Wishlist\Model\Wishlist')->loadByCustomerId($customer->getId(), true);
             //check if not shared
-            if (!$this->_WISHLIST->getShared()) {
-                $this->_WISHLIST->setShared('1');
-                $this->_WISHLIST->save();
+            if (!$this->WISHLIST->getShared()) {
+                $this->WISHLIST->setShared('1');
+                $this->WISHLIST->save();
             }
-            $sharingCode = $this->_WISHLIST->getSharingCode();
-            $this->_RETURN_MESSAGE = $this->getStoreConfig('simiconnector/wishlist/sharing_message') . ' ' . $this->_objectManager->get('Magento\Framework\UrlInterface')->getUrl('*/shared/index', ['code' => $sharingCode]);
-            $this->_RETURN_URL = $this->_objectManager->get('Magento\Framework\UrlInterface')->getUrl('wishlist/shared/index', ['code' => $sharingCode]);
-        } else
-            throw new \Exception(__('Please login First.', 4));
+            $sharingCode           = $this->WISHLIST->getSharingCode();
+            $this->RETURN_MESSAGE = $this->getStoreConfig('simiconnector/wishlist/sharing_message') . ' '
+                    . $this->simiObjectManager->get('Magento\Framework\UrlInterface')
+                    ->getUrl('*/shared/index', ['code' => $sharingCode]);
+            $this->RETURN_URL     = $this->simiObjectManager->get('Magento\Framework\UrlInterface')
+                    ->getUrl('wishlist/shared/index', ['code' => $sharingCode]);
+        } else {
+            throw new \Simi\Simiconnector\Helper\SimiException(__('Please login First.', 4));
+        }
         if ($data['resourceid']) {
-            $this->builderQuery = $this->_objectManager->create('Magento\Wishlist\Model\Item')->load($data['resourceid']);
+            $this->builderQuery = $this->simiObjectManager
+                    ->create('Magento\Wishlist\Model\Item')->load($data['resourceid']);
             if ($data['params']['add_to_cart']) {
                 $this->addWishlistItemToCart($data['resourceid']);
-                $this->builderQuery = $this->_WISHLIST->getItemCollection();
+                $this->builderQuery = $this->WISHLIST->getItemCollection();
             }
         } else {
-            $this->builderQuery = $this->_WISHLIST->getItemCollection();
+            $this->builderQuery = $this->WISHLIST->getItemCollection();
         }
     }
 
-    public function index() {
-        $result = parent::index();
-        $addition_info = array();
+    public function index()
+    {
+        $result        = parent::index();
+        $addition_info = [];
         foreach ($this->builderQuery as $itemModel) {
-            $product = $itemModel->getProduct();
+            $product    = $itemModel->getProduct();
             $isSaleAble = $product->isSaleable();
             if ($isSaleAble) {
-                $itemOptions = $this->_objectManager->get('Magento\Wishlist\Model\Item\Option')->getCollection()
-                        ->addItemFilter(array($itemModel->getData('wishlist_item_id')));
+                $itemOptions = $this->simiObjectManager->get('Magento\Wishlist\Model\Item\Option')->getCollection()
+                        ->addItemFilter([$itemModel->getData('wishlist_item_id')]);
                 foreach ($itemOptions as $itemOption) {
-                    $optionProduct = $this->_objectManager->create('Magento\Catalog\Model\Product')->load($itemOption->getProductId());
+                    $optionProduct = $this->loadProductWithId($itemOption->getProductId());
                     if (!$optionProduct->isSaleable()) {
                         $isSaleAble = false;
                         break;
@@ -56,27 +66,36 @@ class Wishlistitems extends Apiabstract
                 }
             }
 
-            $productSharingMessage = implode(' ', array($this->getStoreConfig('simiconnector/wishlist/product_sharing_message'), $product->getProductUrl()));
-            $options = $this->_objectManager->get('\Simi\Simiconnector\Helper\Wishlist')->getOptionsSelectedFromItem($itemModel, $product);
+            $productSharingMessage = implode(
+                ' ',
+                [$this->getStoreConfig('simiconnector/wishlist/product_sharing_message'),
+                $product->getProductUrl()]
+            );
+            $options               = $this->simiObjectManager
+                    ->get('\Simi\Simiconnector\Helper\Wishlist')->getOptionsSelectedFromItem($itemModel, $product);
             if (isset($parameters['image_width'])) {
-                $width = $parameters['image_width'];
+                $width  = $parameters['image_width'];
                 $height = $parameters['image_height'];
             } else {
-                $width = $height = 200;
+                $width  = $height = 200;
             }
-            $addition_info[$itemModel->getData('wishlist_item_id')] = array(
-                'type_id' => $product->getTypeId(),
-                'product_regular_price' => $product->getPrice(),
-                'product_price' => $product->getFinalPrice(),
-                'stock_status' => $isSaleAble,
-                'product_image' => $this->_objectManager->get('\Simi\Simiconnector\Helper\Products')->getImageProduct($product, null, $width, $height),
-                'is_show_price' => true,
-                'options' => $options,
-                'selected_all_required_options' => $this->_objectManager->get('\Simi\Simiconnector\Helper\Wishlist')->checkIfSelectedAllRequiredOptions($itemModel, $options),
-                'product_sharing_message' => $productSharingMessage,
-                'product_sharing_url' => $product->getProductUrl(),
-                'app_prices' => $this->_objectManager->get('\Simi\Simiconnector\Helper\Price')->formatPriceFromProduct($product, true),
-            );
+            $addition_info[$itemModel->getData('wishlist_item_id')] = [
+                'type_id'                       => $product->getTypeId(),
+                'product_regular_price'         => $product->getPrice(),
+                'product_price'                 => $product->getFinalPrice(),
+                'stock_status'                  => $isSaleAble,
+                'product_image'                 => $this->simiObjectManager
+                    ->get('\Simi\Simiconnector\Helper\Products')->getImageProduct($product, null, $width, $height),
+                'is_show_price'                 => true,
+                'options'                       => $options,
+                'selected_all_required_options' => $this->simiObjectManager
+                    ->get('\Simi\Simiconnector\Helper\Wishlist')
+                    ->checkIfSelectedAllRequiredOptions($itemModel, $options),
+                'product_sharing_message'       => $productSharingMessage,
+                'product_sharing_url'           => $product->getProductUrl(),
+                'app_prices'                    => $this->simiObjectManager
+                    ->get('\Simi\Simiconnector\Helper\Price')->formatPriceFromProduct($product, true),
+            ];
         }
         foreach ($result['wishlistitems'] as $index => $item) {
             $result['wishlistitems'][$index] = array_merge($item, $addition_info[$item['wishlist_item_id']]);
@@ -88,15 +107,14 @@ class Wishlistitems extends Apiabstract
      * Add To Wishlist
      */
 
-    public function store() {
-        $data = $this->getData();
-        $params = $this->_objectManager->get('\Simi\Simiconnector\Model\Api\Quoteitems')->convertParams((array) $data['contents']);
-        $product = $this->_objectManager->create('Magento\Catalog\Model\Product')->load(($params['product']));
-        if (isset($params['qty'])) {
-            $params['qty'] = $this->_objectManager->create('Magento\Wishlist\Model\Wishlist')->process($params['qty']);
-        }
-        $buyRequest = new Varien_Object($params);
-        $this->builderQuery = $this->_WISHLIST->addNewItem($product, $buyRequest);
+    public function store()
+    {
+        $data    = $this->getData();
+        $params  = $this->simiObjectManager
+                ->get('\Simi\Simiconnector\Model\Api\Quoteitems')->convertParams((array) $data['contents']);
+        $product = $this->simiObjectManager->create('Magento\Catalog\Model\Product')->load(($params['product']));
+        $buyRequest = $this->simiObjectManager->create('\Magento\Framework\DataObject', ['data'=>$params]);
+        $this->builderQuery = $this->WISHLIST->addNewItem($product, $buyRequest);
         return $this->show();
     }
 
@@ -104,15 +122,16 @@ class Wishlistitems extends Apiabstract
      * Remove From Wishlist
      */
 
-    public function destroy() {
+    public function destroy()
+    {
         $data = $this->getData();
-        $item = $this->_objectManager->create('Magento\Wishlist\Model\Item')->load($data['resourceid']);
+        $item = $this->simiObjectManager->create('Magento\Wishlist\Model\Item')->load($data['resourceid']);
         if ($item->getId()) {
             $item->delete();
-            $this->_WISHLIST->save();
-            $this->_objectManager->get('Magento\Wishlist\Helper\Data')->calculate();
+            $this->WISHLIST->save();
+            $this->simiObjectManager->get('Magento\Wishlist\Helper\Data')->calculate();
         }
-        $this->builderQuery = $this->_WISHLIST->getItemCollection();
+        $this->builderQuery = $this->WISHLIST->getItemCollection();
         return $this->index();
     }
 
@@ -120,27 +139,31 @@ class Wishlistitems extends Apiabstract
      * Add From Wishlist To Cart
      */
 
-    public function addWishlistItemToCart($itemId) {
-        foreach ($this->_WISHLIST->getItemCollection() as $wishlistItem) {
-            if ($wishlistItem->getData('wishlist_item_id') == $itemId)
+    public function addWishlistItemToCart($itemId)
+    {
+        foreach ($this->WISHLIST->getItemCollection() as $wishlistItem) {
+            if ($wishlistItem->getData('wishlist_item_id') == $itemId) {
                 $item = $wishlistItem;
+            }
         }
         $product = $item->getProduct();
-        $options = $this->_objectManager->get('\Simi\Simiconnector\Helper\Wishlist')->getOptionsSelectedFromItem($item, $product);
-        if ($item && ($this->_objectManager->get('\Simi\Simiconnector\Helper\Wishlist')->checkIfSelectedAllRequiredOptions($item, $options))) {
+        $options = $this->simiObjectManager
+                ->get('\Simi\Simiconnector\Helper\Wishlist')->getOptionsSelectedFromItem($item, $product);
+        if ($item && ($this->simiObjectManager
+                ->get('\Simi\Simiconnector\Helper\Wishlist')->checkIfSelectedAllRequiredOptions($item))) {
             $isSaleAble = $product->isSaleable();
             if ($isSaleAble) {
-                $item = $this->_objectManager->create('Magento\Wishlist\Model\Item')->load($itemId);
+                $item    = $this->simiObjectManager->create('Magento\Wishlist\Model\Item')->load($itemId);
                 $item->setQty('1');
-                $cart = $this->_objectManager->create('Magento\Checkout\Model\Cart');
-                $options = $this->_objectManager->get('Magento\Wishlist\Model\Item\Option')->getCollection()
-                        ->addItemFilter(array($itemId));
+                $cart    = $this->simiObjectManager->create('Magento\Checkout\Model\Cart');
+                $options = $this->simiObjectManager->get('Magento\Wishlist\Model\Item\Option')->getCollection()
+                        ->addItemFilter([$itemId]);
                 $item->setOptions($options->getOptionsByItem($itemId));
                 if ($item->addToCart($cart, true)) {
                     $cart->save()->getQuote()->collectTotals();
                 }
-                $this->_WISHLIST->save();
-                $this->_objectManager->get('Magento\Wishlist\Helper\Data')->calculate();
+                $this->WISHLIST->save();
+                $this->simiObjectManager->get('Magento\Wishlist\Helper\Data')->calculate();
             }
         }
     }
@@ -149,10 +172,11 @@ class Wishlistitems extends Apiabstract
      * Show An Item
      */
 
-    public function show() {
+    public function show()
+    {
         $data = $this->getData();
         if (isset($data['params']) && isset($data['params']['add_to_cart']) && $data['params']['add_to_cart']) {
-            $this->builderQuery = $this->_WISHLIST->getItemCollection();
+            $this->builderQuery = $this->WISHLIST->getItemCollection();
             return $this->index();
         }
         return parent::show();
@@ -162,14 +186,22 @@ class Wishlistitems extends Apiabstract
      * Add Message
      */
 
-    public function getList($info, $all_ids, $total, $page_size, $from) {
+    public function getList($info, $all_ids, $total, $page_size, $from)
+    {
         $result = parent::getList($info, $all_ids, $total, $page_size, $from);
-        if ($this->_RETURN_MESSAGE) {
-            $result['message'] = array($this->_RETURN_MESSAGE);
+        if ($this->RETURN_MESSAGE) {
+            $result['message'] = [$this->RETURN_MESSAGE];
         }
-        if ($this->_RETURN_URL) {
-            $result['sharing_url'] = array($this->_RETURN_URL);
+        if ($this->RETURN_URL) {
+            $result['sharing_url'] = [$this->RETURN_URL];
         }
         return $result;
+    }
+    
+    public function loadProductWithId($id)
+    {
+        $categoryModel    = $this->simiObjectManager
+                ->create('Magento\Catalog\Model\Product')->load($id);
+        return $categoryModel;
     }
 }

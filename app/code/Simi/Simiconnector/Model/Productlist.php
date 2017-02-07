@@ -10,12 +10,13 @@ namespace Simi\Simiconnector\Model;
  */
 class Productlist extends \Magento\Framework\Model\AbstractModel
 {
+
     /**
      * @var \Simi\Simiconnector\Helper\Website
-     **/
-    protected $_websiteHelper;
+     * */
+    public $websiteHelper;
+    public $simiObjectManager;
 
-    protected $_objectManager;
     /**
      * @param \Magento\Framework\Model\Context $context
      * @param \Magento\Framework\Registry $registry
@@ -30,14 +31,14 @@ class Productlist extends \Magento\Framework\Model\AbstractModel
      */
     public function __construct(
         \Magento\Framework\Model\Context $context,
+        \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         \Magento\Framework\Registry $registry,
         \Simi\Simiconnector\Model\ResourceModel\Productlist $resource,
         \Simi\Simiconnector\Model\ResourceModel\Productlist\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
     ) {
-
-        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $this->_websiteHelper = $websiteHelper;
+        $this->simiObjectManager = $simiObjectManager;
+        $this->websiteHelper    = $websiteHelper;
 
         parent::__construct(
             $context,
@@ -52,7 +53,7 @@ class Productlist extends \Magento\Framework\Model\AbstractModel
      *
      * @return void
      */
-    protected function _construct()
+    public function _construct()
     {
         $this->_init('Simi\Simiconnector\Model\ResourceModel\Productlist');
     }
@@ -74,25 +75,28 @@ class Productlist extends \Magento\Framework\Model\AbstractModel
      */
     public function toOptionWebsiteHash()
     {
-        $website_collection = $this->_websiteHelper->getWebsiteCollection();
-        $list = [];
-        $list[0] = __('All');
-        if (sizeof($website_collection) > 0) {
+        $website_collection = $this->websiteHelper->getWebsiteCollection();
+        $list               = [];
+        $list[0]            = __('All');
+        if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($website_collection) > 0) {
             foreach ($website_collection as $website) {
                 $list[$website->getId()] = $website->getName();
             }
         }
         return $list;
     }
-    
+
     public function delete()
     {
-        $typeID = $this->_objectManager->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('productlist');
-        $visibleStoreViews = $this->_objectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
-                            ->addFieldToFilter('content_type', $typeID)
-                            ->addFieldToFilter('item_id', $this->getId());
+        $typeID            = $this->simiObjectManager
+                ->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('productlist');
+        $visibleStoreViews = $this->simiObjectManager
+                ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+                ->addFieldToFilter('content_type', $typeID)
+                ->addFieldToFilter('item_id', $this->getId());
         foreach ($visibleStoreViews as $visibilityItem) {
-            $visibilityItem->delete();
+            $this->simiObjectManager
+                            ->get('Simi\Simiconnector\Helper\Data')->deleteModel($visibilityItem);
         }
         return parent::delete();
     }

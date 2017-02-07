@@ -5,15 +5,6 @@ namespace Simi\Simiconnector\Controller\Adminhtml\Simibarcode;
 class Delete extends \Magento\Backend\App\Action
 {
     /**
-     * {@inheritdoc}
-     */
-    protected function _isAllowed()
-    {
-        return true;
-        //return $this->_authorization->isAllowed('Simi_Simiconnector::simibarcode_delete');
-    }
-
-    /**
      * Delete action
      *
      * @return void
@@ -21,17 +12,18 @@ class Delete extends \Magento\Backend\App\Action
     public function execute()
     {
         // check if we know what should be deleted
-        $id = $this->getRequest()->getParam('barcode_id');
-		/** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
+        $id             = $this->getRequest()->getParam('barcode_id');
+        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($id) {
             $title = "";
             try {
                 // init model and delete
-                $model = $this->_objectManager->create('Simi\Simiconnector\Model\Simibarcode');
+                $simiobjectManager = $this->_objectManager;
+                $model = $simiobjectManager->create('Simi\Simiconnector\Model\Simibarcode');
                 $model->load($id);
                 $title = $model->getTitle();
-                $model->delete();
+                $this->deleteCode($model);
                 // display success message
                 $this->messageManager->addSuccess(__('The data has been deleted.'));
                 // go to grid
@@ -47,5 +39,9 @@ class Delete extends \Magento\Backend\App\Action
         $this->messageManager->addError(__('We can\'t find a data to delete.'));
         // go to grid
         return $resultRedirect->setPath('*/*/');
+    }
+    private function deleteCode($codeModel)
+    {
+        $codeModel->delete();
     }
 }

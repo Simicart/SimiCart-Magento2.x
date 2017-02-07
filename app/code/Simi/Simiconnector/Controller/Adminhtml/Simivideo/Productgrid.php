@@ -5,13 +5,12 @@ namespace Simi\Simiconnector\Controller\Adminhtml\Simivideo;
 class Productgrid extends \Magento\Catalog\Controller\Adminhtml\Product
 {
 
-    protected $resultLayoutFactory;
-
+    public $resultLayoutFactory;
 
     /**
      * @var Product\Builder
      */
-    protected $productBuilder;
+    public $productBuilder;
 
     /**
      * @param Action\Context $context
@@ -22,18 +21,17 @@ class Productgrid extends \Magento\Catalog\Controller\Adminhtml\Product
         \Magento\Catalog\Controller\Adminhtml\Product\Builder $productBuilder,
         \Magento\Framework\View\Result\LayoutFactory $resultLayoutFactory
     ) {
+   
         parent::__construct($context, $productBuilder);
         $this->resultLayoutFactory = $resultLayoutFactory;
     }
-
-
 
     public function execute()
     {
         $this->productBuilder->build($this->getRequest());
         $resultLayout = $this->resultLayoutFactory->create();
         $resultLayout->getLayout()->getBlock('simiconnector.simivideo.edit.tab.productgrid')
-            ->setProducts($this->getRequest()->getPost('products', null));
+                ->setProducts($this->getRequest()->getPost('products', null));
         return $resultLayout;
     }
 }

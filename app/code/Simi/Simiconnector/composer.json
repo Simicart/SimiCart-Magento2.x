@@ -3,16 +3,16 @@
     "description": "SimiCart is a complete solution to build iOS & Android mobile app for Magento 2 websites.",
     "require": {
         "php": "~5.5.0|~5.6.0|~7.0.0",
-		"magento/framework": "~100.0.4"
+        "magento/framework": "~100.0.4"
     },
-	"authors": [
-		{
-		  "name": "SimiCart Company",
-		  "email": "max@simicart.com",
-		  "homepage": "https://www.simicart.com/",
-		  "role": "Developer"
-		}
-	],
+    "authors": [
+        {
+            "name": "SimiCart Company",
+            "email": "max@simicart.com",
+            "homepage": "https://www.simicart.com/",
+            "role": "Developer"
+        }
+    ],
     "type": "magento2-module",
     "version": "1.0.0-beta",
     "license": [
@@ -20,9 +20,9 @@
         "AFL-3.0"
     ],
     "autoload": {
-        "files": [ "registration.php" ],
-		"psr-4": {
-		  "Simi\\Simiconnector\\": ""
-		}
+        "files": ["registration.php"],
+        "psr-4": {
+            "Simi\\Simiconnector\\": ""
+        }
     }
 }

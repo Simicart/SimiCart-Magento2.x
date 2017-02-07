@@ -8,13 +8,14 @@ namespace Simi\Simiconnector\Model;
  * @method \Simi\Simiconnector\Model\Resource\Page _getResource()
  * @method \Simi\Simiconnector\Model\Resource\Page getResource()
  */
-class Simibarcode extends \Magento\Framework\Model\AbstractModel {
+class Simibarcode extends \Magento\Framework\Model\AbstractModel
+{
 
     /**
      * @var \Simi\Simiconnector\Helper\Website
      * */
-    protected $_websiteHelper;
-    protected $_objectManager;
+    public $websiteHelper;
+    public $simiObjectManager;
 
     /**
      * @param \Magento\Framework\Model\Context $context
@@ -29,13 +30,19 @@ class Simibarcode extends \Magento\Framework\Model\AbstractModel {
      * @param ResourceModel\Key\CollectionFactory $keyCollection
      */
     public function __construct(
-    \Magento\Framework\Model\Context $context, \Magento\Framework\Registry $registry, \Simi\Simiconnector\Model\ResourceModel\Simibarcode $resource, \Simi\Simiconnector\Model\ResourceModel\Simibarcode\Collection $resourceCollection, \Simi\Simiconnector\Helper\Website $websiteHelper
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\Registry $registry,
+        \Simi\Simiconnector\Model\ResourceModel\Simibarcode $resource,
+        \Simi\Simiconnector\Model\ResourceModel\Simibarcode\Collection $resourceCollection,
+        \Simi\Simiconnector\Helper\Website $websiteHelper
     ) {
-
-        $this->_websiteHelper = $websiteHelper;
+        $this->websiteHelper = $websiteHelper;
 
         parent::__construct(
-                $context, $registry, $resource, $resourceCollection
+            $context,
+            $registry,
+            $resource,
+            $resourceCollection
         );
     }
 
@@ -44,33 +51,35 @@ class Simibarcode extends \Magento\Framework\Model\AbstractModel {
      *
      * @return void
      */
-    protected function _construct() {
+    public function _construct()
+    {
         $this->_init('Simi\Simiconnector\Model\ResourceModel\Simibarcode');
     }
 
     /**
      * @return array Status
      */
-    public function toOptionStatusHash() {
-        $status = array(
+    public function toOptionStatusHash()
+    {
+        $status = [
             '1' => __('Enable'),
             '2' => __('Disabled'),
-        );
+        ];
         return $status;
     }
 
     /**
      * @return array Status
      */
-    public function toOptionBarcodeTypeHash() {
-        $status = array(
-            'code128' => __('code128'),
+    public function toOptionBarcodeTypeHash()
+    {
+        $status = [
+            'code128'  => __('code128'),
             'code128a' => __('code128a'),
-            'code39' => __('code39'),
-            'code25' => __('code25'),
-            'codabar' => __('codabar')
-        );
+            'code39'   => __('code39'),
+            'code25'   => __('code25'),
+            'codabar'  => __('codabar')
+        ];
         return $status;
     }
-
 }
