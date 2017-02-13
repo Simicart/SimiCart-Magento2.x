@@ -21,6 +21,11 @@ class InstallSchema implements InstallSchemaInterface
      */
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
+        $this->installSql($setup, $context);
+    }
+    
+    public function installSql(SchemaSetupInterface $setup, ModuleContextInterface $context)
+    {
         $installer = $context;
         $installer = $setup;
         $installer->startSetup();
@@ -29,10 +34,7 @@ class InstallSchema implements InstallSchemaInterface
          * Creating table simicategory
          */
         $table_key_name = $installer->getTable('simiconnector_simicategory');
-        if ($installer->getConnection()->isTableExists($table_key_name) == true) {
-            $installer->getConnection()
-                    ->dropTable($installer->getConnection()->getTableName('simiconnector_simicategory'));
-        }
+        $this->checkTableExist($installer, $table_key_name, 'simiconnector_simicategory');
         $table_key = $installer->getConnection()->newTable(
             $table_key_name
         )->addColumn(
@@ -127,9 +129,7 @@ class InstallSchema implements InstallSchemaInterface
          * Creating table simiconnector_banner
          */
         $table_key_name = $installer->getTable('simiconnector_banner');
-        if ($installer->getConnection()->isTableExists($table_key_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_banner'));
-        }
+        $this->checkTableExist($installer, $table_key_name, 'simiconnector_banner');
         $table_key = $installer->getConnection()->newTable(
             $table_key_name
         )->addColumn(
@@ -206,9 +206,7 @@ class InstallSchema implements InstallSchemaInterface
          * Creating table simiconnector_cms
          */
         $table_key_name = $installer->getTable('simiconnector_cms');
-        if ($installer->getConnection()->isTableExists($table_key_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_cms'));
-        }
+        $this->checkTableExist($installer, $table_key_name, 'simiconnector_cms');
         $table_key = $installer->getConnection()->newTable(
             $table_key_name
         )->addColumn(
@@ -273,10 +271,7 @@ class InstallSchema implements InstallSchemaInterface
          * Creating table simiconnector_product_list
          */
         $table_key_name = $installer->getTable('simiconnector_product_list');
-        if ($installer->getConnection()->isTableExists($table_key_name) == true) {
-            $installer->getConnection()
-                    ->dropTable($installer->getConnection()->getTableName('simiconnector_product_list'));
-        }
+        $this->checkTableExist($installer, $table_key_name, 'simiconnector_product_list');
         $table_key = $installer->getConnection()->newTable(
             $table_key_name
         )->addColumn(
@@ -365,10 +360,7 @@ class InstallSchema implements InstallSchemaInterface
          * Creating table simiconnector_visibility
          */
         $table_key_name = $installer->getTable('simiconnector_visibility');
-        if ($installer->getConnection()->isTableExists($table_key_name) == true) {
-            $installer->getConnection()
-                    ->dropTable($installer->getConnection()->getTableName('simiconnector_visibility'));
-        }
+        $this->checkTableExist($installer, $table_key_name, 'simiconnector_visibility');
         $table_key = $installer->getConnection()->newTable(
             $table_key_name
         )->addColumn(
@@ -403,9 +395,7 @@ class InstallSchema implements InstallSchemaInterface
          * Creating table simiconnector device
          */
         $table_device_name = $installer->getTable('simiconnector_device');
-        if ($installer->getConnection()->isTableExists($table_device_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_device'));
-        }
+        $this->checkTableExist($installer, $table_key_name, 'simiconnector_device');
         $table_device = $installer->getConnection()->newTable(
             $table_device_name
         )->addColumn(
@@ -530,9 +520,7 @@ class InstallSchema implements InstallSchemaInterface
          * Creating table simiconnector notice
          */
         $table_notice_name = $installer->getTable('simiconnector_notice');
-        if ($installer->getConnection()->isTableExists($table_notice_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_notice'));
-        }
+        $this->checkTableExist($installer, $table_key_name, 'simiconnector_notice');
         $table_notice = $installer->getConnection()->newTable(
             $table_notice_name
         )->addColumn(
@@ -669,10 +657,7 @@ class InstallSchema implements InstallSchemaInterface
          * Creating table simiconnector notice history
          */
         $table_notice_name = $installer->getTable('simiconnector_notice_history');
-        if ($installer->getConnection()->isTableExists($table_notice_name) == true) {
-            $installer->getConnection()
-                    ->dropTable($installer->getConnection()->getTableName('simiconnector_notice_history'));
-        }
+        $this->checkTableExist($installer, $table_key_name, 'simiconnector_notice_history');
         $table_notice = $installer->getConnection()->newTable(
             $table_notice_name
         )->addColumn(
@@ -825,12 +810,10 @@ class InstallSchema implements InstallSchemaInterface
 
         /**
          * Creating table simiconnector barcode
+         * Remember to update function getAllColumOfTable() after changed this table
          */
         $table_barcode_name = $installer->getTable('simiconnector_simibarcode');
-        if ($installer->getConnection()->isTableExists($table_barcode_name) == true) {
-            $installer->getConnection()
-                    ->dropTable($installer->getConnection()->getTableName('simiconnector_simibarcode'));
-        }
+        $this->checkTableExist($installer, $table_key_name, 'simiconnector_simibarcode');
         $table_barcode = $installer->getConnection()->newTable(
             $table_barcode_name
         )->addColumn(
@@ -889,9 +872,7 @@ class InstallSchema implements InstallSchemaInterface
          * Creating table simiconnector Videos
          */
         $table_video_name = $installer->getTable('simiconnector_videos');
-        if ($installer->getConnection()->isTableExists($table_video_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_videos'));
-        }
+        $this->checkTableExist($installer, $table_key_name, 'simiconnector_videos');
         $table_video = $installer->getConnection()->newTable(
             $table_video_name
         )->addColumn(
@@ -944,10 +925,7 @@ class InstallSchema implements InstallSchemaInterface
          * Creating table simiconnector Transactions
          */
         $table_transaction_name = $installer->getTable('simiconnector_transactions');
-        if ($installer->getConnection()->isTableExists($table_transaction_name) == true) {
-            $installer->getConnection()
-                    ->dropTable($installer->getConnection()->getTableName('simiconnector_transactions'));
-        }
+        $this->checkTableExist($installer, $table_key_name, 'simiconnector_transactions');
         $table_transaction = $installer->getConnection()->newTable(
             $table_transaction_name
         )->addColumn(
@@ -970,10 +948,7 @@ class InstallSchema implements InstallSchemaInterface
          * Creating table simiconnector Productlabels
          */
         $table_label_name = $installer->getTable('simiconnector_productlabels');
-        if ($installer->getConnection()->isTableExists($table_label_name) == true) {
-            $installer->getConnection()
-                    ->dropTable($installer->getConnection()->getTableName('simiconnector_productlabels'));
-        }
+        $this->checkTableExist($installer, $table_key_name, 'simiconnector_productlabels');
         $table_label = $installer->getConnection()->newTable(
             $table_label_name
         )->addColumn(
@@ -1122,16 +1097,14 @@ class InstallSchema implements InstallSchemaInterface
          * Creating table simiconnector Taskbar
          */
         $table_taskbar_name = $installer->getTable('simiconnector_taskbar');
-        if ($installer->getConnection()->isTableExists($table_taskbar_name) == true) {
-            $installer->getConnection()->dropTable($installer->getConnection()->getTableName('simiconnector_taskbar'));
-        }
+        $this->checkTableExist($installer, $table_key_name, 'simiconnector_taskbar');
         $table_taskbar = $installer->getConnection()->newTable(
             $table_taskbar_name
         )->addColumn(
             'taskbar_id',
             \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
             null,
-            ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+            ['identity' => true, 'unsigned' => true, 'nullable' => false],
             'Taskbar Id'
         )->addColumn(
             'storeview_id',
@@ -1259,9 +1232,21 @@ class InstallSchema implements InstallSchemaInterface
             255,
             ['nullable' => true, 'default' => null],
             'Icon 6 Type'
+        )->addIndex(
+            'idx_primary',
+            ['taskbar_id'],
+            ['type' => \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_PRIMARY]
         );
         $installer->getConnection()->createTable($table_taskbar);
         // end create table simiconnector Taskbar
         $installer->endSetup();
+    }
+    
+    public function checkTableExist($installer, $table_key_name, $table_name)
+    {
+        if ($installer->getConnection()->isTableExists($table_key_name) == true) {
+            $installer->getConnection()
+                    ->dropTable($installer->getConnection()->getTableName($table_name));
+        }
     }
 }

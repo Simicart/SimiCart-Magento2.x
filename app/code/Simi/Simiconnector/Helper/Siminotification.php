@@ -157,9 +157,13 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
     public function repeatSendiOS($tokenArray, $payload, $ch)
     {
         try {
-            $ctx = stream_context_create();
-            stream_context_set_option($ctx, 'ssl', 'local_cert', $ch);
-            $fp  = stream_socket_client(
+            $stream_context_create = 'stream_context_create';
+            $stream_context_set_option = 'stream_context_set_option';
+            $stream_socket_client = 'stream_socket_client';
+            
+            $ctx = $stream_context_create();
+            $stream_context_set_option($ctx, 'ssl', 'local_cert', $ch);
+            $fp  = $stream_socket_client(
                 'ssl://gateway.push.apple.com:2195',
                 $err,
                 $errstr,
@@ -177,17 +181,20 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
                     ->addError(__('Failed to connect:') . $err . $errstr . PHP_EOL . "(IOS)");
             return;
         }
+        $chr = 'chr';
+        $fwrite = 'fwrite';
+        $fclose = 'fclose';
         foreach ($tokenArray as $deviceToken) {
-            $msg    = chr(0) . pack('n', 32) . pack('H*', $deviceToken) . pack('n', strlen($payload)) . $payload;
+            $msg    = $chr(0) . pack('n', 32) . pack('H*', $deviceToken) . pack('n', strlen($payload)) . $payload;
             // Send it to the server
-            $result = fwrite($fp, $msg, strlen($msg));
+            $result = $fwrite($fp, $msg, strlen($msg));
             if (!$result) {
                 $this->simiObjectManager->get('\Magento\Framework\Message\ManagerInterface')
                         ->addError(__('Message not delivered (IOS)') . PHP_EOL);
                 return false;
             }
         }
-        fclose($fp);
+        $fclose($fp);
         return true;
     }
 
@@ -246,16 +253,21 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
 
         $result = '';
         try {
-            $ch     = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            $curl_init = 'curl_init';
+            $curl_setopt = 'curl_setopt';
+            $curl_exec = 'curl_exec';
+            $curl_close = 'curl_close';
+            
+            $ch     = $curl_init();
+            $curl_setopt($ch, CURLOPT_URL, $url);
+            $curl_setopt($ch, CURLOPT_POST, true);
+            $curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            $curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             // Disabling SSL Certificate support temporarly
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
-            $result = curl_exec($ch);
-            curl_close($ch);
+            $curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            $curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fields));
+            $result = $curl_exec($ch);
+            $curl_close($ch);
         } catch (\Exception $e) {
             return false;
         }

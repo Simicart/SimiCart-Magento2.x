@@ -149,19 +149,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
         //search
         if (isset($params['filter']['q'])) {
-            $searchCollection = $this->simiObjectManager
-                    ->create('Magento\CatalogSearch\Model\ResourceModel\Fulltext\SearchCollection');
-            $searchCollection->addSearchFilter($params['filter']['q']);
-            $ids              = [];
-            foreach ($searchCollection as $item) {
-                $ids[] = $item->getId();
-            }
-            if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($ids) > 0) {
-                $collection->addFieldToFilter('entity_id', ['in' => $ids]);
-            }
-
-            $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
-            $collection->setVisibility(['3', '4']);
+            $this->getSearchProducts($collection);
         } else {
             $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
             $collection->setVisibility($this->productVisibility->getVisibleInSiteIds());
@@ -173,11 +161,30 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         return $collection;
     }
 
+    public function getSearchProducts(&$collection)
+    {
+        $searchCollection = $this->simiObjectManager
+                    ->create('Magento\CatalogSearch\Model\ResourceModel\Fulltext\SearchCollection');
+        $searchCollection->addSearchFilter($params['filter']['q']);
+        $ids              = [];
+        foreach ($searchCollection as $item) {
+            $ids[] = $item->getId();
+        }
+        if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($ids) > 0) {
+            $collection->addFieldToFilter('entity_id', ['in' => $ids]);
+        }
+
+        $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
+        $collection->setVisibility(['3', '4']);
+    }
+    
     public function getLayerNavigator($collection = null)
     {
         if (!$collection) {
             $collection = $this->builderQuery;
         }
+        $data       = $this->getData();
+        $params = $data['params'];
 
         $attributeCollection = $this->simiObjectManager
                 ->create('Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection');
@@ -191,98 +198,12 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             $arrayIDs[$allProductId] = '1';
         }
         $layerFilters = [];
-        $i            = 0;
 
         $titleFilters = [];
-        foreach ($attributeCollection as $attribute) {
-            $attributeOptions = [];
-            $attributeValues  = $collection->getAllAttributeValues($attribute->getAttributeCode());
-            if ($attribute->getData('is_visible') != '1') {
-                continue;
-            }
-            if ($attribute->getData('is_filterable') != '1') {
-                continue;
-            }
-            if ($attribute->getData('is_visible_on_front') != '1') {
-                continue;
-            }
-            if ($attribute->getData('used_in_product_listing') != '1') {
-                continue;
-            }
-            if (in_array($attribute->getDefaultFrontendLabel(), $titleFilters)) {
-                continue;
-            }
-            foreach ($attributeValues as $productId => $optionIds) {
-                if (isset($arrayIDs[$productId]) && ($arrayIDs[$productId] != null)) {
-                    $optionIds = explode(',', $optionIds[0]);
-                    foreach ($optionIds as $optionId) {
-                        if (isset($attributeOptions[$optionId])) {
-                            $attributeOptions[$optionId] ++;
-                        } else {
-                            $attributeOptions[$optionId] = 0;
-                        }
-                    }
-                }
-            }
+        $this->filterByAtribute($collection, $attributeCollection, $titleFilters, $layerFilters);
 
-            $options = $attribute->getSource()->getAllOptions();
-            $filters = [];
-            foreach ($options as $option) {
-                if ($option['value'] && isset($attributeOptions[$option['value']])
-                        && $attributeOptions[$option['value']]) {
-                    $option['count'] = $attributeOptions[$option['value']];
-                    $filters[]       = $option;
-                }
-            }
-
-            if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($filters) > 1) {
-                $titleFilters[] = $attribute->getDefaultFrontendLabel();
-                $layerFilters[] = [
-                    'attribute' => $attribute->getAttributeCode(),
-                    'title'     => $attribute->getDefaultFrontendLabel(),
-                    'filter'    => $filters,
-                ];
-            }
-        }
-
-        $priceRanges = $this->_getPriceRanges($collection);
-        $filters     = [];
-        $totalCount  = 0;
-        $maxIndex    = 0;
-        if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($priceRanges['counts']) > 0) {
-            $maxIndex = max(array_keys($priceRanges['counts']));
-        }
-        foreach ($priceRanges['counts'] as $index => $count) {
-            if ($index === '' || $index == 1) {
-                $index = 1;
-                $totalCount += $count;
-            } else {
-                $totalCount = $count;
-            }
-            if (isset($params['layer']['price'])) {
-                $prices    = explode('-', $params['layer']['price']);
-                $fromPrice = $prices[0];
-                $toPrice   = $prices[1];
-            } else {
-                $fromPrice = $priceRanges['range'] * ($index - 1);
-                $toPrice   = $index == $maxIndex ? '' : $priceRanges['range'] * ($index);
-            }
-
-            if ($index >= 1) {
-                $filters[$index] = [
-                    'value' => $fromPrice . '-' . $toPrice,
-                    'label' => $this->_renderRangeLabel($fromPrice, $toPrice),
-                    'count' => (int) ($totalCount)
-                ];
-            }
-        }
-
-        $layerFilters[] = [
-            'attribute' => 'price',
-            'title'     => __('Price'),
-            'filter'    => array_values($filters),
-        ];
-
+        $this->filterByPriceRange($layerFilters, $collection, $params);
+        
         // category
         if ($this->category) {
             $childrenCategories = $this->category->getChildrenCategories();
@@ -327,6 +248,92 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         return $layerArray;
     }
 
+    public function filterByAtribute($collection, $attributeCollection, &$titleFilters, &$layerFilters)
+    {
+        foreach ($attributeCollection as $attribute) {
+            $attributeOptions = [];
+            $attributeValues  = $collection->getAllAttributeValues($attribute->getAttributeCode());
+            if (($attribute->getData('is_visible') != '1') || ($attribute->getData('is_filterable') != '1')
+                    || ($attribute->getData('is_visible_on_front') != '1')
+                    || ($attribute->getData('used_in_product_listing') != '1')
+                    || (in_array($attribute->getDefaultFrontendLabel(), $titleFilters))) {
+                continue;
+            }
+            
+            foreach ($attributeValues as $productId => $optionIds) {
+                if (isset($arrayIDs[$productId]) && ($arrayIDs[$productId] != null)) {
+                    $optionIds = explode(',', $optionIds[0]);
+                    foreach ($optionIds as $optionId) {
+                        if (isset($attributeOptions[$optionId])) {
+                            $attributeOptions[$optionId] ++;
+                        } else {
+                            $attributeOptions[$optionId] = 0;
+                        }
+                    }
+                }
+            }
+
+            $options = $attribute->getSource()->getAllOptions();
+            $filters = [];
+            foreach ($options as $option) {
+                if ($option['value'] && isset($attributeOptions[$option['value']])
+                        && $attributeOptions[$option['value']]) {
+                    $option['count'] = $attributeOptions[$option['value']];
+                    $filters[]       = $option;
+                }
+            }
+
+            if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($filters) > 1) {
+                $titleFilters[] = $attribute->getDefaultFrontendLabel();
+                $layerFilters[] = [
+                    'attribute' => $attribute->getAttributeCode(),
+                    'title'     => $attribute->getDefaultFrontendLabel(),
+                    'filter'    => $filters,
+                ];
+            }
+        }
+    }
+    
+    public function filterByPriceRange(&$layerFilters, $collection, $params)
+    {
+        $priceRanges = $this->_getPriceRanges($collection);
+        $filters     = [];
+        $totalCount  = 0;
+        $maxIndex    = 0;
+        if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($priceRanges['counts']) > 0) {
+            $maxIndex = max(array_keys($priceRanges['counts']));
+        }
+        foreach ($priceRanges['counts'] as $index => $count) {
+            if ($index === '' || $index == 1) {
+                $index = 1;
+                $totalCount += $count;
+            } else {
+                $totalCount = $count;
+            }
+            if (isset($params['layer']['price'])) {
+                $prices    = explode('-', $params['layer']['price']);
+                $fromPrice = $prices[0];
+                $toPrice   = $prices[1];
+            } else {
+                $fromPrice = $priceRanges['range'] * ($index - 1);
+                $toPrice   = $index == $maxIndex ? '' : $priceRanges['range'] * ($index);
+            }
+
+            if ($index >= 1) {
+                $filters[$index] = [
+                    'value' => $fromPrice . '-' . $toPrice,
+                    'label' => $this->_renderRangeLabel($fromPrice, $toPrice),
+                    'count' => (int) ($totalCount)
+                ];
+            }
+        }
+
+        $layerFilters[] = [
+            'attribute' => 'price',
+            'title'     => __('Price'),
+            'filter'    => array_values($filters),
+        ];
+    }
     /*
      * Get price range filter
      *

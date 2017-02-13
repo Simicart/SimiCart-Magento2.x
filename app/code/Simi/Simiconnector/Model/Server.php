@@ -19,11 +19,11 @@ class Server
 
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
-        \Zend_Controller_Request_Http $request,
+        \Magento\Framework\Profiler\Driver\Standard\Output\Firebug $firebug,
         \Magento\Framework\Registry $registry
     ) {
         $this->simiObjectManager = $simiObjectManager;
-        $this->zendRequest = $request;
+        $this->zendRequest = $firebug->getRequest();
         $this->coreRegistry     = $registry;
     }
 

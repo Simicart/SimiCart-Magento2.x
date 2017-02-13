@@ -115,221 +115,44 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             if ($_finalPrice >= $_price) {
                 $priveV2['has_special_price'] = 0;
                 if ($_taxHelper->displayBothPrices()) {
-                    $priveV2['show_ex_in_price'] = 1;
-                    if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 0)) {
-                        $_exclTax = $_price + $_weeeTaxAmount;
-                        $_inclTax = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
-                        $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
-                    } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 1)) {
-                        $wee = '';
-                        foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
-                            $wee .= $_weeeTaxAttribute->getName();
-                            $wee .= ": ";
-                            $wee .= $this->currency($_weeeTaxAttribute->getAmount(), true, false);
-                            $wee .= " + ";
-                            $priveV2["weee"] = $wee;
-                        }
-                        $this->setWeePrice($priveV2, $wee);
-                        $_exclTax                   = $_price + $_weeeTaxAmount;
-                        $_inclTax                   = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
-                        $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
-                        $priveV2['show_weee_price'] = 1;
-                    } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 4)) {
-                        $wee = '';
-                        foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
-                            $wee .= $_weeeTaxAttribute->getName();
-                            $wee .= ": ";
-                            $wee .= $this->currency($_weeeTaxAttribute->getAmount(), true, false);
-                            $wee .= " + ";
-                            $priveV2["weee"] = $wee;
-                        }
-                        $this->setWeePrice($priveV2, $wee);
-                        $_exclTax                   = $_price + $_weeeTaxAmount;
-                        $_inclTax                   = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
-                        $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
-                        $priveV2['show_weee_price'] = 2;
-                    } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 2)) {
-                        $wee = '';
-                        foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
-                            $wee .= $_weeeTaxAttribute->getName();
-                            $wee .= ": ";
-                            $wee .= $this->currency($_weeeTaxAttribute->getAmount(), true, false);
-                            $wee .= " <br/> ";
-                            $priveV2["weee"] = $wee;
-                        }
-                        $this->setWeePrice($priveV2, $wee);
-                        $_exclTax                   = $_price;
-                        $_inclTax                   = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
-                        $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
-                        $priveV2['show_weee_price'] = 1;
-                    } else {
-                        $_exclTax = $_finalPrice;
-                        if ($_finalPrice == $_price) {
-                            $_exclTax = $_price;
-                        }
-                        $_inclTax = $_finalPriceInclTax;
-                        $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
-                    }
+                    $this->displayBothPrice(
+                        $priveV2,
+                        $_weeeTaxAmount,
+                        $_weeeHelper,
+                        $_price,
+                        $_finalPriceInclTax,
+                        $product,
+                        $_weeeTaxAttributes,
+                        $_weeeTaxAmountInclTaxes,
+                        $_finalPrice
+                    );
                 } else {
-                    $priveV2['show_ex_in_price'] = 0;
-                    if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, [0, 1])) {
-                        $priveV2['price_label'] = __('Regular Price');
-                        $weeeAmountToDisplay    = $_taxHelper->displayPriceIncludingTax() ?
-                                $_weeeTaxAmountInclTaxes : $_weeeTaxAmount;
-                        $this->setTaxReguarlPrice($priveV2, $_price + $weeeAmountToDisplay);
-                        if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 1)) {
-                            $wee = '';
-                            foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
-                                $wee .= $_weeeTaxAttribute->getName();
-                                $wee .= ": ";
-                                $wee .= $this->currency($_weeeTaxAttribute->getAmount(), true, false);
-                                $wee .= " + ";
-                                $priveV2["weee"] = $wee;
-                            }
-                            $priveV2['show_weee_price'] = 1;
-                        }
-                    } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 4)) {
-                        $priveV2['price_label'] = __('Regular Price');
-                        $this->setTaxReguarlPrice($priveV2, $_price + $_weeeTaxAmount);
-                        if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 1)) {
-                            $wee = '';
-                            foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
-                                $wee .= $_weeeTaxAttribute->getName();
-                                $wee .= ": ";
-                                $wee .= $this->currency($_weeeTaxAttribute->getAmount(), true, false);
-                                $wee .= " + ";
-                                $priveV2["weee"] = $wee;
-                            }
-                            $priveV2['show_weee_price'] = 1;
-                        }
-                    } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 2)) {
-                        $priveV2['price_label'] = __('Regular Price');
-                        $weeeAmountToDisplay    = $_taxHelper->displayPriceIncludingTax() ?
-                                $_weeeTaxAmountInclTaxes : $_weeeTaxAmount;
-                        $this->setTaxReguarlPrice($priveV2, $_price + $weeeAmountToDisplay);
-                        if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 1)) {
-                            $wee = '';
-                            foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
-                                $wee .= $_weeeTaxAttribute->getName();
-                                $wee .= ": ";
-                                $wee .= $this->currency($_weeeTaxAttribute->getAmount(), true, false);
-                                $wee .= " <br/> ";
-                                $priveV2["weee"] = $wee;
-                            }
-                            $priveV2['show_weee_price'] = 2;
-                        }
-                    } else {
-                        $priveV2['price_label'] = __('Regular Price');
-                        if ($_finalPrice == $_price) {
-                            $this->setTaxPrice($priveV2, $_finalPrice);
-                        } else {
-                            $this->setTaxPrice($priveV2, $_price);
-                        }
-                    }
+                    $this->displaySinglePrice(
+                        $priveV2,
+                        $_weeeTaxAmount,
+                        $_weeeHelper,
+                        $_price,
+                        $product,
+                        $_weeeTaxAttributes,
+                        $_weeeTaxAmountInclTaxes,
+                        $_finalPrice,
+                        $_taxHelper
+                    );
                 }
             } else {
-                $priveV2['has_special_price'] = 1;
-                $_originalWeeeTaxAmount       = $_weeeHelper->getAmountExclTax($product);
-                $_originalWeeeTaxAmount       = $this->convertPrice($_originalWeeeTaxAmount);
-                if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 0)) {
-                    $priveV2['price_label'] = __('Regular Price');
-                    $this->setTaxReguarlPrice($priveV2, $_regularPrice + $_originalWeeeTaxAmount);
-                    if ($_taxHelper->displayBothPrices()) {
-                        $priveV2['show_ex_in_price']    = 1;
-                        $priveV2['special_price_label'] = $_specialPriceStoreLabel;
-                        $_exclTax                       = $_finalPrice + $_weeeTaxAmount;
-                        $_inclTax                       = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
-                        $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
-                    } else {
-                        $priveV2['show_ex_in_price']    = 0;
-                        $priveV2['special_price_label'] = $_specialPriceStoreLabel;
-                        $this->setTaxPrice($priveV2, $_finalPrice + $_weeeTaxAmountInclTaxes);
-                    }
-                } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 1)) {
-                    $priveV2['price_label'] = __('Regular Price');
-                    $this->setTaxReguarlPrice($priveV2, $_regularPrice + $_originalWeeeTaxAmount);
-                    if ($_taxHelper->displayBothPrices()) {
-                        $priveV2['show_ex_in_price']    = 1;
-                        $priveV2['special_price_label'] = $_specialPriceStoreLabel;
-                        $_exclTax                       = $_finalPrice + $_weeeTaxAmount;
-                        $_inclTax                       = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
-                        $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
-                        $wee                            = '';
-                        foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
-                            $wee .= $_weeeTaxAttribute->getName();
-                            $wee .= ": ";
-                            $wee .= $this->currency($_weeeTaxAttribute->getAmount(), true, false);
-                            $wee .= " + ";
-                            $priveV2["weee"] = $wee;
-                        }
-                        $this->setWeePrice($priveV2, $wee);
-                        $priveV2['show_weee_price'] = 1;
-                    } else {
-                        $priveV2['show_ex_in_price']    = 0;
-                        $priveV2['special_price_label'] = $_specialPriceStoreLabel;
-                        $this->setTaxPrice($priveV2, $_finalPrice + $_weeeTaxAmountInclTaxes);
-                        $wee                            = '';
-                        foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
-                            $wee .= $_weeeTaxAttribute->getName();
-                            $wee .= ": ";
-                            $wee .= $this->currency($_weeeTaxAttribute->getAmount(), true, false);
-                            $wee .= " + ";
-                            $priveV2["weee"] = $wee;
-                        }
-                        $this->setWeePrice($priveV2, $wee);
-                        $priveV2['show_weee_price'] = 1;
-                    }
-                } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 4)) {
-                    $priveV2['show_ex_in_price']    = 1;
-                    $priveV2['price_label']         = __('Regular Price');
-                    $this->setTaxReguarlPrice($priveV2, $_regularPrice + $_originalWeeeTaxAmount);
-                    $priveV2['special_price_label'] = $_specialPriceStoreLabel;
-                    $_exclTax                       = $_finalPrice + $_weeeTaxAmount;
-                    $_inclTax                       = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
-                    $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
-                    $wee                            = '';
-                    foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
-                        $wee .= $_weeeTaxAttribute->getName();
-                        $wee .= ": ";
-                        $wee .= $this->currency($_weeeTaxAttribute->getAmount(), true, false);
-                        $wee .= " + ";
-                        $priveV2["weee"] = $wee;
-                    }
-                    $this->setWeePrice($priveV2, $wee);
-                    $priveV2['show_weee_price'] = 1;
-                } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 2)) {
-                    $priveV2['show_ex_in_price']    = 1;
-                    $priveV2['price_label']         = __('Regular Price');
-                    $this->setTaxReguarlPrice($priveV2, $_regularPrice);
-                    $priveV2['special_price_label'] = $_specialPriceStoreLabel;
-                    $_exclTax                       = $_finalPrice;
-                    $_inclTax                       = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
-                    $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
-                    $wee                            = '';
-                    foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
-                        $wee .= $_weeeTaxAttribute->getName();
-                        $wee .= ": ";
-                        $wee .= $this->currency($_weeeTaxAttribute->getAmount(), true, false);
-                        $wee .= " <br/> ";
-                        $priveV2["weee"] = $wee;
-                    }
-                    $this->setWeePrice($priveV2, $wee);
-                    $priveV2['show_weee_price'] = 1;
-                } else {
-                    $priveV2['price_label'] = __('Regular Price');
-                    $this->setTaxReguarlPrice($priveV2, $_regularPrice);
-                    if ($_taxHelper->displayBothPrices()) {
-                        $priveV2['show_ex_in_price']    = 1;
-                        $priveV2['special_price_label'] = $_specialPriceStoreLabel;
-                        $_exclTax                       = $_finalPrice;
-                        $_inclTax                       = $_finalPriceInclTax;
-                        $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
-                    } else {
-                        $priveV2['show_ex_in_price']    = 0;
-                        $priveV2['special_price_label'] = $_specialPriceStoreLabel;
-                        $this->setTaxPrice($priveV2, $_finalPrice);
-                    }
-                }
+                $this->displaySpecialPrice(
+                    $priveV2,
+                    $_weeeTaxAmount,
+                    $_weeeHelper,
+                    $_finalPriceInclTax,
+                    $product,
+                    $_weeeTaxAttributes,
+                    $_weeeTaxAmountInclTaxes,
+                    $_finalPrice,
+                    $_regularPrice,
+                    $_specialPriceStoreLabel,
+                    $_taxHelper
+                );
             }//end /* if ($_finalPrice == $_price): */
             if ($this->getDisplayMinimalPrice() && $_minimalPrice && $_minimalPrice < $_convertedFinalPrice) {
                 $_minimalPriceDisplayValue = $_minimalPrice;
@@ -341,38 +164,270 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
                 }
             }
         } else { // group product
-            $showMinPrice = $this->getDisplayMinimalPrice();
-            if ($showMinPrice && $_minimalPrice) {
-                $_exclTax = $this->catalogHelper->getTaxPrice($product, $_minimalPrice);
-                $_inclTax = $this->catalogHelper->getTaxPrice($product, $_minimalPrice, true);
-                $price    = $showMinPrice ? $_minimalPrice : 0;
-            } else {
-                $price    = $_convertedFinalPrice;
-                $_exclTax = $this->catalogHelper->getTaxPrice($product, $price);
-                $_inclTax = $this->catalogHelper->getTaxPrice($product, $price, true);
-            }
-
-            if ($price) {
-                if ($showMinPrice) {
-                    $priveV2['price_label'] = __('Starting at');
-                }
-                if ($_taxHelper->displayBothPrices()) {
-                    $priveV2['show_ex_in_price'] = 1;
-                    $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
-                } else {
-                    $priveV2['show_ex_in_price'] = 0;
-                    $_showPrice                  = $_inclTax;
-                    if (!$_taxHelper->displayPriceIncludingTax()) {
-                        $_showPrice = $_exclTax;
-                    }
-                    $this->setTaxPrice($priveV2, $_showPrice);
-                }
-            }
+            $this->displayGroupPrice($priveV2, $_minimalPrice, $_convertedFinalPrice, $product, $_taxHelper);
         }
 
         return $priveV2;
     }
 
+    public function displayBothPrice(
+        &$priveV2,
+        &$_weeeTaxAmount,
+        $_weeeHelper,
+        &$_price,
+        $_finalPriceInclTax,
+        &$product,
+        $_weeeTaxAttributes,
+        $_weeeTaxAmountInclTaxes,
+        &$_finalPrice
+    ) {
+    
+        $priveV2['show_ex_in_price'] = 1;
+        if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 0)) {
+            $_exclTax = $_price + $_weeeTaxAmount;
+            $_inclTax = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
+            $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
+        } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 1)) {
+            $wee = '';
+            $this->getWeeeValue($wee, $priveV2, $_weeeTaxAttributes);
+            $this->setWeePrice($priveV2, $wee);
+            $_exclTax                   = $_price + $_weeeTaxAmount;
+            $_inclTax                   = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
+            $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
+            $priveV2['show_weee_price'] = 1;
+        } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 4)) {
+            $wee = '';
+            $this->getWeeeValue($wee, $priveV2, $_weeeTaxAttributes);
+            $this->setWeePrice($priveV2, $wee);
+            $_exclTax                   = $_price + $_weeeTaxAmount;
+            $_inclTax                   = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
+            $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
+            $priveV2['show_weee_price'] = 2;
+        } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 2)) {
+            $wee = '';
+            foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
+                $wee .= $_weeeTaxAttribute->getName();
+                $wee .= ": ";
+                $wee .= $this->currency($_weeeTaxAttribute->getAmount(), true, false);
+                $wee .= " <br/> ";
+                $priveV2["weee"] = $wee;
+            }
+            $this->setWeePrice($priveV2, $wee);
+            $_exclTax                   = $_price;
+            $_inclTax                   = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
+            $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
+            $priveV2['show_weee_price'] = 1;
+        } else {
+            $_exclTax = $_finalPrice;
+            if ($_finalPrice == $_price) {
+                $_exclTax = $_price;
+            }
+            $_inclTax = $_finalPriceInclTax;
+            $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
+        }
+    }
+    
+    public function displaySinglePrice(
+        &$priveV2,
+        &$_weeeTaxAmount,
+        $_weeeHelper,
+        &$_price,
+        &$product,
+        $_weeeTaxAttributes,
+        $_weeeTaxAmountInclTaxes,
+        &$_finalPrice,
+        $_taxHelper
+    ) {
+        $priveV2['show_ex_in_price'] = 0;
+        if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, [0, 1])) {
+            $priveV2['price_label'] = __('Regular Price');
+            $weeeAmountToDisplay    = $_taxHelper->displayPriceIncludingTax() ?
+                    $_weeeTaxAmountInclTaxes : $_weeeTaxAmount;
+            $this->setTaxReguarlPrice($priveV2, $_price + $weeeAmountToDisplay);
+            if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 1)) {
+                $wee = '';
+                $this->getWeeeValue($wee, $priveV2, $_weeeTaxAttributes);
+                $priveV2['show_weee_price'] = 1;
+            }
+        } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 4)) {
+            $priveV2['price_label'] = __('Regular Price');
+            $this->setTaxReguarlPrice($priveV2, $_price + $_weeeTaxAmount);
+            if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 1)) {
+                $wee = '';
+                $this->getWeeeValue($wee, $priveV2, $_weeeTaxAttributes);
+                $priveV2['show_weee_price'] = 1;
+            }
+        } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 2)) {
+            $priveV2['price_label'] = __('Regular Price');
+            $weeeAmountToDisplay    = $_taxHelper->displayPriceIncludingTax() ?
+                    $_weeeTaxAmountInclTaxes : $_weeeTaxAmount;
+            $this->setTaxReguarlPrice($priveV2, $_price + $weeeAmountToDisplay);
+            if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 1)) {
+                $wee = '';
+                foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
+                    $wee .= $_weeeTaxAttribute->getName();
+                    $wee .= ": ";
+                    $wee .= $this->currency($_weeeTaxAttribute->getAmount(), true, false);
+                    $wee .= " <br/> ";
+                    $priveV2["weee"] = $wee;
+                }
+                $priveV2['show_weee_price'] = 2;
+            }
+        } else {
+            $priveV2['price_label'] = __('Regular Price');
+            if ($_finalPrice == $_price) {
+                $this->setTaxPrice($priveV2, $_finalPrice);
+            } else {
+                $this->setTaxPrice($priveV2, $_price);
+            }
+        }
+    }
+    
+    public function getWeeeValue(&$wee, &$priveV2, &$_weeeTaxAttributes)
+    {
+        foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
+            $wee .= $_weeeTaxAttribute->getName();
+            $wee .= ": ";
+            $wee .= $this->currency($_weeeTaxAttribute->getAmount(), true, false);
+            $wee .= " + ";
+            $priveV2["weee"] = $wee;
+        }
+    }
+    
+    public function displaySpecialPrice(
+        &$priveV2,
+        &$_weeeTaxAmount,
+        $_weeeHelper,
+        $_finalPriceInclTax,
+        &$product,
+        $_weeeTaxAttributes,
+        $_weeeTaxAmountInclTaxes,
+        &$_finalPrice,
+        &$_regularPrice,
+        $_specialPriceStoreLabel,
+        $_taxHelper
+    ) {
+        $priveV2['has_special_price'] = 1;
+        $_originalWeeeTaxAmount       = $_weeeHelper->getAmountExclTax($product);
+        $_originalWeeeTaxAmount       = $this->convertPrice($_originalWeeeTaxAmount);
+        if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 0)) {
+            $priveV2['price_label'] = __('Regular Price');
+            $this->setTaxReguarlPrice($priveV2, $_regularPrice + $_originalWeeeTaxAmount);
+            if ($_taxHelper->displayBothPrices()) {
+                $priveV2['show_ex_in_price']    = 1;
+                $priveV2['special_price_label'] = $_specialPriceStoreLabel;
+                $_exclTax                       = $_finalPrice + $_weeeTaxAmount;
+                $_inclTax                       = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
+                $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
+            } else {
+                $priveV2['show_ex_in_price']    = 0;
+                $priveV2['special_price_label'] = $_specialPriceStoreLabel;
+                $this->setTaxPrice($priveV2, $_finalPrice + $_weeeTaxAmountInclTaxes);
+            }
+        } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 1)) {
+            $priveV2['price_label'] = __('Regular Price');
+            $this->setTaxReguarlPrice($priveV2, $_regularPrice + $_originalWeeeTaxAmount);
+            if ($_taxHelper->displayBothPrices()) {
+                $priveV2['show_ex_in_price']    = 1;
+                $priveV2['special_price_label'] = $_specialPriceStoreLabel;
+                $_exclTax                       = $_finalPrice + $_weeeTaxAmount;
+                $_inclTax                       = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
+                $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
+                $wee                            = '';
+                $this->getWeeeValue($wee, $priveV2, $_weeeTaxAttributes);
+                $this->setWeePrice($priveV2, $wee);
+                $priveV2['show_weee_price'] = 1;
+            } else {
+                $priveV2['show_ex_in_price']    = 0;
+                $priveV2['special_price_label'] = $_specialPriceStoreLabel;
+                $this->setTaxPrice($priveV2, $_finalPrice + $_weeeTaxAmountInclTaxes);
+                $wee                            = '';
+                $this->getWeeeValue($wee, $priveV2, $_weeeTaxAttributes);
+                $this->setWeePrice($priveV2, $wee);
+                $priveV2['show_weee_price'] = 1;
+            }
+        } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 4)) {
+            $priveV2['show_ex_in_price']    = 1;
+            $priveV2['price_label']         = __('Regular Price');
+            $this->setTaxReguarlPrice($priveV2, $_regularPrice + $_originalWeeeTaxAmount);
+            $priveV2['special_price_label'] = $_specialPriceStoreLabel;
+            $_exclTax                       = $_finalPrice + $_weeeTaxAmount;
+            $_inclTax                       = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
+            $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
+            $wee                            = '';
+            $this->getWeeeValue($wee, $priveV2, $_weeeTaxAttributes);
+            $this->setWeePrice($priveV2, $wee);
+            $priveV2['show_weee_price'] = 1;
+        } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 2)) {
+            $priveV2['show_ex_in_price']    = 1;
+            $priveV2['price_label']         = __('Regular Price');
+            $this->setTaxReguarlPrice($priveV2, $_regularPrice);
+            $priveV2['special_price_label'] = $_specialPriceStoreLabel;
+            $_exclTax                       = $_finalPrice;
+            $_inclTax                       = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
+            $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
+            $wee                            = '';
+            foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
+                $wee .= $_weeeTaxAttribute->getName();
+                $wee .= ": ";
+                $wee .= $this->currency($_weeeTaxAttribute->getAmount(), true, false);
+                $wee .= " <br/> ";
+                $priveV2["weee"] = $wee;
+            }
+            $this->setWeePrice($priveV2, $wee);
+            $priveV2['show_weee_price'] = 1;
+        } else {
+            $priveV2['price_label'] = __('Regular Price');
+            $this->setTaxReguarlPrice($priveV2, $_regularPrice);
+            if ($_taxHelper->displayBothPrices()) {
+                $priveV2['show_ex_in_price']    = 1;
+                $priveV2['special_price_label'] = $_specialPriceStoreLabel;
+                $_exclTax                       = $_finalPrice;
+                $_inclTax                       = $_finalPriceInclTax;
+                $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
+            } else {
+                $priveV2['show_ex_in_price']    = 0;
+                $priveV2['special_price_label'] = $_specialPriceStoreLabel;
+                $this->setTaxPrice($priveV2, $_finalPrice);
+            }
+        }
+    }
+
+    public function displayGroupPrice(
+        &$priveV2,
+        &$_minimalPrice,
+        &$_convertedFinalPrice,
+        &$product,
+        $_taxHelper
+    ) {
+        $showMinPrice = $this->getDisplayMinimalPrice();
+        if ($showMinPrice && $_minimalPrice) {
+            $_exclTax = $this->catalogHelper->getTaxPrice($product, $_minimalPrice);
+            $_inclTax = $this->catalogHelper->getTaxPrice($product, $_minimalPrice, true);
+            $price    = $showMinPrice ? $_minimalPrice : 0;
+        } else {
+            $price    = $_convertedFinalPrice;
+            $_exclTax = $this->catalogHelper->getTaxPrice($product, $price);
+            $_inclTax = $this->catalogHelper->getTaxPrice($product, $price, true);
+        }
+
+        if ($price) {
+            if ($showMinPrice) {
+                $priveV2['price_label'] = __('Starting at');
+            }
+            if ($_taxHelper->displayBothPrices()) {
+                $priveV2['show_ex_in_price'] = 1;
+                $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
+            } else {
+                $priveV2['show_ex_in_price'] = 0;
+                $_showPrice                  = $_inclTax;
+                if (!$_taxHelper->displayPriceIncludingTax()) {
+                    $_showPrice = $_exclTax;
+                }
+                $this->setTaxPrice($priveV2, $_showPrice);
+            }
+        }
+    }
     public function getDisplayMinimalPrice()
     {
         if ($this->product) {

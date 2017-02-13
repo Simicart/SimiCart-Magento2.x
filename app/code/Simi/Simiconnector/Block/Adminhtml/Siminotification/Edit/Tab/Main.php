@@ -97,8 +97,12 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $data = $model->getData();
 
         if (!isset($data['storeview_id'])) {
-            $data['storeview_id'] = $this->simiObjectManager
-                    ->get('\Magento\Store\Model\Store')->getCollection()->setPageSize(1)->getFirstItem()->getId();
+            $storeviewCollection = $this->simiObjectManager
+                    ->get('\Magento\Store\Model\Store')->getCollection()->setPageSize(1);
+            foreach ($storeviewCollection as $storeview) {
+                $data['storeview_id'] = $storeview->getId();
+                break;
+            }
         }
         $data['storeview_selected'] = $data['storeview_id'];
         $fieldset->addField(

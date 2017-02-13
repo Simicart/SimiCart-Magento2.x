@@ -20,9 +20,9 @@ class Notifications extends Apiabstract
         } else {
             $deviceModel = $this->simiObjectManager
                     ->get('\Simi\Simiconnector\Model\Device')
-                    ->getCollection()->addFieldToFilter('device_token', $data['params']['device_token'])
-                    ->setPageSize(1)->getFirstItem();
-            if (!($deviceModel->getId())) {
+                    ->getCollection()
+                    ->getItemByColumnValue('device_token', $data['params']['device_token']);
+            if (!$deviceModel || !($deviceModel->getId())) {
                 $this->builderQuery = $this->simiObjectManager->get('\Simi\Simiconnector\Model\Siminotification')
                         ->getCollection();
                 return;

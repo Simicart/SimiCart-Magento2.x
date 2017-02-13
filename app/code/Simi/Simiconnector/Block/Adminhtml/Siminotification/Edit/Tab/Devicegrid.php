@@ -88,14 +88,11 @@ class Devicegrid extends \Magento\Backend\Block\Widget\Grid\Extended
         if (!$this->storeview_id && ($storeviewId = $this->getRequest()->getParam('storeview_id'))) {
             $this->storeview_id = $storeviewId;
         }
-        if (!$this->storeview_id) {
-            $this->storeview_id = $this->simiObjectManager
-                    ->get('\Magento\Store\Model\Store')
-                    ->getCollection()->setPageSize(1)
-                    ->getFirstItem()->getId();
+        
+        $collection         = $this->collectionFactory->create();
+        if ($this->storeview_id) {
+            $collection->addFieldToFilter('storeview_id', $this->storeview_id);
         }
-        $collection         = $this->collectionFactory->create()
-                ->addFieldToFilter('storeview_id', $this->storeview_id);
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }

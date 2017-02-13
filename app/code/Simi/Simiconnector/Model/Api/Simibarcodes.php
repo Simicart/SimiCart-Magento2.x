@@ -17,15 +17,15 @@ class Simibarcodes extends Apiabstract
         if ($data['resourceid']) {
             $this->builderQuery = $this->simiObjectManager
                     ->get('Simi\Simiconnector\Model\Simibarcode')->getCollection()
-                    ->addFieldToFilter('barcode_status', '1')->addFieldToFilter('barcode', $data['resourceid'])
-                    ->setPageSize(1)->getFirstItem();
-            if (!$this->builderQuery->getId()) {
+                    ->addFieldToFilter('barcode_status', '1')
+                    ->getItemByColumnValue('barcode', $data['resourceid']);
+            if (!$this->builderQuery || !$this->builderQuery->getId()) {
                 $this->builderQuery = $this->simiObjectManager
                         ->get('Simi\Simiconnector\Model\Simibarcode')->getCollection()
-                        ->addFieldToFilter('barcode_status', '1')->addFieldToFilter('qrcode', $data['resourceid'])
-                        ->setPageSize(1)->getFirstItem();
+                        ->addFieldToFilter('barcode_status', '1')
+                        ->getItemByColumnValue('qrcode', $data['resourceid']);
             }
-            if (!$this->builderQuery->getId()) {
+            if (!$this->builderQuery || !$this->builderQuery->getId()) {
                 throw new \Simi\Simiconnector\Helper\SimiException(__('There is No Product Matchs your Code'), 4);
             }
         } else {

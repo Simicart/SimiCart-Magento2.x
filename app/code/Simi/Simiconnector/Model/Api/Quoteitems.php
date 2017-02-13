@@ -59,7 +59,7 @@ class Quoteitems extends Apiabstract
         }
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($cartData)) {
             $filter       = $this->simiObjectManager
-                    ->create('\Zend_Filter_LocalizedToNormalized', ['locale' => $this->simiObjectManager
+                    ->create('\Magento\Framework\Filter\LocalizedToNormalized', ['locale' => $this->simiObjectManager
                     ->create('Magento\Framework\Locale\ResolverInterface')->getLocale()]);
             $removedItems = [];
             foreach ($cartData as $index => $data) {
@@ -101,7 +101,9 @@ class Quoteitems extends Apiabstract
         /*
          * The same with param parsing on Simi\Simiconnector\Model\Server, but to Array instead
          */
-        $zendHTTPRequestHttp = $this->simiObjectManager->get('\Zend_Controller_Request_Http');
+        $zendHTTPRequestHttp = $this->simiObjectManager
+                ->get('\Magento\Framework\Profiler\Driver\Standard\Output\Firebug')
+                ->getRequest();
         $contents            = $zendHTTPRequestHttp->getRawBody();
         if ($contents && ($contents != '')) {
             $contents = urldecode($contents);
@@ -111,7 +113,7 @@ class Quoteitems extends Apiabstract
 
         if (isset($params['qty'])) {
             $filter        = $this->simiObjectManager
-                    ->create('\Zend_Filter_LocalizedToNormalized', ['locale' => $this->simiObjectManager
+                    ->create('\Magento\Framework\Filter\LocalizedToNormalized', ['locale' => $this->simiObjectManager
                     ->create('Magento\Framework\Locale\ResolverInterface')->getLocale()]);
             $params['qty'] = $filter->filter($params['qty']);
         }

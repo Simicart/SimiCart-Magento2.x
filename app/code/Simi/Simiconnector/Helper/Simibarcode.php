@@ -66,17 +66,8 @@ class Simibarcode extends \Simi\Simiconnector\Helper\Data
      */
     public function getAllColumOfTable()
     {
-        $resourceModel  = $this->simiObjectManager->create('Simi\Simiconnector\Model\ResourceModel\Simibarcode');
-        $resource       = $this->simiObjectManager->create('Magento\Framework\App\ResourceConnection');
-        $tablename      = $resource->getTableName($resourceModel::TABLE_NAME);
-        $readConnection = $resource->getConnection('core_read');
-        $results        = $readConnection->fetchAll("SHOW COLUMNS FROM " . $tablename . ";");
-        $return         = [];
-        foreach ($results as $result) {
-            $return[] = $result['Field'];
-        }
-
-        return $return;
+        return ['barcode_id','barcode',
+            'qrcode','barcode_status','product_entity_id','product_name','product_sku','created_date'];
     }
 
     /**

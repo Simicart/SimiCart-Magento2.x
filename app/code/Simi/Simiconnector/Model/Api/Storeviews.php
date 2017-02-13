@@ -13,7 +13,7 @@ class Storeviews extends Apiabstract
     public $DEFAULT_ORDER = 'store_id';
     public $method        = 'callApi';
     public $scope_interface;
-
+    
     public function setBuilderQuery()
     {
         $data       = $this->getData();
@@ -299,34 +299,28 @@ class Storeviews extends Apiabstract
         }
         return 'after';
     }
-
+    
     public function getCurrencies()
     {
         $currencies = [];
         $codes      = $this->storeManager->getStore()->getAvailableCurrencyCodes(true);
         $locale     = $this->getLocale();
-        $options    = $this->simiObjectManager
-                            ->create('\Zend_Currency', [null, $locale]);
-
-        if (is_array($codes) && $this->simiObjectManager
-                ->get('Simi\Simiconnector\Helper\Data')->countArray($codes) > 1) {
-            $rates = $this->simiObjectManager
-                            ->create('Magento\Directory\Model\ResourceModel\Currency')->getCurrencyRates(
-                                $this->storeManager->getStore()->getCurrentCurrencyCode(),
-                                $codes
-                            );
-            foreach ($codes as $code) {
-                $currencies[] = [
-                    'value' => $code,
-                    'title' => $options->getName($code, $locale),
-                ];
+        foreach ($codes as $code) {
+            $currencyTitle = '';
+            try {
+                $options    = $this->simiObjectManager->create('\Magento\Framework\CurrencyFactory')
+                                ->create([null, $locale]);
+                $currencyTitle = $options->getName($code, $locale);
+            } catch (\Exception $e) {
+                $currencyTitle = $this->simiObjectManager->create('Magento\Directory\Model\CurrencyFactory')
+                ->create()->load($code)->getCurrencySymbol();
             }
-        } elseif ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($codes) == 1) {
             $currencies[] = [
-                'value' => $codes[0],
-                'title' => $options->getName($codes[0], $locale),
-            ];
+                'value' => $code,
+                'title' => $currencyTitle,
+            ];  
         }
+        
         return $currencies;
     }
 

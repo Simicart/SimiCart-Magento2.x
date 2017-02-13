@@ -149,8 +149,12 @@ class CatalogProductSaveBefore implements ObserverInterface
         }
         $helper              = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Siminotification');
         $storeViewCollection = $this->simiObjectManager->get('\Magento\Store\Model\Store')->getCollection();
-        $lastProductId = $this->simiObjectManager->create('Magento\Catalog\Model\Product')->getCollection()
-                                ->setOrder('entity_id', 'desc')->setPageSize(1)->getFirstItem()->getId();
+        $productCollection = $this->simiObjectManager->create('Magento\Catalog\Model\Product')->getCollection()
+                                ->setOrder('entity_id', 'desc');
+        foreach ($productCollection as $product) {
+            $lastProductId = $product->getId();
+            break;
+        }
         foreach ($storeViewCollection as $storeview) {
             $storeviewId = $storeview->getId();
             if ($helper->getConfig('simi_notifications/noti_new_product/new_product_enable', $storeviewId)) {

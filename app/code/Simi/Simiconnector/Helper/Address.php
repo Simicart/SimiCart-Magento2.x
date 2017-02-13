@@ -29,13 +29,15 @@ class Address extends Data
         if ($code) {
             $states = $this->simiObjectManager
                             ->create('\Magento\Directory\Model\ResourceModel\Country\Collection')
-                            ->addFieldToFilter('country_id', $code)->setPageSize(1)->getFirstItem()->getRegions();
-            foreach ($states as $state) {
-                $list[] = [
-                    'state_id'   => $state->getRegionId(),
-                    'state_name' => $state->getName(),
-                    'state_code' => $state->getCode(),
-                ];
+                            ->getItemByColumnValue('country_id', $code)->getRegions();
+            if ($states) {
+                foreach ($states as $state) {
+                    $list[] = [
+                        'state_id'   => $state->getRegionId(),
+                        'state_name' => $state->getName(),
+                        'state_code' => $state->getCode(),
+                    ];
+                }
             }
         }
         return $list;

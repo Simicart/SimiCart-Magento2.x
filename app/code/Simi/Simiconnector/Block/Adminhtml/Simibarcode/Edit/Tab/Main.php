@@ -87,9 +87,8 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $width     = $height    = 200;
         $sampleQR  = '<img src="http://chart.googleapis.com/chart?chs=' .
                 $width . 'x' . $height . '&cht=qr&chl=' . $data['qrcode'] . '" />';
-        $sampleBar = '<img id="simi-barcode-present" src="' .
-                $this->getUrl('*/*/barcode', ['code' => $data['barcode'], 'type' => 'code128']) . '" />';
-
+        $sampleBar = '<img id="simi-barcode-present" '
+                . 'src="http://barcodes4.me/barcode/c128a/'.$data['barcode'].'.jpg" />';
         $data = $model->getData();
         if ($model->getId()) {
             $fieldset->addField('barcode_id', 'hidden', ['name' => 'barcode_id']);

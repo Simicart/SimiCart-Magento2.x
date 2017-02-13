@@ -176,8 +176,8 @@ class Device extends \Magento\Framework\Model\AbstractModel
         }
 
         $existed_device = $this->getCollection()
-                ->addFieldToFilter('device_token', $deviceData->device_token)->setPageSize(1)->getFirstItem();
-        if ($existed_device->getId()) {
+                ->getItemByColumnValue('device_token', $deviceData->device_token);
+        if ($existed_device && $existed_device->getId()) {
             $this->setId($existed_device->getId());
         }
         $this->save();
