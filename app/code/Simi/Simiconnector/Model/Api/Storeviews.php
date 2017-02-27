@@ -74,7 +74,6 @@ class Storeviews extends Apiabstract
         $model                 = $this->simiObjectManager->get('Simi\Simiconnector\Model\Api\Cmspages');
         $callFunctionName = 'call_user_func_array';
         $cmsPageList           = $callFunctionName([&$model, $this->method], [$cmsData]);
-
         $additionInfo = [
             'base'              => [
                 'country_code'           => $country->getId(),
@@ -101,6 +100,10 @@ class Storeviews extends Apiabstract
                 'is_show_home_title'     => $this->getStoreConfig('simiconnector/general/is_show_home_title'),
                 'cust_group'             => $this->simiObjectManager
                 ->get('Magento\Customer\Model\Session')->getCustomer()->getGroupId(),
+                'customer_identity'                      => $this->simiObjectManager
+                ->get('Magento\Customer\Model\Session')->getSessionId(),
+                'customer_ip'                      => $this->simiObjectManager
+                ->get('Magento\Framework\HTTP\PhpEnvironment\RemoteAddress')->getRemoteAddress(),
             ],
             'sales'             => [
                 'sales_reorder_allow'           => $this->getStoreConfig('sales/reorder/allow'),
@@ -312,13 +315,12 @@ class Storeviews extends Apiabstract
                                 ->create([null, $locale]);
                 $currencyTitle = $options->getName($code, $locale);
             } catch (\Exception $e) {
-                $currencyTitle = $this->simiObjectManager->create('Magento\Directory\Model\CurrencyFactory')
-                ->create()->load($code)->getCurrencySymbol();
+                $currencyTitle = $code;
             }
             $currencies[] = [
                 'value' => $code,
                 'title' => $currencyTitle,
-            ];  
+            ];
         }
         
         return $currencies;

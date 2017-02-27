@@ -4,3 +4,9 @@ nbproject/private/private.properties
 nbproject/private/private.xml
 nbproject/project.properties
 nbproject/project.xml
+/nbproject/private/
+app/code/Simi/Simiconnector/nbproject/project.properties
+app/code/Simi/Simiconnector/nbproject/project.xml
+app/code/Simi/Simiconnector/nbproject/private/config.properties
+app/code/Simi/Simiconnector/nbproject/private/private.properties
+app/code/Simi/Simiconnector/nbproject/private/private.xml
