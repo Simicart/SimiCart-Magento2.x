@@ -253,18 +253,24 @@ class Address extends Data
 
         $address                         = $this->convertDataAddress($billingAddress);
         $address['save_in_address_book'] = '1';
-        $addressInterface                = $this->simiObjectManager
-                ->create('Magento\Customer\Api\Data\AddressInterface');
-        $billingAddress                  = $this->simiObjectManager
-                ->get('Magento\Quote\Model\Quote\Address')->importCustomerAddressData($addressInterface);
+
         if (isset($billingAddress->entity_id)) {
             $addressInterface = $this->simiObjectManager
                     ->create('Magento\Customer\Api\AddressRepositoryInterface')->getById($billingAddress->entity_id);
-        } else {
-            $billingAddress->setData($address);
-        }
 
+            $billingAddress                  = $this->simiObjectManager
+                ->get('Magento\Quote\Model\Quote\Address')->importCustomerAddressData($addressInterface);
+            $this->_getQuote()->setBillingAddress($billingAddress);
+            return;
+        } 
+        
+        $addressInterface                = $this->simiObjectManager
+            ->create('Magento\Customer\Api\Data\AddressInterface');
+        $billingAddress                  = $this->simiObjectManager
+            ->get('Magento\Quote\Model\Quote\Address')->importCustomerAddressData($addressInterface);
+        $billingAddress->setData($address);
         $this->_getQuote()->setBillingAddress($billingAddress);
+
     }
 
     /*
