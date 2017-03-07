@@ -149,7 +149,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
         //search
         if (isset($params['filter']['q'])) {
-            $this->getSearchProducts($collection);
+            $this->getSearchProducts($collection, $params);
         } else {
             $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
             $collection->setVisibility($this->productVisibility->getVisibleInSiteIds());
@@ -161,7 +161,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         return $collection;
     }
 
-    public function getSearchProducts(&$collection)
+    public function getSearchProducts(&$collection, $params)
     {
         $searchCollection = $this->simiObjectManager
                     ->create('Magento\CatalogSearch\Model\ResourceModel\Fulltext\SearchCollection');
