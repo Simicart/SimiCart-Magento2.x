@@ -136,7 +136,7 @@ class Review extends \Simi\Simiconnector\Helper\Data
 
             return $info;
         } else {
-            return [$block->__('Only registered users can write reviews')];
+            return [__('Only registered users can write reviews')];
         }
     }
 

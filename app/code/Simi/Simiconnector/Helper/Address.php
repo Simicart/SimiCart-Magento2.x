@@ -244,8 +244,7 @@ class Address extends Data
                     ->setWebsiteId($this->storeManager->getStore()->getWebsiteId())
                     ->loadByEmail($customer_email);
             if ($customer->getData('entity_id') != null) {
-                throw new \Simi\Simiconnector\Helper\SimiException($this
-                        ->__('There is already a customer registered using this email address. '
+                throw new \Simi\Simiconnector\Helper\SimiException(__('There is already a customer registered using this email address. '
                                 . 'Please login using this email address or enter '
                                 . 'a different email address to register your account.'), 7);
             }
