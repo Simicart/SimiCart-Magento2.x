@@ -22,10 +22,12 @@ class Addresses extends Apiabstract
     public function setBuilderQuery()
     {
         $data = $this->getData();
-        if ($data['resourceid'] && ($data['resourceid'] != 'geocoding')) {
-            $this->builderQuery = $this->simiObjectManager
-                        ->create('Magento\Customer\Model\Address')->load($data['resourceid']);
-            return;
+        if ($data['resourceid']) {
+            if ($data['resourceid'] != 'geocoding') {
+                $this->builderQuery = $this->simiObjectManager
+                            ->create('Magento\Customer\Model\Address')->load($data['resourceid']);
+                return;
+            }
         } else {
             if (!$this->simiObjectManager->get('Magento\Customer\Model\Session')->isLoggedIn()) {
                 throw new \Simi\Simiconnector\Helper\SimiException(__('You have not logged in'), 4);
