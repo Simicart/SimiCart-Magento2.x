@@ -39,7 +39,9 @@ class Save extends \Magento\Backend\App\Action
                     $model->setImageUrl('');
                 } else {
                     $imageFile = $imageHelper->uploadImage('image_url', 'siminotification');
-                    $model->setImageUrl($imageFile);
+                    if ($imageFile) {
+                        $model->setImageUrl($imageFile);
+                    }
                 }
                 $model->save();
                 $this->messageManager->addSuccess(__('The Data has been saved.'));

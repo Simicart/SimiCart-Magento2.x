@@ -43,13 +43,17 @@ class Save extends \Magento\Backend\App\Action
                 $model->setBannerName('');
             } else {
                 $imageFile = $imageHelper->uploadImage('banner_name', 'banner');
-                $model->setBannerName($imageFile);
+                if ($imageFile) {
+                    $model->setBannerName($imageFile);
+                }
             }
             if ($is_delete_banner_tablet && $model->getBannerNameTablet()) {
                 $model->setBannerNameTablet('');
             } else {
                 $imageFileTablet = $imageHelper->uploadImage('banner_name_tablet', 'banner');
-                $model->setBannerNameTablet($imageFileTablet);
+                if ($imageFileTablet) {
+                    $model->setBannerNameTablet($imageFileTablet);
+                }
             }
             $model->save();
             $this->updateVisibility($simiObjectManager, $model, $data);

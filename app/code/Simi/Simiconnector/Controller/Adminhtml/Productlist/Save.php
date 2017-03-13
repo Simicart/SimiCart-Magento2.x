@@ -42,13 +42,17 @@ class Save extends \Magento\Backend\App\Action
                     $model->setListImage('');
                 } else {
                     $imageFile = $imageHelper->uploadImage('list_image', 'productlist');
-                    $model->setListImage($imageFile);
+                    if ($imageFile) {
+                        $model->setListImage($imageFile);
+                    }
                 }
                 if ($is_delete_productlist_tablet && $model->setListImageTablet()) {
                     $model->setListImageTablet('');
                 } else {
                     $imageFiletablet = $imageHelper->uploadImage('list_image_tablet', 'productlist');
-                    $model->setListImageTablet($imageFiletablet);
+                    if ($imageFiletablet) {
+                        $model->setListImageTablet($imageFiletablet);
+                    }
                 }
                 $model->setData('storeview_id', null);
                 $model->save();

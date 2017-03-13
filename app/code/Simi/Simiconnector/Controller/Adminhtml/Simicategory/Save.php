@@ -47,13 +47,17 @@ class Save extends \Magento\Backend\App\Action
                     $model->setSimicategoryFilename('');
                 } else {
                     $imageFile = $imageHelper->uploadImage('simicategory_filename', 'simicategory');
-                    $model->setSimicategoryFilename($imageFile);
+                    if ($imageFile) {
+                        $model->setSimicategoryFilename($imageFile);
+                    }
                 }
                 if ($is_delete_simicategory_tablet && $model->getSimicategoryFilenameTablet()) {
                     $model->setSimicategoryFilenameTablet('');
                 } else {
                     $imageFiletablet = $imageHelper->uploadImage('simicategory_filename_tablet', 'simicategory');
-                    $model->setSimicategoryFilenameTablet($imageFiletablet);
+                    if ($imageFiletablet) {
+                        $model->setSimicategoryFilenameTablet($imageFiletablet);
+                    }
                 }
                 $model->setData('storeview_id', null);
                 $model->save();
