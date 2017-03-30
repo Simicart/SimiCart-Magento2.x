@@ -4,13 +4,6 @@ namespace Simi\Simiconnector\Controller\Adminhtml\Banner;
 
 class Delete extends \Magento\Backend\App\Action
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected function _isAllowed()
-    {
-        return $this->_authorization->isAllowed('Simi_Simiconnector::banner_delete');
-    }
 
     /**
      * Delete action
@@ -20,14 +13,15 @@ class Delete extends \Magento\Backend\App\Action
     public function execute()
     {
         // check if we know what should be deleted
-        $id = $this->getRequest()->getParam('banner_id');
-		/** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
+        $id             = $this->getRequest()->getParam('banner_id');
+        /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($id) {
             $title = "";
             try {
                 // init model and delete
-                $model = $this->_objectManager->create('Simi\Simiconnector\Model\Banner');
+                $simiobjectManager = $this->_objectManager;
+                $model = $simiobjectManager->create('Simi\Simiconnector\Model\Banner');
                 $model->load($id);
                 $title = $model->getTitle();
                 $model->delete();

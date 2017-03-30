@@ -1,4 +1,5 @@
 <?php
+
 namespace Simi\Simiconnector\Block\Adminhtml\Transactions;
 
 /**
@@ -6,25 +7,24 @@ namespace Simi\Simiconnector\Block\Adminhtml\Transactions;
  */
 class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
 {
-    
-    protected $_collectionFactory;
 
-    
-    protected $moduleManager;
+    public $collectionFactory;
+    public $moduleManager;
 
     /**
      * @var order model
      */
-    protected $_resource;
+    public $resource;
+    public $simiObjectManager;
 
     /**
      * @var order status model
      */
-    protected $_orderStatus;
+    public $orderStatus;
 
-    
     public function __construct(
         \Magento\Backend\Block\Template\Context $context,
+        \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         \Magento\Backend\Helper\Data $backendHelper,
         \Simi\Simiconnector\Model\ResourceModel\Appreport\CollectionFactory $collectionFactory,
         \Magento\Framework\Module\Manager $moduleManager,
@@ -32,17 +32,18 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory $orderStatusCollection,
         array $data = []
     ) {
-        $this->_collectionFactory = $collectionFactory;
-        $this->moduleManager = $moduleManager;
-        $this->_resource = $resourceConnection;
-        $this->_orderStatus = $orderStatusCollection;
+        $this->simiObjectManager    = $simiObjectManager;
+        $this->collectionFactory = $collectionFactory;
+        $this->moduleManager      = $moduleManager;
+        $this->resource          = $resourceConnection;
+        $this->orderStatus       = $orderStatusCollection;
         parent::__construct($context, $backendHelper, $data);
     }
 
     /**
      * @return void
      */
-    protected function _construct()
+    public function _construct()
     {
         parent::_construct();
         $this->setId('transactionsGrid');
@@ -50,7 +51,6 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->setDefaultDir('DESC');
         $this->setUseAjax(true);
         $this->setSaveParametersInSession(true);
-//        $this->setFilterVisibility(false);
     }
 
     /**
@@ -58,18 +58,11 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      *
      * @return \Magento\Backend\Block\Widget\Grid
      */
-    protected function _prepareCollection()
+    public function _prepareCollection()
     {
-        $collection = $this->_collectionFactory->create();
-        $orderGrid_table = $this->_resource->getTableName('sales_order_grid');
-
-        $collection->join(
-            array('ordergrid' => $orderGrid_table),
-            'main_table.order_id = ordergrid.entity_id',
-            array('*')
-        );
+        $collection      = $this->simiObjectManager->create('Simi\Simiconnector\Model\Appreport')
+                ->getCollection()->getGridCollection($this->simiObjectManager);
         $this->setCollection($collection);
-
         return parent::_prepareCollection();
     }
 
@@ -78,54 +71,53 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      *
      * @return \Magento\Backend\Block\Widget\Grid\Extended
      */
-    protected function _prepareColumns()
+    public function _prepareColumns()
     {
         $this->addColumn('real_order_id', [
-            'header'    => __('ID'),
-            'index'     => 'increment_id',
+            'header' => __('ID'),
+            'index'  => 'increment_id',
         ]);
 
         $this->addColumn('store_id', [
-            'type'      => 'store',
-            'header'    => __('Purchase Point'),
-            'index'     => 'store_id',
+            'type'   => 'store',
+            'header' => __('Purchase Point'),
+            'index'  => 'store_id',
         ]);
 
         $this->addColumn('created_at', [
-            'type'      => 'datetime',
-            'header'    => __('Purchase Date'),
-            'index'     => 'created_at',
+            'type'   => 'datetime',
+            'header' => __('Purchase Date'),
+            'index'  => 'created_at',
         ]);
 
         $this->addColumn('billing_name', [
-            'header'    => __('Bill-to Name'),
-            'index'     => 'billing_name',
+            'header' => __('Bill-to Name'),
+            'index'  => 'billing_name',
         ]);
 
         $this->addColumn('shipping_name', [
-            'header'    => __('Ship-to Name'),
-            'index'     => 'shipping_name',
+            'header' => __('Ship-to Name'),
+            'index'  => 'shipping_name',
         ]);
 
         $this->addColumn('base_grand_total', [
-            'type'      => 'currency',
-            'header'    => __('Grand Total (Base)'),
-            'index'     => 'base_grand_total',
+            'type'   => 'currency',
+            'header' => __('Grand Total (Base)'),
+            'index'  => 'base_grand_total',
         ]);
 
         $this->addColumn('grand_total', [
-            'type'      => 'currency',
-            'header'    => __('Grand Total (Purchased)'),
-            'index'     => 'grand_total',
+            'type'   => 'currency',
+            'header' => __('Grand Total (Purchased)'),
+            'index'  => 'grand_total',
         ]);
 
         $this->addColumn('status', [
-            'type'      => 'options',
-            'header'    => __('Status'),
-            'index'     => 'status',
-            'options'   => $this->_orderStatus->create()->toOptionHash(),
+            'type'    => 'options',
+            'header'  => __('Status'),
+            'index'   => 'status',
+            'options' => $this->orderStatus->create()->toOptionHash(),
         ]);
-
 
         return parent::_prepareColumns();
     }
@@ -139,7 +131,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getRowUrl($row)
     {
         return $this->getUrl('sales/order/view', [
-            'order_id' => $row->getOrderId()
+                    'order_id' => $row->getOrderId()
         ]);
     }
 
@@ -152,5 +144,4 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         return $this->getUrl('*/transactions/grid', ['_current' => true]);
     }
-
 }

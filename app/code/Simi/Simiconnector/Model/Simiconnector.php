@@ -10,14 +10,14 @@ namespace Simi\Simiconnector\Model;
  */
 class Simiconnector extends \Magento\Framework\Model\AbstractModel
 {
+
     /**
      * Initialize resource model
      *
      * @return void
      */
-    protected function _construct()
+    public function _construct()
     {
         $this->_init('Simi\Simiconnector\Model\ResourceModel\Simiconnector');
     }
-
 }

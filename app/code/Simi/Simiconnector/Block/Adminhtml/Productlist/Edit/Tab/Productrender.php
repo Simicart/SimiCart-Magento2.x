@@ -4,7 +4,8 @@ namespace Simi\Simiconnector\Block\Adminhtml\Productlist\Edit\Tab;
 
 class Productrender extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\Checkboxes\Extended
 {
-    protected function _getCheckboxHtml($value, $checked)
+
+    public function _getCheckboxHtml($value, $checked)
     {
         $html = '<label class="data-grid-checkbox-cell-inner" ';
         $html .= ' for="id_' . $this->escapeHtml($value) . '">';
@@ -16,14 +17,14 @@ class Productrender extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\C
         $html .= 'onclick="selectProduct(this)"';
         //end
         $html .= 'class="' .
-            ($this->getColumn()->getInlineCss() ? $this->getColumn()->getInlineCss() : 'checkbox') .
-            ' admin__control-checkbox' . '"';
+                ($this->getColumn()->getInlineCss() ? $this->getColumn()->getInlineCss() : 'checkbox') .
+                ' admin__control-checkbox' . '"';
         $html .= $checked . $this->getDisabled() . '/>';
         $html .= '<label for="id_' . $this->escapeHtml($value) . '"></label>';
         $html .= '</label>';
         return $html;
     }
-    
+
     /**
      * Renders header of the column
      *
@@ -36,7 +37,7 @@ class Productrender extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\C
         }
 
         $checked = '';
-        if ($filter = $this->getColumn()->getFilter()) {
+        if ($filter  = $this->getColumn()->getFilter()) {
             $checked = $filter->getValue() ? ' checked="checked"' : '';
         }
 

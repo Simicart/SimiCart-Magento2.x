@@ -5,41 +5,50 @@ namespace Simi\Simiconnector\Model\ResourceModel;
 /**
  * Connector Resource Model
  */
-class Storeviewmultiselect extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
+class Storeviewmultiselect extends \Magento\Framework\Model\AbstractModel
 {
+
     /**
      * @var \Magento\Framework\App\ObjectManager
      */
-    protected $_objectManager;
-    
+    public $simiObjectManager;
+
     /**
      * Initialize resource model
      *
      * @return void
      */
-    protected function _construct()
-    {
+    public function __construct(
+        \Magento\Framework\Model\Context $context,
+        \Magento\Framework\ObjectManagerInterface $simiObjectManager,
+        \Magento\Framework\Registry $registry,
+        \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
+        \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
+        array $data = []
+    ) {
+   
+        $this->simiObjectManager = $simiObjectManager;
+        $this->storeManager     = $this->simiObjectManager->get('Magento\Store\Model\StoreManagerInterface');
+        parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
-    
-    public function toArray()
+
+    public function toOptionArray()
     {
-        $this->_objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $groupCollection = $this->_objectManager->get('\Magento\Store\Model\Group')->getCollection();
-        $storeCollection = $this->_objectManager->get('\Magento\Store\Model\Store')->getCollection();      
-        $returnArray = array();
-        
+        $groupCollection = $this->simiObjectManager->get('\Magento\Store\Model\Group')->getCollection();
+        $storeCollection = $this->simiObjectManager->get('\Magento\Store\Model\Store')->getCollection();
+        $returnArray     = [];
+
         foreach ($groupCollection as $group) {
-            $groupOption = array('label'=>$group->getName());
-            $childStore = array();
+            $groupOption = ['label' => $group->getName()];
+            $childStore  = [];
             foreach ($storeCollection as $store) {
-                if ($store->getData('group_id') == $group->getId()){
-                    $childStore[] = array('value'=>$store->getId(), 'label'=>$store->getName());
+                if ($store->getData('group_id') == $group->getId()) {
+                    $childStore[] = ['value' => $store->getId(), 'label' => $store->getName()];
                 }
             }
             $groupOption['value'] = $childStore;
-            $returnArray[]=$groupOption;
+            $returnArray[]        = $groupOption;
         }
         return $returnArray;
     }
 }
-

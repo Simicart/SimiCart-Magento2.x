@@ -1,8 +1,10 @@
 <?php
+
 /**
  * Copyright © 2016 Simi . All rights reserved.
- * 
+ *
  */
+
 namespace Simi\Simiconnector\Block;
 
 /**
@@ -11,35 +13,34 @@ namespace Simi\Simiconnector\Block;
  */
 class Context extends \Magento\Framework\View\Element\Template\Context
 {
+
     /**
      * @var \Simi\Simiconnector\Helper\Data
      */
-    protected $_devToolHelper;
+    public $devToolHelper;
 
     /**
      * @var \Magento\Framework\Registry
      */
-    protected $registry;
-	
-	/**
-     * @var \Simi\Simiconnector\Model\Config
-     */
-    protected $_config;
-	
-	/**
-     * @var \Magento\Framework\ObjectManagerInterface
-     */
-    protected $_objectManager;
-	
-	/**
-     * @var \Magento\Framework\UrlFactory
-     */
-    protected $_urlFactory;
-	
-	
+    public $registry;
 
     /**
-	 * @param \Magento\Framework\App\RequestInterface $request
+     * @var \Simi\Simiconnector\Model\Config
+     */
+    public $config;
+
+    /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
+    public $simiObjectManager;
+
+    /**
+     * @var \Magento\Framework\UrlFactory
+     */
+    public $urlFactory;
+
+    /**
+     * @param \Magento\Framework\App\RequestInterface $request
      * @param \Magento\Framework\View\LayoutInterface $layout
      * @param \Magento\Framework\Event\ManagerInterface $eventManager
      * @param \Magento\Framework\UrlInterface $urlBuilder
@@ -66,13 +67,13 @@ class Context extends \Magento\Framework\View\Element\Template\Context
      * @param \Magento\Framework\View\Element\Template\File\Validator $validator
      * @param \Simi\Simiconnector\Helper\Data $devToolHelper
      * @param \Magento\Framework\Registry $registry
-	 * @param \Simi\Simiconnector\Model\Config $config
-	 * @param \Magento\Framework\ObjectManagerInterface
-	 * @param \Magento\Framework\UrlFactory
+     * @param \Simi\Simiconnector\Model\Config $config
+     * @param \Magento\Framework\ObjectManagerInterface
+     * @param \Magento\Framework\UrlFactory
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
-		\Magento\Framework\App\RequestInterface $request,
+        \Magento\Framework\App\RequestInterface $request,
         \Magento\Framework\View\LayoutInterface $layout,
         \Magento\Framework\Event\ManagerInterface $eventManager,
         \Magento\Framework\UrlInterface $urlBuilder,
@@ -99,16 +100,17 @@ class Context extends \Magento\Framework\View\Element\Template\Context
         \Magento\Framework\View\Element\Template\File\Validator $validator,
         \Simi\Simiconnector\Helper\Data $devToolHelper,
         \Magento\Framework\Registry $registry,
-		\Simi\Simiconnector\Model\Config $config,
-		\Magento\Framework\ObjectManagerInterface $objectManager,
-		\Magento\Framework\UrlFactory $urlFactory
+        \Simi\Simiconnector\Model\Config $config,
+        \Magento\Framework\ObjectManagerInterface $simiObjectManager,
+        \Magento\Framework\UrlFactory $urlFactory
     ) {
-        $this->_devToolHelper = $devToolHelper;
-        $this->registry = $registry;
-		$this->_config = $config;
-		$this->_objectManager=$objectManager;
-		$this->_urlFactory=$urlFactory;
-       parent::__construct(
+   
+        $this->devToolHelper    = $devToolHelper;
+        $this->registry          = $registry;
+        $this->config           = $config;
+        $this->simiObjectManager = $simiObjectManager;
+        $this->urlFactory       = $urlFactory;
+        parent::__construct(
             $request,
             $layout,
             $eventManager,
@@ -138,46 +140,47 @@ class Context extends \Magento\Framework\View\Element\Template\Context
     }
 
     /**
-	 * Function for getting developer helper object
+     * Function for getting developer helper object
      * @return \Simi\Simiconnector\Helper\Data
      */
     public function getSimiconnectorHelper()
     {
-        return $this->_devToolHelper;
+        return $this->devToolHelper;
     }
 
-
     /**
-	 * Function for getting registry object
+     * Function for getting registry object
      * @return \Magento\Framework\Registry
      */
     public function getRegistry()
     {
         return $this->registry;
     }
-	
-	/**
-	 * Function for getting simiconnector model config object 
+
+    /**
+     * Function for getting simiconnector model config object
      * @return \Simi\Simiconnector\Model\Config
      */
-	public function getConfig(){
-		return $this->_config;
-	}
-	
-	/**
-	 * Function for getting object manager object 
+    public function getConfig()
+    {
+        return $this->config;
+    }
+
+    /**
+     * Function for getting object manager object
      * @return \Magento\Framework\ObjectManagerInterface
      */
-	public function getObjectManager(){
-		return $this->_objectManager;
-	}
-	
-	/**
-	 * Function for getting UrlFactory object 
+    public function getObjectManager()
+    {
+        return $this->simiObjectManager;
+    }
+
+    /**
+     * Function for getting UrlFactory object
      * @return \Magento\Framework\UrlFactory
      */
-	public function getUrlFactory(){
-		return $this->_urlFactory;
-	}
-
+    public function getUrlFactory()
+    {
+        return $this->urlFactory;
+    }
 }

@@ -1,96 +1,95 @@
 <?php
+
 /**
  * Copyright © 2016 Simi . All rights reserved.
  */
+
 namespace Simi\Simiconnector\Block;
+
 use Magento\Framework\UrlFactory;
+
 class BaseBlock extends \Magento\Framework\View\Element\Template
 {
-	/**
+
+    /**
      * @var \Simi\Simiconnector\Helper\Data
      */
-	 protected $_devToolHelper;
-	 
-	 /**
+    public $devToolHelper;
+
+    /**
      * @var \Magento\Framework\Url
      */
-	 protected $_urlApp;
-	 
-	 /**
+    public $urlApp;
+
+    /**
      * @var \Simi\Simiconnector\Model\Config
      */
-    protected $_config;
+    public $config;
 
     /**
      * @param \Simi\Simiconnector\Block\Context $context
-	 * @param \Magento\Framework\UrlFactory $urlFactory
+     * @param \Magento\Framework\UrlFactory $urlFactory
      */
-    public function __construct( \Simi\Simiconnector\Block\Context $context
-	)
+    public function __construct(\Simi\Simiconnector\Block\Context $context)
     {
-        $this->_devToolHelper = $context->getSimiconnectorHelper();
-		$this->_config = $context->getConfig();
-        $this->_urlApp=$context->getUrlFactory()->create();
-		parent::__construct($context);
-	
+        $this->devToolHelper = $context->getSimiconnectorHelper();
+        $this->config        = $context->getConfig();
+        $this->urlApp        = $context->getUrlFactory()->create();
+        parent::__construct($context);
     }
-	
-	/**
-	 * Function for getting event details
-	 * @return array
-	 */
+
+    /**
+     * Function for getting event details
+     * @return array
+     */
     public function getEventDetails()
     {
-		return  $this->_devToolHelper->getEventDetails();
+        return $this->devToolHelper->getEventDetails();
     }
-	
-	/**
+
+    /**
      * Function for getting current url
-	 * @return string
+     * @return string
      */
-	public function getCurrentUrl(){
-		return $this->_urlApp->getCurrentUrl();
-	}
-	
-	/**
+    public function getCurrentUrl()
+    {
+        return $this->urlApp->getCurrentUrl();
+    }
+
+    /**
      * Function for getting controller url for given router path
-	 * @param string $routePath
-	 * @return string
+     * @param string $routePath
+     * @return string
      */
-	public function getControllerUrl($routePath){
-		
-		return $this->_urlApp->getUrl($routePath);
-	}
-	
-	/**
+    public function getControllerUrl($routePath)
+    {
+
+        return $this->urlApp->getUrl($routePath);
+    }
+
+    /**
      * Function for getting current url
-	 * @param string $path
-	 * @return string
+     * @param string $path
+     * @return string
      */
-	public function getConfigValue($path){
-		return $this->_config->getCurrentStoreConfigValue($path);
-	}
-	
-	/**
+    public function getConfigValue($path)
+    {
+        return $this->config->getCurrentStoreConfigValue($path);
+    }
+
+    /**
      * Function canShowSimiconnector
-	 * @return bool
+     * @return bool
      */
-	public function canShowSimiconnector(){
-		$isEnabled=$this->getConfigValue('simiconnector/module/is_enabled');
-		if($isEnabled)
-		{
-			$allowedIps=$this->getConfigValue('simiconnector/module/allowed_ip');
-			 if(is_null($allowedIps)){
-				return true;
-			}
-			else {
-				$remoteIp=$_SERVER['REMOTE_ADDR'];
-				if (strpos($allowedIps,$remoteIp) !== false) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-	
+    public function canShowSimiconnector()
+    {
+        $isEnabled = $this->getConfigValue('simiconnector/module/is_enabled');
+        if ($isEnabled) {
+            $allowedIps = $this->getConfigValue('simiconnector/module/allowed_ip');
+            if ($allowedIps === null) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

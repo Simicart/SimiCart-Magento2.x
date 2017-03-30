@@ -1,4 +1,5 @@
 <?php
+
 namespace Simi\Simiconnector\Block\Adminhtml\Siminotification\Edit;
 
 /**
@@ -6,15 +7,15 @@ namespace Simi\Simiconnector\Block\Adminhtml\Siminotification\Edit;
  */
 class Tabs extends \Magento\Backend\Block\Widget\Tabs
 {
+
     /**
      * @return void
      */
-    protected function _construct()
+    public function _construct()
     {
         parent::_construct();
         $this->setId('page_tabs');
         $this->setDestElementId('edit_form');
         $this->setTitle(__('Siminotification Information'));
     }
-
 }

@@ -1,54 +1,35 @@
 <?php
+
 /**
  *
  * Copyright © 2016 Simicommerce. All rights reserved.
  */
+
 namespace Simi\Simiconnector\Controller\Rest;
 
 class V2 extends Action
 {
 
-	/**
+    /**
      * @var \Magento\Framework\App\Cache\TypeListInterface
      */
-    protected $_cacheTypeList;
+    public $cacheTypeList;
 
     /**
      * @var \Magento\Framework\App\Cache\StateInterface
      */
-    protected $_cacheState;
+    public $cacheState;
 
     /**
      * @var \Magento\Framework\App\Cache\Frontend\Pool
      */
-    protected $_cacheFrontendPool;
+    public $cacheFrontendPool;
 
     /**
      * @var \Magento\Framework\View\Result\PageFactory
      */
-    protected $resultPageFactory;
+    public $resultPageFactory;
 
-    /**
-     * @param Action\Context $context
-     * @param \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList
-     * @param \Magento\Framework\App\Cache\StateInterface $cacheState
-     * @param \Magento\Framework\App\Cache\Frontend\Pool $cacheFrontendPool
-     * @param \Magento\Framework\View\Result\PageFactory $resultPageFactory
-     */
-    public function __construct(
-       \Magento\Framework\App\Action\Context $context,
-        \Magento\Framework\App\Cache\TypeListInterface $cacheTypeList,
-        \Magento\Framework\App\Cache\StateInterface $cacheState,
-        \Magento\Framework\App\Cache\Frontend\Pool $cacheFrontendPool,
-        \Magento\Framework\View\Result\PageFactory $resultPageFactory
-    ) {
-        parent::__construct($context);
-        $this->_cacheTypeList = $cacheTypeList;
-        $this->_cacheState = $cacheState;
-        $this->_cacheFrontendPool = $cacheFrontendPool;
-        $this->resultPageFactory = $resultPageFactory;
-    }
-	
     /**
      * Flush cache storage
      *
@@ -57,41 +38,61 @@ class V2 extends Action
     {
         parent::execute();
         ob_start();
-        try{
+        try {
             $result = $this->_getServer()
-                ->init($this)->run();
+                            ->init($this)->run();
             $this->_printData($result);
-        }catch (\Exception $e){
-            $results = array();
-            $result = array();
+        } catch (\Exception $e) {
+            $results = [];
+            $result  = [];
             if (is_array($e->getMessage())) {
                 $messages = $e->getMessage();
                 foreach ($messages as $message) {
-                    $result[] = array(
-                        'code' => $e->getCode(),
+                    $result[] = [
+                        'code'    => $e->getCode(),
                         'message' => $message,
-                    );
+                    ];
                 }
             } else {
-                $result[] = array(
-                    'code' => $e->getCode(),
+                $result[] = [
+                    'code'    => $e->getCode(),
                     'message' => $e->getMessage(),
-                );
+                ];
             }
             $results['errors'] = $result;
             $this->_printData($results);
         }
-        
-        exit();
         ob_end_flush();
-        
     }
-    /*
-    public function execute()
+    
+    private function _getServer()
     {
-        $this->resultPage = $this->resultPageFactory->create();  
-		return $this->resultPage;
-        
+        $serverModel               = $this->simiObjectManager->get('Simi\Simiconnector\Model\Server');
+        $serverModel->eventManager = $this->_eventManager;
+        return $serverModel;
     }
-    */
+
+    private function _printData($result)
+    {
+        try {
+            $this->getResponse()->setHeader('Content-Type', 'application/json');
+            $this->setData($result);
+            $this->_eventManager
+                    ->dispatch($this->getRequest()->getFullActionName(), ['object' => $this, 'data' => $result]);
+            $this->data = $this->getData();
+            return $this->getResponse()->setBody(json_encode($this->data));
+        } catch (\Exception $e) {
+            return;
+        }
+    }
+    
+    private function getData()
+    {
+        return $this->data;
+    }
+
+    private function setData($data)
+    {
+        $this->data = $data;
+    }
 }

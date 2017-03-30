@@ -1,32 +1,40 @@
 <?php
+
 /**
  * Copyright © 2016 Simi. All rights reserved.
  */
 
 namespace Simi\Simiconnector\Model\Api;
 
-
 class Addresses extends Apiabstract
 {
-    
-    protected $_DEFAULT_ORDER = 'entity_id';
 
-    public function setSingularKey($singularKey) {
-        $this->singularKey = 'Address';
+    public $DEFAULT_ORDER = 'entity_id';
+
+    public function setSingularKey($singularKey)
+    {
+        if ($singularKey != 'Address') {
+            $this->singularKey = 'Address';
+        }
         return $this;
     }
 
-    public function setBuilderQuery() {
+    public function setBuilderQuery()
+    {
         $data = $this->getData();
         if ($data['resourceid']) {
-            
+            if ($data['resourceid'] != 'geocoding') {
+                $this->builderQuery = $this->simiObjectManager
+                            ->create('Magento\Customer\Model\Address')->load($data['resourceid']);
+                return;
+            }
         } else {
-            if (!$this->_objectManager->get('Magento\Customer\Model\Session')->isLoggedIn()) {
-                throw new \Exception(__('You have not logged in'), 4);
+            if (!$this->simiObjectManager->get('Magento\Customer\Model\Session')->isLoggedIn()) {
+                throw new \Simi\Simiconnector\Helper\SimiException(__('You have not logged in'), 4);
             } else {
-                $customer = $this->_objectManager->get('Magento\Customer\Model\Session')->getCustomer();
-                $addressArray = array();
-                $billing = $customer->getPrimaryBillingAddress();
+                $customer     = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
+                $addressArray = [];
+                $billing      = $customer->getPrimaryBillingAddress();
                 if ($billing) {
                     $addressArray[] = $billing->getId();
                 }
@@ -37,8 +45,9 @@ class Addresses extends Apiabstract
                 foreach ($customer->getAddresses() as $index => $address) {
                     $addressArray[] = $index;
                 }
-                $this->builderQuery = $this->_objectManager->create('Magento\Customer\Model\Address')->getCollection()
-                        ->addFieldToFilter('entity_id', array('in' => $addressArray));
+                $this->builderQuery = $this->simiObjectManager
+                        ->create('Magento\Customer\Model\Address')->getCollection()
+                        ->addFieldToFilter('entity_id', ['in' => $addressArray]);
             }
         }
     }
@@ -47,9 +56,10 @@ class Addresses extends Apiabstract
      * Add Address
      */
 
-    public function store() {
-        $data = $this->getData();
-        $address = $this->_objectManager->get('Simi\Simiconnector\Model\Address')->saveAddress($data);
+    public function store()
+    {
+        $data               = $this->getData();
+        $address            = $this->simiObjectManager->get('Simi\Simiconnector\Model\Address')->saveAddress($data);
         $this->builderQuery = $address;
         return $this->show();
     }
@@ -58,58 +68,91 @@ class Addresses extends Apiabstract
      * Edit Address
      */
 
-    public function update() {
-        $data = $this->getData();
-        $address = $this->_objectManager->get('Simi\Simiconnector\Model\Address')->saveAddress($data);
+    public function update()
+    {
+        $data               = $this->getData();
+        $address            = $this->simiObjectManager->get('Simi\Simiconnector\Model\Address')->saveAddress($data);
         $this->builderQuery = $address;
         return $this->show();
+    }
+
+    /*
+     * Remove Address
+     */
+
+    public function destroy()
+    {
+        $data = $this->getData();
+        if ($data['resourceid']) {
+            $this->builderQuery = $this->simiObjectManager
+                    ->create('Magento\Customer\Model\Address')->load($data['resourceid']);
+            $this->builderQuery->delete();
+            return $this->show();
+        }
+        throw new \Simi\Simiconnector\Helper\SimiException(__('No Address ID sent'), 4);
     }
 
     /*
      * Get Address Detail
      */
 
-    public function index() {
-        $result = parent::index();
-        $customer = $this->_objectManager->get('Magento\Customer\Model\Session')->getCustomer();
+    public function index()
+    {
+        $result    = parent::index();
+        $customer  = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
         $addresses = $result['addresses'];
         foreach ($addresses as $index => $address) {
-            $addressModel = $this->_objectManager->get('Magento\Customer\Model\Address')->load($address['entity_id']);
-            $addresses[$index] = array_merge($address, $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($addressModel, $customer));
+            $addressModel = $this->loadAddressWithId($address['entity_id']);
+            $addresses[$index] = array_merge($address, $this->simiObjectManager
+                    ->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($addressModel, $customer));
         }
         $result['addresses'] = $addresses;
         return $result;
+    }
+    
+    public function loadAddressWithId($id)
+    {
+        $addressModel    = $this->getAddressModel()->load($id);
+        return $addressModel;
+    }
+    
+    public function getAddressModel()
+    {
+        return $this->simiObjectManager
+                    ->get('Magento\Customer\Model\Address');
     }
 
     /*
      * Geocoding
      */
 
-    public function show() {
+    public function show()
+    {
         $data = $this->getData();
         if ($data['resourceid']) {
             if ($data['resourceid'] == 'geocoding') {
-                $result = array();
-                $addressDetail = array();
-                $longitude = $data['params']['longitude'];
-                $latitude = $data['params']['latitude'];
-                $dataresult = $this->_objectManager->get('Simi\Simiconnector\Helper\Address')->getLocationInfo($latitude, $longitude);
-                $dataresult = $dataresult['geocoding'];
-                for ($j = 0; $j < count($dataresult->results[0]->address_components); $j++) {
+                $result        = [];
+                $addressDetail = [];
+                $longitude     = $data['params']['longitude'];
+                $latitude      = $data['params']['latitude'];
+                $dataresult    = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
+                        ->getLocationInfo($latitude, $longitude);
+                $address   = '';
+                $dataresult    = $dataresult['geocoding'];
+                
+                $addressComponentsCount = count($dataresult->results[0]->address_components);
+                for ($j = 0; $j < $addressComponentsCount; $j++) {
                     $addressComponents = $dataresult->results[0]->address_components[$j];
-                    $types = $addressComponents->types;
+                    $types             = $addressComponents->types;
                     if (in_array('street_number', $types)) {
                         $address .= $addressComponents->long_name;
                     }
-                    if (in_array('route', $types)) {
-                        $address .= ' ' . $addressComponents->long_name;
-                    }
-                    if (in_array('locality', $types)) {
+                    if (in_array('route', $types) || in_array('locality', $types)) {
                         $address .= ', ' . $addressComponents->long_name;
                     }
                     $addressDetail['street'] = $address;
                     if (in_array('postal_town', $types) || in_array('administrative_area_level_1', $types)) {
-                        $addressDetail['region'] = $addressComponents->long_name;
+                        $addressDetail['region']    = $addressComponents->long_name;
                         $addressDetail['region_id'] = $addressComponents->short_name;
                     }
 
@@ -119,7 +162,7 @@ class Addresses extends Apiabstract
 
                     if (in_array('country', $types)) {
                         $addressDetail['country_name'] = $addressComponents->long_name;
-                        $addressDetail['country_id'] = $addressComponents->short_name;
+                        $addressDetail['country_id']   = $addressComponents->short_name;
                     }
                     if (in_array('postal_code', $types)) {
                         $addressDetail['postcode'] = $addressComponents->long_name;
@@ -131,5 +174,4 @@ class Addresses extends Apiabstract
         }
         return parent::show();
     }
-
 }

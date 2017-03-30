@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="jquery/fileUploader/css/jquery.fileupload-ui.css"/>
+        <css src="Magento_Catalog::catalog/category-selector.css"/>
+    </head>
+    <update handle="editor"/>
+    <body>
+        <referenceContainer name="content">
+            <block class="Simi\Simiconnector\Block\Adminhtml\Simibarcode\Edit" name="banner.edit"/>
+        </referenceContainer>
+        <referenceContainer name="left">
+            <block class="Simi\Simiconnector\Block\Adminhtml\Simibarcode\Edit\Tabs" name="simibarcode_edit_tabs">               
+            </block>
+        </referenceContainer>
+
+    </body>
+</page>

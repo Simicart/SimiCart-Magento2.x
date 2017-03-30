@@ -7,12 +7,13 @@ namespace Simi\Simiconnector\Model\ResourceModel;
  */
 class Productlist extends \Magento\Framework\Model\ResourceModel\Db\AbstractDb
 {
+
     /**
      * Initialize resource model
      *
      * @return void
      */
-    protected function _construct()
+    public function _construct()
     {
         $this->_init('simiconnector_product_list', 'productlist_id');
     }

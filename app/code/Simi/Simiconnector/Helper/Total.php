@@ -3,19 +3,21 @@
 /**
  * Connector data helper
  */
+
 namespace Simi\Simiconnector\Helper;
-
-
 
 class Total extends Data
 {
+
     public $data;
 
-    protected function _getCart() {
-        return $this->_objectManager->get('Magento\Checkout\Model\Cart');
+    public function _getCart()
+    {
+        return $this->simiObjectManager->get('Magento\Checkout\Model\Cart');
     }
 
-    protected function _getQuote() {
+    public function _getQuote()
+    {
         return $this->_getCart()->getQuote();
     }
 
@@ -23,8 +25,9 @@ class Total extends Data
      * Get Quote Price
      */
 
-    public function getTotal() {
-        $orderTotal = array();
+    public function getTotal()
+    {
+        $orderTotal = [];
         if ($this->_getQuote()->isVirtual()) {
             $total = $this->_getQuote()->getBillingAddress()->getTotals();
         } else {
@@ -38,7 +41,8 @@ class Total extends Data
      * For Cart and OnePage Order
      */
 
-    public function setTotal($total, &$data) {
+    public function setTotal($total, &$data)
+    {
         if (isset($total['shipping']) && ($total['shipping']->getValue())) {
             /*
              * tax_cart_display_shipping
@@ -51,28 +55,30 @@ class Total extends Data
          */
         if (isset($total['tax'])) {
             $data['tax'] = $total['tax']->getValue();
-            $taxSumarry = array();
+            $taxSumarry  = [];
             foreach ($total['tax']->getFullInfo() as $info) {
-                if (isset($info['hidden']) && $info['hidden'])
+                if (isset($info['hidden']) && $info['hidden']) {
                     continue;
+                }
                 $amount = $info['amount'];
-                $rates = $info['rates'];
+                $rates  = $info['rates'];
                 foreach ($rates as $rate) {
                     $title = $rate['title'];
-                    if (!is_null($rate['percent'])) {
-                        $title.= ' ('.$rate['percent'].'%)';
+                    if (!($rate['percent'] === null)) {
+                        $title.= ' (' . $rate['percent'] . '%)';
                     }
-                    $taxSumarry[] = array('title' => $title,
+                    $taxSumarry[] = ['title'  => $title,
                         'amount' => $amount,
-                    );
+                    ];
                     /*
-                     * SimiCart only show the first Rate for Each Item 
+                     * SimiCart only show the first Rate for Each Item
                      */
                     break;
                 }
             }
-            if (count($taxSumarry))
+            if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($taxSumarry)) {
                 $data['tax_summary'] = $taxSumarry;
+            }
         }
         if (isset($total['discount'])) {
             $data['discount'] = abs($total['discount']->getValue());
@@ -80,89 +86,113 @@ class Total extends Data
         /*
          * tax_cart_display_subtotal
          */
-        if ($this->displayTypeSubOrder() == 3) {
-            $data['subtotal_excl_tax'] = $total['subtotal']->getValueExclTax();
-            $data['subtotal_incl_tax'] = $total['subtotal']->getValueInclTax();
-        } else if ($this->displayTypeSubOrder() == 1) {
-            $data['subtotal_excl_tax'] = $total['subtotal']->getValue();   
-            $data['subtotal_incl_tax'] = $data['subtotal_excl_tax'] + $data['tax'];
-        } else if ($this->displayTypeSubOrder() == 2) {
-            $data['subtotal_incl_tax'] = $total['subtotal']->getValue();   
-            $data['subtotal_excl_tax'] = $data['subtotal_incl_tax'] - $data['tax'];
-        }
+        $this->setSubtotal($total, $data);
         /*
          * tax_cart_display_grandtotal
          */
-        
+
         $data['grand_total_incl_tax'] = $total['grand_total']->getValue();
         $data['grand_total_excl_tax'] = $this->getTotalExclTaxGrand($data);
 
         $coupon = '';
-        if ($this->_getQuote()->getCouponCode() ) {
-            $coupon = $this->_getQuote()->getCouponCode();
+        if ($this->_getQuote()->getCouponCode()) {
+            $coupon              = $this->_getQuote()->getCouponCode();
             $data['coupon_code'] = $coupon;
         }
 
         $this->data = $data;
-        $this->_objectManager->get('\Magento\Framework\Event\ManagerInterface')->dispatch('simi_simiconnector_helper_total_settotal_after', array('object' => $this, 'data' => $this->data));
-        $data = $this->data;
-    }
-
-    public function displayTypeSubOrder() {
-        return $this->getStoreConfig('tax/cart_display/subtotal');
+        $this->simiObjectManager
+                ->get('\Magento\Framework\Event\ManagerInterface')
+                ->dispatch(
+                    'simi_simiconnector_helper_total_settotal_after',
+                    ['object' => $this, 'data' => $this->data]
+                );
+        $data       = $this->data;
     }
     
+    private function setSubtotal($total, &$data)
+    {
+        if ($this->displayTypeSubOrder() == 3) {
+            $data['subtotal_excl_tax'] = $total['subtotal']->getValueExclTax();
+            $data['subtotal_incl_tax'] = $total['subtotal']->getValueInclTax();
+        } elseif ($this->displayTypeSubOrder() == 1) {
+            $data['subtotal_excl_tax'] = $total['subtotal']->getValue();
+            $data['subtotal_incl_tax'] = $data['subtotal_excl_tax'] + $data['tax'];
+        } elseif ($this->displayTypeSubOrder() == 2) {
+            $data['subtotal_incl_tax'] = $total['subtotal']->getValue();
+            $data['subtotal_excl_tax'] = $data['subtotal_incl_tax'] - $data['tax'];
+        }
+    }
+
+    public function displayTypeSubOrder()
+    {
+        return $this->getStoreConfig('tax/cart_display/subtotal');
+    }
+
     /*
      * For Order History
      */
 
-    public function showTotalOrder($order) {
-        $data = array();
+    public function showTotalOrder($order)
+    {
+        $data                      = [];
         $data['subtotal_excl_tax'] = $order->getSubtotal();
         $data['subtotal_incl_tax'] = $order->getSubtotalInclTax();
-	if ($data['subtotal_incl_tax'] == null) {
+        if ($data['subtotal_incl_tax'] == null) {
             $data['subtotal_incl_tax'] = $order->getSubtotal() + $order->getTaxAmount();
         }
         $data['shipping_hand_excl_tax'] = $order->getShippingAmount();
         $data['shipping_hand_incl_tax'] = $order->getShippingInclTax();
-        $data['tax'] = $order->getTaxAmount();
-        $data['discount'] = abs($order->getDiscountAmount());
-        $data['grand_total_excl_tax'] = $order->getGrandTotal() - $data['tax'];
-        $data['grand_total_incl_tax'] = $order->getGrandTotal();
+        $data['tax']                    = $order->getTaxAmount();
+        $data['discount']               = abs($order->getDiscountAmount());
+        $data['grand_total_excl_tax']   = $order->getGrandTotal() - $data['tax'];
+        $data['grand_total_incl_tax']   = $order->getGrandTotal();
 
-        if ($this->_objectManager->get('Magento\Directory\Model\Currency')->load($order->getData('order_currency_code'))->getCurrencySymbol() != null) {
-            $data['currency_symbol'] = $this->_objectManager->get('Magento\Directory\Model\Currency')->load($order->getData('order_currency_code'))->getCurrencySymbol();
+        if ($this->simiObjectManager->get('Magento\Directory\Model\Currency')
+                ->load($order->getData('order_currency_code'))->getCurrencySymbol() != null) {
+            $data['currency_symbol'] = $this->simiObjectManager
+                    ->get('Magento\Directory\Model\Currency')->load($order->getData('order_currency_code'))
+                    ->getCurrencySymbol();
         } else {
             $data['currency_symbol'] = $order->getOrderCurrency()->getCurrencyCode();
         }
         return $data;
     }
 
-    public function addCustomRow($title, $sortOrder, $value, $valueString = null) {
-        if (isset($this->data['custom_rows']))
+    public function addCustomRow($title, $sortOrder, $value, $valueString = null)
+    {
+        if (isset($this->data['custom_rows'])) {
             $customRows = $this->data['custom_rows'];
-        else
-            $customRows = array();
-        if (!$valueString)
-            $customRows[] = array('title' => $title, 'sort_order' => $sortOrder, 'value' => $value);
-        else
-            $customRows[] = array('title' => $title, 'sort_order' => $sortOrder, 'value' => $value, 'value_string' => $valueString);
+        } else {
+            $customRows = [];
+        }
+        if (!$valueString) {
+            $customRows[] = ['title' => $title, 'sort_order' => $sortOrder, 'value' => $value];
+        } else {
+            $customRows[] = ['title' => $title, 'sort_order' => $sortOrder, 'value' => $value,
+                'value_string' => $valueString];
+        }
         $this->data['custom_rows'] = $customRows;
     }
 
-    public function displayBothTaxSub() {
-        return $this->_objectManager->get('Magento\Tax\Model\Tax')->displayCartSubtotalBoth($this->_storeManager->getStore());
+    public function displayBothTaxSub()
+    {
+        return $this->simiObjectManager->get('Magento\Tax\Model\Tax')
+                ->displayCartSubtotalBoth($this->storeManager->getStore());
     }
 
-    public function includeTaxGrand($total) {
+    public function includeTaxGrand($total)
+    {
         if ($total->getAddress()->getGrandTotal()) {
-            return $this->_objectManager->get('Magento\Tax\Model\Tax')->displayCartTaxWithGrandTotal($this->_storeManager->getStore());
+            return $this->simiObjectManager->get('Magento\Tax\Model\Tax')
+                    ->displayCartTaxWithGrandTotal($this->storeManager->getStore());
         }
         return false;
     }
 
-    public function getTotalExclTaxGrand($total) {
-        if(isset($total['tax'])) {
+    public function getTotalExclTaxGrand($total)
+    {
+        if (isset($total['tax'])) {
             $excl = $total['grand_total_incl_tax'] - $total['tax'];
             $excl = max($excl, 0);
             return $excl;
@@ -170,20 +200,25 @@ class Total extends Data
         return $total['grand_total'];
     }
 
-    public function displayBothTaxShipping() {
-        return $this->_objectManager->get('Magento\Tax\Model\Tax')->displayCartShippingBoth($this->_storeManager->getStore());
+    public function displayBothTaxShipping()
+    {
+        return $this->simiObjectManager->get('Magento\Tax\Model\Tax')
+                ->displayCartShippingBoth($this->storeManager->getStore());
     }
 
-    public function displayIncludeTaxShipping() {
-        return $this->_objectManager->get('Magento\Tax\Model\Tax')->displayCartShippingInclTax($this->_storeManager->getStore());
+    public function displayIncludeTaxShipping()
+    {
+        return $this->simiObjectManager->get('Magento\Tax\Model\Tax')
+                ->displayCartShippingInclTax($this->storeManager->getStore());
     }
 
-    public function getShippingIncludeTax($total) {
+    public function getShippingIncludeTax($total)
+    {
         return $total->getAddress()->getShippingInclTax();
     }
 
-    public function getShippingExcludeTax($total) {
+    public function getShippingExcludeTax($total)
+    {
         return $total->getAddress()->getShippingAmount();
     }
-
 }

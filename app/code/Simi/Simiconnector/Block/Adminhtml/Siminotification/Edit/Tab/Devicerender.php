@@ -4,7 +4,8 @@ namespace Simi\Simiconnector\Block\Adminhtml\Siminotification\Edit\Tab;
 
 class Devicerender extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\Checkboxes\Extended
 {
-    protected function _getCheckboxHtml($value, $checked)
+
+    public function _getCheckboxHtml($value, $checked)
     {
         $html = '<label class="data-grid-checkbox-cell-inner" ';
         $html .= ' for="id_' . $this->escapeHtml($value) . '">';
@@ -16,13 +17,14 @@ class Devicerender extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\Ch
         $html .= 'onclick="selectDevice(this)"';
         //end
         $html .= 'class="simi-device-checkbox ' .
-            ($this->getColumn()->getInlineCss() ? $this->getColumn()->getInlineCss() : 'checkbox') .
-            ' admin__control-checkbox' . '"';
+                ($this->getColumn()->getInlineCss() ? $this->getColumn()->getInlineCss() : 'checkbox') .
+                ' admin__control-checkbox' . '"';
         $html .= $checked . $this->getDisabled() . '/>';
         $html .= '<label for="id_' . $this->escapeHtml($value) . '"></label>';
         $html .= '</label>';
         return $html;
     }
+
     /**
      * Renders header of the column
      *
@@ -35,7 +37,7 @@ class Devicerender extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\Ch
         }
 
         $checked = '';
-        if ($filter = $this->getColumn()->getFilter()) {
+        if ($filter  = $this->getColumn()->getFilter()) {
             $checked = $filter->getValue() ? ' checked="checked"' : '';
         }
 
@@ -47,7 +49,6 @@ class Devicerender extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\Ch
         $html .= 'id="checkall_device_siminotification" ';
         $html .= 'name="' . $this->getColumn()->getFieldName() . '" ';
         $html .= 'onclick="checkboxDeviceAllChecked(this); toogleCheckAllDevice();"';
-        //$html .= 'class="admin__control-checkbox"' . $checked . $disabled . ' ';
         $html .= 'title="' . __('Select All') . '"/><label></label></th>';
         return $html;
     }
