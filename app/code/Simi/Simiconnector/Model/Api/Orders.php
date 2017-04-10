@@ -238,16 +238,16 @@ class Orders extends Apiabstract
             $order['notification']         = $notification;
         }
 
-        $result  = ['order' => $order];
         $session = $this->_getOnepage()->getCheckout();
         $session->resetCheckout();
-
-        $lastOrderId = $this->_getCheckoutSession()->getLastRealOrderId();
+        
+        $this->order_placed_info = $order;
         $this->eventManager->dispatch(
-            'simiconnector_checkout_onepage_controller_success_action',
-            ['order_ids' => [$lastOrderId]]
+            'simi_simiconnector_model_api_orders_onepage_store_after',
+            ['object' => $this, 'data' => $this->detail_onepage]
         );
         $this->cleanCheckoutSession();
+        $result = array('order' => $this->order_placed_info);
         return $result;
     }
 
