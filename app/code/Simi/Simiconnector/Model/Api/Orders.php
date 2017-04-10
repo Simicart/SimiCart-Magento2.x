@@ -258,7 +258,7 @@ class Orders extends Apiabstract
             $quote->setIsActive(false);
             $quote->delete();
         } catch (\Exception $e) {
-            $this->_checkoutSession->clearQuote()->clearStorage();
+            $this->_getCheckoutSession()->clearQuote()->clearStorage();
         }
         $checkoutSession = $this->_getCheckoutSession();
         $checkoutSession->clearQuote();
