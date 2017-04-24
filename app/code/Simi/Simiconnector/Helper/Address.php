@@ -147,13 +147,12 @@ class Address extends Data
             $address['region_id'] = $state_id;
         }
         $this->applyDefaultValue($data);
-        $latlng  = isset($data->latlng) == true ? $data->latlng : '';
         $address = [];
         foreach ((array) $data as $index => $info) {
             $address[$index] = $info;
         }
         if (isset($data->street)) {
-            $address['street'] = [$data->street, '', $latlng, ''];
+            $address['street'] = [$data->street];
         }
         return $address;
     }
