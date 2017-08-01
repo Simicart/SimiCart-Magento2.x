@@ -96,9 +96,14 @@ class Server
         $cache            = explode($action_string, $request_string);
         $resources_string = $cache[1];
         $resources        = explode('/', $resources_string);
-
         $resource       = isset($resources[0]) ? $resources[0] : null;
+        if (count ($newResources = explode('?', $resource))) {
+            $resource = $newResources[0];
+        }
         $resourceid     = isset($resources[1]) ? $resources[1] : null;
+        if (count ($newResourceIds = explode('?', $resourceid))) {
+            $resourceid = $newResourceIds[0];
+        }
         $nestedresource = isset($resources[2]) ? $resources[2] : null;
         $nestedid       = isset($resources[3]) ? $resources[3] : null;
 
