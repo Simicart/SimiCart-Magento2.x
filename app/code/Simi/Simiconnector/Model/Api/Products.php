@@ -43,6 +43,8 @@ class Products extends Apiabstract
                     $this->setFilterByQuery();
                 } elseif (isset($filter['related_to_id'])) {
                     $this->setFilterByRelated();
+                } elseif (isset($filter['spot_product'])) {
+                    $this->setFilterBySpot($filter['spot_product']);
                 } else {
                     $this->setFilterByCategoryId($this->storeManager->getStore()->getRootCategoryId());
                 }
@@ -295,5 +297,27 @@ class Products extends Apiabstract
         $categoryModel    = $this->simiObjectManager
                 ->create('Magento\Catalog\Model\Product')->load($id);
         return $categoryModel;
+    }
+
+    public function setFilterBySpot()
+    {
+        $data = $this->getData();
+        if (!isset($data['params']['filter']['spot_product'])) {
+            throw new \Simi\Simiconnector\Helper\SimiException(__('No Spot Type Sent'), 4);
+        }
+        $type = $data['params']['filter']['spot_product'];
+        if ($type == '1') {
+            if (!isset($data['params']['filter']['product_ids'])) {
+                throw new \Simi\Simiconnector\Helper\SimiException(__('No Product List Sent'), 4);
+            }
+            $listProduct = str_replace(' ', '', $data['params']['filter']['product_ids']);
+            $this->builderQuery = $this->simiObjectManager
+                ->create('Simi\Simiconnector\Model\ResourceModel\Productlist\ProductlistCollection')
+                ->getProductCollectionByType($type, $this->simiObjectManager, $listProduct);
+        } else {
+            $this->builderQuery = $this->simiObjectManager
+                ->create('Simi\Simiconnector\Model\ResourceModel\Productlist\ProductlistCollection')
+                ->getProductCollectionByType($type, $this->simiObjectManager);
+        }
     }
 }

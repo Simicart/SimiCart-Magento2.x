@@ -36,9 +36,9 @@ class Price extends \Simi\Simiconnector\Helper\Price
         $this->minimalPriceTax = $minimalPriceTax       = $product->getMinPrice();
         $_maximalPriceTax       = $product->getMaxPrice();
 
-        $this->minimalPriceInclTax = $minimalPriceInclTax = $this->_catalogHelper
+        $this->minimalPriceInclTax = $minimalPriceInclTax = $this->catalogHelper
                 ->getTaxPrice($product, $minimalPriceTax, true);
-        $_maximalPriceInclTax       = $this->_catalogHelper->getTaxPrice($product, $_maximalPriceTax, true);
+        $_maximalPriceInclTax       = $this->catalogHelper->getTaxPrice($product, $_maximalPriceTax, true);
 
         $_weeeTaxAmount = 0;
 
