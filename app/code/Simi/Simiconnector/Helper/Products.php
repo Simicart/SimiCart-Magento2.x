@@ -29,7 +29,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Catalog\Model\Product\Visibility $productVisibility,
         \Magento\Framework\ObjectManagerInterface $simiObjectManager
     ) {
-   
+
         $this->simiObjectManager = $simiObjectManager;
         $this->scopeConfig      = $this->simiObjectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
         $this->storeManager     = $this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
@@ -103,11 +103,11 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         $collection         = $this->simiObjectManager
-                ->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
+            ->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
         $collection->addAttributeToSelect('*')
-                ->addStoreFilter()
-                ->addAttributeToFilter('status', 1)
-                ->addFinalPrice();
+            ->addStoreFilter()
+            ->addAttributeToFilter('status', 1)
+            ->addFinalPrice();
         $collection         = $this->_filter($collection, $parameters);
         $this->builderQuery = $collection;
     }
@@ -164,7 +164,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     public function getSearchProducts(&$collection, $params)
     {
         $searchCollection = $this->simiObjectManager
-                    ->create('Magento\CatalogSearch\Model\ResourceModel\Fulltext\SearchCollection');
+            ->create('Magento\CatalogSearch\Model\ResourceModel\Fulltext\SearchCollection');
         $searchCollection->addSearchFilter($params['filter']['q']);
         $ids              = [];
         foreach ($searchCollection as $item) {
@@ -177,7 +177,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
         $collection->setVisibility(['3', '4']);
     }
-    
+
     public function getLayerNavigator($collection = null)
     {
         if (!$collection) {
@@ -187,10 +187,10 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         $params = $data['params'];
 
         $attributeCollection = $this->simiObjectManager
-                ->create('Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection');
+            ->create('Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection');
         $attributeCollection->addIsFilterableFilter()
-                ->addVisibleFilter()
-                ->addFieldToFilter('is_visible_on_front', 1);
+            ->addVisibleFilter()
+            ->addFieldToFilter('is_visible_on_front', 1);
 
         $allProductIds = $collection->getAllIds();
         $arrayIDs      = [];
@@ -200,10 +200,10 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         $layerFilters = [];
 
         $titleFilters = [];
-        $this->filterByAtribute($collection, $attributeCollection, $titleFilters, $layerFilters);
+        $this->filterByAtribute($collection, $attributeCollection, $titleFilters, $layerFilters, $arrayIDs);
 
         $this->filterByPriceRange($layerFilters, $collection, $params);
-        
+
         // category
         if ($this->category) {
             $childrenCategories = $this->category->getChildrenCategories();
@@ -230,9 +230,9 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         $selectableFilters = [];
         foreach ($layerFilters as $layerFilter) {
             if (($this->simiObjectManager
-                    ->get('Simi\Simiconnector\Helper\Data')
-                    ->countArray($layerFilter['filter']) == 1) && ($this->simiObjectManager
-                            ->get('Simi\Simiconnector\Helper\Data')->countCollection($collection) > 1)) {
+                        ->get('Simi\Simiconnector\Helper\Data')
+                        ->countArray($layerFilter['filter']) == 1) && ($this->simiObjectManager
+                        ->get('Simi\Simiconnector\Helper\Data')->countCollection($collection) > 1)) {
                 $layerFilter['label'] = $layerFilter['filter'][0]['label'];
                 $layerFilter['value'] = $layerFilter['filter'][0]['value'];
                 unset($layerFilter['filter']);
@@ -248,18 +248,16 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         return $layerArray;
     }
 
-    public function filterByAtribute($collection, $attributeCollection, &$titleFilters, &$layerFilters)
+    public function filterByAtribute($collection, $attributeCollection, &$titleFilters, &$layerFilters, $arrayIDs)
     {
         foreach ($attributeCollection as $attribute) {
             $attributeOptions = [];
             $attributeValues  = $collection->getAllAttributeValues($attribute->getAttributeCode());
             if (($attribute->getData('is_visible') != '1') || ($attribute->getData('is_filterable') != '1')
-                    || ($attribute->getData('is_visible_on_front') != '1')
-                    || ($attribute->getData('used_in_product_listing') != '1')
-                    || (in_array($attribute->getDefaultFrontendLabel(), $titleFilters))) {
+                || ($attribute->getData('is_visible_on_front') != '1')
+                || (in_array($attribute->getDefaultFrontendLabel(), $titleFilters))) {
                 continue;
             }
-            
             foreach ($attributeValues as $productId => $optionIds) {
                 if (isset($arrayIDs[$productId]) && ($arrayIDs[$productId] != null)) {
                     $optionIds = explode(',', $optionIds[0]);
@@ -277,13 +275,13 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             $filters = [];
             foreach ($options as $option) {
                 if ($option['value'] && isset($attributeOptions[$option['value']])
-                        && $attributeOptions[$option['value']]) {
+                    && $attributeOptions[$option['value']]) {
                     $option['count'] = $attributeOptions[$option['value']];
                     $filters[]       = $option;
                 }
             }
 
-            if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($filters) > 1) {
+            if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($filters) >= 1) {
                 $titleFilters[] = $attribute->getDefaultFrontendLabel();
                 $layerFilters[] = [
                     'attribute' => $attribute->getAttributeCode(),
@@ -293,7 +291,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             }
         }
     }
-    
+
     public function filterByPriceRange(&$layerFilters, $collection, $params)
     {
         $priceRanges = $this->_getPriceRanges($collection);
@@ -350,7 +348,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             $counts = $collection->getAttributeValueCountByRange('price', $range);
             $index++;
         } while ($range > self::MIN_RANGE_POWER && $this->simiObjectManager
-                ->get('Simi\Simiconnector\Helper\Data')->countArray($counts) < 2);
+            ->get('Simi\Simiconnector\Helper\Data')->countArray($counts) < 2);
 
         return ['range' => $range, 'counts' => $counts];
     }
@@ -385,29 +383,29 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         if (!($width === null) && !($height === null)) {
             if ($file) {
                 return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
-                                ->init($product, 'product_page_image_medium')
-                                ->setImageFile($file)
-                                ->resize($width, $height)
-                                ->getUrl();
+                    ->init($product, 'product_page_image_medium')
+                    ->setImageFile($file)
+                    ->resize($width, $height)
+                    ->getUrl();
             }
             return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
-                            ->init($product, 'product_page_image_medium')
-                            ->setImageFile($product->getFile())
-                            ->resize($width, $height)
-                            ->getUrl();
+                ->init($product, 'product_page_image_medium')
+                ->setImageFile($product->getFile())
+                ->resize($width, $height)
+                ->getUrl();
         }
         if ($file) {
             return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
-                            ->init($product, 'product_page_image_medium')
-                            ->setImageFile($file)
-                            ->resize(600, 600)
-                            ->getUrl();
+                ->init($product, 'product_page_image_medium')
+                ->setImageFile($file)
+                ->resize(600, 600)
+                ->getUrl();
         }
         return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
-                        ->init($product, 'product_page_image_medium')
-                        ->setImageFile($product->getFile())
-                        ->resize(600, 600)
-                        ->getUrl();
+            ->init($product, 'product_page_image_medium')
+            ->setImageFile($product->getFile())
+            ->resize(600, 600)
+            ->getUrl();
     }
 
     public function setStoreOrders($block_list, $block_toolbar, $is_search = 0)
@@ -430,11 +428,11 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             unset($availableOrders['position']);
             $availableOrders = array_merge([
                 'relevance' => __('Relevance')
-                    ], $availableOrders);
+            ], $availableOrders);
 
             $block_toolbar->setAvailableOrders($availableOrders)
-                    ->setDefaultDirection('desc')
-                    ->setSortBy('relevance');
+                ->setDefaultDirection('desc')
+                ->setSortBy('relevance');
         }
 
         foreach ($availableOrders as $_key => $_order) {

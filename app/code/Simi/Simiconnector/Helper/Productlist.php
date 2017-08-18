@@ -32,6 +32,7 @@ class Productlist extends Data
         $collection = $this->simiObjectManager
                 ->create('Simi\Simiconnector\Model\ResourceModel\Productlist\ProductlistCollection')
                 ->getProductCollection($listModel, $this->simiObjectManager);
+        $collection->setVisibility(['2', '4']);
         return $collection;
     }
 

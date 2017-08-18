@@ -14,76 +14,70 @@ class Save extends \Magento\Backend\App\Action
     public function execute()
     {
         $data = $this->getRequest()->getPostValue();
-        if ($data) {
-            $simiObjectManager = $this->_objectManager;
-            $model = $simiObjectManager->create('Simi\Simiconnector\Model\Simicategory');
+        $simiObjectManager = $this->_objectManager;
+        $model = $simiObjectManager->create('Simi\Simiconnector\Model\Simicategory');
 
-            $id = $this->getRequest()->getParam('simicategory_id');
-            if ($id) {
-                $model->load($id);
-            }
-            if (isset($data['new_category_parent'])) {
-                $data['category_id'] = $data['new_category_parent'];
-                $cat                 = $simiObjectManager
-                        ->create('Magento\Catalog\Model\Category')->load($data['category_id']);
-                $data['simicategory_name'] = $cat->getName();
-            }
-
-            $is_delete_simicategory        = isset($data['simicategory_filename']['delete']) ?
-            $data['simicategory_filename']['delete'] : false;
-            $data['simicategory_filename'] = isset($data['simicategory_filename']['value']) ?
-            $data['simicategory_filename']['value'] : '';
-
-            $is_delete_simicategory_tablet        = isset($data['simicategory_filename_tablet']['delete']) ?
-            $data['simicategory_filename_tablet']['delete'] : false;
-            $data['simicategory_filename_tablet'] = isset($data['simicategory_filename_tablet']['value']) ?
-            $data['simicategory_filename_tablet']['value'] : '';
-
-            $model->addData($data);
-
-            try {
-                $imageHelper = $simiObjectManager->get('Simi\Simiconnector\Helper\Data');
-                if ($is_delete_simicategory && $model->getSimicategoryFilename()) {
-                    $model->setSimicategoryFilename('');
-                } else {
-                    $imageFile = $imageHelper->uploadImage('simicategory_filename', 'simicategory');
-                    if ($imageFile) {
-                        $model->setSimicategoryFilename($imageFile);
-                    }
-                }
-                if ($is_delete_simicategory_tablet && $model->getSimicategoryFilenameTablet()) {
-                    $model->setSimicategoryFilenameTablet('');
-                } else {
-                    $imageFiletablet = $imageHelper->uploadImage('simicategory_filename_tablet', 'simicategory');
-                    if ($imageFiletablet) {
-                        $model->setSimicategoryFilenameTablet($imageFiletablet);
-                    }
-                }
-                $model->setData('storeview_id', null);
-                $model->save();
-                $this->updateVisibility($simiObjectManager, $model, $data);
-
-                $this->messageManager->addSuccess(__('The Data has been saved.'));
-                $simiObjectManager->get('Magento\Backend\Model\Session')->setFormData(false);
-                if ($this->getRequest()->getParam('back')) {
-                    $this->_redirect('*/*/edit', ['simicategory_id' => $model->getId(), '_current' => true]);
-                    return;
-                }
-                $this->_redirect('*/*/');
-                return;
-            } catch (\Magento\Framework\Model\Exception $e) {
-                $this->messageManager->addError($e->getMessage());
-            } catch (\RuntimeException $e) {
-                $this->messageManager->addError($e->getMessage());
-            } catch (\Exception $e) {
-                $this->messageManager->addException($e, __('Something went wrong while saving the data.'));
-            }
-
-            $this->_getSession()->setFormData($data);
-            $this->_redirect('*/*/edit', ['simicategory_id' => $this->getRequest()->getParam('simicategory_id')]);
-            return;
+        $id = $this->getRequest()->getParam('simicategory_id');
+        if ($id) {
+            $model->load($id);
         }
-        $this->_redirect('*/*/');
+        if (isset($data['new_category_parent'])) {
+            $data['category_id'] = $data['new_category_parent'];
+            $cat                 = $simiObjectManager
+                    ->create('Magento\Catalog\Model\Category')->load($data['category_id']);
+            $data['simicategory_name'] = $cat->getName();
+        }
+
+        $is_delete_simicategory        = isset($data['simicategory_filename']['delete']) ?
+        $data['simicategory_filename']['delete'] : false;
+        $data['simicategory_filename'] = isset($data['simicategory_filename']['value']) ?
+        $data['simicategory_filename']['value'] : '';
+
+        $is_delete_simicategory_tablet        = isset($data['simicategory_filename_tablet']['delete']) ?
+        $data['simicategory_filename_tablet']['delete'] : false;
+        $data['simicategory_filename_tablet'] = isset($data['simicategory_filename_tablet']['value']) ?
+        $data['simicategory_filename_tablet']['value'] : '';
+
+        $model->addData($data);
+
+        try {
+            $imageHelper = $simiObjectManager->get('Simi\Simiconnector\Helper\Data');
+            if ($is_delete_simicategory && $model->getSimicategoryFilename()) {
+                $model->setSimicategoryFilename('');
+            } else {
+                $imageFile = $imageHelper->uploadImage('simicategory_filename', 'simicategory');
+                if ($imageFile) {
+                    $model->setSimicategoryFilename($imageFile);
+                }
+            }
+            if ($is_delete_simicategory_tablet && $model->getSimicategoryFilenameTablet()) {
+                $model->setSimicategoryFilenameTablet('');
+            } else {
+                $imageFiletablet = $imageHelper->uploadImage('simicategory_filename_tablet', 'simicategory');
+                if ($imageFiletablet) {
+                    $model->setSimicategoryFilenameTablet($imageFiletablet);
+                }
+            }
+            $model->setData('storeview_id', null);
+            $model->save();
+            $this->updateVisibility($simiObjectManager, $model, $data);
+
+            $this->messageManager->addSuccess(__('The Data has been saved.'));
+            $simiObjectManager->get('Magento\Backend\Model\Session')->setFormData(false);
+            if ($this->getRequest()->getParam('back')) {
+                $this->_redirect('*/*/edit', ['simicategory_id' => $model->getId(), '_current' => true]);
+                return;
+            }
+            $this->_redirect('*/*/');
+            return;
+        } catch (\Magento\Framework\Model\Exception $e) {
+            $this->messageManager->addError($e->getMessage());
+        } catch (\Exception $e) {
+            $this->messageManager->addException($e, __('Something went wrong while saving the data.'));
+        }
+
+        $this->_getSession()->setFormData($data);
+        $this->_redirect('*/*/edit', ['simicategory_id' => $this->getRequest()->getParam('simicategory_id')]);
     }
     
     private function updateVisibility($simiObjectManager, $model, $data)

@@ -15,9 +15,6 @@ class Save extends \Magento\Backend\App\Action
     public function execute()
     {
         $data = $this->getRequest()->getPostValue();
-        if ($data == null) {
-            $this->_redirect('*/*/');
-        }
         $simiObjectManager = $this->_objectManager;
         $model = $simiObjectManager->create('Simi\Simiconnector\Model\Banner');
 
@@ -25,9 +22,7 @@ class Save extends \Magento\Backend\App\Action
         if ($id) {
             $model->load($id);
         }
-        if (isset($data['new_category_parent'])) {
-            $data['category_id'] = $data['new_category_parent'];
-        }
+        $data['category_id'] = isset($data['new_category_parent'])?$data['new_category_parent']:0;
 
         $is_delete_banner    = isset($data['banner_name']['delete']) ? $data['banner_name']['delete'] : false;
         $data['banner_name'] = isset($data['banner_name']['value']) ? $data['banner_name']['value'] : '';

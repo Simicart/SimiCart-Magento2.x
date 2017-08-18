@@ -247,7 +247,7 @@ class Orders extends Apiabstract
             ['object' => $this, 'data' => $this->detail_onepage]
         );
         $this->cleanCheckoutSession();
-        $result = array('order' => $this->order_placed_info);
+        $result = ['order' => $this->order_placed_info];
         return $result;
     }
 

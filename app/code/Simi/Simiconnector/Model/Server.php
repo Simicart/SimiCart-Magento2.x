@@ -67,12 +67,17 @@ class Server
         if (!isset($data['resource'])) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid method.'), 4);
         }
-        $className = 'Simi\\' . ucfirst($data['module']) . '\Model\Api\\' . ucfirst($data['resource']);
+        if ((strpos($data['resource'], 'migrate')) !== false) {
+            $migrateResource = explode('_', $data['resource'])[1];
+            $className = 'Simi\\' . ucfirst($data['module']) . '\Model\Api\Migrate\\' . ucfirst($migrateResource);
+        } else {
+            $className = 'Simi\\' . ucfirst($data['module']) . '\Model\Api\\' . ucfirst($data['resource']);
+        }
         if (!class_exists($className)) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid method.'), 4);
         }
 
-        $model = $this->simiObjectManager->get('Simi\\' . $data['module'] . '\Model\Api\\' . $data['resource']);
+        $model = $this->simiObjectManager->get($className);
 
         if (is_callable([&$model, $this->method])) {
             //Avoid using direct function, need to change solution when found better one
@@ -97,11 +102,14 @@ class Server
         $resources_string = $cache[1];
         $resources        = explode('/', $resources_string);
         $resource       = isset($resources[0]) ? $resources[0] : null;
-        if (count ($newResources = explode('?', $resource))) {
+        if ($this->simiObjectManager
+            ->get('Simi\Simiconnector\Helper\Data')->countArray($newResources = explode('?', $resource)) > 0) {
             $resource = $newResources[0];
         }
         $resourceid     = isset($resources[1]) ? $resources[1] : null;
-        if (count ($newResourceIds = explode('?', $resourceid))) {
+        if ($this->simiObjectManager
+            ->get('Simi\Simiconnector\Helper\Data')
+            ->countArray($newResourceIds = explode('?', $resourceid)) > 0) {
             $resourceid = $newResourceIds[0];
         }
         $nestedresource = isset($resources[2]) ? $resources[2] : null;

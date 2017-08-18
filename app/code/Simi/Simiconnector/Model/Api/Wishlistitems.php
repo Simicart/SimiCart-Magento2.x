@@ -74,7 +74,7 @@ class Wishlistitems extends Apiabstract
             $options               = $this->simiObjectManager
                     ->get('\Simi\Simiconnector\Helper\Wishlist')->getOptionsSelectedFromItem($itemModel, $product);
             
-            $product = $this->simiObjectManager->create('Magento\Catalog\Model\Product')->load($product->getId());
+            $product = $this->loadProductWithId($product->getId());
             if (isset($parameters['image_width'])) {
                 $width  = $parameters['image_width'];
                 $height = $parameters['image_height'];

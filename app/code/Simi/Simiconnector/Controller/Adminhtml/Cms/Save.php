@@ -33,8 +33,8 @@ class Save extends \Magento\Backend\App\Action
                 if ($is_delete_banner && $model->getCmsImage()) {
                     $model->setCmsImage('');
                 } else {
-                    if (isset($_FILES['cms_image']) && $_FILES['cms_image']['name']){
-                        $imageFile = $imageHelper->uploadImage('cms_image', 'cms');
+                    $imageFile = $imageHelper->uploadImage('cms_image', 'cms');
+                    if ($imageFile) {
                         $model->setCmsImage($imageFile);
                     }
                 }

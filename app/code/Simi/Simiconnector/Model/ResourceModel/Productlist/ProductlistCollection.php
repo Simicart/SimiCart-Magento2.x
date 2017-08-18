@@ -49,7 +49,7 @@ class ProductlistCollection extends \Magento\Framework\Model\ResourceModel\Db\Co
                         )
                         ->columns('SUM(qty_ordered) as total_ordered');
                         $groupFunction = 'group';
-                        $select->$groupFunction('product_id');
+                        $select->$groupFunction('order_item.product_id');
                         $select->order(['total_ordered DESC']);
                 $collection
                         ->addAttributeToSelect($simiObjectManager->get('Magento\Catalog\Model\Config')
@@ -73,7 +73,7 @@ class ProductlistCollection extends \Magento\Framework\Model\ResourceModel\Db\Co
                         )
                         ->columns('SUM(views_num) as total_viewed');
                         $groupFunction = 'group';
-                        $select->$groupFunction('product_id');
+                        $select->$groupFunction('product_viewed.product_id');
                         $select->order(['total_viewed DESC']);
                 $collection
                         ->addAttributeToSelect($simiObjectManager->get('Magento\Catalog\Model\Config')

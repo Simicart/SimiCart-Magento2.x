@@ -243,7 +243,8 @@ class Address extends Data
                     ->setWebsiteId($this->storeManager->getStore()->getWebsiteId())
                     ->loadByEmail($customer_email);
             if ($customer->getData('entity_id') != null) {
-                throw new \Simi\Simiconnector\Helper\SimiException(__('There is already a customer registered using this email address. '
+                throw new \Simi\Simiconnector\Helper\SimiException(__('There is already a customer '
+                                . 'registered using this email address. '
                                 . 'Please login using this email address or enter '
                                 . 'a different email address to register your account.'), 7);
             }
@@ -260,7 +261,7 @@ class Address extends Data
                 ->get('Magento\Quote\Model\Quote\Address')->importCustomerAddressData($addressInterface);
             $this->_getQuote()->setBillingAddress($billingAddress);
             return;
-        } 
+        }
         
         $addressInterface                = $this->simiObjectManager
             ->create('Magento\Customer\Api\Data\AddressInterface');
@@ -268,7 +269,6 @@ class Address extends Data
             ->get('Magento\Quote\Model\Quote\Address')->importCustomerAddressData($addressInterface);
         $billingAddress->setData($address);
         $this->_getQuote()->setBillingAddress($billingAddress);
-
     }
 
     /*
