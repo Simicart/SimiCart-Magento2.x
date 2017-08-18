@@ -19,6 +19,10 @@
                     <label>Secret Key</label>
                     <comment>Your secret key (get from your Building Dashboard)</comment>
                 </field>
+                <field id="token_key" translate="label" type="text" sortOrder="249" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Token Key</label>
+                    <comment>Your token key (get from your Building Dashboard)</comment>
+                </field>
                 <field id="base_url" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Base URL</label>
                     <comment>eg. http://simicart.com/, leave it blank if you want to use default value from Building Dashboard</comment>
