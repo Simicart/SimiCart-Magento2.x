@@ -32,6 +32,11 @@ class Customer extends Data
         if ((!$data['params']['email']) || (!$data['params']['password'])) {
             return;
         }
+
+        if (($this->_getSession()->isLoggedIn()) && 
+            ($this->_getSession()->getCustomer()->getEmail() == $data['params']['email'])){
+            return;
+        }
         try {
             $this->loginByEmailAndPass($data['params']['email'], $data['params']['password']);
         } catch (\Exception $e) {
