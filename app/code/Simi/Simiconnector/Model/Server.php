@@ -97,6 +97,10 @@ class Server
     public function initialize(\Simi\Simiconnector\Controller\Rest\Action $controller)
     {
         $request_string   = $controller->getRequest()->getRequestString();
+        $pos = strpos($request_string, '?');
+        if ($pos) {
+            $request_string = substr($request_string, 0, $pos);
+        }
         $action_string    = $controller->getRequest()->getActionName() . '/';
         $cache            = explode($action_string, $request_string);
         $resources_string = $cache[1];
