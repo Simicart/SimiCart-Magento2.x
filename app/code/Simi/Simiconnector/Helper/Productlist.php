@@ -65,7 +65,7 @@ class Productlist extends Data
             $rows[$currentIndex][] = $productlist->getData('list_title');
         }
         ksort($rows);
-        $returnArray = [$highestRow => _('Create New Row')];
+        $returnArray = [$highestRow => __('Create New Row')];
         foreach ($rows as $index => $row) {
             $returnArray[$index] = __('Row No. ') . $index . ' - ' . implode(',', $row);
         }
