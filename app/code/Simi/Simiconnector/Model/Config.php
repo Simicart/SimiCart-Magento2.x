@@ -63,7 +63,7 @@ class Config extends \Magento\Framework\DataObject
         \Magento\Framework\App\Config\ValueFactory $configValueFactory,
         array $data = []
     ) {
-   
+
         parent::__construct($data);
         $this->storeManager       = $storeManager;
         $this->scopeConfig        = $scopeConfig;

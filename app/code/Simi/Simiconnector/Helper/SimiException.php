@@ -12,8 +12,8 @@ namespace Simi\Simiconnector\Helper;
  */
 class SimiException extends \Exception
 {
-    public function __construct($messageStr, $errorNum = null)
+    public function voidFunction()
     {
-        parent::__construct($messageStr, $errorNum, null);
+        return $this;
     }
 }

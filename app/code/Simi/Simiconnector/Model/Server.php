@@ -19,11 +19,9 @@ class Server
 
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
-        \Magento\Framework\Profiler\Driver\Standard\Output\Firebug $firebug,
         \Magento\Framework\Registry $registry
     ) {
         $this->simiObjectManager = $simiObjectManager;
-        $this->zendRequest = $firebug->getRequest();
         $this->coreRegistry     = $registry;
     }
 
@@ -117,6 +115,20 @@ class Server
 
         $module              = $controller->getRequest()->getModuleName();
         $params              = $controller->getRequest()->getQuery();
+        /*
+         *
+         * Use the function below for lower than 2.2 version of Magento
+         * if the using script doesn't work
+         *
+        $this->zendRequest = $this->simiObjectManager
+            ->get('\Magento\Framework\Profiler\Driver\Standard\Output\Firebug')
+            ->getRequest();
+         *
+         *
+         *
+         *
+        */
+        $this->zendRequest = $this->simiObjectManager->get('Simi\Simiconnector\Helper\RequestHttp');
         $contents            = $this->zendRequest->getRawBody();
         $contents_array      = [];
         if ($contents && ($contents != '')) {

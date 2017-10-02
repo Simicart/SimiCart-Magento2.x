@@ -33,8 +33,8 @@ class Customer extends Data
             return;
         }
 
-        if (($this->_getSession()->isLoggedIn()) && 
-            ($this->_getSession()->getCustomer()->getEmail() == $data['params']['email'])){
+        if (($this->_getSession()->isLoggedIn())&&
+            ($this->_getSession()->getCustomer()->getEmail() == $data['params']['email'])) {
             return;
         }
         try {

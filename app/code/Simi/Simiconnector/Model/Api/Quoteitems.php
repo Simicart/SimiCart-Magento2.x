@@ -101,9 +101,7 @@ class Quoteitems extends Apiabstract
         /*
          * The same with param parsing on Simi\Simiconnector\Model\Server, but to Array instead
          */
-        $zendHTTPRequestHttp = $this->simiObjectManager
-                ->get('\Magento\Framework\Profiler\Driver\Standard\Output\Firebug')
-                ->getRequest();
+        $zendHTTPRequestHttp = $this->simiObjectManager->get('Simi\Simiconnector\Helper\RequestHttp');
         $contents            = $zendHTTPRequestHttp->getRawBody();
         if ($contents && ($contents != '')) {
             $contents = urldecode($contents);
