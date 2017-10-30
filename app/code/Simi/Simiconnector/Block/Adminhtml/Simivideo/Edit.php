@@ -124,23 +124,20 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                             if($("product_ids").value == "")
                                 $("product_ids").value = e.value;
                             else {
-                                removeValueFromField(vl);
-                                $("product_ids").value = $("product_ids").value + ", "+e.value;
+                                var selectedProducts = $("product_ids").value.replace(/ /g,"").split(",");
+                                if (!selectedProducts.includes(e.value)) {
+                                    selectedProducts.push(e.value);
+                                    $("product_ids").value = selectedProducts.join(",");
+                                }
                             }
                         }else{
-                            removeValueFromField(vl);
+                            var selectedProducts = $("product_ids").value.replace(/ /g,"").split(",");
+                                index = selectedProducts.indexOf(e.value);
+                                if (index > -1) {
+                                    selectedProducts.splice(index, 1);
+                                    $("product_ids").value = selectedProducts.join(",");
+                                }
                         }
-                    }
-                   
-                    function removeValueFromField(vl){
-                        if($("product_ids").value.search(vl) == 0){
-                                if ($("product_ids").value.search(vl+", ") != -1)
-                                    $("product_ids").value = $("product_ids").value.replace(vl+", ","");
-                                else
-                                    $("product_ids").value = $("product_ids").value.replace(vl,"");
-                            }else{
-                                $("product_ids").value = $("product_ids").value.replace(", "+ vl,"");
-                            }
                     }
                    
 

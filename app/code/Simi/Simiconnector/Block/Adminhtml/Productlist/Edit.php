@@ -127,26 +127,23 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                     function selectProduct(e) {
                         var vl = e.value;
                         if(e.checked == true){
-                            if($("list_products").value == "")
-                                $("list_products").value = e.value;
+                            if($("product_ids").value == "")
+                                $("product_ids").value = e.value;
                             else {
-                                removeValueFromField(vl);
-                                $("list_products").value = $("list_products").value + ", "+e.value;
+                                var selectedProducts = $("product_ids").value.replace(/ /g,"").split(",");
+                                if (!selectedProducts.includes(e.value)) {
+                                    selectedProducts.push(e.value);
+                                    $("product_ids").value = selectedProducts.join(",");
+                                }
                             }
                         }else{
-                            removeValueFromField(vl);
+                            var selectedProducts = $("product_ids").value.replace(/ /g,"").split(",");
+                                index = selectedProducts.indexOf(e.value);
+                                if (index > -1) {
+                                    selectedProducts.splice(index, 1);
+                                    $("product_ids").value = selectedProducts.join(",");
+                                }
                         }
-                    }
-                   
-                    function removeValueFromField(vl){
-                        if($("list_products").value.search(vl) == 0){
-                                if ($("list_products").value.search(vl+", ") != -1)
-                                    $("list_products").value = $("list_products").value.replace(vl+", ","");
-                                else
-                                    $("list_products").value = $("list_products").value.replace(vl,"");
-                            }else{
-                                $("list_products").value = $("list_products").value.replace(", "+ vl,"");
-                            }
                     }
                    
 
