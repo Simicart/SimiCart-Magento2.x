@@ -21,9 +21,6 @@ class Save extends \Magento\Backend\App\Action
         if ($id) {
             $model->load($id);
         }
-        if (isset($data['new_category_parent'])) {
-            $data['category_id'] = $data['new_category_parent'];
-        }
 
         $is_delete_siminotification = isset($data['image_url']['delete']) ? $data['image_url']['delete'] : false;
         $data['image_url']          = isset($data['image_url']['value']) ? $data['image_url']['value'] : '';

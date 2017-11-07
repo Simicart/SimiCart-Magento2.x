@@ -136,13 +136,11 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
            
                 if(type.value == 2){                   
                     document.querySelectorAll('.field-cms_image')[0].style.display = 'none';          
-                    document.querySelectorAll('.field-new_category_parent')[0].style.display = 'block';
-                    document.querySelectorAll('#new_category_parent')[0].classList.add('required-entry');
+                    document.querySelectorAll('.field-category_id')[0].style.display = 'block';
+                    document.querySelectorAll('#category_id')[0].classList.add('required-entry');
                 } else {
-                    document.querySelectorAll('.field-new_category_parent')[1].style.display = 'none';
-                    document.querySelectorAll('.field-new_category_parent')[0].style.display = 'none';
-                    document.querySelectorAll('#new_category_parent')[0].classList.remove('required-entry');
-                    document.querySelectorAll('#new_category_parent')[1].classList.remove('required-entry');
+                    document.querySelectorAll('.field-category_id')[0].style.display = 'none';
+                    document.querySelectorAll('#category_id')[0].classList.remove('required-entry');
                     document.querySelectorAll('.field-cms_image')[0].style.display = 'block';
                 }
             };

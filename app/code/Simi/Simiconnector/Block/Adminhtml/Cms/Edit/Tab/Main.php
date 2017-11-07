@@ -99,12 +99,10 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $htmlIdPrefix = $form->getHtmlIdPrefix();
 
         $fieldset            = $form->addFieldset('base_fieldset', ['legend' => __('Cms Information')]);
-        $new_category_parent = false;
 
         $data = $model->getData();
         if ($model->getId()) {
             $fieldset->addField('cms_id', 'hidden', ['name' => 'cms_id']);
-            $new_category_parent = $model->getData('category_id');
 
             $simiconnectorhelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data');
             $typeID              = $simiconnectorhelper->getVisibilityTypeId('cms');
@@ -204,17 +202,13 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 ]
         );
 
-        $fieldset->addField(
-            'new_category_parent',
-            'select',
-            [
-            'label'   => __('Categories'),
-            'title'   => __('Categories'),
-            'class'   => 'validate-parent-category',
-            'name'    => 'new_category_parent',
-            'options' => $this->_getParentCategoryOptions($new_category_parent),
-                ]
-        );
+        $fieldset->addField('category_id', 'select', [
+            'name'     => 'category_id',
+            'label'    => __('Category'),
+            'title'    => __('Category'),
+            'required' => true,
+            'values'   => $this->getChildCatArray(),
+        ]);
 
         $fieldset->addField(
             'cms_image',
@@ -236,6 +230,24 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         return parent::_prepareForm();
     }
 
+    public function getChildCatArray($level = 0, &$optionArray = [], $parent_id = 0)
+    {
+        $categories = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
+            ->getCollection()->addAttributeToSelect('name')->addAttributeToFilter('level', $level);
+        $beforeString = '';
+        for ($i=0; $i< $level; $i++) {
+            $beforeString .= '  --  ';
+        }
+        $level+=1;
+        foreach ($categories as $category) {
+            if (($parent_id == 0) || (($parent_id!=0) && ($category->getData('parent_id') == $parent_id))) {
+                $optionArray[] = ['value' => $category->getId(), 'label' => $beforeString . $category->getName()];
+                $this->getChildCatArray($level, $optionArray, $category->getId());
+            }
+        }
+        return $optionArray;
+    }
+
     /**
      * @param \Magento\Framework\Data\Form\Element\AbstractElement $element
      * @return mixed
@@ -245,37 +257,6 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $element->setWysiwyg(true);
         $element->setConfig($this->wysiwygConfig->getConfig($element));
         return parent::_getElementHtml($element);
-    }
-
-    /**
-     * Get parent category options
-     *
-     * @return array
-     */
-    public function _getParentCategoryOptions($category_id)
-    {
-
-        $items = $this->categoryFactory->create()->getCollection()->addAttributeToSelect(
-            'name'
-        )->addAttributeToSort(
-            'entity_id',
-            'ASC'
-        )->setPageSize(
-            3
-        )->load()->getItems();
-
-        $result = [];
-        if (count($items) === 2) {
-            $item   = array_pop($items);
-            $result = [$item->getEntityId() => $item->getName()];
-        }
-
-        if (empty($result) && $category_id) {
-            $category = $this->categoryFactory->create()->load($category_id);
-            $result   = [$category_id => $category->getName()];
-        }
-
-        return $result;
     }
 
     /**

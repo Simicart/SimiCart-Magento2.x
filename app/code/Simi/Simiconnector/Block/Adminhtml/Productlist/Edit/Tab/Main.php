@@ -91,11 +91,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Product List Information')]);
 
-        $new_category_parent = false;
         $data                = $model->getData();
         if ($model->getId()) {
             $fieldset->addField('productlist_id', 'hidden', ['name' => 'productlist_id']);
-            $new_category_parent = $model->getData('category_id');
 
             $simiconnectorhelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data');
             $typeID              = $simiconnectorhelper->getVisibilityTypeId('productlist');
@@ -224,37 +222,6 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $this->setForm($form);
 
         return parent::_prepareForm();
-    }
-
-    /**
-     * Get parent category options
-     *
-     * @return array
-     */
-    public function _getParentCategoryOptions($category_id)
-    {
-
-        $items = $this->categoryFactory->create()->getCollection()->addAttributeToSelect(
-            'name'
-        )->addAttributeToSort(
-            'entity_id',
-            'ASC'
-        )->setPageSize(
-            3
-        )->load()->getItems();
-
-        $result = [];
-        if (count($items) === 2) {
-            $item   = array_pop($items);
-            $result = [$item->getEntityId() => $item->getName()];
-        }
-
-        if (empty($result) && $category_id) {
-            $category = $this->categoryFactory->create()->load($category_id);
-            $result   = [$category_id => $category->getName()];
-        }
-
-        return $result;
     }
 
     /**

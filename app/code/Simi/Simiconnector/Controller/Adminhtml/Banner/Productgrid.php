@@ -21,7 +21,7 @@ class Productgrid extends \Magento\Catalog\Controller\Adminhtml\Product
         \Magento\Catalog\Controller\Adminhtml\Product\Builder $productBuilder,
         \Magento\Framework\View\Result\LayoutFactory $resultLayoutFactory
     ) {
-   
+
         parent::__construct($context, $productBuilder);
         $this->resultLayoutFactory = $resultLayoutFactory;
     }

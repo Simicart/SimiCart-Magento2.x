@@ -21,7 +21,7 @@ class Save extends \Magento\Backend\App\Action
         if ($id) {
             $model->load($id);
         }
-        $data['category_id'] = isset($data['new_category_parent'])?$data['new_category_parent']:0;
+        $data['category_id'] = isset($data['category_id'])?$data['category_id']:0;
 
         $is_delete_productlist = isset($data['list_image']['delete']) ? $data['list_image']['delete'] : false;
         $data['list_image']    = isset($data['list_image']['value']) ? $data['list_image']['value'] : '';

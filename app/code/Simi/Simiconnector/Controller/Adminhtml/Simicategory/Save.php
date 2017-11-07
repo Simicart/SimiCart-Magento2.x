@@ -21,8 +21,7 @@ class Save extends \Magento\Backend\App\Action
         if ($id) {
             $model->load($id);
         }
-        if (isset($data['new_category_parent'])) {
-            $data['category_id'] = $data['new_category_parent'];
+        if (isset($data['category_id'])) {
             $cat                 = $simiObjectManager
                     ->create('Magento\Catalog\Model\Category')->load($data['category_id']);
             $data['simicategory_name'] = $cat->getName();

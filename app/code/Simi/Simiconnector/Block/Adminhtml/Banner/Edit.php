@@ -177,10 +177,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                         document.querySelectorAll('.field-product_id')[0].style.display = 'block';
                         document.querySelectorAll('#product_id')[0].classList.add('required-entry');
 
-                        document.querySelectorAll('.field-new_category_parent')[1].style.display = 'none';
-                        document.querySelectorAll('.field-new_category_parent')[0].style.display = 'none';
-                        document.querySelectorAll('#new_category_parent')[0].classList.remove('required-entry');
-                        document.querySelectorAll('#new_category_parent')[1].classList.remove('required-entry');
+                        document.querySelectorAll('.field-category_id')[0].style.display = 'none';
+                        document.querySelectorAll('#category_id')[0].classList.remove('required-entry');
 
                         document.querySelectorAll('.field-banner_url')[0].style.display = 'none';
                         document.querySelectorAll('#banner_url')[0].classList.remove('required-entry');
@@ -189,8 +187,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                         document.querySelectorAll('.field-product_id')[0].style.display = 'none';
                         document.querySelectorAll('#product_id')[0].classList.remove('required-entry');
 
-                        document.querySelectorAll('.field-new_category_parent')[0].style.display = 'block';
-                        document.querySelectorAll('#new_category_parent')[0].classList.add('required-entry');
+                        document.querySelectorAll('.field-category_id')[0].style.display = 'block';
+                        document.querySelectorAll('#category_id')[0].classList.add('required-entry');
 
                         document.querySelectorAll('.field-banner_url')[0].style.display = 'none';
                         document.querySelectorAll('#banner_url')[0].classList.remove('required-entry');
@@ -199,10 +197,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                         document.querySelectorAll('.field-product_id')[0].style.display = 'none';
                         document.querySelectorAll('#product_id')[0].classList.remove('required-entry');
 
-                        document.querySelectorAll('.field-new_category_parent')[1].style.display = 'none';
-                        document.querySelectorAll('.field-new_category_parent')[0].style.display = 'none';
-                        document.querySelectorAll('#new_category_parent')[0].classList.remove('required-entry');
-                        document.querySelectorAll('#new_category_parent')[1].classList.remove('required-entry');
+                        document.querySelectorAll('.field-category_id')[0].style.display = 'none';
+                        document.querySelectorAll('#category_id')[0].classList.remove('required-entry');
 
                         document.querySelectorAll('.field-banner_url')[0].style.display = 'block';
                         document.querySelectorAll('#banner_url')[0].classList.add('required-entry');
@@ -211,10 +207,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                         document.querySelectorAll('.field-product_id')[0].style.display = 'block';
                         document.querySelectorAll('#product_id')[0].classList.add('required-entry');
 
-                        document.querySelectorAll('.field-new_category_parent')[1].style.display = 'none';
-                        document.querySelectorAll('.field-new_category_parent')[0].style.display = 'none';
-                        document.querySelectorAll('#new_category_parent')[0].classList.remove('required-entry');
-                        document.querySelectorAll('#new_category_parent')[1].classList.remove('required-entry');
+                        document.querySelectorAll('.field-category_id')[0].style.display = 'none';
+                        document.querySelectorAll('#category_id')[0].classList.remove('required-entry');
 
                         document.querySelectorAll('.field-banner_url')[0].style.display = 'none';
                         document.querySelectorAll('#banner_url')[0].classList.remove('required-entry');

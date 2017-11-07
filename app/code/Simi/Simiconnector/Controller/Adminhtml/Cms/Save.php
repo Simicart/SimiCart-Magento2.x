@@ -38,9 +38,7 @@ class Save extends \Magento\Backend\App\Action
                         $model->setCmsImage($imageFile);
                     }
                 }
-                if (isset($data['new_category_parent'])) {
-                    $model->setData('category_id', $data['new_category_parent']);
-                }
+
                 $model->save();
                 $this->updateVisibility($simiObjectManager, $model, $data);
 

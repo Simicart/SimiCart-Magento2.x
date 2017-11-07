@@ -91,12 +91,9 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Simicategory Information')]);
 
-        $new_category_parent = false;
         $data                = $model->getData();
         if ($model->getId()) {
             $fieldset->addField('simicategory_id', 'hidden', ['name' => 'simicategory_id']);
-            $new_category_parent = $model->getData('category_id');
-
             $simiconnectorhelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data');
             $typeID              = $simiconnectorhelper->getVisibilityTypeId('homecategory');
             $visibleStoreViews   = $this->simiObjectManager
@@ -144,18 +141,13 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
                 ]
         );
 
-        $fieldset->addField(
-            'new_category_parent',
-            'select',
-            [
-            'label'    => __('Categories'),
-            'title'    => __('Categories'),
+        $fieldset->addField('category_id', 'select', [
+            'name'     => 'category_id',
+            'label'    => __('Category'),
+            'title'    => __('Category'),
             'required' => true,
-            'class'    => 'validate-parent-category',
-            'name'     => 'new_category_parent',
-            'options'  => $this->_getParentCategoryOptions($new_category_parent),
-                ]
-        );
+            'values'   => $this->getChildCatArray(),
+        ]);
 
         if (!isset($data['sort_order'])) {
             $data['sort_order'] = 1;
@@ -193,35 +185,22 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         return parent::_prepareForm();
     }
 
-    /**
-     * Get parent category options
-     *
-     * @return array
-     */
-    public function _getParentCategoryOptions($category_id)
+    public function getChildCatArray($level = 0, &$optionArray = [], $parent_id = 0)
     {
-
-        $items = $this->categoryFactory->create()->getCollection()->addAttributeToSelect(
-            'name'
-        )->addAttributeToSort(
-            'entity_id',
-            'ASC'
-        )->setPageSize(
-            3
-        )->load()->getItems();
-
-        $result = [];
-        if (count($items) === 2) {
-            $item   = array_pop($items);
-            $result = [$item->getEntityId() => $item->getName()];
+        $categories = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
+            ->getCollection()->addAttributeToSelect('name')->addAttributeToFilter('level', $level);
+        $beforeString = '';
+        for ($i=0; $i< $level; $i++) {
+            $beforeString .= '  --  ';
         }
-
-        if (empty($result) && $category_id) {
-            $category = $this->categoryFactory->create()->load($category_id);
-            $result   = [$category_id => $category->getName()];
+        $level+=1;
+        foreach ($categories as $category) {
+            if (($parent_id == 0) || (($parent_id!=0) && ($category->getData('parent_id') == $parent_id))) {
+                $optionArray[] = ['value' => $category->getId(), 'label' => $beforeString . $category->getName()];
+                $this->getChildCatArray($level, $optionArray, $category->getId());
+            }
         }
-
-        return $result;
+        return $optionArray;
     }
 
     /**
