@@ -32,7 +32,7 @@ class Save extends \Magento\Backend\App\Action
             try {
                 $imageHelper = $simiObjectManager->get('Simi\Simiconnector\Helper\Data');
                 if ($is_delete_productlabel && $model->getImage()) {
-                    $model->setListImage('');
+                    $model->setImage('');
                 } else {
                     $imageFile = $imageHelper->uploadImage('image', 'productlabel');
                     if ($imageFile) {

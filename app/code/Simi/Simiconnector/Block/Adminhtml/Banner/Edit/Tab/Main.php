@@ -239,19 +239,25 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         return parent::_prepareForm();
     }
 
+    public $categoryArray;
     public function getChildCatArray($level = 0, &$optionArray = [], $parent_id = 0)
     {
-        $categories = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
-            ->getCollection()->addAttributeToSelect('name')->addAttributeToFilter('level', $level);
+        if (!$this->categoryArray) {
+            $this->categoryArray = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
+                ->getCollection()->addAttributeToSelect('name')->toArray();
+        }
         $beforeString = '';
         for ($i=0; $i< $level; $i++) {
             $beforeString .= '  --  ';
         }
         $level+=1;
-        foreach ($categories as $category) {
-            if (($parent_id == 0) || (($parent_id!=0) && ($category->getData('parent_id') == $parent_id))) {
-                $optionArray[] = ['value' => $category->getId(), 'label' => $beforeString . $category->getName()];
-                $this->getChildCatArray($level, $optionArray, $category->getId());
+        foreach ($this->categoryArray as $category) {
+            if ($category['level'] != $level) {
+                continue;
+            }
+            if (($parent_id == 0) || (($parent_id!=0) && ($category['parent_id'] == $parent_id))) {
+                $optionArray[] = ['value' => $category['entity_id'], 'label' => $beforeString . $category['name']];
+                $this->getChildCatArray($level, $optionArray, $category['entity_id']);
             }
         }
         return $optionArray;
