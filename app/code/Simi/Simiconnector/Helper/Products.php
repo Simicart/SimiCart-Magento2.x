@@ -19,6 +19,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     public $category;
     public $productStatus;
     public $productVisibility;
+    public $filteredAttributes = [];
 
     const XML_PATH_RANGE_STEP = 'catalog/layered_navigation/price_range_step';
     const MIN_RANGE_POWER     = 10;
@@ -76,6 +77,20 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         return $this;
     }
 
+    public function loadCategoryWithId($id)
+    {
+        $categoryModel    = $this->simiObjectManager
+            ->create('\Magento\Catalog\Model\Category')->load($id);
+        return $categoryModel;
+    }
+
+    public function loadAttributeByKey($key)
+    {
+        return $this->simiObjectManager
+            ->create('Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection')
+            ->getItemByColumnValue('attribute_code', $key);
+    }
+
     /**
      * @param int $is_search
      * @param int $category
@@ -114,26 +129,14 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function _filter($collection, $params)
     {
+        $cat_filtered = false;
+
         if (isset($params['filter']['layer'])) {
-            foreach ($params['filter']['layer'] as $key => $value) {
-                if ($key == 'price') {
-                    $value  = explode('-', $value);
-                    $select = $collection->getSelect();
-                    $whereFunction = 'where';
-                    if ($value[0] > 0) {
-                        $select->$whereFunction('price_index.final_price >= ' . $value[0]);
-                    }
-                    if ($value[1] > 0) {
-                        $select->$whereFunction('price_index.final_price < ' . $value[1]);
-                    }
-                } else {
-                    $collection->addAttributeToFilter($key, ['finset' => $value]);
-                }
-            }
+            $this->filterCollectionByAttribute($collection, $params, $cat_filtered);
         }
 
         //category
-        if ($this->category) {
+        if (!$cat_filtered && $this->category) {
             $collection->addCategoryFilter($this->category);
         }
 
@@ -159,6 +162,41 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         $controller = $data['controller'];
 
         return $collection;
+    }
+
+    public function filterCollectionByAttribute($collection, $params, &$cat_filtered)
+    {
+        foreach ($params['filter']['layer'] as $key => $value) {
+            if ($key == 'price') {
+                $value  = explode('-', $value);
+                $select = $collection->getSelect();
+                $whereFunction = 'where';
+                if ($value[0] > 0) {
+                    $this->filteredAttributes[$key] = $value;
+                    $select->$whereFunction('price_index.final_price >= ' . $value[0]);
+                }
+                if ($value[1] > 0) {
+                    $this->filteredAttributes[$key] = $value;
+                    $select->$whereFunction('price_index.final_price < ' . $value[1]);
+                }
+            } else {
+                if ($key == 'category_id') {
+                    $cat_filtered = true;
+                    if ($this->category) {
+                        if (is_array($value)) {
+                            $value[] = $this->category->getId();
+                        } else {
+                            $value = [$this->category->getId(), $value];
+                        }
+                    }
+                    $this->filteredAttributes[$key] = $value;
+                    $collection->addCategoriesFilter(['in' => $value]);
+                } else {
+                    $this->filteredAttributes[$key] = $value;
+                    $collection->addAttributeToFilter($key, ['finset' => $value]);
+                }
+            }
+        }
     }
 
     public function getSearchProducts(&$collection, $params)
@@ -200,9 +238,9 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         $layerFilters = [];
 
         $titleFilters = [];
-        $this->filterByAtribute($collection, $attributeCollection, $titleFilters, $layerFilters, $arrayIDs);
+        $this->_filterByAtribute($collection, $attributeCollection, $titleFilters, $layerFilters, $arrayIDs);
 
-        $this->filterByPriceRange($layerFilters, $collection, $params);
+        $this->_filterByPriceRange($layerFilters, $collection, $params);
 
         // category
         if ($this->category) {
@@ -226,21 +264,10 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             ];
         }
 
-        $selectedFilters   = [];
-        $selectableFilters = [];
-        foreach ($layerFilters as $layerFilter) {
-            if (($this->simiObjectManager
-                        ->get('Simi\Simiconnector\Helper\Data')
-                        ->countArray($layerFilter['filter']) == 1) && ($this->simiObjectManager
-                        ->get('Simi\Simiconnector\Helper\Data')->countCollection($collection) > 1)) {
-                $layerFilter['label'] = $layerFilter['filter'][0]['label'];
-                $layerFilter['value'] = $layerFilter['filter'][0]['value'];
-                unset($layerFilter['filter']);
-                $selectedFilters[]    = $layerFilter;
-            } else {
-                $selectableFilters[] = $layerFilter;
-            }
-        }
+        $paramArray = (array)$params;
+        $selectedFilters = $this->_getSelectedFilters();
+        $selectableFilters = $this->_getSelectableFilters($collection, $paramArray, $selectedFilters, $layerFilters);
+
         $layerArray = ['layer_filter' => $selectableFilters];
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($selectedFilters) > 0) {
             $layerArray['layer_state'] = $selectedFilters;
@@ -248,7 +275,71 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         return $layerArray;
     }
 
-    public function filterByAtribute($collection, $attributeCollection, &$titleFilters, &$layerFilters, $arrayIDs)
+    public function _getSelectedFilters()
+    {
+        $selectedFilters   = [];
+        foreach ($this->filteredAttributes as $key => $value) {
+            if (($key == 'category_id') && is_array($value) &&
+                ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($value)>=2)) {
+                $value = $value[1];
+                $category = $this->loadCategoryWithId($value);
+                $selectedFilters[] = [
+                    'value'=>$value,
+                    'label'=>$category->getName(),
+                    'attribute' => 'category_id',
+                    'title'     => __('Categories'),
+                ];
+                continue;
+            }
+            if (($key == 'price') && is_array($value) &&
+                ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($value)>=2)) {
+                $selectedFilters[] = [
+                    'value'=> implode('-', $value),
+                    'label'=> $this->_renderRangeLabel($value[0], $value[1]),
+                    'attribute' => 'price',
+                    'title'     => __('Price')
+                ];
+                continue;
+            }
+
+            $attribute = $this->loadAttributeByKey($key);
+            if (is_array($value)) {
+                $value = $value[0];
+            }
+            foreach ($attribute->getSource()->getAllOptions() as $layerFilter) {
+                if ($layerFilter['value'] == $value) {
+                    $layerFilter['attribute'] = $key;
+                    $layerFilter['title'] = $attribute->getDefaultFrontendLabel();
+                    $selectedFilters[]    = $layerFilter;
+                }
+            }
+        }
+        return $selectedFilters;
+    }
+
+    public function _getSelectableFilters($collection, $paramArray, $selectedFilters, $layerFilters)
+    {
+        $selectableFilters = [];
+        if (is_array($paramArray) && isset($paramArray['filter']) && ($this->simiObjectManager
+                    ->get('Simi\Simiconnector\Helper\Data')
+                    ->countCollection($collection) >= 1)) {
+            foreach ($layerFilters as $layerFilter) {
+                $filterable = true;
+                foreach ($selectedFilters as $key => $value) {
+                    if ($layerFilter['attribute'] == $value['attribute']) {
+                        $filterable = false;
+                        break;
+                    }
+                }
+                if ($filterable) {
+                    $selectableFilters[] = $layerFilter;
+                }
+            }
+        }
+        return $selectableFilters;
+    }
+
+    public function _filterByAtribute($collection, $attributeCollection, &$titleFilters, &$layerFilters, $arrayIDs)
     {
         foreach ($attributeCollection as $attribute) {
             $attributeOptions = [];
@@ -292,7 +383,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         }
     }
 
-    public function filterByPriceRange(&$layerFilters, $collection, $params)
+    public function _filterByPriceRange(&$layerFilters, $collection, $params)
     {
         $priceRanges = $this->_getPriceRanges($collection);
         $filters     = [];
@@ -325,12 +416,15 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 ];
             }
         }
-
-        $layerFilters[] = [
-            'attribute' => 'price',
-            'title'     => __('Price'),
-            'filter'    => array_values($filters),
-        ];
+        if ($this->simiObjectManager
+                ->get('Simi\Simiconnector\Helper\Data')
+                ->countArray($filters) >= 1) {
+            $layerFilters[] = [
+                'attribute' => 'price',
+                'title'     => __('Price'),
+                'filter'    => array_values($filters),
+            ];
+        }
     }
     /*
      * Get price range filter
