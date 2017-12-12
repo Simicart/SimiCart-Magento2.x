@@ -48,7 +48,12 @@ class Storeviews extends Apiabstract
         $country_code = $this->getStoreConfig('general/country/default');
         $country      = $this->simiObjectManager->get('\Magento\Directory\Model\Country')->loadByCode($country_code);
 
-        $locale         = $this->getLocale();
+        $locale         = $this->scopeConfig->getValue(
+            'general/locale/code',
+            \Magento\Store\Model\ScopeInterface::SCOPE_STORE,
+            $this->storeManager->getStore()->getId()
+        );
+
         $currencyCode   = $this->storeManager->getStore()->getCurrentCurrencyCode();
         $currency       = $this->simiObjectManager->create('Magento\Directory\Model\CurrencyFactory')
                 ->create()->load($currencyCode);
