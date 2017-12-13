@@ -253,7 +253,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $uploader->setAllowRenameFiles(true);
             $uploader->setFilesDispersion(false);
             $uploader->setAllowCreateFolders(true);
-            if ($uploader->save($this->getBaseDir())) {
+            $ext = $uploader->getFileExtension();
+            if ($uploader->save($this->getBaseDir(), $scope.time().'.'.$ext)) {
                 return 'Simiconnector/' . $uploader->getUploadedFileName();
             }
         }
