@@ -17,7 +17,7 @@ class Wishlist extends Data
             $wishlist = $this->simiObjectManager->get('Magento\Wishlist\Model\Wishlist')
                     ->loadByCustomerId($customer->getId(), true);
             foreach ($wishlist->getItemCollection() as $item) {
-                if ($item->getProduct()->getId() != $product->getId()) {
+                if ($item->getProduct()->getId() == $product->getId()) {
                     return $item->getId();
                 }
             }
