@@ -583,6 +583,11 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         if (!$this->sortOrders) {
             $block_toolbar = $this->simiObjectManager->get('Magento\Catalog\Block\Product\ProductList\Toolbar');
             $block_list    = $this->simiObjectManager->get('Magento\Catalog\Block\Product\ListProduct');
+            $data = $this->getData();
+            if (isset($data['params']['order']) && isset($data['params']['dir'])) {
+                $block_list->setSortBy($data['params']['order']);
+                $block_list->setDefaultDirection($data['params']['dir']);
+            }
             $this->setStoreOrders($block_list, $block_toolbar, 0);
         }
         return $this->sortOrders;
