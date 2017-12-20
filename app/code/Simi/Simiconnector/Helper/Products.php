@@ -208,10 +208,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         foreach ($searchCollection as $item) {
             $ids[] = $item->getId();
         }
-        if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($ids) > 0) {
-            $collection->addFieldToFilter('entity_id', ['in' => $ids]);
-        }
-
+        $collection->addFieldToFilter('entity_id', ['in' => $ids]);
         $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
         $collection->setVisibility(['3', '4']);
     }
