@@ -9,7 +9,6 @@
     <body>
         <referenceContainer name="content">
             <block class="Simi\Simiconnector\Block\Adminhtml\Cms\Edit" name="cms.edit"/>
-            <block class="Magento\Catalog\Block\Adminhtml\Product\Edit\NewCategory" name="new-category" template="Magento_Catalog::catalog/product/edit/category/new/form.phtml"/>
         </referenceContainer>
         <referenceContainer name="left">
             <block class="Simi\Simiconnector\Block\Adminhtml\Cms\Edit\Tabs" name="cms_edit_tabs">
