@@ -76,7 +76,7 @@ class Quoteitems extends Apiabstract
                 $cart->getQuote()->setCustomerId(null);
             }
             $cartData = $cart->suggestItemsQty($cartData);
-            $cart->updateItems($cartData)->save();
+            $cart->updateItems($cartData);
             $this->_getSession()->setCartWasUpdated(true);
         }
     }
