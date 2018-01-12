@@ -11,8 +11,8 @@ use Magento\Framework\App\Filesystem\DirectoryList;
 class Price extends \Simi\Simiconnector\Helper\Price
 {
 
-    public $product             = null;
-    public $minimalPriceTax     = null;
+    public $product = null;
+    public $minimalPriceTax = null;
     public $minimalPriceInclTax = null;
 
     public function getProductAttribute($attribute)
@@ -27,23 +27,24 @@ class Price extends \Simi\Simiconnector\Helper\Price
 
     public function formatPriceFromProduct($product, $is_detail = false)
     {
-        $priceV2        = [];
+        $priceV2 = [];
         $this->product = $product;
 
         $_weeeHelper = $this->helper('Magento\Weee\Helper\Data');
-        $_taxHelper  = $this->helper('Magento\Tax\Helper\Data');
+        $_taxHelper = $this->helper('Magento\Tax\Helper\Data');
 
-        $this->minimalPriceTax = $minimalPriceTax       = $product->getMinPrice();
-        $_maximalPriceTax       = $product->getMaxPrice();
+        $bundleObj = $product->getPriceInfo()->getPrice('final_price');
+        $this->minimalPriceTax = $minimalPriceTax = $bundleObj->getMinimalPrice()->getValue();
+        $_maximalPriceTax = $bundleObj->getMaximalPrice()->getValue();
 
         $this->minimalPriceInclTax = $minimalPriceInclTax = $this->catalogHelper
-                ->getTaxPrice($product, $minimalPriceTax, true);
-        $_maximalPriceInclTax       = $this->catalogHelper->getTaxPrice($product, $_maximalPriceTax, true);
+            ->getTaxPrice($product, $minimalPriceTax, true);
+        $_maximalPriceInclTax = $this->catalogHelper->getTaxPrice($product, $_maximalPriceTax, true);
 
         $_weeeTaxAmount = 0;
 
         if ($product->getPriceType() == 1) {
-            $_weeeTaxAmount          = $_weeeHelper->getAmountForDisplay($product);
+            $_weeeTaxAmount = $_weeeHelper->getAmountForDisplay($product);
             $_weeeTaxAmountInclTaxes = $_weeeTaxAmount;
             if ($_weeeHelper->isTaxable()) {
                 $_attributes = $_weeeHelper->getProductWeeeAttributesForRenderer($product, null, null, null, true);
@@ -61,7 +62,7 @@ class Price extends \Simi\Simiconnector\Helper\Price
 
             if ($_weeeHelper->typeOfDisplay($product, [1, 2, 4])) {
                 $_weeeTaxAttributes = $_weeeHelper
-                        ->getProductWeeeAttributesForRenderer($product, null, null, null, true);
+                    ->getProductWeeeAttributesForRenderer($product, null, null, null, true);
             }
         }
         if ($product->getPriceView()) {
@@ -84,7 +85,9 @@ class Price extends \Simi\Simiconnector\Helper\Price
                     $_weeeTaxAmount,
                     $product,
                     $_weeeTaxAttributes,
-                    $_weeeHelper
+                    $_weeeHelper,
+                    $_maximalPriceTax,
+                    $_maximalPriceInclTax
                 );
                 //to price
             } else {
@@ -102,8 +105,8 @@ class Price extends \Simi\Simiconnector\Helper\Price
         }
         if ($is_detail) {
             $this->minimalPriceInclTax = $minimalPriceInclTax;
-            $this->minimalPriceTax     = $minimalPriceTax;
-            $priceV2['configure']       = $this->formatPriceFromProductDetail($product);
+            $this->minimalPriceTax = $minimalPriceTax;
+            $priceV2['configure'] = $this->formatPriceFromProductDetail($product);
         }
         return $priceV2;
     }
@@ -199,24 +202,24 @@ class Price extends \Simi\Simiconnector\Helper\Price
         $priceV2 = [];
 
         $_weeeHelper = $this->helper('Magento\Weee\Helper\Data');
-        $_taxHelper  = $this->helper('Magento\Tax\Helper\Data');
+        $_taxHelper = $this->helper('Magento\Tax\Helper\Data');
 
-        $msrp_price_base    = $product->getPriceInfo()->getPrice('msrp_price')->getAmount()->getBaseAmount();
-        $_finalPrice        = $product->getFinalPrice() > $this->minimalPriceTax ?
-                $this->minimalPriceTax : $product->getFinalPrice();
+        $msrp_price_base = $product->getPriceInfo()->getPrice('msrp_price')->getAmount()->getBaseAmount();
+        $_finalPrice = $product->getFinalPrice() > $this->minimalPriceTax ?
+            $this->minimalPriceTax : $product->getFinalPrice();
         $_finalPriceInclTax = $product->getFinalPrice() > $this->minimalPriceInclTax ?
-                $this->minimalPriceInclTax : $product->getFinalPrice();
-        $_weeeTaxAmount     = 0;
+            $this->minimalPriceInclTax : $product->getFinalPrice();
+        $_weeeTaxAmount = 0;
 
         if ($product->getPriceType() == 1) {
             $_weeeTaxAmount = $_weeeHelper->getAmount($product);
             if ($_weeeHelper->typeOfDisplay($product, [1, 2, 4])) {
                 $_weeeTaxAttributes = $_weeeHelper
-                        ->getProductWeeeAttributesForRenderer($product, null, null, null, true);
+                    ->getProductWeeeAttributesForRenderer($product, null, null, null, true);
             }
         }
         $isMAPTypeOnGesture = true;
-        $canApplyMAP        = $this->helper('Magento\Msrp\Helper\Data')->canApplyMsrp($product);
+        $canApplyMAP = $this->helper('Magento\Msrp\Helper\Data')->canApplyMsrp($product);
         if ($product->getCanShowPrice() !== false) {
             $priceV2['product_label'] = __('Price as configured');
             if ($isMAPTypeOnGesture) {
@@ -226,7 +229,8 @@ class Price extends \Simi\Simiconnector\Helper\Price
                         $this->setBothTaxPrice($priceV2, $_finalPrice, $_finalPriceInclTax);
                     }
                     if ($_weeeTaxAmount && $product->getPriceType() == 1
-                            && $_weeeHelper->typeOfDisplay($product, [2, 1, 4])) {
+                        && $_weeeHelper->typeOfDisplay($product, [2, 1, 4])
+                    ) {
                         $wee = '';
                         $this->getBundleWeeeValue($wee, $priceV2, $_weeeTaxAttributes, $_weeeHelper, $product);
                         $this->setWeePrice($priceV2, $wee);
@@ -238,7 +242,8 @@ class Price extends \Simi\Simiconnector\Helper\Price
                     }
 
                     if ($_weeeTaxAmount && $product->getPriceType() == 1
-                            && $_weeeHelper->typeOfDisplay($product, [2, 1, 4])) {
+                        && $_weeeHelper->typeOfDisplay($product, [2, 1, 4])
+                    ) {
                         $wee = '';
                         $this->setWeePrice($priceV2, $wee);
                         $priceV2['show_weee_price'] = 1;
@@ -248,6 +253,7 @@ class Price extends \Simi\Simiconnector\Helper\Price
         }
         return $priceV2;
     }
+
     public function getPriceAsLowAs(
         &$priceV2,
         &$minimalPriceTax,
@@ -256,15 +262,17 @@ class Price extends \Simi\Simiconnector\Helper\Price
         &$product,
         &$_weeeTaxAttributes,
         &$_weeeHelper
-    ) {
-    
-        $priceV2['price_label']   = __('As low as');
+    )
+    {
+        $_taxHelper = $this->helper('Magento\Tax\Helper\Data');
+        $priceV2['price_label'] = __('As low as');
         $priceV2['minimal_price'] = 1;
         if ($this->displayBothPrices()) {
             $priceV2['show_ex_in_price'] = 1;
             $this->setBothTaxPrice($priceV2, $minimalPriceTax, $minimalPriceInclTax);
             if ($_weeeTaxAmount && $product->getPriceType() == 1
-                    && $_weeeHelper->typeOfDisplay($product, [2, 1, 4])) {
+                && $_weeeHelper->typeOfDisplay($product, [2, 1, 4])
+            ) {
                 $wee = '';
 
                 $this->getBundleWeeeValue($wee, $priceV2, $_weeeTaxAttributes, $_weeeHelper, $product);
@@ -279,7 +287,8 @@ class Price extends \Simi\Simiconnector\Helper\Price
                 $this->setTaxPrice($priceV2, $minimalPriceTax);
             }
             if ($_weeeTaxAmount && $product->getPriceType() == 1
-                    && $_weeeHelper->typeOfDisplay($product, [2, 1, 4])) {
+                && $_weeeHelper->typeOfDisplay($product, [2, 1, 4])
+            ) {
                 $wee = '';
                 $this->getBundleWeeeValue($wee, $priceV2, $_weeeTaxAttributes, $_weeeHelper, $product);
                 $this->setWeePrice($priceV2, $wee);
@@ -290,7 +299,7 @@ class Price extends \Simi\Simiconnector\Helper\Price
             }
         }
     }
-    
+
     public function getPriceWithFromToWithTax(
         &$priceV2,
         &$minimalPriceTax,
@@ -298,18 +307,22 @@ class Price extends \Simi\Simiconnector\Helper\Price
         &$_weeeTaxAmount,
         &$product,
         &$_weeeTaxAttributes,
-        &$_weeeHelper
-    ) {
-    
-        $priceV2['product_from_label']     = __('From');
-        $priceV2['product_to_label']       = __('To');
+        &$_weeeHelper,
+        $_maximalPriceTax,
+        $_maximalPriceInclTax
+    )
+    {
+        $_taxHelper = $this->helper('Magento\Tax\Helper\Data');
+        $priceV2['product_from_label'] = __('From');
+        $priceV2['product_to_label'] = __('To');
         $priceV2['show_from_to_tax_price'] = 1;
         if ($this->displayBothPrices()) {
             $priceV2['show_ex_in_price'] = 1;
             $this->setBothTaxFromPrice($priceV2, $minimalPriceTax, $minimalPriceInclTax);
             $this->setBothTaxToPrice($priceV2, $_maximalPriceTax, $_maximalPriceInclTax);
             if ($_weeeTaxAmount && $product->getPriceType() == 1
-                    && $_weeeHelper->typeOfDisplay($product, [2, 1, 4])) {
+                && $_weeeHelper->typeOfDisplay($product, [2, 1, 4])
+            ) {
                 $wee = '';
                 $this->getFromToWeeeValue($wee, $priceV2, $_weeeTaxAttributes, $_weeeHelper, $product);
                 $this->setWeePrice($priceV2, $wee);
@@ -326,7 +339,8 @@ class Price extends \Simi\Simiconnector\Helper\Price
             }
 
             if ($_weeeTaxAmount && $product->getPriceType() == 1
-                    && $_weeeHelper->typeOfDisplay($product, [2, 1, 4])) {
+                && $_weeeHelper->typeOfDisplay($product, [2, 1, 4])
+            ) {
                 $wee = '';
                 $this->getBundleWeeeValue($wee, $priceV2, $_weeeTaxAttributes, $_weeeHelper, $product);
                 $this->setWeePrice($priceV2, $wee);
@@ -338,6 +352,7 @@ class Price extends \Simi\Simiconnector\Helper\Price
             }
         }
     }
+
     public function getPriceWithoutFromToWithTax(
         &$priceV2,
         &$minimalPriceTax,
@@ -346,20 +361,22 @@ class Price extends \Simi\Simiconnector\Helper\Price
         &$product,
         &$_weeeTaxAttributes,
         &$_weeeHelper
-    ) {
-    
+    )
+    {
+        $_taxHelper = $this->helper('Magento\Tax\Helper\Data');
         //not show from and to with tax
         $priceV2['show_from_to_tax_price'] = 0;
         if ($this->displayBothPrices()) {
-            $priceV2['show_ex_in_price']   = 1;
+            $priceV2['show_ex_in_price'] = 1;
             $priceV2['product_from_label'] = __('From');
-            $priceV2['product_to_label']   = __('To');
+            $priceV2['product_to_label'] = __('To');
 
             $this->setTaxFromPrice($priceV2, $minimalPriceTax);
             $this->setTaxToPrice($priceV2, $minimalPriceInclTax);
 
             if ($_weeeTaxAmount && $product->getPriceType() == 1
-                    && $_weeeHelper->typeOfDisplay($product, [2, 1, 4])) {
+                && $_weeeHelper->typeOfDisplay($product, [2, 1, 4])
+            ) {
                 $wee = '';
                 $this->getBundleWeeeValue($wee, $priceV2, $_weeeTaxAttributes, $_weeeHelper, $product);
                 $this->setWeePrice($priceV2, $wee);
@@ -368,7 +385,8 @@ class Price extends \Simi\Simiconnector\Helper\Price
         } else {
             $this->setTaxPrice($priceV2, $minimalPriceTax);
             if ($_weeeTaxAmount && $product->getPriceType() == 1
-                    && $_weeeHelper->typeOfDisplay($product, [2, 1, 4])) {
+                && $_weeeHelper->typeOfDisplay($product, [2, 1, 4])
+            ) {
                 $wee = '';
                 $this->getBundleWeeeValue($wee, $priceV2, $_weeeTaxAttributes, $_weeeHelper, $product);
                 $this->setWeePrice($priceV2, $wee);
@@ -383,6 +401,7 @@ class Price extends \Simi\Simiconnector\Helper\Price
             }
         }
     }
+
     public function getBundleWeeeValue(&$wee, &$priceV2, &$_weeeTaxAttributes, $_weeeHelper, $product)
     {
         foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
@@ -391,14 +410,14 @@ class Price extends \Simi\Simiconnector\Helper\Price
             } else {
                 $amount = $_weeeTaxAttribute->getAmount();
             }
-            $wee .= $_weeeTaxAttribute->getName();
-            ;
+            $wee .= $_weeeTaxAttribute->getName();;
             $wee .= ": ";
             $wee .= $this->currency($amount, true, false);
             $wee .= " + ";
             $priceV2["weee"] = $wee;
         }
     }
+
     public function getFromToWeeeValue(&$wee, &$priceV2, &$_weeeTaxAttributes, $_weeeHelper, $product)
     {
         foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
@@ -412,7 +431,7 @@ class Price extends \Simi\Simiconnector\Helper\Price
             $wee .= $this->currency($amount, true, false);
             $wee .= " + ";
             $priceV2["weee_from"] = $wee;
-            $priceV2["weee_to"]   = $wee;
+            $priceV2["weee_to"] = $wee;
         }
     }
 }
