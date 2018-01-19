@@ -98,18 +98,22 @@ class Cms extends \Magento\Framework\Model\AbstractModel
         $simiObjectManager = $this->simiObjectManager;
         $storeManager      = $simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
         $typeID            = $simiObjectManager
-                ->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('cms');
+            ->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('cms');
         $visibilityTable   = $this->tableresource->getTableName('simiconnector_visibility');
         $cmsCollection     = $simiObjectManager
-                ->get('Simi\Simiconnector\Model\Cms')->getCollection()
-                ->addFieldToFilter('type', '2')
-                ->setOrder('sort_order', 'ASC')
-                ->getCategoryCMSPages($visibilityTable, $typeID, $storeManager
-                        ->getStore()->getId());
-        
+            ->get('Simi\Simiconnector\Model\Cms')->getCollection()
+            ->addFieldToFilter('type', '2')
+            ->setOrder('sort_order', 'ASC')
+            ->getCategoryCMSPages($visibilityTable, $typeID, $storeManager
+                ->getStore()->getId());
+
         $cmsArray          = [];
         foreach ($cmsCollection as $cms) {
-            $cmsArray[] = $cms->toArray();
+            $result = $cms->toArray();
+            $result['cms_content'] = $this->simiObjectManager
+                ->get('Magento\Cms\Model\Template\FilterProvider')
+                ->getPageFilter()->filter($result['cms_content']);
+            $cmsArray[] = $result;
         }
         return $cmsArray;
     }
