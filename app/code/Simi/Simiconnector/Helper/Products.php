@@ -353,7 +353,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                         if (isset($attributeOptions[$optionId])) {
                             $attributeOptions[$optionId] ++;
                         } else {
-                            $attributeOptions[$optionId] = 0;
+                            $attributeOptions[$optionId] = 1;
                         }
                     }
                 }
