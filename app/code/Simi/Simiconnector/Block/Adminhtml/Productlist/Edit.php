@@ -127,21 +127,21 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                     function selectProduct(e) {
                         var vl = e.value;
                         if(e.checked == true){
-                            if($("product_ids").value == "")
-                                $("product_ids").value = e.value;
+                            if($("list_products").value == "")
+                                $("list_products").value = e.value;
                             else {
-                                var selectedProducts = $("product_ids").value.replace(/ /g,"").split(",");
+                                var selectedProducts = $("list_products").value.replace(/ /g,"").split(",");
                                 if (!selectedProducts.includes(e.value)) {
                                     selectedProducts.push(e.value);
-                                    $("product_ids").value = selectedProducts.join(",");
+                                    $("list_products").value = selectedProducts.join(",");
                                 }
                             }
                         }else{
-                            var selectedProducts = $("product_ids").value.replace(/ /g,"").split(",");
+                            var selectedProducts = $("list_products").value.replace(/ /g,"").split(",");
                                 index = selectedProducts.indexOf(e.value);
                                 if (index > -1) {
                                     selectedProducts.splice(index, 1);
-                                    $("product_ids").value = selectedProducts.join(",");
+                                    $("list_products").value = selectedProducts.join(",");
                                 }
                         }
                     }
