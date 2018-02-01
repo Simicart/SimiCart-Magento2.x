@@ -127,6 +127,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'name'     => 'list_title',
             'label'    => __('Title'),
             'title'    => __('Title'),
+            'required' => true,
             'disabled' => $isElementDisabled
                 ]
         );
@@ -193,7 +194,6 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'name'               => 'list_products',
             'label'              => __('Product ID(s)'),
             'title'              => __('Choose products'),
-            'disabled'           => $isElementDisabled,
             'after_element_html' => '<a href="#" title="Show Product Grid" onclick="toogleProduct();return false;">'
                 . '<img id="show_product_grid" src="'
                 . $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png') . '" title="" /></a>'

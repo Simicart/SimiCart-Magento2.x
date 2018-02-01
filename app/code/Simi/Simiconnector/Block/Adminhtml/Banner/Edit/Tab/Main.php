@@ -172,6 +172,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'title'              => __('Product ID'),
             'required'           => true,
             'disabled'           => $isElementDisabled,
+            'class' => 'validate-number',
             'after_element_html' => '<a href="#" title="Show Product Grid" onclick="toogleProduct();return false;">'
                 . '<img id="show_product_grid" src="'
                 . $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png')
