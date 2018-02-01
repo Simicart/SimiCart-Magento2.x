@@ -68,9 +68,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public $imageSize = [
         'minheight' => self::MIN_HEIGHT,
-        'minwidth'  => self::MIN_WIDTH,
+        'minwidth' => self::MIN_WIDTH,
         'maxheight' => self::MAX_HEIGHT,
-        'maxwidth'  => self::MAX_WIDTH,
+        'maxwidth' => self::MAX_WIDTH,
     ];
 
     /**
@@ -125,25 +125,30 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public $resource;
 
     /**
-     * @param \Magento\Framework\App\Helper\Context $context
+     * @var \Magento\Framework\App\Filesystem\DirectoryList;
      */
+    public $directionList;
+
     public function __construct(
         \Magento\Framework\App\Helper\Context $context,
-        \Magento\Framework\ObjectManagerInterface $simiObjectManager
+        \Magento\Framework\ObjectManagerInterface $simiObjectManager,
+        DirectoryList $directoryList
     ) {
-        $this->simiObjectManager    = $simiObjectManager;
+    
+        $this->simiObjectManager = $simiObjectManager;
         $this->scopeConfig = $this->simiObjectManager->create('\Magento\Framework\App\Config\ScopeConfigInterface');
-        $this->filesystem  = $this->simiObjectManager->create('\Magento\Framework\Filesystem');
+        $this->filesystem = $this->simiObjectManager->create('\Magento\Framework\Filesystem');
         $this->mediaDirectory = $this->filesystem->getDirectoryWrite(DirectoryList::MEDIA);
         $this->httpFactory = $this->simiObjectManager->create('\Magento\Framework\HTTP\Adapter\FileTransferFactory');
         $this->fileUploaderFactory = $this->simiObjectManager
-                ->create('\Magento\MediaStorage\Model\File\UploaderFactory');
+            ->create('\Magento\MediaStorage\Model\File\UploaderFactory');
         $this->ioFile = $this->simiObjectManager->create('\Magento\Framework\Filesystem\Io\File');
-        $this->storeManager  = $this->simiObjectManager->create('\Magento\Store\Model\StoreManagerInterface');
-        $this->_imageFactory  = $this->simiObjectManager->create('\Magento\Framework\Image\Factory');
-        $this->resource  = $this->simiObjectManager->create('\Magento\Framework\App\ResourceConnection');
+        $this->storeManager = $this->simiObjectManager->create('\Magento\Store\Model\StoreManagerInterface');
+        $this->_imageFactory = $this->simiObjectManager->create('\Magento\Framework\Image\Factory');
+        $this->resource = $this->simiObjectManager->create('\Magento\Framework\App\ResourceConnection');
         $this->resourceFactory = $this->simiObjectManager
-                ->create('\Magento\Reports\Model\ResourceModel\Report\Collection\Factory');
+            ->create('\Magento\Reports\Model\ResourceModel\Report\Collection\Factory');
+        $this->directionList = $directoryList;
         parent::__construct($context);
     }
 
@@ -189,18 +194,18 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         if ($width < self::MIN_WIDTH || $width > self::MAX_WIDTH) {
             return false;
         }
-        $width = (int) $width;
+        $width = (int)$width;
 
         if (!($height === null)) {
             if ($height < self::MIN_HEIGHT || $height > self::MAX_HEIGHT) {
                 return false;
             }
-            $height = (int) $height;
+            $height = (int)$height;
         }
 
         $imageFile = $item->getImage();
-        $cacheDir  = $this->getBaseDir() . '/' . 'cache' . '/' . $width;
-        $cacheUrl  = $this->getBaseUrl() . '/' . 'cache' . '/' . $width . '/';
+        $cacheDir = $this->getBaseDir() . '/' . 'cache' . '/' . $width;
+        $cacheUrl = $this->getBaseUrl() . '/' . 'cache' . '/' . $width . '/';
 
         $io = $this->ioFile;
         $io->checkAndCreateFolder($cacheDir);
@@ -254,7 +259,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $uploader->setFilesDispersion(false);
             $uploader->setAllowCreateFolders(true);
             $ext = $uploader->getFileExtension();
-            if ($uploader->save($this->getBaseDir(), $scope.time().'.'.$ext)) {
+            if ($uploader->save($this->getBaseDir(), $scope . time() . '.' . $ext)) {
                 return 'Simiconnector/' . $uploader->getUploadedFileName();
             }
         }
@@ -298,8 +303,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getConnectorPerPage()
     {
-        return abs((int) $this->scopeConfig
-                ->getValue(self::XML_PATH_ITEMS_PER_PAGE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
+        return abs((int)$this->scopeConfig
+            ->getValue(self::XML_PATH_ITEMS_PER_PAGE, \Magento\Store\Model\ScopeInterface::SCOPE_STORE));
     }
 
     /*
@@ -330,23 +335,55 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         }
         return $typeId;
     }
-    
+
     public function countCollection($collection)
     {
         return $collection->getSize();
     }
-    
+
     public function countArray($array)
     {
         return count($array);
     }
-    
+
     public function deleteModel($model)
     {
         $model->delete();
     }
+
     public function saveModel($model)
     {
         $model->save();
+    }
+
+    public function flushStaticCache()
+    {
+        $path = $this->directionList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'Simiconnector'
+            . DIRECTORY_SEPARATOR . 'cache';
+        if (is_dir($path)) {
+            $this->_removeFolder($path);
+        }
+    }
+
+    private function _removeFolder($folder)
+    {
+        if (is_dir($folder)) {
+            $dir_handle = opendir($folder);
+        }
+        if (!$dir_handle) {
+            return false;
+        }
+        while ($file = readdir($dir_handle)) {
+            if ($file != "." && $file != "..") {
+                if (!is_dir($folder . "/" . $file)) {
+                    unlink($folder . "/" . $file);
+                } else {
+                    $this->_removeFolder($folder . '/' . $file);
+                }
+            }
+        }
+        closedir($dir_handle);
+        rmdir($folder);
+        return true;
     }
 }

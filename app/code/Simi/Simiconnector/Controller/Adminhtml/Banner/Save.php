@@ -54,7 +54,7 @@ class Save extends \Magento\Backend\App\Action
             $this->updateVisibility($simiObjectManager, $model, $data);
             $this->messageManager->addSuccess(__('The Data has been saved.'));
             $simiObjectManager->get('Magento\Backend\Model\Session')->setFormData(false);
-
+            $simiObjectManager->get('Simi\Simiconnector\Helper\Data')->flushStaticCache();
             if ($this->getRequest()->getParam('back')) {
                 $this->_redirect('*/*/edit', ['banner_id' => $model->getId(), '_current' => true]);
                 return;
