@@ -189,8 +189,17 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
     public function getChildCatArray($level = 0, &$optionArray = [], $parent_id = 0)
     {
         if (!$this->categoryArray) {
-            $this->categoryArray = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
-                ->getCollection()->addAttributeToSelect('name')->toArray();
+            $productMetadata = $this->simiObjectManager->get('Magento\Framework\App\ProductMetadataInterface');
+            if (strpos($productMetadata->getVersion(), '2.0') === 0) {
+                $this->categoryArray = [];
+                foreach ($this->simiObjectManager->create('\Magento\Catalog\Model\Category')
+                    ->getCollection()->addAttributeToSelect('name') as $categoryModel) {
+                    $this->categoryArray[] = $categoryModel->toArray();
+                }
+            } else {
+                $this->categoryArray = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
+                    ->getCollection()->addAttributeToSelect('name')->toArray();
+            }
         }
         $beforeString = '';
         for ($i=0; $i< $level; $i++) {

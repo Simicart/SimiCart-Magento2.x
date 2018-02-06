@@ -24,6 +24,7 @@ class Delete extends \Magento\Backend\App\Action
                 $model->load($id);
                 $title = $model->getTitle();
                 $model->delete();
+                $simiobjectManager->get('Simi\Simiconnector\Helper\Data')->flushStaticCache();
                 // display success message
                 $this->messageManager->addSuccess(__('The data has been deleted.'));
                 // go to grid
