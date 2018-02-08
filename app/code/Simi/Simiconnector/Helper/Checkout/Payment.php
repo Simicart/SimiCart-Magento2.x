@@ -11,15 +11,6 @@ class Payment extends \Simi\Simiconnector\Helper\Data
 
     public $detail;
 
-    public function __construct(
-        \Magento\Framework\App\Helper\Context $context,
-        \Magento\Framework\ObjectManagerInterface $simiObjectManager
-    ) {
-        parent::__construct($context, $simiObjectManager);
-        $this->_setListPayment();
-        $this->setListCase();
-    }
-
     public function _getCart()
     {
         return $this->simiObjectManager->get('Magento\Checkout\Model\Cart');
@@ -45,6 +36,9 @@ class Payment extends \Simi\Simiconnector\Helper\Data
 
     public function savePaymentMethod($data)
     {
+        $this->_setListPayment();
+        $this->setListCase();
+
         $method = ['method' => strtolower($data->method)];
         if (isset($data->cc_type) && $data->cc_type) {
             $method = ['method'       => strtolower($data->method),
@@ -72,11 +66,14 @@ class Payment extends \Simi\Simiconnector\Helper\Data
 
     public function getMethods()
     {
+        $this->_setListPayment();
+        $this->setListCase();
+
         /*
          * Dispatch event simiconnector_add_payment_method
          */
         $this->simiObjectManager->get('\Magento\Framework\Event\ManagerInterface')
-                ->dispatch('simiconnector_add_payment_method', ['object' => $this]);
+            ->dispatch('simiconnector_add_payment_method', ['object' => $this]);
 
         $quote   = $this->_getQuote();
         $store   = $quote ? $quote->getStoreId() : null;
@@ -86,7 +83,7 @@ class Payment extends \Simi\Simiconnector\Helper\Data
         foreach ($methods as $key => $method) {
             if ($this->_canUseMethod($method, $quote) && (!in_array($method->getCode(), $this->_getListPaymentNoUse())
                     && (in_array($method->getCode(), $this->_getListPayment()) || $method->getConfigData('cctypes')))
-                    && ($total != 0 || $method->getCode() == 'free'
+                && ($total != 0 || $method->getCode() == 'free'
                     || ($quote->hasRecurringItems() && $method->canManageRecurringProfiles()))) {
                 $this->_assignMethod($method, $quote);
             } else {
@@ -176,8 +173,8 @@ class Payment extends \Simi\Simiconnector\Helper\Data
                     $detail['payment_method'] = strtoupper($method->getCode());
                     $detail['title']          = $method->getConfigData('title');
                     $detail['content']        = __('Make Check Payable to: ')
-                            . $method->getConfigData('payable_to') . __('Send Check to: ')
-                            . $method->getConfigData('mailing_address');
+                        . $method->getConfigData('payable_to') . __('Send Check to: ')
+                        . $method->getConfigData('mailing_address');
                     $detail['show_type']      = 0;
                 } else {
                     $detail['content']        = $method->getConfigData('instructions');
@@ -207,8 +204,8 @@ class Payment extends \Simi\Simiconnector\Helper\Data
                 if (strcasecmp($m_code, 'PAYPAL_MOBILE') == 0) {
                     $detail['bncode']          = "Magestore_SI_MagentoCE";
                     $detail['use_credit_card'] = $this->simiObjectManager
-                            ->get('\Magento\Framework\App\Config\ScopeConfigInterface')
-                            ->getValue('payment/paypal_mobile/use_credit_cart');
+                        ->get('\Magento\Framework\App\Config\ScopeConfigInterface')
+                        ->getValue('payment/paypal_mobile/use_credit_cart');
                 }
                 break;
             default:
@@ -219,12 +216,12 @@ class Payment extends \Simi\Simiconnector\Helper\Data
         }
         $detail['p_method_selected'] = false;
         if (($this->_getQuote()->getPayment()->getMethod())
-                && ($this->_getQuote()->getPayment()->getMethodInstance()->getCode() == $method->getCode())) {
+            && ($this->_getQuote()->getPayment()->getMethodInstance()->getCode() == $method->getCode())) {
             $detail['p_method_selected'] = true;
         }
         $this->detail = $detail;
         $this->simiObjectManager->get('\Magento\Framework\Event\ManagerInterface')
-                ->dispatch('simiconnector_change_payment_detail', ['object' => $this]);
+            ->dispatch('simiconnector_change_payment_detail', ['object' => $this]);
         return $this->detail;
     }
 
