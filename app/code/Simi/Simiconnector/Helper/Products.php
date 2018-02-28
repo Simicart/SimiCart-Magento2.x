@@ -124,6 +124,10 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             ->addAttributeToFilter('status', 1)
             ->addFinalPrice();
         $collection         = $this->_filter($collection, $parameters);
+        if (!$this->scopeConfig->getValue('cataloginventory/options/show_out_of_stock')) {
+            $this->simiObjectManager->get('Magento\CatalogInventory\Helper\Stock')
+                ->addInStockFilterToCollection($collection);
+        }
         $this->builderQuery = $collection;
     }
 
