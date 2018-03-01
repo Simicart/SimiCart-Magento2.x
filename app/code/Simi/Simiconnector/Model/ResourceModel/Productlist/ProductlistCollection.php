@@ -104,6 +104,11 @@ class ProductlistCollection extends \Magento\Framework\Model\ResourceModel\Db\Co
                 break;
         }
         $collection->setVisibility(['2', '4']);
+        if (!$simiObjectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface')
+            ->getValue('cataloginventory/options/show_out_of_stock')) {
+            $simiObjectManager->get('Magento\CatalogInventory\Helper\Stock')
+                ->addInStockFilterToCollection($collection);
+        }
         return $collection;
     }
 }
