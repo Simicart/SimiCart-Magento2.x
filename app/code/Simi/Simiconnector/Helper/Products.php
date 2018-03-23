@@ -20,6 +20,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     public $productStatus;
     public $productVisibility;
     public $filteredAttributes = [];
+    public $is_search = 0;
 
     const XML_PATH_RANGE_STEP = 'catalog/layered_navigation/price_range_step';
     const MIN_RANGE_POWER     = 10;
@@ -98,6 +99,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function setLayers($is_search = 0)
     {
+        $this->is_search = $is_search;
         $data       = $this->getData();
         $controller = $data['controller'];
         $parameters = $data['params'];
@@ -208,13 +210,12 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         $searchCollection = $this->simiObjectManager
             ->create('Magento\CatalogSearch\Model\ResourceModel\Fulltext\SearchCollection');
         $searchCollection->addSearchFilter($params['filter']['q']);
-        $ids              = [];
-        foreach ($searchCollection as $item) {
-            $ids[] = $item->getId();
-        }
-        $collection->addFieldToFilter('entity_id', ['in' => $ids]);
+        $collection = $searchCollection;
         $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
-        $collection->setVisibility(['3', '4']);
+        $collection->addAttributeToSelect('*')
+            ->addStoreFilter()
+            ->addAttributeToFilter('status', 1)
+            ->addFinalPrice();
     }
 
     public function getLayerNavigator($collection = null)
@@ -526,7 +527,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             ], $availableOrders);
 
             $block_toolbar->setAvailableOrders($availableOrders)
-                ->setDefaultDirection('desc')
+                ->setDefaultDirection('asc')
                 ->setSortBy('relevance');
         }
 
@@ -589,7 +590,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 $block_list->setSortBy($data['params']['order']);
                 $block_list->setDefaultDirection($data['params']['dir']);
             }
-            $this->setStoreOrders($block_list, $block_toolbar, 0);
+            $this->setStoreOrders($block_list, $block_toolbar, $this->is_search);
         }
         return $this->sortOrders;
     }
