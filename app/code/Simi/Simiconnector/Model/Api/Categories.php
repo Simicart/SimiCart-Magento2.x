@@ -44,9 +44,27 @@ class Categories extends Apiabstract
 
     public function index()
     {
-        $data   = $this->getData();
         $result = parent::index();
         foreach ($result['categories'] as $index => $catData) {
+            $categoryModel = $this->simiObjectManager
+                ->create('\Magento\Catalog\Model\Category')
+                ->load($catData['entity_id']);
+            $catData = array_merge($catData, $categoryModel->getData());
+            if ($image_url = $categoryModel->getImageUrl()) {
+                $catData['image_url'] = $image_url;
+            }
+            if (isset($catData['landing_page']) && $catData['landing_page']) {
+                $block = $this->simiObjectManager->get('Magento\Framework\View\LayoutInterface')
+                    ->createBlock('Magento\Cms\Block\Block');
+                $block->setBlockId($catData['landing_page']);
+                $catData['landing_page'] = $block->toHtml();
+            }
+
+            if ($categoryModel->getData('description'))
+                $catData['description'] = $this->simiObjectManager
+                    ->get('Magento\Cms\Model\Template\FilterProvider')
+                    ->getPageFilter()->filter($categoryModel->getData('description'));
+            
             $childCollection = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
                     ->getCollection()->addFieldToFilter('parent_id', $catData['entity_id']);
             if ($this->visible_array) {
@@ -54,10 +72,11 @@ class Categories extends Apiabstract
             }
             if ($this->simiObjectManager
                     ->get('Simi\Simiconnector\Helper\Data')->countCollection($childCollection) > 0) {
-                $result['categories'][$index]['has_children'] = true;
+                $catData['has_children'] = true;
             } else {
-                $result['categories'][$index]['has_children'] = false;
+                $catData['has_children'] = false;
             }
+            $result['categories'][$index] = $catData;
         }
         return $result;
     }

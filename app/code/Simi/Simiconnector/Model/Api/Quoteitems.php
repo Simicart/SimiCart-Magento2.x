@@ -31,7 +31,16 @@ class Quoteitems extends Apiabstract
 
     public function setBuilderQuery()
     {
+        $data = $this->getData();
         $quote              = $this->_getQuote();
+        if (isset($data['resourceid']) &&
+            $data['resourceid'] && isset($data['params']) &&
+            isset($data['params']['move_to_wishlist']) &&
+            $data['params']['move_to_wishlist'] &&
+            $this->simiObjectManager->get('Magento\Customer\Model\Session')->isLoggedIn()) {
+            $this->moveToWishlist($data['resourceid']);
+            $this->RETURN_MESSAGE = __('Item has been moved to Wishlist');
+        }
         $this->builderQuery = $quote->getItemsCollection();
     }
 
@@ -280,6 +289,35 @@ class Quoteitems extends Apiabstract
             $offset = $parameters[self::OFFSET];
         }
         $collection->setPageSize($offset + $limit);
+    }
+
+
+    /*
+     * Move to Wishlist
+     */
+    public function moveToWishlist($itemId) {
+        $customer = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
+        if ($customer->getId() && ($customer->getId() != '')) {
+            $wishlist = $this->simiObjectManager
+                ->get('Magento\Wishlist\Model\Wishlist')->loadByCustomerId($customer->getId(), true);
+        } else {
+            throw new \Simi\Simiconnector\Helper\SimiException(__('Please login first'), 4);
+        }
+        $cart = $this->_getCart();
+
+        $item = $cart->getQuote()->getItemById($itemId);
+        if (!$item) {
+            throw new \Simi\Simiconnector\Helper\SimiException(__('Requested cart item doesn\'t exist'), 4);
+        }
+        $productId  = $item->getProductId();
+        $buyRequest = $item->getBuyRequest();
+        $wishlist->addNewItem($productId, $buyRequest);
+        $productIds[] = $productId;
+        $cart->getQuote()->removeItem($itemId);
+        $cart->save();
+        $this->simiObjectManager->get('Magento\Wishlist\Helper\Data')->calculate();
+        $this->RETURN_MESSAGE = __("Item has been moved to wishlist");
+        $wishlist->save();
     }
 
     /*

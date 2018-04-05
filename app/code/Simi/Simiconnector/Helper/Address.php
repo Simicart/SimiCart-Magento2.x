@@ -27,19 +27,22 @@ class Address extends Data
     {
         $list = [];
         if ($code) {
-            $states = $this->simiObjectManager
-                            ->create('\Magento\Directory\Model\ResourceModel\Country\Collection')
-                            ->getItemByColumnValue('country_id', $code)->getRegions();
-            if ($states) {
-                foreach ($states as $state) {
-                    $list[] = [
-                        'state_id'   => $state->getRegionId(),
-                        'state_name' => $state->getName(),
-                        'state_code' => $state->getCode(),
-                    ];
+            if($country = $this->simiObjectManager
+                ->create('\Magento\Directory\Model\ResourceModel\Country\Collection')
+                ->getItemByColumnValue('country_id', $code)) {
+                $states = $country->getRegions();
+                if ($states) {
+                    foreach ($states as $state) {
+                        $list[] = [
+                            'state_id' => $state->getRegionId(),
+                            'state_name' => $state->getName(),
+                            'state_code' => $state->getCode(),
+                        ];
+                    }
                 }
             }
         }
+        
         return $list;
     }
 
@@ -122,9 +125,12 @@ class Address extends Data
     public function convertDataAddress($data)
     {
         if (isset($data->country_id)) {
+            
             $country     = $data->country_id;
             $listState   = $this->getStates($country);
+            
             $state_id    = $this->getStoreConfig('simiconnector/hideaddress/region_id_default');
+            
             $check_state = false;
             if (count($listState) == 0) {
                 $check_state = true;
@@ -139,6 +145,7 @@ class Address extends Data
                     break;
                 }
             }
+            
             if (!$check_state) {
                 if (!$state_id) {
                     throw new \Simi\Simiconnector\Helper\SimiException(__('State invalid'), 4);
@@ -146,6 +153,7 @@ class Address extends Data
             }
             $address['region_id'] = $state_id;
         }
+        
         $this->applyDefaultValue($data);
         $address = [];
         foreach ((array) $data as $index => $info) {

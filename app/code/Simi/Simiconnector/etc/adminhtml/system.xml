@@ -60,6 +60,10 @@
                     <label>Show Title For Banners, Categories and Product Lists on Home Screen</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="open_url_in_app" translate="label" type="select" sortOrder="1299" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Open url in app</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
             </group>
             <group id="currency" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Currency Display Configuration</label>
@@ -360,6 +364,17 @@
                 <field id="token" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Mixpanel Token</label>
                     <comment>Leave this field blank to disable Mixpanel on Application</comment>
+                </field>
+            </group>
+            <group id="config_price" translate="label" type="text" sortOrder="1099" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Price Configuration</label>
+                <field id="price_one_row" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show price in a row</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="is_show_price_for_guest" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show price for guest</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
         </section>

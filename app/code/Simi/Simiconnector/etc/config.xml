@@ -18,6 +18,7 @@
                 <base_url></base_url>
                 <is_show_home_title>1</is_show_home_title>
                 <is_rtl>0</is_rtl>
+                <open_url_in_app>1</open_url_in_app>
             </general>  
             <currency>                                           
                 <thousand_separator>,</thousand_separator>
@@ -74,7 +75,11 @@
                 <name>3</name>
                 <email>3</email>
                 <phone>3</phone>
-            </zopim>  
+            </zopim>
+            <config_price>
+                <price_one_row>0</price_one_row>
+                <is_show_price_for_guest>1</is_show_price_for_guest>
+            </config_price>
         </simiconnector>  
         <simi_notifications>
             <notification>

@@ -79,6 +79,15 @@ class Storeviews extends Apiabstract
         $model                 = $this->simiObjectManager->get('Simi\Simiconnector\Model\Api\Cmspages');
         $callFunctionName = 'call_user_func_array';
         $cmsPageList           = $callFunctionName([&$model, $this->method], [$cmsData]);
+        $base_url = $this->getStoreConfig('simiconnector/general/base_url');
+        if ($this->getStoreConfig('web/url/use_store') && (!$base_url || $base_url=='')) {
+            $base_url = $this->simiObjectManager->get('Magento\Framework\UrlInterface')
+                ->getUrl('', ['_secure' => true]);
+        }
+        
+        $connectorVersion = $this->simiObjectManager
+            ->get('\Magento\Framework\Module\ResourceInterface')
+            ->getDbVersion('Simi_Simiconnector');
         $additionInfo = [
             'base'              => [
                 'country_code'           => $country->getId(),
@@ -89,7 +98,7 @@ class Storeviews extends Apiabstract
                 'store_name'             => $this->storeManager->getStore()->getName(),
                 'store_code'             => $this->storeManager->getStore()->getCode(),
                 'group_id'               => $this->storeManager->getStore()->getGroupId(),
-                'base_url'               => $this->getStoreConfig('simiconnector/general/base_url'),
+                'base_url'               => $base_url,
                 'use_store'              => $this->getStoreConfig('web/url/use_store'),
                 'is_rtl'                 => $this->getStoreConfig('simiconnector/general/is_rtl'),
                 'is_show_sample_data'    => $this->getStoreConfig('simiconnector/general/is_show_sample_data'),
@@ -109,6 +118,10 @@ class Storeviews extends Apiabstract
                 ->get('Magento\Customer\Model\Session')->getSessionId(),
                 'customer_ip'                      => $this->simiObjectManager
                 ->get('Magento\Framework\HTTP\PhpEnvironment\RemoteAddress')->getRemoteAddress(),
+                'is_show_in_row_price' => $this->getStoreConfig('simiconnector/config_price/price_one_row'),
+                'is_show_price_for_guest' => $this->getStoreConfig('simiconnector/config_price/is_show_price_for_guest'),
+                'open_url_in_app' => $this->getStoreConfig('simiconnector/general/open_url_in_app'),
+                'connector_version' => $connectorVersion
             ],
             'sales'             => [
                 'sales_reorder_allow'           => $this->getStoreConfig('sales/reorder/allow'),

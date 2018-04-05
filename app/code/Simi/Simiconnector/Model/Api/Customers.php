@@ -31,11 +31,13 @@ class Customers extends Apiabstract
                 case 'profile':
                     $this->builderQuery    = $this->simiObjectManager
                         ->get('Magento\Customer\Model\Session')->getCustomer();
+                    $this->builderQuery->setData('wishlist_count', $this->getWishlistCount());
                     break;
                 case 'login':
                     if ($this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')->login($data)) {
                         $this->builderQuery = $this->simiObjectManager
                                 ->get('Magento\Customer\Model\Session')->getCustomer();
+                        $this->builderQuery->setData('wishlist_count', $this->getWishlistCount());
                     } else {
                         throw new \Simi\Simiconnector\Helper\SimiException(__('Login Failed'), 4);
                     }
@@ -43,6 +45,7 @@ class Customers extends Apiabstract
                 case 'sociallogin':
                     $this->builderQuery = $this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')
                         ->socialLogin($data);
+                    $this->builderQuery->setData('wishlist_count', $this->getWishlistCount());
                     break;
                 case 'logout':
                     $lastCustomerId     = $this->simiObjectManager->get('Magento\Customer\Model\Session')
@@ -106,5 +109,20 @@ class Customers extends Apiabstract
             return $resultArray;
         }
         return parent::getDetail($info);
+    }
+
+    /*
+     * Get Wishlist count
+     */
+
+    public function getWishlistCount()
+    {
+        $customer = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
+        if ($customer && $customer->getId()) {
+            return (int)$this->simiObjectManager
+                ->get('Magento\Wishlist\Model\Wishlist')->loadByCustomerId($customer->getId(), true)
+                ->getItemCollection()->getSize();
+        }
+        return 0;
     }
 }

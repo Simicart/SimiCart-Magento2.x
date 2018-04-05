@@ -36,12 +36,12 @@ class Wishlistitems extends Apiabstract
             throw new \Simi\Simiconnector\Helper\SimiException(__('Please login First.', 4));
         }
         if ($data['resourceid']) {
-            $this->builderQuery = $this->simiObjectManager
-                    ->create('Magento\Wishlist\Model\Item')->load($data['resourceid']);
-            if ($data['params']['add_to_cart']) {
+            if ($data['resourceid'] == 'add_all_tocart') {
+                $this->addAllWishlistItemsToCart();
+            } else if ($data['params']['add_to_cart']) {
                 $this->addWishlistItemToCart($data['resourceid']);
-                $this->builderQuery = $this->WISHLIST->getItemCollection();
             }
+            $this->builderQuery = $this->WISHLIST->getItemCollection();
         } else {
             $this->builderQuery = $this->WISHLIST->getItemCollection();
         }
@@ -177,13 +177,62 @@ class Wishlistitems extends Apiabstract
     public function show()
     {
         $data = $this->getData();
-        if (isset($data['params']) && isset($data['params']['add_to_cart']) && $data['params']['add_to_cart']) {
+        $useIndex= false;
+        if (isset($data['params']) && isset($data['params']['add_to_cart']) && $data['params']['add_to_cart'])
+            $useIndex = true;
+        if (isset($data['resourceid']) && isset($data['resourceid']) && ($data['resourceid'] == 'add_all_tocart'))
+            $useIndex = true;
+
+        if ($useIndex) {
             $this->builderQuery = $this->WISHLIST->getItemCollection();
             return $this->index();
         }
+        
         return parent::show();
     }
 
+    /*
+     * Add All wishlist to cart
+     */
+    public function addAllWishlistItemsToCart()
+    {
+        $wishlist   = $this->WISHLIST;
+        $this->RETURN_MESSAGE = '';
+
+        $addedItems = array();
+
+        $cart       = $this->simiObjectManager->create('Magento\Checkout\Model\Cart');
+        $collection = $wishlist->getItemCollection()
+            ->setVisibilityFilter();
+
+        foreach ($collection as $item) {
+            try {
+                $disableAddToCart = $item->getProduct()->getDisableAddToCart();
+                $item->unsProduct();
+
+                $item->getProduct()->setDisableAddToCart($disableAddToCart);
+                if ($item->addToCart($cart, true)) {
+                    $addedItems[] = $item->getProduct();
+                }
+
+            } catch (\Exception $e) {
+                $this->RETURN_MESSAGE .= $e->getMessage();
+            }
+        }
+
+        if ($addedItems) {
+            $wishlist->save();
+            $products = array();
+            foreach ($addedItems as $product) {
+                $products[] = '"' . $product->getName() . '"';
+            }
+            $this->RETURN_MESSAGE =
+                __('Products have been added to shopping cart');
+            $cart->save()->getQuote()->collectTotals();
+        }
+        $this->simiObjectManager->get('Magento\Wishlist\Helper\Data')->calculate();
+    }
+    
     /*
      * Add Message
      */
