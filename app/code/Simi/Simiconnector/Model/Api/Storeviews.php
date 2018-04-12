@@ -121,6 +121,7 @@ class Storeviews extends Apiabstract
                 'is_show_in_row_price' => $this->getStoreConfig('simiconnector/config_price/price_one_row'),
                 'is_show_price_for_guest' => $this->getStoreConfig('simiconnector/config_price/is_show_price_for_guest'),
                 'open_url_in_app' => $this->getStoreConfig('simiconnector/general/open_url_in_app'),
+                'image_aspect_ratio' => $this->getStoreConfig('simiconnector/general/image_aspect_ratio'),
                 'connector_version' => $connectorVersion
             ],
             'sales'             => [

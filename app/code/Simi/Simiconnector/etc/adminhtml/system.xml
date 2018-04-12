@@ -60,6 +60,10 @@
                     <label>Show Title For Banners, Categories and Product Lists on Home Screen</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="image_aspect_ratio" translate="label" type="select" sortOrder="1149" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Banner Aspect Ratio</label>
+                    <source_model>Simi\Simiconnector\Model\Config\Source\Aspectratio</source_model>
+                </field>
                 <field id="open_url_in_app" translate="label" type="select" sortOrder="1299" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Open url in app</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
