@@ -39,6 +39,7 @@ class Quoteitems extends Apiabstract
             $data['params']['move_to_wishlist'] &&
             $this->simiObjectManager->get('Magento\Customer\Model\Session')->isLoggedIn()) {
             $this->moveToWishlist($data['resourceid']);
+            $this->removed_items = [$data['resourceid']];
             $this->RETURN_MESSAGE = __('Item has been moved to Wishlist');
         }
         $this->builderQuery = $quote->getItemsCollection();
