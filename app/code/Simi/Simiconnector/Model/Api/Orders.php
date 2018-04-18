@@ -190,10 +190,13 @@ class Orders extends Apiabstract
          * save To App report
          */
         try {
+            $data = $this->getData();
             $orderId        = $this->simiObjectManager->create('Magento\Sales\Model\Order')
                     ->loadByIncrementId($this->_getCheckoutSession()->getLastRealOrderId())->getId();
             $newTransaction = $this->simiObjectManager->create('Simi\Simiconnector\Model\Appreport');
             $newTransaction->setOrderId($orderId);
+            if (isset($data['params']['platform']))
+                $newTransaction->setPlatform($data['params']['platform']);
             $newTransaction->save();
         } catch (\Exception $exc) {
             throw new \Simi\Simiconnector\Helper\SimiException($exc->getMessage());

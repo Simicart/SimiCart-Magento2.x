@@ -78,6 +78,17 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
             'index'  => 'increment_id',
         ]);
 
+        $this->addColumn('platform', [
+            'type'    => 'options',
+            'header' => __('Platform'),
+            'index'  => 'platform',
+            'options' => [
+                '0' => __('Native App'),
+                '1' => __('PWA')
+            ]
+        ]);
+        
+
         $this->addColumn('store_id', [
             'type'   => 'store',
             'header' => __('Purchase Point'),
