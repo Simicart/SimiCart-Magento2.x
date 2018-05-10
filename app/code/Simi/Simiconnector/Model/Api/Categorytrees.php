@@ -69,6 +69,17 @@ class Categorytrees extends Apiabstract
                 if ($image_url = $categoryModel->getImageUrl()) {
                     $category['image_url'] = $image_url;
                 }
+                if (isset($category['landing_page']) && $category['landing_page']) {
+                    $block = $this->simiObjectManager->get('Magento\Framework\View\LayoutInterface')
+                        ->createBlock('Magento\Cms\Block\Block');
+                    $block->setBlockId($category['landing_page']);
+                    $category['landing_page_cms'] = $block->toHtml();
+                }
+                if ($categoryModel->getData('description'))
+                    $category['description'] = $this->simiObjectManager
+                        ->get('Magento\Cms\Model\Template\FilterProvider')
+                        ->getPageFilter()->filter($categoryModel->getData('description'));
+                
                 $this->getChildCatArray($level, $category['child_cats'], $category['entity_id']);
                 $optionArray[] = $category;
             }

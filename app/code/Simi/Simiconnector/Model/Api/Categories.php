@@ -57,7 +57,7 @@ class Categories extends Apiabstract
                 $block = $this->simiObjectManager->get('Magento\Framework\View\LayoutInterface')
                     ->createBlock('Magento\Cms\Block\Block');
                 $block->setBlockId($catData['landing_page']);
-                $catData['landing_page'] = $block->toHtml();
+                $catData['landing_page_cms'] = $block->toHtml();
             }
 
             if ($categoryModel->getData('description'))
