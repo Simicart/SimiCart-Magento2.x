@@ -57,6 +57,10 @@ class Customers extends Apiabstract
                         throw new \Simi\Simiconnector\Helper\SimiException(__('Logout Failed'), 4);
                     }
                     break;
+                case 'checkexisting':
+                    $this->builderQuery = $this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')
+                        ->getCustomerByEmail($data['params']['customer_email']);
+                    break;
                 default:
                     $this->builderQuery = $this->simiObjectManager->get('Magento\Customer\Model\Customer')
                         ->setWebsiteId($this->storeManager->getStore()->getWebsiteId())->load($data['resourceid']);
