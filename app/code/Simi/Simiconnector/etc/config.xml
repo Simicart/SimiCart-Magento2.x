@@ -81,6 +81,10 @@
                 <price_one_row>0</price_one_row>
                 <is_show_price_for_guest>1</is_show_price_for_guest>
             </config_price>
+            <methods_support>
+                <put>1</put>
+                <delete>1</delete>
+            </methods_support>
         </simiconnector>  
         <simi_notifications>
             <notification>

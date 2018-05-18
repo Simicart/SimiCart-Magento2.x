@@ -76,7 +76,7 @@
                 </field>
                 <field id="decimal_separator" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Decimal Separator</label>
-                </field>                
+                </field>
                 <field id="min_number_of_decimals" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Minimum Number of Decimals</label>
                 </field>
@@ -139,7 +139,7 @@
                     <depends>
                         <field id="*/*/region_id" separator=",">2,3</field>
                         <field id="*/*/hideaddress_enable">1</field>
-                    </depends>                            
+                    </depends>
                     <comment>Applied when Customers leave State/Province field blank, use region_id if State/Province is a option field. Eg. 1 for Alabama</comment>
                 </field>
                 <field id="city" translate="label" type="select" sortOrder="499" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -154,7 +154,7 @@
                     <depends>
                         <field id="*/*/city" separator=",">2,3</field>
                         <field id="*/*/hideaddress_enable">1</field>
-                    </depends>                            
+                    </depends>
                     <comment>Applied when Customers leave City field blank</comment>
                 </field>
                 <field id="zipcode" translate="label" type="select" sortOrder="599" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -169,7 +169,7 @@
                     <depends>
                         <field id="*/*/zipcode" separator=",">2,3</field>
                         <field id="*/*/hideaddress_enable">1</field>
-                    </depends>                            
+                    </depends>
                     <comment>Applied when Customers leave Zip/Postal Code field blank</comment>
                 </field>
                 <field id="telephone" translate="label" type="select" sortOrder="699" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -184,7 +184,7 @@
                     <depends>
                         <field id="*/*/telephone" separator=",">2,3</field>
                         <field id="*/*/hideaddress_enable">1</field>
-                    </depends>                                                        
+                    </depends>
                     <comment>Applied when Customers leave Telephone field blank</comment>
                 </field>
                 <field id="fax" translate="label" type="select" sortOrder="799" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -248,7 +248,7 @@
                         <field id="*/*/enable_terms">1</field>
                     </depends>
                 </field>
-            </group>    
+            </group>
             <group id="instant_contact" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Instant Contact Configuration</label>
                 <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -381,6 +381,17 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
+            <group id="methods_support" translate="label" type="text" sortOrder="1199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Supported Methods</label>
+                <field id="delete" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Support DELETE method</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="put" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Support PUT method</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
         </section>
         <section id="simi_notifications" translate="label" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
@@ -392,14 +403,14 @@
                 <field id="upload_pem_file" translate="label" type="file" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Upload Apple PEM file</label>
                     <comment>Certificate (PEM) for Apple Device Notification Sending</comment>
-                    <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>    
-                    <upload_dir config="system/filesystem/media">simi/simiconnector/pem/manual</upload_dir>                
+                    <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>
+                    <upload_dir config="system/filesystem/media">simi/simiconnector/pem/manual</upload_dir>
                 </field>
                 <field id="upload_pem_file_test" translate="label" type="file" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Upload Apple Demo PEM file</label>
                     <comment>Certificate (PEM) for Demo Apple Device Notification Sending</comment>
-                    <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>    
-                    <upload_dir config="system/filesystem/media">simi/simiconnector/pem</upload_dir>                
+                    <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>
+                    <upload_dir config="system/filesystem/media">simi/simiconnector/pem</upload_dir>
                 </field>
                 <field id="android_app_key" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Android App Key</label>

@@ -11,17 +11,17 @@ abstract class Apiabstract
 
     public $FILTER_RESULT = true;
 
-    const DEFAULT_DIR   = 'asc';
+    const DEFAULT_DIR = 'asc';
     const DEFAULT_LIMIT = 15;
-    const DIR           = 'dir';
-    const ORDER         = 'order';
-    const PAGE          = 'page';
-    const LIMIT         = 'limit';
-    const OFFSET        = 'offset';
-    const FILTER        = 'filter';
-    const ALL_IDS       = 'all_ids';
-    const LIMIT_COUNT   = 200;
-    const MEDIA_PATH    = 'Simiconnector';
+    const DIR = 'dir';
+    const ORDER = 'order';
+    const PAGE = 'page';
+    const LIMIT = 'limit';
+    const OFFSET = 'offset';
+    const FILTER = 'filter';
+    const ALL_IDS = 'all_ids';
+    const LIMIT_COUNT = 200;
+    const MEDIA_PATH = 'Simiconnector';
 
     public $DEFAULT_ORDER = 'entity_id';
     public $simiObjectManager;
@@ -66,14 +66,15 @@ abstract class Apiabstract
 
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $simiObjectManager
-    ) {
-        $this->simiObjectManager  = $simiObjectManager;
-        $this->scopeConfig       = $this->simiObjectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
-        $this->storeManager      = $this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
-        $this->storeRepository    = $this->simiObjectManager->get('\Magento\Store\Api\StoreRepositoryInterface');
+    )
+    {
+        $this->simiObjectManager = $simiObjectManager;
+        $this->scopeConfig = $this->simiObjectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
+        $this->storeManager = $this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
+        $this->storeRepository = $this->simiObjectManager->get('\Magento\Store\Api\StoreRepositoryInterface');
         $this->storeCookieManager = $this->simiObjectManager->get('\Magento\Store\Api\StoreCookieManagerInterface');
-        $this->resource          = $this->simiObjectManager->get('\Magento\Framework\App\ResourceConnection');
-        $this->eventManager      = $this->simiObjectManager->get('\Magento\Framework\Event\ManagerInterface');
+        $this->resource = $this->simiObjectManager->get('\Magento\Framework\App\ResourceConnection');
+        $this->eventManager = $this->simiObjectManager->get('\Magento\Framework\Event\ManagerInterface');
         return $this;
     }
 
@@ -140,9 +141,9 @@ abstract class Apiabstract
     {
         $collection = $this->builderQuery;
         $this->filter();
-        $data       = $this->getData();
+        $data = $this->getData();
         $parameters = $data['params'];
-        $page       = 1;
+        $page = 1;
         if (isset($parameters[self::PAGE]) && $parameters[self::PAGE]) {
             $page = $parameters[self::PAGE];
         }
@@ -159,8 +160,8 @@ abstract class Apiabstract
         $collection->setPageSize($offset + $limit);
 
         $all_ids = [];
-        $info    = [];
-        $total   = $collection->getSize();
+        $info = [];
+        $total = $collection->getSize();
 
         if ($offset > $total) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid method.'), 4);
@@ -171,7 +172,7 @@ abstract class Apiabstract
             $fields = explode(',', $parameters['fields']);
         }
 
-        $check_limit  = 0;
+        $check_limit = 0;
         $check_offset = 0;
 
         foreach ($collection as $entity) {
@@ -182,7 +183,7 @@ abstract class Apiabstract
                 break;
             }
 
-            $info[]    = $entity->toArray($fields);
+            $info[] = $entity->toArray($fields);
             $all_ids[] = $entity->getId();
         }
         return $this->getList($info, $all_ids, $total, $limit, $offset);
@@ -190,10 +191,10 @@ abstract class Apiabstract
 
     public function show()
     {
-        $entity     = $this->builderQuery;
-        $data       = $this->getData();
+        $entity = $this->builderQuery;
+        $data = $this->getData();
         $parameters = $data['params'];
-        $fields     = [];
+        $fields = [];
         if (isset($parameters['fields']) && $parameters['fields']) {
             $fields = explode(',', $parameters['fields']);
         }
@@ -231,6 +232,13 @@ abstract class Apiabstract
                 return $this->index();
             }
         } elseif ($data['is_method'] == 2) {
+            if (isset($data['params']['is_put']) && $data['params']['is_put'] == '1'
+                && !$this->scopeConfig->getValue('simiconnector/methods_support/put')) {
+                return $this->update($data['resourceid']);
+            } else if (isset($data['params']['is_delete']) && $data['params']['is_delete'] == '1'
+                && !$this->scopeConfig->getValue('simiconnector/methods_support/delete')) {
+                return $this->destroy($data['resourceid']);
+            }
             return $this->store();
         } elseif ($data['is_method'] == 3) {
             return $this->update($data['resourceid']);
@@ -242,11 +250,11 @@ abstract class Apiabstract
     public function getList($info, $all_ids, $total, $page_size, $from)
     {
         return [
-            'all_ids'             => $all_ids,
+            'all_ids' => $all_ids,
             $this->getPluralKey() => $this->motifyFields($info),
-            'total'               => $total,
-            'page_size'           => $page_size,
-            'from'                => $from,
+            'total' => $total,
+            'page_size' => $page_size,
+            'from' => $from,
         ];
     }
 
@@ -260,9 +268,9 @@ abstract class Apiabstract
         if (!$this->FILTER_RESULT) {
             return;
         }
-        $data       = $this->data;
+        $data = $this->data;
         $parameters = $data['params'];
-        $query      = $this->builderQuery;
+        $query = $this->builderQuery;
         $this->_whereFilter($query, $parameters);
         $this->_order($parameters);
 
@@ -274,7 +282,7 @@ abstract class Apiabstract
         $query = $this->builderQuery;
         $order = isset($parameters[self::ORDER]) ? $parameters[self::ORDER] : $this->DEFAULT_ORDER;
         $order = str_replace('|', '.', $order);
-        $dir   = isset($parameters[self::DIR]) ? $parameters[self::DIR] : self::DEFAULT_DIR;
+        $dir = isset($parameters[self::DIR]) ? $parameters[self::DIR] : self::DEFAULT_DIR;
         $query->setOrder($order, $dir);
     }
 
@@ -305,7 +313,7 @@ abstract class Apiabstract
             foreach ($value as $operator => $v) {
                 if ($operator == 'in' || $operator == 'nin') {
                     return $isOr ?
-                            ['attribute' => $key, $operator => explode(',', $v)] : [$operator => explode(',', $v)];
+                        ['attribute' => $key, $operator => explode(',', $v)] : [$operator => explode(',', $v)];
                 } else {
                     return $isOr ? ['attribute' => $key, $operator => $v] : [$operator => $v];
                 }
@@ -332,14 +340,14 @@ abstract class Apiabstract
     public function getMediaUrl($media_path)
     {
         return $this->storeManager->getStore()->getBaseUrl(
-            \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
-        ) . $media_path;
+                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+            ) . $media_path;
     }
 
     //Max update to get fields
     public function motifyFields($content)
     {
-        $data       = $this->getData();
+        $data = $this->getData();
         $parameters = $data['params'];
         if (isset($parameters['fields']) && $parameters['fields']) {
             $fields = explode(',', $parameters['fields']);
