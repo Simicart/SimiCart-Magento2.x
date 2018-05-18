@@ -122,7 +122,9 @@ class Storeviews extends Apiabstract
                 'is_show_price_for_guest' => $this->getStoreConfig('simiconnector/config_price/is_show_price_for_guest'),
                 'open_url_in_app' => $this->getStoreConfig('simiconnector/general/open_url_in_app'),
                 'image_aspect_ratio' => $this->getStoreConfig('simiconnector/general/image_aspect_ratio'),
-                'connector_version' => $connectorVersion
+                'connector_version' => $connectorVersion,
+                'is_support_put' => $this->getStoreConfig('simiconnector/methods_support/put'),
+                'is_support_delete' => $this->getStoreConfig('simiconnector/methods_support/delete'),
             ],
             'sales'             => [
                 'sales_reorder_allow'           => $this->getStoreConfig('sales/reorder/allow'),
