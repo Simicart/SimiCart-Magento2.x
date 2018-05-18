@@ -33,7 +33,7 @@ class Categories extends Apiabstract
                 $idArray = array_intersect($idArray, $this->visible_array);
             }
             $this->builderQuery = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
-                    ->getCollection()->addAttributeToSelect('*')->addFieldToFilter('entity_id', ['in' => $idArray]);
+                ->getCollection()->addAttributeToSelect('*')->addFieldToFilter('entity_id', ['in' => $idArray]);
         } else {
             $this->builderQuery = $category->getChildrenCategories()->addAttributeToSelect('*');
             if ($this->visible_array) {
@@ -50,6 +50,7 @@ class Categories extends Apiabstract
                 ->create('\Magento\Catalog\Model\Category')
                 ->load($catData['entity_id']);
             $catData = array_merge($catData, $categoryModel->getData());
+            $catData['url_path'] = $catData['request_path'];
             if ($image_url = $categoryModel->getImageUrl()) {
                 $catData['image_url'] = $image_url;
             }
@@ -64,9 +65,9 @@ class Categories extends Apiabstract
                 $catData['description'] = $this->simiObjectManager
                     ->get('Magento\Cms\Model\Template\FilterProvider')
                     ->getPageFilter()->filter($categoryModel->getData('description'));
-            
+
             $childCollection = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
-                    ->getCollection()->addFieldToFilter('parent_id', $catData['entity_id']);
+                ->getCollection()->addFieldToFilter('parent_id', $catData['entity_id']);
             if ($this->visible_array) {
                 $childCollection->addFieldToFilter('entity_id', ['nin' => $this->visible_array]);
             }
