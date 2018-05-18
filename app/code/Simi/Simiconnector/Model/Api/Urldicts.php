@@ -19,7 +19,7 @@ class Urldicts extends Apiabstract
                 'store_id' => $storeId,
             ]);
             if (!$this->builderQuery || !$this->builderQuery->getEntityType())
-                throw new Exception($this->_helper->__('No URL Rewrite Found'), 4);
+                throw new \Simi\Simiconnector\Helper\SimiException(__('No URL Rewrite Found'), 4);
         }
     }
     public function show() {
@@ -59,7 +59,8 @@ class Urldicts extends Apiabstract
             $productListModel->setData($data);
             $productListModel->setBuilderQuery();
             $result['urldict']['simi_category_products'] = $productListModel->index();
-        }
+        } else
+            throw new \Simi\Simiconnector\Helper\SimiException(__('No URL Rewrite Found'), 4);
         return $result;
     }
 }
