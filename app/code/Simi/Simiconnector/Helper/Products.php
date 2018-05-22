@@ -242,7 +242,10 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         $titleFilters = [];
         $this->_filterByAtribute($collection, $attributeCollection, $titleFilters, $layerFilters, $arrayIDs);
 
-        $this->_filterByPriceRange($layerFilters, $collection, $params);
+        if ($this->simiObjectManager
+            ->get('Magento\Framework\App\ProductMetadataInterface')
+            ->getEdition() != 'Enterprise')
+            $this->_filterByPriceRange($layerFilters, $collection, $params);
 
         // category
         if ($this->category) {
