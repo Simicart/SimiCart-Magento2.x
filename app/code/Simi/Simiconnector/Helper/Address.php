@@ -203,7 +203,7 @@ class Address extends Data
         if (!isset($street[2])) {
             $street[2] = null;
         }
-        return [
+        $detail = [
             'firstname'    => $data->getFirstname(),
             'lastname'     => $data->getLastname(),
             'prefix'       => $data->getPrefix(),
@@ -224,6 +224,12 @@ class Address extends Data
             'fax'          => $data->getFax(),
             'latlng'       => $street[2] != null ? $street[2] : "",
         ];
+        if($customer != null){
+            $detail['is_default_billing'] = $customer->getDefaultBilling()  == $data->getId();
+            $detail['is_default_shipping'] = $customer->getDefaultShipping()  == $data->getId();
+        }
+
+        return $detail;
     }
 
     /*
