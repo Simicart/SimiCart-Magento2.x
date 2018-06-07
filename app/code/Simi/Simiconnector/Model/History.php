@@ -14,6 +14,10 @@ class History extends \Magento\Framework\Model\AbstractModel
      * @var \Simi\Simiconnector\Helper\Website
      * */
     public $websiteHelper;
+    /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
+    public $simiObjectManager;
 
     /**
      * @param \Magento\Framework\Model\Context $context
@@ -32,10 +36,11 @@ class History extends \Magento\Framework\Model\AbstractModel
         \Magento\Framework\Registry $registry,
         \Simi\Simiconnector\Model\ResourceModel\History $resource,
         \Simi\Simiconnector\Model\ResourceModel\History\Collection $resourceCollection,
-        \Simi\Simiconnector\Helper\Website $websiteHelper
+        \Simi\Simiconnector\Helper\Website $websiteHelper,
+        \Magento\Framework\ObjectManagerInterface $simiObjectManager
     ) {
         $this->websiteHelper = $websiteHelper;
-
+        $this->simiObjectManager = $simiObjectManager;
         parent::__construct(
             $context,
             $registry,

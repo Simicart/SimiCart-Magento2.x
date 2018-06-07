@@ -50,7 +50,9 @@ class Categories extends Apiabstract
                 ->create('\Magento\Catalog\Model\Category')
                 ->load($catData['entity_id']);
             $catData = array_merge($catData, $categoryModel->getData());
-            $catData['url_path'] = $catData['request_path'];
+            if (isset($catData['request_path'])) {
+                $catData['url_path'] = $catData['request_path'];
+            }
             if ($image_url = $categoryModel->getImageUrl()) {
                 $catData['image_url'] = $image_url;
             }
