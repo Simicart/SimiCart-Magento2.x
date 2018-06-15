@@ -66,7 +66,7 @@ class Categorytrees extends Apiabstract
             if (($parent_id == 0) || (($parent_id!=0) && ($category['parent_id'] == $parent_id))) {
                 $categoryModel = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')->load($category['entity_id']);
                 $category = array_merge($category, $categoryModel->getData());
-                $category['url_path'] = $category['request_path'];
+                $category['url_path'] = isset($category['request_path'])?$category['request_path']:$category['url_path'];
                 if ($image_url = $categoryModel->getImageUrl()) {
                     $category['image_url'] = $image_url;
                 }
