@@ -167,23 +167,22 @@ class Address extends Data
     
     public function applyDefaultValue(&$data)
     {
-        if (!isset($data->country_id) && !isset($data->country_name)) {
+        if (!isset($data->country_id) && !isset($data->country_name) || empty($data->country_id)) {
             $data->country_id = $this->getStoreConfig('simiconnector/hideaddress/country_id_default');
         }
 
-        if (!isset($data->street)) {
+        if (!isset($data->street) || empty($data->street)) {
             $data->street = $this->getStoreConfig('simiconnector/hideaddress/street_default');
         }
 
-        if (!isset($data->city)) {
+        if (!isset($data->city) || empty($data->street)) {
             $data->city = $this->getStoreConfig('simiconnector/hideaddress/city_default');
         }
 
-        if (!isset($data->postcode)) {
+        if (!isset($data->postcode) || empty($data->postcode)) {
             $data->postcode = $this->getStoreConfig('simiconnector/hideaddress/zipcode_default');
         }
-
-        if (!isset($data->telephone)) {
+        if (!isset($data->telephone) || empty($data->telephone)) {
             $data->telephone = $this->getStoreConfig('simiconnector/hideaddress/telephone_default');
         }
         return $data;
