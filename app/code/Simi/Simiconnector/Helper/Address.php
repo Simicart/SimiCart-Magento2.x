@@ -175,7 +175,7 @@ class Address extends Data
             $data->street = $this->getStoreConfig('simiconnector/hideaddress/street_default');
         }
 
-        if (!isset($data->city) || empty($data->street)) {
+        if (!isset($data->city) || empty($data->city)) {
             $data->city = $this->getStoreConfig('simiconnector/hideaddress/city_default');
         }
 
@@ -295,7 +295,15 @@ class Address extends Data
         if (!isset($shippingAddress->entity_id)) {
             $shippingAddress->entity_id = '';
         }
-        $this->_getOnepage()->saveShipping($address, $shippingAddress->entity_id);
+        $saveShipping = $this->_getOnepage()->saveShipping($address, $shippingAddress->entity_id);
+
+        if(count($saveShipping) != 0 && isset($saveShipping['error']) && $saveShipping['error'] ==1 ) {
+            $errorMessage ="";
+            foreach ($saveShipping['message'] as $message) {
+               $errorMessage .= $message->__toString()."\n";
+            }
+            throw new \Simi\Simiconnector\Helper\SimiException($errorMessage , 4);
+        }
     }
 
     /*
