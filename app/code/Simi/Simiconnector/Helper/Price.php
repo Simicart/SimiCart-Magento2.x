@@ -89,6 +89,9 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         $_simplePricesTax        = ($_taxHelper->displayPriceIncludingTax() || $_taxHelper->displayBothPrices());
         $_minimalPrice           = $this->convertPrice($product->getMinimalPrice());
         $_convertedFinalPrice    = $this->convertPrice($product->getFinalPrice());
+        if($product->getTypeId() == 'configurable'){
+            $_convertedFinalPrice    = $product->getFinalPrice();
+        }
         $_specialPriceStoreLabel = $this->getProductAttribute('special_price')->getStoreLabel();
 
         if ($product->getTypeId() == "bundle") {
@@ -107,6 +110,9 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
 
             //price box
             $_convertedPrice    = $this->convertPrice($product->getData('price'));
+            if($product->getTypeId() == 'configurable'){
+                $_convertedPrice    = $this->convertPrice($product->getPriceInfo()->getPrice(\Magento\ConfigurableProduct\Pricing\Price\ConfigurableRegularPrice::PRICE_CODE)->getValue());
+            }
             $_price             = $this->catalogHelper->getTaxPrice($product, $_convertedPrice);
             $_regularPrice      = $this->catalogHelper->getTaxPrice($product, $_convertedPrice, $_simplePricesTax);
             $_finalPrice        = $this->catalogHelper->getTaxPrice($product, $_convertedFinalPrice);
