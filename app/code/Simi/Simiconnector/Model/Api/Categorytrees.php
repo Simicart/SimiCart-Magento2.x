@@ -42,7 +42,7 @@ class Categorytrees extends Apiabstract
             if ($this->visible_array) {
                 $this->categoryArray = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
                     ->getCollection()
-                    ->addFieldToFilter('entity_id', ['in' => $this->visible_array])
+                    ->addFieldToFilter('entity_id', ['nin' => $this->visible_array])
                     ->addAttributeToSelect('*')
                     ->setOrder('position', 'asc')
                     ->toArray();
