@@ -77,6 +77,7 @@ class Address extends Data
         }
         //sample add custom address fields
         $data['custom_fields']   = [];
+        /*
         //text field
         $data['custom_fields'][] = ['code'     => 'text_field_sample',
             'title'    => 'Text Field',
@@ -105,6 +106,7 @@ class Address extends Data
             'separated_by' => '%',
             'position'     => '10',
         ];
+        */
         return $data;
     }
 
