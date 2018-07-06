@@ -27,7 +27,8 @@ class Categories extends Apiabstract
             $childArray = $category->getChildrenCategories();
             $idArray    = [];
             foreach ($childArray as $childArrayItem) {
-                $idArray[] = $childArrayItem->getId();
+                if ($childArrayItem->getData('parent_id') == $data['resourceid'])
+                    $idArray[] = $childArrayItem->getId();
             }
             if ($this->visible_array) {
                 $idArray = array_intersect($idArray, $this->visible_array);
