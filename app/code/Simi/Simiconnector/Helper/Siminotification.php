@@ -336,7 +336,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
                 }
                 break;
             case '2':
-                return BP . '/pub/media/simi/simiconnector/pem/manual'
+                return BP . '/pub/media/simi/simiconnector/pem/manual/'
                     . $this->getConfig("simi_notifications/notification/upload_pem_file", $data['storeview_id']);
             default:
         }
