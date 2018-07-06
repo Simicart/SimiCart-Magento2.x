@@ -33,7 +33,7 @@ class Categories extends Apiabstract
                 $idArray = array_intersect($idArray, $this->visible_array);
             }
             $this->builderQuery = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
-                ->getCollection()->addAttributeToSelect('*')->addFieldToFilter('entity_id', ['nin' => $idArray]);
+                ->getCollection()->addAttributeToSelect('*')->addFieldToFilter('entity_id', ['in' => $idArray]);
         } else {
             $this->builderQuery = $category->getChildrenCategories()->addAttributeToSelect('*');
             if ($this->visible_array) {
