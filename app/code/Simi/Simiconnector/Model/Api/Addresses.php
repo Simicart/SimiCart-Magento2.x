@@ -138,6 +138,8 @@ class Addresses extends Apiabstract
                 $dataresult    = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
                         ->getLocationInfo($latitude, $longitude);
                 $address   = '';
+                if (!$dataresult || !isset($dataresult['geocoding']) || !$dataresult['geocoding'])
+                    throw new \Simi\Simiconnector\Helper\SimiException(__('Cannot get address for the given location'), 6);
                 $dataresult    = $dataresult['geocoding'];
                 
                 $addressComponentsCount = count($dataresult->results[0]->address_components);
