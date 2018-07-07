@@ -214,7 +214,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
                     return false;
                 }
                 $this->simiObjectManager->get('\Magento\Framework\Message\ManagerInterface')
-                        ->addError(__('Message successfully delivered to %s devices (Android)', $size));
+                    ->addSuccess(__('Message successfully delivered to %1 devices (Android)', $size));
                 return true;
             } else {
                 //send to 100 user from_user
