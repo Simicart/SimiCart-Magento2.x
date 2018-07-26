@@ -126,13 +126,13 @@ class Address extends Data
 
     public function convertDataAddress($data)
     {
+        $address = [];
         if (isset($data->country_id)) {
-            
+            $address['region'] = null;
+            $address['region_code'] = null;
+            $state_id = null;
             $country     = $data->country_id;
             $listState   = $this->getStates($country);
-            
-            $state_id    = $this->getStoreConfig('simiconnector/hideaddress/region_id_default');
-            
             $check_state = false;
             if (count($listState) == 0) {
                 $check_state = true;
@@ -155,9 +155,9 @@ class Address extends Data
             }
             $address['region_id'] = $state_id;
         }
-        
-        $this->applyDefaultValue($data);
-        $address = [];
+        if ($this->getStoreConfig('simiconnector/hideaddress/hideaddress_enable')) {
+            $this->applyDefaultValue($data);
+        }
         foreach ((array) $data as $index => $info) {
             $address[$index] = $info;
         }
@@ -186,6 +186,9 @@ class Address extends Data
         }
         if (!isset($data->telephone) || empty($data->telephone)) {
             $data->telephone = $this->getStoreConfig('simiconnector/hideaddress/telephone_default');
+        }
+        if (!isset($data->region_id) || empty($data->region_id)) {
+            $data->region_id = $this->getStoreConfig('simiconnector/hideaddress/region_id_default');
         }
         return $data;
     }
