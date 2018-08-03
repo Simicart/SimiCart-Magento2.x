@@ -355,7 +355,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 continue;
             }
             foreach ($attributeValues as $productId => $optionIds) {
-                if (isset($arrayIDs[$productId]) && ($arrayIDs[$productId] != null)) {
+                if (isset($optionIds[0]) && isset($arrayIDs[$productId]) && ($arrayIDs[$productId] != null)) {
                     $optionIds = explode(',', $optionIds[0]);
                     foreach ($optionIds as $optionId) {
                         if (isset($attributeOptions[$optionId])) {
