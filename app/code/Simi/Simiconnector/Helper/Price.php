@@ -80,7 +80,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
     public function formatPriceFromProduct($product, $is_detail = false)
     {
         $priveV2        = [];
-        $product       = $this->simiObjectManager->get('Magento\Catalog\Model\Product')->load($product->getId());
+        $product       = $this->simiObjectManager->create('Magento\Catalog\Model\Product')->load($product->getId());
         $this->product = $product;
 
         $_weeeHelper = $this->helper('Magento\Weee\Helper\Data');
