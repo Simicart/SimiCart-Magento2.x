@@ -335,6 +335,12 @@ class Quoteitems extends Apiabstract
         $session              = $this->_getSession();
         $result['cart_total'] = $this->_getCart()->getItemsCount();
         $result['quote_id']   = $session->getQuoteId();
+        
+        $customerSession = $this->simiObjectManager->get('Magento\Customer\Model\Session');
+        $result['customer_email'] = $customerSession->isLoggedIn()?
+            $customerSession->getCustomer()->getEmail():
+            null;
+
         return $result;
     }
     
