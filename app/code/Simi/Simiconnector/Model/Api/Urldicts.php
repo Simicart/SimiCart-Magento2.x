@@ -53,7 +53,8 @@ class Urldicts extends Apiabstract
             $productListModel = $this->simiObjectManager
                 ->get('Simi\Simiconnector\Model\Api\Products');
             $data['resourceid'] = null;
-            $data['params'][self::FILTER] = $result['urldict']['category_id'];
+            $data['params'][self::FILTER] = array('cat_id'=>$result['urldict']['category_id']);
+            $data['params']['limit'] = 12;
             $productListModel->pluralKey = 'products';
             $productListModel->singularKey = 'product';
             $productListModel->setData($data);
