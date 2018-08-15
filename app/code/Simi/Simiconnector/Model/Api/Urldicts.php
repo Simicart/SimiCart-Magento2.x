@@ -57,9 +57,9 @@ class Urldicts extends Apiabstract
             $data['resourceid'] = null;
             $data['params'][self::FILTER] = array('cat_id'=>$result['urldict']['category_id']);
             $data['params']['image_width'] = isset($data['params']['image_width'])?
-                $data['params']['image_width']:200;
+                $data['params']['image_width']:180;
             $data['params']['image_height'] = isset($data['params']['image_height'])?
-                $data['params']['image_height']:200;
+                $data['params']['image_height']:180;
             $data['params']['limit'] = 12;
             $productListModel->pluralKey = 'products';
             $productListModel->singularKey = 'product';

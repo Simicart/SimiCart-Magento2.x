@@ -88,6 +88,8 @@ class Storeviews extends Apiabstract
         $connectorVersion = $this->simiObjectManager
             ->get('\Magento\Framework\Module\ResourceInterface')
             ->getDbVersion('Simi_Simiconnector');
+
+        $customerSession = $this->simiObjectManager->get('Magento\Customer\Model\Session');
         $additionInfo = [
             'base'              => [
                 'country_code'           => $country->getId(),
@@ -112,16 +114,14 @@ class Storeviews extends Apiabstract
                 'max_number_of_decimals' => $this->getStoreConfig('simiconnector/currency/max_number_of_decimals'),
                 'currencies'             => $currencies,
                 'is_show_home_title'     => $this->getStoreConfig('simiconnector/general/is_show_home_title'),
-                'cust_group'             => $this->simiObjectManager
-                ->get('Magento\Customer\Model\Session')->getCustomer()->getGroupId(),
-                'customer_identity'                      => $this->simiObjectManager
-                ->get('Magento\Customer\Model\Session')->getSessionId(),
-                'customer_ip'                      => $this->simiObjectManager
-                ->get('Magento\Framework\HTTP\PhpEnvironment\RemoteAddress')->getRemoteAddress(),
+                'cust_group'             => $customerSession->getGroupId(),
+                'customer_identity'      => $customerSession->getSessionId(),
+                'customer_ip'            => $customerSession->getRemoteAddress(),
                 'is_show_in_row_price' => $this->getStoreConfig('simiconnector/config_price/price_one_row'),
                 'is_show_price_for_guest' => $this->getStoreConfig('simiconnector/config_price/is_show_price_for_guest'),
                 'open_url_in_app' => $this->getStoreConfig('simiconnector/general/open_url_in_app'),
                 'image_aspect_ratio' => $this->getStoreConfig('simiconnector/general/image_aspect_ratio'),
+                'customer_email' => $customerSession->isLoggedIn()?$customerSession->getCustomer()->getEmail():null,
                 'connector_version' => $connectorVersion,
                 'is_support_put' => $this->getStoreConfig('simiconnector/methods_support/put'),
                 'is_support_delete' => $this->getStoreConfig('simiconnector/methods_support/delete'),
