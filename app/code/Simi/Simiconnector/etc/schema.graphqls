@@ -1,0 +1,28 @@
+type Query {
+    simihomecategory (
+        id: Int @doc(description: "Id of the home category")
+    ): Simihomecategories
+    @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\Simihomecategories")
+}
+
+type Simihomecategories @doc(description: "Simihomecategory implementation") {
+    total: Int @doc(description: "The number of items returned")
+    items: [Simihomecategory] @doc(description: "An array of home categories")
+}
+
+type Simihomecategory
+    @doc(description: "Home category type resolver") {
+    simicategory_id: Int @doc(description: "Home Cate Id")
+    simicategory_name: String @doc(description: "Image Tablet")
+    simicategory_filename: String @doc(description: "Image")
+    simicategory_filename_tablet: String @doc(description: "Image Tablet")
+    category_id: Int @doc(description: "Category Id")
+    status: Int @doc(description: "Status")
+    sort_order: String @doc(description: "Sort Order")
+    matrix_width_percent: Int @doc(description: "Matrix Width Percent")
+    matrix_height_percent: Int @doc(description: "Matrix Height Percent")
+    matrix_width_percent_tablet: Int @doc(description: "Matrix Width Percent Tablet")
+    matrix_height_percent_tablet: Int @doc(description: "Matrix Height Percent Tablet")
+    matrix_row: Int @doc(description: "Matrix Row")
+}
+
