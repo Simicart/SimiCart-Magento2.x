@@ -99,21 +99,14 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
             'index'  => 'history_id',
         ]);
 
-        $this->addColumn('siminotification_title', [
+        $this->addColumn('notice_title', [
             'header' => __('Title'),
             'index'  => 'siminotification_title',
         ]);
 
-        $this->addColumn('siminotification_content', [
+        $this->addColumn('notice_content', [
             'header' => __('Message'),
             'index'  => 'siminotification_content',
-        ]);
-
-        $this->addColumn('website_id', [
-            'type'    => 'options',
-            'header'  => __('Website'),
-            'index'   => 'website_id',
-            'options' => $this->historyFactory->create()->toOptionWebsiteHash(),
         ]);
 
         $this->addColumn('device_id', [
@@ -121,13 +114,6 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
             'header'  => __('Device'),
             'index'   => 'device_id',
             'options' => $this->historyFactory->create()->toOptionDeviceHash(),
-        ]);
-
-        $this->addColumn('siminotification_type', [
-            'type'    => 'options',
-            'header'  => __('Type'),
-            'index'   => 'siminotification_type',
-            'options' => $this->historyFactory->create()->toOptionTypeHash(),
         ]);
 
         $this->addColumn('created_time', [
