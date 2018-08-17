@@ -3,6 +3,11 @@ type Query {
         id: Int @doc(description: "Id of the home category")
     ): Simihomecategories
     @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\Simihomecategories")
+    simihomebanner(
+        limit: Int ,
+        offset: Int
+    ): Simihomebanners
+    @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\Simihomebanners")
 }
 
 type Simihomecategories @doc(description: "Simihomecategory implementation") {
@@ -26,3 +31,32 @@ type Simihomecategory
     matrix_row: Int @doc(description: "Matrix Row")
 }
 
+type Simihomebanners @doc(description: "Home Banners implementation") {
+    total: Int
+    all_ids: [String]
+    homebanners: [Simihomebanner]
+    page_size: Int
+    from: Int
+}
+
+type Simihomebanner {
+    banner_id: Int
+    banner_name: String
+    banner_url: String
+    banner_name_tablet: String
+    banner_title: String
+    status: Int
+    type: Int
+    category_id: Int
+    product_id: Int
+    sort_order: String
+    entity_id: Int
+    content_type: Int
+    item_id: Int
+    width: Int
+    height: Int
+    width_tablet: Int
+    height_tablet: Int
+    has_children: Boolean
+    cat_name: String
+}
