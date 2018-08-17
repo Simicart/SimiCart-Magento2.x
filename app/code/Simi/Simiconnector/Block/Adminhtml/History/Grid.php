@@ -99,12 +99,12 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
             'index'  => 'history_id',
         ]);
 
-        $this->addColumn('siminotification_title', [
+        $this->addColumn('notice_title', [
             'header' => __('Title'),
             'index'  => 'siminotification_title',
         ]);
 
-        $this->addColumn('siminotification_content', [
+        $this->addColumn('notice_content', [
             'header' => __('Message'),
             'index'  => 'siminotification_content',
         ]);
