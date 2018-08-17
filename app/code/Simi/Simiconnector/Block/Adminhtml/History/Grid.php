@@ -109,25 +109,11 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
             'index'  => 'siminotification_content',
         ]);
 
-        $this->addColumn('website_id', [
-            'type'    => 'options',
-            'header'  => __('Website'),
-            'index'   => 'website_id',
-            'options' => $this->historyFactory->create()->toOptionWebsiteHash(),
-        ]);
-
         $this->addColumn('device_id', [
             'type'    => 'options',
             'header'  => __('Device'),
             'index'   => 'device_id',
             'options' => $this->historyFactory->create()->toOptionDeviceHash(),
-        ]);
-
-        $this->addColumn('siminotification_type', [
-            'type'    => 'options',
-            'header'  => __('Type'),
-            'index'   => 'siminotification_type',
-            'options' => $this->historyFactory->create()->toOptionTypeHash(),
         ]);
 
         $this->addColumn('created_time', [
