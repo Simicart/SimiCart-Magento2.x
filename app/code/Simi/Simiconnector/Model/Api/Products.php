@@ -235,6 +235,8 @@ class Products extends Apiabstract
 
         $info['additional']       = $_additional;
         $info['images']           = $images;
+        $info['app_tier_prices'] =$this->simiObjectManager
+            ->get('\Simi\Simiconnector\Helper\Price')->getProductTierPricesLabel($entity);
         $info['app_prices']       = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Price')->formatPriceFromProduct($entity, true);
         $info['app_options']      = $this->simiObjectManager
