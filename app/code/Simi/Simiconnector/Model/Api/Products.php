@@ -156,11 +156,28 @@ class Products extends Apiabstract
             $info_detail = $entity->toArray($fields);
 
             $images       = [];
-            $images[]     = [
-                'url'      => $this->helperProduct
-                    ->getImageProduct($entity, null, $parameters['image_width'], $parameters['image_height']),
-                'position' => 1,
-            ];
+            if (!$entity->getData('media_gallery'))
+                $entity = $this->simiObjectManager
+                    ->create('Magento\Catalog\Model\Product')->load($entity->getId());
+            $media_gallery = $entity->getMediaGallery();
+            foreach ($media_gallery['images'] as $image) {
+                if ($image['disabled'] == 0) {
+                    $images[] = [
+                        'url'      => $this->helperProduct
+                            ->getImageProduct($entity, $image['file'], $parameters['image_width'], $parameters['image_height']),
+                        'position' => $image['position'],
+                    ];
+                    break;
+                }
+            }
+            if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($images) == 0) {
+                $images[]     = [
+                    'url'      => $this->helperProduct
+                        ->getImageProduct($entity, null, $parameters['image_width'], $parameters['image_height']),
+                    'position' => 1,
+                ];
+            }
+
             $ratings      = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Review')
                 ->getRatingStar($entity->getId());
             $total_rating = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Review')
