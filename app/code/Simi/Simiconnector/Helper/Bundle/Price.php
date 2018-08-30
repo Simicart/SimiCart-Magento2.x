@@ -111,13 +111,13 @@ class Price extends \Simi\Simiconnector\Helper\Price
         return $priceV2;
     }
 
-    public function getDisplayMinimalPrice()
-    {
-        if ($this->product) {
-            return $this->product->getMinimalPrice();
-        }
-        return 0;
-    }
+//    public function getDisplayMinimalPrice()
+//    {
+//        if ($this->product) {
+//            return $this->product->getMinimalPrice();
+//        }
+//        return 0;
+//    }
 
     /**
      * @param $price
