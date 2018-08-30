@@ -107,11 +107,11 @@ class Customer extends Data
         if (isset($data->suffix) && $data->suffix) {
             $customer->setSuffix($data->suffix);
         }
-        if (!isset($data->password)) {
-            $encodeMethod = 'md5';
-            $data->password = 'simipassword'
-                    . rand(pow(10, 9), pow(10, 10)) . substr($encodeMethod(microtime()), rand(0, 26), 5);
-        }
+//        if (!isset($data->password)) {
+//            $encodeMethod = 'md5';
+//            $data->password = 'simipassword'
+//                    . rand(pow(10, 9), pow(10, 10)) . substr($encodeMethod(microtime()), rand(0, 26), 5);
+//        }
     }
 
     public function validateSimiPass($username, $password)

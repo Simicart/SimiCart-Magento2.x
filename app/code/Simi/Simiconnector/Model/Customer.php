@@ -29,7 +29,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
     ) {
-   
+
         $this->simiObjectManager = $simiObjectManager;
         $this->storeManager     = $this->simiObjectManager->get('Magento\Store\Model\StoreManagerInterface');
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
@@ -106,19 +106,11 @@ class Customer extends \Magento\Framework\Model\AbstractModel
         if ($checkCustomer->getId()) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Account is already exist'), 4);
         }
-        $customer          = $this->_createCustomer($data);
-        $result            = [];
-        $result['user_id'] = $customer->getId();
-        $session           = $this->_getSession();
-        if ($customer->isConfirmationRequired()) {
-            $store = $this->storeManager->getStore();
-            $customer->sendNewAccountEmail(
-                'registered',
-                $session->getBeforeAuthUrl(),
-                $store->getId()
-            );
+        $customer = $this->_createCustomer($data);
+        $confirmationStatus = $this->getAccountManagement()->getConfirmationStatus($customer->getId());
+        if ($confirmationStatus === \Magento\Customer\Api\AccountManagementInterface::ACCOUNT_CONFIRMATION_REQUIRED) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Account confirmation is required. '
-                    . 'Please, check your email.'), 4);
+                . 'Please, check your email.'), 4);
         }
         return $customer;
     }
@@ -176,7 +168,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel
         $this->_getSession()->setCustomer($customer);
         return $customer;
     }
-    
+
     private function setCustomerData($customer, $data)
     {
         if (isset($data->taxvat)) {
@@ -229,11 +221,6 @@ class Customer extends \Magento\Framework\Model\AbstractModel
                 $data->lastname = __('Lastname');
             }
             $customer = $this->_createCustomer($data);
-            try {
-                $customer->sendPasswordReminderEmail();
-            } catch (\Exception $e) {
-                $customer->setData('error_email_sending', true);
-            }
         }
         $this->simiObjectManager->get('Simi\Simiconnector\Helper\Customer')->loginByCustomer($customer);
         return $customer;
@@ -251,31 +238,24 @@ class Customer extends \Magento\Framework\Model\AbstractModel
 
     private function _createCustomer($data)
     {
-        $customer = $this->simiObjectManager->create('Magento\Customer\Model\Customer')
-                ->setFirstname($data->firstname)
-                ->setLastname($data->lastname)
-                ->setEmail($data->email);
+        $customer = $this->simiObjectManager->create('Magento\Customer\Api\Data\CustomerInterface')
+            ->setFirstname($data->firstname)
+            ->setLastname($data->lastname)
+            ->setEmail($data->email);
         $this->simiObjectManager->get('Simi\Simiconnector\Helper\Customer')->applyDataToCustomer($customer, $data);
 
-        if (!isset($data->password)) {
-            $encodeMethod = 'md5';
-            $data->password = 'simipassword'
-                . rand(pow(10, 9), pow(10, 10)) . substr($encodeMethod(microtime()), rand(0, 26), 5);
+        $password = null;
+        if (isset($data->password) && $data->password) {
+            $password = $data->password;
         }
-        $customer->setPassword($data->password);
-        $customer->save();
-        try {
-            $customer->sendPasswordReminderEmail();
-            if (isset($data->news_letter) && ($data->news_letter == '1')) {
-                $this->simiObjectManager->get('Magento\Newsletter\Model\Subscriber')->subscribe($data->email);
-            } else {
-                $this->simiObjectManager
-                        ->get('Magento\Newsletter\Model\Subscriber')->loadByEmail($data->email)->unsubscribe();
-            }
-        } catch (\Exception $e) {
-            $customer->setData('error_email_sending', true);
+        $customer = $this->getAccountManagement()->createAccount($customer,$password,'');
+        $subscriberFactory = $this->simiObjectManager->get('Magento\Newsletter\Model\SubscriberFactory');
+        if (isset($data->news_letter) && ($data->news_letter == '1')) {
+            $subscriberFactory->create()->subscribeCustomerById($customer->getId());
+        } else {
+            $subscriberFactory->create()->unsubscribeCustomerById($customer->getId());
         }
-
+        $customer = $this->simiObjectManager->create('Magento\Customer\Model\Customer')->load($customer->getId());
         return $customer;
     }
 
