@@ -20,8 +20,14 @@ class Urldicts extends Apiabstract
                 'request_path' => ltrim($requestPath, '/'),
                 'store_id' => $storeId,
             ]);
-            if (!$this->builderQuery || !$this->builderQuery->getEntityType())
-                throw new \Simi\Simiconnector\Helper\SimiException(__('No URL Rewrite Found'), 4);
+            if (!$this->builderQuery || !$this->builderQuery->getEntityType()) {
+                $this->builderQuery = $this->simiObjectManager
+                    ->get('Simi\Simiconnector\Model\Cms')
+                    ->getCollection()
+                    ->addFieldToFilter('cms_url', $requestPath)->getFirstItem();
+                if (!$this->builderQuery || !$this->builderQuery->getId())
+                    throw new \Simi\Simiconnector\Helper\SimiException(__('No URL Rewrite Found'), 4);
+            }
             $this->parseParams();
         }
     }
@@ -47,7 +53,6 @@ class Urldicts extends Apiabstract
         else if($this->builderQuery->getEntityType() == 'category')
             $result['urldict']['category_id'] = $this->builderQuery->getEntityId();
         $data = $this->getData();
-        
         if(isset($result['urldict']['product_id']) && $result['urldict']['product_id']) {
             $apiModel = $this->simiObjectManager->get('Simi\Simiconnector\Model\Api\Products');
             $data['resourceid'] = $result['urldict']['product_id'];
@@ -105,8 +110,9 @@ class Urldicts extends Apiabstract
             $productListModel->setData($data);
             $productListModel->setBuilderQuery();
             $result['urldict']['simi_category_products'] = $productListModel->index();
-        } else
-            throw new \Simi\Simiconnector\Helper\SimiException(__('No URL Rewrite Found'), 4);
+        } else {
+            $result = parent::show();
+        }
         return $result;
     }
 }

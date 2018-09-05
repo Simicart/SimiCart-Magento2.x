@@ -195,6 +195,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'required' => false,
             'disabled' => $isElementDisabled,
             'options'  => [
+                '0' => __('Nowhere'),
                 '1' => __('Left Menu'),
                 '2' => __('Category In-app'),
             ],
@@ -220,6 +221,42 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'required' => false,
             'disabled' => $isElementDisabled
                 ]
+        );
+
+        $webappfieldset = $form->addFieldset('webapp_fieldset', ['legend' => __('PWA Configuration')]);
+
+        $webappfieldset->addField(
+            'cms_url',
+            'text',
+            ['name'     => 'cms_url',
+                'label'    => __('Url'),
+                'title'    => __('Url')]
+        );
+        
+        $webappfieldset->addField(
+            'cms_meta_title',
+            'text',
+            ['name'     => 'cms_meta_title',
+                'label'    => __('Meta Title'),
+                'title'    => __('Meta Title')]
+        );
+
+        $webappfieldset->addField(
+            'cms_meta_desc',
+            'text',
+            ['name'     => 'cms_meta_desc',
+                'label'    => __('Meta Description'),
+                'title'    => __('Meta Description')]
+        );
+
+        $webappfieldset->addField(
+            'cms_script',
+            'editor',
+            [
+                'name'     => 'cms_script',
+                'label'    => __('Script'),
+                'title'    => __('Script')
+            ]
         );
 
         $this->_eventManager->dispatch('adminhtml_cms_edit_tab_main_prepare_form', ['form' => $form]);

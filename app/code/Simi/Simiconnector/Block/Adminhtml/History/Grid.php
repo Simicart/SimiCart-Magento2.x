@@ -83,7 +83,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         $collection = $this->collectionFactory->create();
 
         $this->setCollection($collection);
-
+        
         return parent::_prepareCollection();
     }
 
@@ -101,12 +101,12 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
 
         $this->addColumn('notice_title', [
             'header' => __('Title'),
-            'index'  => 'siminotification_title',
+            'index'  => 'notice_title',
         ]);
 
         $this->addColumn('notice_content', [
             'header' => __('Message'),
-            'index'  => 'siminotification_content',
+            'index'  => 'notice_content',
         ]);
 
         $this->addColumn('device_id', [

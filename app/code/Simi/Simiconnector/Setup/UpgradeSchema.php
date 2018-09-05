@@ -41,6 +41,48 @@ class UpgradeSchema implements UpgradeSchemaInterface
             }
         }
 
+        if (version_compare($context->getVersion(), '1.0.6') < 0) {
+            $tableName = $setup->getTable('simiconnector_cms');
+            if ($setup->getConnection()->isTableExists($tableName) == true) {
+                $connection = $setup->getConnection();
+                $connection->addColumn(
+                    $tableName,
+                    'cms_script',
+                    ['type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                        'nullable' => true,
+                        'default' => '',
+                        'COMMENT' => 'Cms Script']
+                );
+                $connection->addColumn(
+                    $tableName,
+                    'cms_url',
+                    ['type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                        'nullable' => true,
+                        'length' => 255,
+                        'default' => '',
+                        'COMMENT' => 'Cms Url']
+                );
+                $connection->addColumn(
+                    $tableName,
+                    'cms_meta_title',
+                    ['type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                        'nullable' => true,
+                        'length' => 255,
+                        'default' => '',
+                        'COMMENT' => 'Cms Meta Title']
+                );
+                $connection->addColumn(
+                    $tableName,
+                    'cms_meta_desc',
+                    ['type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                        'length' => 255,
+                        'nullable' => true,
+                        'default' => '',
+                        'COMMENT' => 'Cms Meta Description']
+                );
+            }
+        }
+        
         $setup->endSetup();
     }
 }
