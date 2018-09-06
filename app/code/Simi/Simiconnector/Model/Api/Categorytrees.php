@@ -45,13 +45,13 @@ class Categorytrees extends Apiabstract
                     ->addFieldToFilter('entity_id', ['nin' => $this->visible_array])
                     ->addAttributeToSelect('*')
                     ->setOrder('position', 'asc')
-                    ->toArray();
+                    ->getData();
             } else {
                 $this->categoryArray = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
                     ->getCollection()
                     ->addAttributeToSelect('*')
                     ->setOrder('position', 'asc')
-                    ->toArray();
+                    ->getData();
             }
         }
         $beforeString = '';
@@ -60,10 +60,11 @@ class Categorytrees extends Apiabstract
         }
         $level+=1;
         foreach ($this->categoryArray as $category) {
-            if ($category['level'] != $level) {
+            if (isset($category['level']) && ($category['level'] != $level)) {
                 continue;
             }
-            if (($parent_id == 0) || (($parent_id!=0) && ($category['parent_id'] == $parent_id))) {
+            if (($parent_id == 0) ||
+                (($parent_id!=0) && isset($category['parent_id']) &&  ($category['parent_id']== $parent_id))) {
                 $categoryModel = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')->load($category['entity_id']);
                 $category = array_merge($category, $categoryModel->getData());
                 $category['url_path'] = isset($category['request_path'])?$category['request_path']:$category['url_path'];
