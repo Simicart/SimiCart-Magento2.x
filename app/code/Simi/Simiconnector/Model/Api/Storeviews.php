@@ -182,6 +182,7 @@ class Storeviews extends Apiabstract
                 'account_option' => [
                     'taxvat_show' => $this->getStoreConfig('customer/create_account/vat_frontend_visibility'),
                 ],
+                'password_validation' => $this->_passwordValidationConfiguration()
             ],
             'wishlist'          => [
                 'wishlist_general_active'        => $this->getStoreConfig('wishlist/general/active'),
@@ -388,5 +389,11 @@ class Storeviews extends Apiabstract
                 ->addFieldToFilter('website_id', $this->storeManager->getStore()->getWebsiteId());
         $storeAPIModel->pluralKey    = 'stores';
         return $storeAPIModel->index();
+    }
+    private function _passwordValidationConfiguration(){
+        $result = [];
+        $result['minimum_password_length'] = $this->getStoreConfig('customer/password/minimum_password_length');
+        $result['required_character_classes_number'] = $this->getStoreConfig('customer/password/required_character_classes_number');
+        return $result;
     }
 }
