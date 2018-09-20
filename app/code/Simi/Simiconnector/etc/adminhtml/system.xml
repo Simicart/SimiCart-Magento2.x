@@ -392,6 +392,25 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
+            <group id="customchat" translate="label" type="text" sortOrder="1299" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Live chat Configuration</label>
+                <field id="enable" translate="label" type="select" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="head_script" translate="label" type="textarea" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Head Script</label>
+                    <depends>
+                        <field id="*/*/enable">1</field>
+                    </depends>
+                </field>
+                <field id="body_script" translate="label" type="textarea" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Body Script</label>
+                    <depends>
+                        <field id="*/*/enable">1</field>
+                    </depends>
+                </field>
+            </group>
         </section>
         <section id="simi_notifications" translate="label" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
