@@ -80,11 +80,8 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function _prepareCollection()
     {
-        $webId      = $this->getWebsiteIdFromUrl();
         $collection = $this->collectionFactory->create();
-
         $this->setCollection($collection);
-
         return parent::_prepareCollection();
     }
 
