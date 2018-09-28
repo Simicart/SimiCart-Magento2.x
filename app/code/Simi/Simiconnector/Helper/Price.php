@@ -178,7 +178,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
                 // }
             }
         } else { // group product
-            $this->displayGroupPrice($priveV2, $_minimalPrice, $_convertedFinalPrice, $product, $_taxHelper);
+            $this->displayGroupPrice($priveV2, $_minimalPrice, $_convertedFinalPrice, $product, $_taxHelper, $is_detail);
         }
 
         return $priveV2;
@@ -412,9 +412,10 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         &$_minimalPrice,
         &$_convertedFinalPrice,
         &$product,
-        $_taxHelper
+        $_taxHelper,
+        $is_detail
     ) {
-        $showMinPrice = $this->getDisplayMinimalPrice();
+        $showMinPrice = $this->getDisplayMinimalPrice($is_detail);
         if ($showMinPrice && $_minimalPrice) {
             $_exclTax = $this->catalogHelper->getTaxPrice($product, $_minimalPrice);
             $_inclTax = $this->catalogHelper->getTaxPrice($product, $_minimalPrice, true);

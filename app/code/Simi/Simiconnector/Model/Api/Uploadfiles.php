@@ -18,19 +18,20 @@ class Uploadfiles extends Apiabstract
             ->getAbsolutePath();
         $oriPath = 'Simiconnector/tmp/';
         $media  =  $mediaPath.$oriPath;
-
-        if ($_FILES['file']['type'] == 'text/php' ||
-            strpos($_FILES['file']['type'], 'application') !== false)
+        $uploader = $objectManager->create('Magento\MediaStorage\Model\File\Uploader',['fileId' => 'file']);
+        $file = $uploader->validateFile();
+        if ($file['type'] == 'text/php' ||
+            strpos($file['type'], 'application') !== false)
             throw new \Simi\Simiconnector\Helper\SimiException(__('No supported type'), 4);
 
-        $file_name = rand().md5(time()).$_FILES['file']['name'];
-        $file_tmp =$_FILES['file']['tmp_name'];
-        $file_type = $_FILES['file']['type'];
+        $file_name = rand().md5(time()).$file['name'];
+        $file_tmp =$file['tmp_name'];
+        $file_type = $file['type'];
         if (move_uploaded_file($file_tmp,$media.$file_name))
         {
             return array('uploadfile'=>
                 array(
-                    'title'=>$_FILES['file']['name'],
+                    'title'=>$file['name'],
                     'type'=>$file_type,
                     'full_path'=>$media.$file_name,
                     'quote_path'=>$oriPath.$file_name,

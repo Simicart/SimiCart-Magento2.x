@@ -248,7 +248,7 @@ class Orders extends Apiabstract
 
         $session = $this->_getOnepage()->getCheckout();
         $session->resetCheckout();
-        
+
         $this->order_placed_info = $order;
         $this->eventManager->dispatch(
             'simi_simiconnector_model_api_orders_onepage_store_after',
@@ -261,6 +261,9 @@ class Orders extends Apiabstract
 
     public function cleanCheckoutSession()
     {
+        /*
+         * Be VERY carefully uncommenting the lines below, will cause errors saving image custom options
+         *
         try {
             $quote = $this->_getQuote();
             $quote->setIsActive(false);
@@ -268,6 +271,7 @@ class Orders extends Apiabstract
         } catch (\Exception $e) {
             $this->_getCheckoutSession()->clearQuote()->clearStorage();
         }
+        */
         $checkoutSession = $this->_getCheckoutSession();
         $checkoutSession->clearQuote();
         $checkoutSession->clearStorage();
