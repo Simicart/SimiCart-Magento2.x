@@ -185,26 +185,15 @@ class Orders extends Apiabstract
         $order = ['invoice_number' => $this->_getCheckoutSession()->getLastRealOrderId(),
             'payment_method' => $this->_getOnepage()->getQuote()->getPayment()->getMethodInstance()->getCode()
         ];
-
-        /*
-         * save To App report
-         */
         try {
-            $data = $this->getData();
             $orderModel        = $this->simiObjectManager->create('Magento\Sales\Model\Order')
                 ->loadByIncrementId($this->_getCheckoutSession()->getLastRealOrderId());
             if($orderModel->getCanSendNewEmailFlag()) {
                 $orderSender = $this->simiObjectManager->get('\Magento\Sales\Model\Order\Email\Sender\OrderSender');
                 $orderSender->send($orderModel);
             }
-            $orderId = $orderModel->getId();
-            $newTransaction = $this->simiObjectManager->create('Simi\Simiconnector\Model\Appreport');
-            $newTransaction->setOrderId($orderId);
-            if (isset($data['params']['platform']))
-                $newTransaction->setPlatform($data['params']['platform']);
-            $newTransaction->save();
         } catch (\Exception $exc) {
-            throw new \Simi\Simiconnector\Helper\SimiException($exc->getMessage());
+
         }
 
         /*

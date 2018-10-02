@@ -131,7 +131,6 @@ abstract class Apiabstract
         return $this;
     }
 
-    //start
     public function store()
     {
         return $this->getDetail([]);
@@ -148,7 +147,7 @@ abstract class Apiabstract
             $page = $parameters[self::PAGE];
         }
 
-        $limit = self::DEFAULT_LIMIT;
+        $limit = $this->getDefaultLimit();
         if (isset($parameters[self::LIMIT]) && $parameters[self::LIMIT]) {
             $limit = $parameters[self::LIMIT];
         }
@@ -189,6 +188,17 @@ abstract class Apiabstract
         return $this->getList($info, $all_ids, $total, $limit, $offset);
     }
 
+    //Limit - dir - order
+    public function getDefaultLimit() {
+        return self::DEFAULT_LIMIT;
+    }
+    public function getDefaultDir() {
+        return self::DEFAULT_DIR;
+    }
+    public function getDefaultOrder() {
+        return $this->DEFAULT_ORDER;
+    }
+
     public function show()
     {
         $entity = $this->builderQuery;
@@ -212,7 +222,6 @@ abstract class Apiabstract
         return $this->getDetail([]);
     }
 
-    //end
     public function getBuilderQuery()
     {
         return $this->builderQuery;
@@ -280,9 +289,9 @@ abstract class Apiabstract
     public function _order($parameters)
     {
         $query = $this->builderQuery;
-        $order = isset($parameters[self::ORDER]) ? $parameters[self::ORDER] : $this->DEFAULT_ORDER;
+        $order = isset($parameters[self::ORDER]) ? $parameters[self::ORDER] : $this->getDefaultOrder();
         $order = str_replace('|', '.', $order);
-        $dir = isset($parameters[self::DIR]) ? $parameters[self::DIR] : self::DEFAULT_DIR;
+        $dir = isset($parameters[self::DIR]) ? $parameters[self::DIR] : $this->getDefaultDir();
         $query->setOrder($order, $dir);
     }
 

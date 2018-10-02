@@ -42,6 +42,11 @@ class Server
         return $this->data;
     }
 
+    public function _getCheckoutSession()
+    {
+        return $this->simiObjectManager->create('Magento\Checkout\Model\Session');
+    }
+
     /**
      * @return mixed|string
      * @throws Exception
@@ -65,6 +70,11 @@ class Server
         if (!isset($data['resource'])) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid method.'), 4);
         }
+
+        if(!$this->_getCheckoutSession()->getData('simiconnector_platform')) {
+            $this->_getCheckoutSession()->setData('simiconnector_platform', 'native');
+        }
+
         if ((strpos($data['resource'], 'migrate')) !== false) {
             $migrateResource = explode('_', $data['resource'])[1];
             $className = 'Simi\\' . ucfirst($data['module']) . '\Model\Api\Migrate\\' . ucfirst($migrateResource);
