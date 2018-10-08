@@ -140,8 +140,8 @@ class Addresses extends Apiabstract
                 $address   = '';
                 if (!$dataresult || !isset($dataresult['geocoding']) || !$dataresult['geocoding'])
                     throw new \Simi\Simiconnector\Helper\SimiException(__('Cannot get address for the given location'), 6);
-                $dataresult    = $dataresult['geocoding'];
-                
+                $addressDetail = $dataresult;
+                /*
                 $addressComponentsCount = count($dataresult->results[0]->address_components);
                 for ($j = 0; $j < $addressComponentsCount; $j++) {
                     $addressComponents = $dataresult->results[0]->address_components[$j];
@@ -170,6 +170,13 @@ class Addresses extends Apiabstract
                         $addressDetail['postcode'] = $addressComponents->long_name;
                     }
                 }
+                */
+                $addressDetail['region']    = $addressDetail['state'];
+                $addressDetail['region_id'] = $addressDetail['state'];
+                $addressDetail['country_name'] = $addressDetail['country'];
+                $addressDetail['country_id'] = $addressDetail['country'];
+                $addressDetail['postcode'] = $addressDetail['zipcode'];
+                $addressDetail['street'] = $addressDetail['address'];
                 $result['address'] = $addressDetail;
                 return $result;
             }

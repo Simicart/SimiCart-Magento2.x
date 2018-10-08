@@ -314,8 +314,47 @@ class Address extends Data
     /*
      * Get Geocode result from Lat and Long
      */
+    public function getLocationInfo($lat, $lng) {
+        try {
+            $url    = 'https://geocode.xyz/'
+                . trim($lat) . ',' . trim($lng) . '?json=1';
+            $file_get_contents = 'file_get_contents';
+            $json   = $file_get_contents($url);
+            $data   = json_decode($json);
 
-    public function getLocationInfo($lat, $lng)
+            if ($data->geocode) {
+                $addresses = [];
+                $addresses['city'] = (isset($data->city) && is_string($data->city))?$data->city:'';
+                $addresses['state'] = (isset($data->state) && is_string($data->state))?
+                    $data->state:(
+                    (isset($data->region) && is_string($data->region))?
+                        $data->region:
+                        '');
+                $addresses['country'] = (isset($data->country) && is_string($data->country))?
+                    $data->country:(
+                    (isset($data->prov) && is_string($data->prov))?
+                        $data->prov:
+                        '');
+                $addresses['zipcode'] = (isset($data->postal) && is_string($data->postal))?
+                    $data->postal:
+                    '';
+
+                $addresses['address'] = (isset($data->staddress) && is_string($data->staddress))?
+                    $data->staddress:(
+                    (isset($data->region) && is_string($data->region))?
+                        $data->region:
+                        '');
+                $addresses['geocoding'] = $data;
+                return $addresses;
+            } else {
+                return false;
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function oldGetLocationInfo($lat, $lng)
     {
         try {
             $url    = 'http://maps.googleapis.com/maps/api/geocode/json?latlng='
