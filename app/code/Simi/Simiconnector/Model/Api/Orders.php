@@ -289,6 +289,27 @@ class Orders extends Apiabstract
                 $list_payment[] = $paymentHelper->getDetailsPayment($method);
             }
             $order                     = [];
+
+            $savedOnce = false;
+            
+            if (!$quote->getBillingAddress()->getFirstName() && $customer->getData('default_billing')) {
+                $defaultBilling = $this->simiObjectManager->create('\Magento\Framework\DataObject');
+                $defaultBilling->entity_id = $customer->getData('default_billing');
+                $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
+                        ->saveBillingAddress($defaultBilling);
+                $savedOnce = true;
+            }
+
+            if (!$quote->getShippingAddress()->getFirstName() && $customer->getData('default_shipping')) {
+                $defaultShipping = $this->simiObjectManager->create('\Magento\Framework\DataObject');
+                $defaultShipping->entity_id = $customer->getData('default_shipping');
+                $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
+                        ->saveShippingAddress($defaultShipping);
+                $savedOnce = true;
+            }
+            if ($savedOnce)
+                $this->_getOnepage()->getQuote()->collectTotals()->save();
+
             $order['billing_address']  = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
                     ->getAddressDetail($quote->getBillingAddress(), $customer);
             $order['shipping_address'] = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
