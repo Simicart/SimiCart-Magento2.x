@@ -106,6 +106,10 @@ class Orders extends Apiabstract
             $this->_initCheckout();
             $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
                     ->saveShippingAddress($parameters['s_address']);
+            if (!isset($parameters['b_address']) && (!$this->_getQuote()->getBillingAddress()->getFirstName())) {
+                $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
+                    ->saveBillingAddress($parameters['s_address']);
+            }
         }
 
         if (isset($parameters['coupon_code'])) {

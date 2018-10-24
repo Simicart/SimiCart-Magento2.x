@@ -258,29 +258,29 @@ class Address extends Data
         if ($is_register_mode) {
             $customer_email = $billingAddress->email;
             $customer       = $this->simiObjectManager->get('Magento\Customer\Model\Customer')
-                    ->setWebsiteId($this->storeManager->getStore()->getWebsiteId())
-                    ->loadByEmail($customer_email);
+                ->setWebsiteId($this->storeManager->getStore()->getWebsiteId())
+                ->loadByEmail($customer_email);
             if ($customer->getData('entity_id') != null) {
                 throw new \Simi\Simiconnector\Helper\SimiException(__('There is already a customer '
-                                . 'registered using this email address. '
-                                . 'Please login using this email address or enter '
-                                . 'a different email address to register your account.'), 7);
+                    . 'registered using this email address. '
+                    . 'Please login using this email address or enter '
+                    . 'a different email address to register your account.'), 7);
             }
         }
 
         $address                         = $this->convertDataAddress($billingAddress);
         $address['save_in_address_book'] = '1';
 
-        if (isset($billingAddress->entity_id)) {
+        if (isset($billingAddress->entity_id) && $billingAddress->entity_id) {
             $addressInterface = $this->simiObjectManager
-                    ->create('Magento\Customer\Api\AddressRepositoryInterface')->getById($billingAddress->entity_id);
+                ->create('Magento\Customer\Api\AddressRepositoryInterface')->getById($billingAddress->entity_id);
 
             $billingAddress                  = $this->simiObjectManager
                 ->get('Magento\Quote\Model\Quote\Address')->importCustomerAddressData($addressInterface);
             $this->_getQuote()->setBillingAddress($billingAddress);
             return;
         }
-        
+
         $addressInterface                = $this->simiObjectManager
             ->create('Magento\Customer\Api\Data\AddressInterface');
         $billingAddress                  = $this->simiObjectManager

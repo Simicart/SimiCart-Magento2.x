@@ -51,8 +51,11 @@ class Review extends \Simi\Simiconnector\Helper\Data
                 foreach ($review->getRatingVotes() as $vote) {
                     $y += ($vote->getPercent() / 20);
                 }
-                $x = (int) ($y / $this->simiObjectManager
-                        ->get('Simi\Simiconnector\Helper\Data')->countArray($review->getRatingVotes()));
+                $ratingVotes = $this->simiObjectManager
+                        ->get('Simi\Simiconnector\Helper\Data')->countArray($review->getRatingVotes());
+                if (!$ratingVotes || $ratingVotes == 0)
+                	continue;
+                $x = (int) ($y / $ratingVotes);
                 $z = $y % 3;
                 $x = $z < 5 ? $x : $x + 1;
                 if ($x == 1) {
