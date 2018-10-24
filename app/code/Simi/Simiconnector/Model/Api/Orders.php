@@ -372,11 +372,15 @@ class Orders extends Apiabstract
             if ($item->getProductOptions()) {
                 $options = $this->_getOptions($item->getProductType(), $item->getProductOptions());
             }
+            $images = array();
+            if ($product = $item->getProduct()) {
+                $images = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Products')
+                ->getImageProduct($product);
+            }
             $productInfo[] = array_merge(
                 ['option' => $options],
                 $item->toArray(),
-                ['image' => $this->simiObjectManager->get('Simi\Simiconnector\Helper\Products')
-                ->getImageProduct($item->getProduct())]
+                ['image' => $images]
             );
         }
 
