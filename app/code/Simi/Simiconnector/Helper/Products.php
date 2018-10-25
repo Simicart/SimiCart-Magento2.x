@@ -484,12 +484,14 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
                     ->init($product, 'product_page_image_medium')
                     ->setImageFile($file)
+                    ->keepFrame(FALSE)
                     ->resize($width, $height)
                     ->getUrl();
             }
             return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
                 ->init($product, 'product_page_image_medium')
                 ->setImageFile($product->getFile())
+                ->keepFrame(FALSE)
                 ->resize($width, $height)
                 ->getUrl();
         }
@@ -497,12 +499,14 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
                 ->init($product, 'product_page_image_medium')
                 ->setImageFile($file)
+                ->keepFrame(FALSE)
                 ->resize(600, 600)
                 ->getUrl();
         }
         return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
             ->init($product, 'product_page_image_medium')
             ->setImageFile($product->getFile())
+            ->keepFrame(FALSE)
             ->resize(600, 600)
             ->getUrl();
     }

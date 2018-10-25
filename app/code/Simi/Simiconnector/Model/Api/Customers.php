@@ -21,12 +21,27 @@ class Customers extends Apiabstract
                     $this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')->forgetPassword($data);
                     $email                 = $data['params']['email'];
                     $this->builderQuery    = $this->simiObjectManager
-                            ->get('Magento\Customer\Model\Session')->getCustomer();
+                            ->create('Magento\Customer\Model\Session')->getCustomer();
                     $this->RETURN_MESSAGE = $message = __(
                         'If there is an account associated with %1 you will '
                             . 'receive an email with a link to reset your password.',
                         $email
                     );
+                    break;
+                case 'createpassword':
+                    if (!isset($data['params']['password']))
+                        throw new \Simi\Simiconnector\Helper\SimiException(__('Missing new password'), 4);
+                    if (!isset($data['params']['rptoken']))
+                        throw new \Simi\Simiconnector\Helper\SimiException(__('Missing reset password token'), 4);
+                    $newPW = $data['params']['password'];
+                    $resetPasswordToken = $data['params']['rptoken'];
+                    $this->simiObjectManager
+                        ->get('Magento\Customer\Model\Session')
+                        ->setRpToken($resetPasswordToken);
+                    $this->createPassword($newPW, $resetPasswordToken);
+                    $this->builderQuery    = $this->simiObjectManager
+                        ->get('Magento\Customer\Model\Session')->getCustomer();
+                    $this->RETURN_MESSAGE = $message = __('You updated your password.');
                     break;
                 case 'profile':
                     $this->builderQuery    = $this->simiObjectManager
@@ -128,5 +143,28 @@ class Customers extends Apiabstract
                 ->getItemCollection()->getSize();
         }
         return 0;
+    }
+
+    /**
+     * Reset password
+     * @var string $newpw
+     * @var string $resetPasswordToken
+     */
+    public function createPassword($newpw, $resetPasswordToken) {
+        $newPassword = (string)$newpw;
+        if (iconv_strlen($newPassword) <= 0) {
+            throw new \Simi\Simiconnector\Helper\SimiException(__('Please enter a new password.'));
+        }
+
+        $this->simiObjectManager
+            ->get('Magento\Customer\Model\AccountManagement')
+            ->resetPassword(
+                '',
+                $resetPasswordToken,
+                $newPassword
+            );
+        $this->simiObjectManager
+            ->create('Magento\Customer\Model\Session')
+            ->unsRpToken();
     }
 }
