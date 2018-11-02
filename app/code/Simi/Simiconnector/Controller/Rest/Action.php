@@ -68,7 +68,7 @@ class Action extends \Magento\Framework\App\Action\Action
             {
                 $head = [];
                 //change back to $_SERVER and to get Headers
-                foreach ($_1SERVER as $name => $value) {
+                foreach ($_SERVER as $name => $value) {
                     if (substr($name, 0, 5) == 'HTTP_') {
                         $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
                         $head[$name] = $value;
