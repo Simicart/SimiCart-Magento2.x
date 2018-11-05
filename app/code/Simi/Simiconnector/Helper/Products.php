@@ -101,15 +101,15 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     {
         $this->is_search = $is_search;
         $data       = $this->getData();
-        $controller = $data['controller'];
+        $controller = isset($data['controller'])?$data['controller']:null;
         $parameters = $data['params'];
 
         if (isset($parameters[\Simi\Simiconnector\Model\Api\Apiabstract::FILTER])) {
             $filter = $parameters[\Simi\Simiconnector\Model\Api\Apiabstract::FILTER];
-            if ($is_search == 1) {
+            if ($is_search == 1 && $controller) {
                 $controller->getRequest()->setParam('q', (string) $filter['q']);
             }
-            if (isset($filter['layer'])) {
+            if (isset($filter['layer']) && $controller) {
                 $filter_layer = $filter['layer'];
                 $params       = [];
                 foreach ($filter_layer as $key => $value) {
@@ -121,7 +121,12 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
         $collection         = $this->simiObjectManager
             ->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
-        $collection->addAttributeToSelect('*')
+
+        $fields = '*';
+        if (isset($parameters['fields']) && $parameters['fields']) {
+            $fields = explode(',', $parameters['fields']);
+        }
+        $collection->addAttributeToSelect($fields)
             ->addStoreFilter()
             ->addAttributeToFilter('status', 1)
             ->addFinalPrice();
@@ -165,8 +170,6 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         $data       = $this->getData();
-        $controller = $data['controller'];
-
         return $collection;
     }
 

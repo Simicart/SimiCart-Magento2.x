@@ -80,9 +80,11 @@ class Homeproductlists extends Apiabstract
             $productListAPIModel->setData($this->getData());
             $productListAPIModelData                    = $this->getData();
             $productListAPIModelData['resourceid']      = null;
+            $productListAPIModelData['params']          = array('fields'=> 'entity_id,entity_id,entity_type_id,attribute_set_id,type_id,sku,name
+            created_at,updated_at,has_options,required_options,cat_index_position,price,tax_class_id,final_price,description,short_description,is_salable');
             $productListAPIModel->setData($productListAPIModelData);
             $productListAPIModel->reload_detail_product = true;
-            $productListAPIModel->setBuilderQuery();
+            $productListAPIModel->setFilterByHomeList();
             $productListAPIModel->FILTER_RESULT         = false;
             $productListAPIModel->builderQuery          = $productCollection;
             $productListAPIModel->pluralKey             = 'products';

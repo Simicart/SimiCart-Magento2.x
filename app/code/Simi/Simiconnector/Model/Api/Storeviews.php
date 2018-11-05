@@ -284,33 +284,44 @@ class Storeviews extends Apiabstract
 
     public function getAllowedCountries()
     {
-        $list            = [];
-        $country_default = $this->getStoreConfig('general/country/default');
-        $countries       = $this->simiObjectManager
+        $cacheId = 'simi_allowed_countries_' . $this->storeManager->getStore()->getId();
+        $data = $this->simiObjectManager
+            ->get('Magento\Framework\App\CacheInterface')
+            ->load($cacheId);
+        if ($data) {
+            return unserialize($data);
+        } else {
+            $list = [];
+            $country_default = $this->getStoreConfig('general/country/default');
+            $countries = $this->simiObjectManager
                 ->create('\Magento\Directory\Model\ResourceModel\Country\Collection')
                 ->loadByStore($this->storeManager->getStore()->getId());
-        $cache           = null;
-        foreach ($countries as $country) {
-            if ($country_default == $country->getId()) {
-                $cache = [
-                    'country_code' => $country->getId(),
-                    'country_name' => $country->getName(),
-                    'states'       => $this->simiObjectManager
-                        ->get('\Simi\Simiconnector\Helper\Address')->getStates($country->getId()),
-                ];
-            } else {
-                $list[] = [
-                    'country_code' => $country->getId(),
-                    'country_name' => $country->getName(),
-                    'states'       => $this->simiObjectManager
-                        ->get('\Simi\Simiconnector\Helper\Address')->getStates($country->getId()),
-                ];
+            $cache = null;
+            foreach ($countries as $country) {
+                if ($country_default == $country->getId()) {
+                    $cache = [
+                        'country_code' => $country->getId(),
+                        'country_name' => $country->getName(),
+                        'states' => $this->simiObjectManager
+                            ->get('\Simi\Simiconnector\Helper\Address')->getStates($country->getId()),
+                    ];
+                } else {
+                    $list[] = [
+                        'country_code' => $country->getId(),
+                        'country_name' => $country->getName(),
+                        'states' => $this->simiObjectManager
+                            ->get('\Simi\Simiconnector\Helper\Address')->getStates($country->getId()),
+                    ];
+                }
             }
+            if ($cache) {
+                array_unshift($list, $cache);
+            }
+            $this->simiObjectManager
+                ->get('Magento\Framework\App\CacheInterface')
+                ->save(serialize($list), $cacheId);
+            return $list;
         }
-        if ($cache) {
-            array_unshift($list, $cache);
-        }
-        return $list;
     }
 
     public function getCurrencyPosition()

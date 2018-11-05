@@ -37,21 +37,6 @@ class Homes extends Apiabstract
     public function show()
     {
         $data = $this->getData();
-
-        $storeId = $this->storeManager->getStore()->getId();
-
-        //get cache
-        if (isset($data['resourceid']) && ($data['resourceid'] == 'lite')) {
-            $filePath = $this->directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'Simiconnector' . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR
-                . $storeId . DIRECTORY_SEPARATOR . "home_cached.json";
-            if (file_exists($filePath)) {
-                $homeJson = file_get_contents($filePath);
-                if ($homeJson) {
-                    return ['home' => json_decode($homeJson, true)];
-                }
-            }
-        }
-
         /*
          * Get Banners
          */
@@ -79,7 +64,7 @@ class Homes extends Apiabstract
             $productlists->SHOW_PRODUCT_ARRAY = false;
         }
         $productlists->setPluralKey('homeproductlists');
-        $productlists->setData($this->getData());
+        $productlists->setData($data);
         $productlists = $productlists->index();
 
         $information = ['home' => [
@@ -87,26 +72,6 @@ class Homes extends Apiabstract
             'homecategories' => $categories,
             'homeproductlists' => $productlists,
         ]];
-
-        //save cache
-        if (isset($data['resourceid']) && ($data['resourceid'] == 'lite')) {
-            $path = $this->directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'Simiconnector'
-                . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . $storeId;
-            if (!is_dir($path)) {
-                try {
-                    mkdir($path, 0777, true);
-                } catch (\Exception $e) {
-                }
-            }
-            $filePath = $path = $this->directoryList->getPath(DirectoryList::MEDIA) . DIRECTORY_SEPARATOR . 'Simiconnector'
-                . DIRECTORY_SEPARATOR . 'cache' . DIRECTORY_SEPARATOR . $storeId . DIRECTORY_SEPARATOR . "home_cached.json";
-
-            if (!file_exists($filePath)) {
-                $file = @fopen($filePath, 'w+');
-                $data_json = json_encode($information['home']);
-                file_put_contents($filePath, $data_json);
-            }
-        }
         return $information;
     }
 }
