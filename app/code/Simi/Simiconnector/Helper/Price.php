@@ -121,11 +121,12 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             if($product->getTypeId() == 'configurable'){
                 $_convertedPrice    = $this->convertPrice($product->getPriceInfo()->getPrice(\Magento\ConfigurableProduct\Pricing\Price\ConfigurableRegularPrice::PRICE_CODE)->getValue());
             }
-            $_price             = $this->catalogHelper->getTaxPrice($product, $_convertedPrice);
+            $_price             = $_convertedPrice;
             $_regularPrice      = $this->catalogHelper->getTaxPrice($product, $_convertedPrice, $_simplePricesTax);
-            $_finalPrice        = $this->catalogHelper->getTaxPrice($product, $_convertedFinalPrice);
+            $_finalPrice        = $_convertedFinalPrice;
             $_finalPriceInclTax = $this->catalogHelper->getTaxPrice($product, $_convertedFinalPrice, true);
             $_weeeDisplayType   = $_weeeHelper->getPriceDisplayType();
+
             if ($_finalPrice >= $_price) {
                 $priveV2['has_special_price'] = 0;
                 if ($_taxHelper->displayBothPrices()) {
@@ -170,17 +171,14 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             }//end /* if ($_finalPrice == $_price): */
             if ($this->getDisplayMinimalPrice($is_detail) && $_minimalPrice && $_minimalPrice < $_convertedFinalPrice) {
                 $_minimalPriceDisplayValue = $_minimalPrice;
-                // if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, [0, 1, 4])) {
                 $_minimalPriceDisplayValue  = $_minimalPrice + $_weeeTaxAmount;
                 $priveV2['is_low_price']    = 1;
                 $priveV2['low_price_label'] = __('As low as');
                 $this->setTaxLowPrice($priveV2, $_minimalPriceDisplayValue);
-                // }
             }
         } else { // group product
             $this->displayGroupPrice($priveV2, $_minimalPrice, $_convertedFinalPrice, $product, $_taxHelper, $is_detail);
         }
-
         return $priveV2;
     }
 
