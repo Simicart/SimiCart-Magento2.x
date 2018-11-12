@@ -248,6 +248,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
             $registrationIDs[] = $item['device_token'];
         }
         $url    = 'https://android.googleapis.com/gcm/send';
+        unset($message['devices_pushed']);
         $fields = [
             'registration_ids' => $registrationIDs,
             'data'             => ["message" => $message],
