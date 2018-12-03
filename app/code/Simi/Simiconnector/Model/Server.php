@@ -138,8 +138,7 @@ class Server
          *
          *
         */
-        $this->zendRequest = $this->simiObjectManager->get('Simi\Simiconnector\Helper\RequestHttp');
-        $contents            = $this->zendRequest->getRawBody();
+        $contents            = $controller->getRequest()->getContent();
         $contents_array      = [];
         if ($contents && ($contents != '')) {
             $contents_paser = urldecode($contents);

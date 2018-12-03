@@ -27,6 +27,11 @@ class Action extends \Magento\Framework\App\Action\Action
         $this->cacheState        = $cacheState;
         $this->cacheFrontendPool = $cacheFrontendPool;
         $this->resultPageFactory  = $resultPageFactory;
+        // Read Magento\Framework\App\Request\CsrfValidator for reason
+        if ($this->getRequest()) {
+            $formKey = $this->simiObjectManager->get('\Magento\Framework\Data\Form\formKey')->getFormKey();
+            $this->getRequest()->setParam('form_key', $formKey);
+        }
     }
 
     private function preDispatch()

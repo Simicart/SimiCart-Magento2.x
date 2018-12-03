@@ -9,27 +9,6 @@ namespace Simi\Simiconnector\Controller\Rest;
 
 class V2 extends Action
 {
-
-    /**
-     * @var \Magento\Framework\App\Cache\TypeListInterface
-     */
-    public $cacheTypeList;
-
-    /**
-     * @var \Magento\Framework\App\Cache\StateInterface
-     */
-    public $cacheState;
-
-    /**
-     * @var \Magento\Framework\App\Cache\Frontend\Pool
-     */
-    public $cacheFrontendPool;
-
-    /**
-     * @var \Magento\Framework\View\Result\PageFactory
-     */
-    public $resultPageFactory;
-
     /**
      * Flush cache storage
      *

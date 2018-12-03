@@ -111,13 +111,12 @@ class Quoteitems extends Apiabstract
         /*
          * The same with param parsing on Simi\Simiconnector\Model\Server, but to Array instead
          */
-        $zendHTTPRequestHttp = $this->simiObjectManager->get('Simi\Simiconnector\Helper\RequestHttp');
-        $contents            = $zendHTTPRequestHttp->getRawBody();
+        $contents            = $controller->getRequest()->getContent();
         if ($contents && ($contents != '')) {
             $contents = urldecode($contents);
             $params   = json_decode($contents, true);
         }
-        $params = $this->convertParams($params);
+        $params = isset($params)?$this->convertParams($params):array();
 
         if (isset($params['qty'])) {
             $filter        = $this->simiObjectManager
