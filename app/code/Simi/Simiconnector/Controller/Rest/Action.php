@@ -28,7 +28,7 @@ class Action extends \Magento\Framework\App\Action\Action
         $this->cacheFrontendPool = $cacheFrontendPool;
         $this->resultPageFactory  = $resultPageFactory;
         // Read Magento\Framework\App\Request\CsrfValidator for reason
-        if ($this->getRequest()) {
+        if ($this->getRequest() && $this->getRequest()->isPost()) {
             $formKey = $this->simiObjectManager->get('\Magento\Framework\Data\Form\formKey')->getFormKey();
             $this->getRequest()->setParam('form_key', $formKey);
         }
