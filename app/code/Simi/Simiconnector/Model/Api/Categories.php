@@ -55,6 +55,9 @@ class Categories extends Apiabstract
             $catData = array_merge($catData, $categoryModel->getData());
             if (isset($catData['request_path'])) {
                 $catData['url_path'] = $catData['request_path'];
+                if (strpos($catData['url_path'], '.html') === false) {
+                    $catData['url_path'] = $catData['url_path'].'.html';
+                }
             }
             if ($image_url = $categoryModel->getImageUrl()) {
                 $catData['image_url'] = $image_url;
