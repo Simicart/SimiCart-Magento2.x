@@ -85,7 +85,14 @@ class Homeproductlists extends Apiabstract
             $productListAPIModel->setData($this->getData());
             $productListAPIModelData                    = $this->getData();
             $productListAPIModelData['resourceid']      = null;
-            $productListAPIModelData['params']          = array('fields'=> implode(',', $fields));
+
+            if (isset($productListAPIModelData['params']) && is_object($productListAPIModelData['params']))
+                $productListAPIModelData['params']->fields = implode(',', $fields);
+            else if (isset($productListAPIModelData['params']) && is_array($productListAPIModelData['params']))
+                $productListAPIModelData['params']['fields'] = implode(',', $fields);
+            else
+                $productListAPIModelData['params']          = array('fields'=> implode(',', $fields));
+
             $productListAPIModel->setData($productListAPIModelData);
             $productListAPIModel->reload_detail_product = true;
             $productListAPIModel->setFilterByHomeList();

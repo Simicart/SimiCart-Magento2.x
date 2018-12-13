@@ -11,7 +11,7 @@ abstract class Apiabstract
 
     public $FILTER_RESULT = true;
 
-    const DEFAULT_DIR = 'asc';
+    const DEFAULT_DIR = 'desc';
     const DEFAULT_LIMIT = 15;
     const DIR = 'dir';
     const ORDER = 'order';
