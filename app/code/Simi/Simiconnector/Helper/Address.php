@@ -317,32 +317,32 @@ class Address extends Data
     public function getLocationInfo($lat, $lng) {
         try {
             $url    = 'https://geocode.xyz/'
-                . trim($lat) . ',' . trim($lng) . '?json=1';
-            $file_get_contents = 'file_get_contents';
-            $json   = $file_get_contents($url);
-            $data   = json_decode($json);
+                . trim($lat) . ',' . trim($lng) . '?geoit=xml';
 
+            $url = 'https://geocode.xyz/31.941178572815836,-105.43437499999999?geoit=xml';
+            $note = file_get_contents($url);
+            $data = simplexml_load_string($note);
             if ($data->geocode) {
                 $addresses = [];
-                $addresses['city'] = (isset($data->city) && is_string($data->city))?$data->city:'';
-                $addresses['state'] = (isset($data->state) && is_string($data->state))?
-                    $data->state:(
-                    (isset($data->region) && is_string($data->region))?
-                        $data->region:
+                $addresses['city'] = isset($data->city)?(string)$data->city:'';
+                $addresses['state'] = isset($data->state)?
+                    (string)$data->state:(
+                    isset($data->region)?
+                        (string)$data->region:
                         '');
-                $addresses['country'] = (isset($data->country) && is_string($data->country))?
-                    $data->country:(
-                    (isset($data->prov) && is_string($data->prov))?
-                        $data->prov:
+                $addresses['country'] = isset($data->country)?
+                    (string)$data->country:(
+                    isset($data->prov)?
+                        (string)$data->prov:
                         '');
-                $addresses['zipcode'] = (isset($data->postal) && is_string($data->postal))?
-                    $data->postal:
+                $addresses['zipcode'] = isset($data->postal)?
+                    (string)$data->postal:
                     '';
 
-                $addresses['address'] = (isset($data->staddress) && is_string($data->staddress))?
-                    $data->staddress:(
-                    (isset($data->region) && is_string($data->region))?
-                        $data->region:
+                $addresses['address'] = isset($data->staddress)?
+                    (string)$data->staddress:(
+                    isset($data->region) ?
+                        (string)$data->region:
                         '');
                 $addresses['geocoding'] = $data;
                 return $addresses;
