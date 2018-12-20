@@ -122,12 +122,25 @@ class Customers extends Apiabstract
 
     public function getDetail($info)
     {
-        if ($this->RETURN_MESSAGE) {
-            $resultArray            = parent::getDetail($info);
+        $resultArray            = parent::getDetail($info);
+        if ($this->RETURN_MESSAGE)
             $resultArray['message'] = [$this->RETURN_MESSAGE];
-            return $resultArray;
+
+        if (isset($resultArray['customer']) && isset($resultArray['customer']['email'])) {
+            if ($this->simiObjectManager->get('\Magento\Newsletter\Model\Subscriber') && 
+                $this->simiObjectManager->get('\Magento\Newsletter\Model\Subscriber')
+                ->loadByEmail($resultArray['customer']['email'])->isSubscribed()) {
+                $resultArray['customer']['news_letter'] = '1';
+            } else {
+                $resultArray['customer']['news_letter'] = '0';
+            }
+            $hash = md5($this->simiObjectManager
+                            ->get('\Magento\Framework\App\Config\ScopeConfigInterface')
+                            ->getValue('simiconnector/general/secret_key') . $resultArray['customer']['email']);
+            $resultArray['customer']['simi_hash'] = $hash;
         }
-        return parent::getDetail($info);
+
+        return $resultArray;
     }
 
     /*
