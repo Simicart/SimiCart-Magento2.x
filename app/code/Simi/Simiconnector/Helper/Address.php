@@ -319,7 +319,6 @@ class Address extends Data
             $url    = 'https://geocode.xyz/'
                 . trim($lat) . ',' . trim($lng) . '?geoit=xml';
 
-            $url = 'https://geocode.xyz/31.941178572815836,-105.43437499999999?geoit=xml';
             $note = file_get_contents($url);
             $data = simplexml_load_string($note);
             if ($data->geocode) {
