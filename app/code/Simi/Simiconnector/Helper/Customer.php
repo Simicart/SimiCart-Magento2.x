@@ -24,9 +24,16 @@ class Customer extends Data
                 && (($data['resourceid'] == 'login') || ($data['resourceid'] == 'sociallogin'))) {
             return;
         }
-        if (isset($data['contents_array']['email']) && isset($data['contents_array']['password'])) {
-            $data['params']['email']    = $data['contents_array']['email'];
-            $data['params']['password'] = $data['contents_array']['password'];
+        if (isset($data['params']['email']) && isset($data['params']['simi_hash'])) {
+            $data['params']['password'] = $data['params']['simi_hash'];
+        } else if (isset($data['contents_array']['email'])) {
+            if (isset($data['contents_array']['password'])) {
+                $data['params']['email']    = $data['contents_array']['email'];
+                $data['params']['password'] = $data['contents_array']['password'];
+            } else if (isset($data['contents_array']['simi_hash'])) {
+                $data['params']['email']    = $data['contents_array']['email'];
+                $data['params']['password'] = $data['contents_array']['simi_hash'];
+            }
         }
 
         if ((!$data['params']['email']) || (!$data['params']['password'])) {
