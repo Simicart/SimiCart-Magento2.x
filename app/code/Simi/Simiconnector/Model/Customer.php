@@ -119,9 +119,6 @@ class Customer extends \Magento\Framework\Model\AbstractModel
     {
         $data     = $data['contents'];
         $result   = [];
-        $currPass = $data->old_password;
-        $newPass  = $data->new_password;
-        $confPass = $data->com_password;
 
         $customer = $this->simiObjectManager->create('Magento\Customer\Model\Customer');
         $customer->setWebsiteId($this->storeManager->getStore()->getWebsiteId());
@@ -133,9 +130,10 @@ class Customer extends \Magento\Framework\Model\AbstractModel
             'email'     => $data->email,
         ];
 
-        if ($data->change_password == 1) {
+        if (isset($data->change_password) && $data->change_password == 1) {
+            $newPass  = $data->new_password;
+            $confPass = $data->com_password;
             $customer->setChangePassword(1);
-            $oldPass = $this->_getSession()->getCustomer()->getPasswordHash();
             if ($newPass != $confPass) {
                 throw new \Magento\Framework\Exception\InputException(
                     __('Password confirmation doesn\'t match entered password.')
