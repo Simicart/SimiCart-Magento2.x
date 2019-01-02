@@ -91,15 +91,11 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         if($minimalAmount = $minimalPriceCalculator->getAmount($product)){
             $_minimalPrice = $minimalAmount->getValue();
         }
-        // $_minimalPrice           = $this->convertPrice($product->getMinimalPrice());
+
         $_simplePricesTax        = ($_taxHelper->displayPriceIncludingTax() || $_taxHelper->displayBothPrices());
         $finalPrice = $this->product->getPriceInfo()->getPrice(\Magento\Catalog\Pricing\Price\FinalPrice::PRICE_CODE);
-        $_convertedFinalPrice = $finalPrice->getAmount()->getValue();
+        $_convertedFinalPrice = $finalPrice->getAmount()->getBaseAmount();
 
-        // $_convertedFinalPrice    = $this->convertPrice($product->getFinalPrice());
-        if($product->getTypeId() == 'configurable'){
-            $_convertedFinalPrice    = $product->getFinalPrice();
-        }
         $_specialPriceStoreLabel = $this->getProductAttribute('special_price')->getStoreLabel();
 
         if ($product->getTypeId() == "bundle") {
@@ -125,7 +121,6 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             $_regularPrice      = $this->catalogHelper->getTaxPrice($product, $_convertedPrice, $_simplePricesTax);
             $_finalPrice        = $_convertedFinalPrice;
             $_finalPriceInclTax = $this->catalogHelper->getTaxPrice($product, $_convertedFinalPrice, true);
-            $_weeeDisplayType   = $_weeeHelper->getPriceDisplayType();
 
             if ($_finalPrice >= $_price) {
                 $priveV2['has_special_price'] = 0;
@@ -193,7 +188,6 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         $_weeeTaxAmountInclTaxes,
         &$_finalPrice
     ) {
-
         $priveV2['show_ex_in_price'] = 1;
         if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 0)) {
             $_exclTax = $_price + $_weeeTaxAmount;

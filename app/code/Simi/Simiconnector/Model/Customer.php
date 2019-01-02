@@ -161,7 +161,14 @@ class Customer extends \Magento\Framework\Model\AbstractModel
         if (is_array($customerErrors)) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid profile information'), 4);
         }
-        $customer->setConfirmation(null);
+
+        $subscriberFactory = $this->simiObjectManager->get('Magento\Newsletter\Model\SubscriberFactory');
+        if (isset($data->news_letter) && ($data->news_letter == '1')) {
+            $subscriberFactory->create()->subscribeCustomerById($customer->getId());
+        } else {
+            $subscriberFactory->create()->unsubscribeCustomerById($customer->getId());
+        }
+
         $customer->save();
         $this->_getSession()->setCustomer($customer);
         return $customer;
