@@ -105,23 +105,29 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
         $ch          = $this->getDirPEMfile($data);
         $dir         = $this->getDirPEMPassfile();
         $message     = $data['notice_content'];
-        $body['aps'] = [
-            'alert'        => $data['notice_title'],
-            'sound'        => 'default',
-            'badge'        => 1,
-            'title'        => $data['notice_title'],
-            'message'      => $message,
-            'url'          => $data['notice_url'],
-            'type'         => $data['type'],
-            'productID'    => $data['product_id'],
-            'categoryID'   => $data['category_id'],
+        $dbData = [
+            'alert' => ['title'=>$data['notice_title'],'body'=>$message],
+            'sound' => 'default',
+            'badge' => 1,
+            'title' => $data['notice_title'],
+            'body' => $message,
+            'message' => $message,
+            'url' => $data['notice_url'],
+            'type' => $data['type'],
+            'productID' => $data['product_id'],
+            'categoryID' => $data['category_id'],
             'categoryName' => $data['category_name'],
-            'has_child'    => $data['has_child'],
-            'imageUrl'     => $data['image_url'],
-            'height'       => $data['height'],
-            'width'        => $data['width'],
-            'show_popup'   => $data['show_popup'],
+            'has_child' => $data['has_child'],
+            'imageUrl' => $data['image_url'],
+            'height' => $data['height'],
+            'width' => $data['width'],
+            'show_popup' => $data['show_popup'],
+            'notice_id' => $data['notice_id'], // frank customize click and rate click
+            'notice_history_id' => $data['notice_history_id'],// frank customize click and rate click
+            'mutable-content' => 1,// Max add for the small image of the notification.
         ];
+        $body = $dbData;
+        $body['aps'] = $dbData;
         $payload     = json_encode($body);
         $totalDevice = count($collectionDevice);
 
