@@ -30,7 +30,7 @@ class Action extends \Magento\Framework\App\Action\Action
         // Read Magento\Framework\App\Request\CsrfValidator for reason
         if ($this->getRequest() && $this->getRequest()->isPost()) {
             try {
-                $formKey = $this->simiObjectManager->get('\Magento\Framework\Data\Form\formKey')->getFormKey();
+                $formKey = $this->simiObjectManager->get('\Magento\Framework\Data\Form\FormKey')->getFormKey();
                 $this->getRequest()->setParam('form_key', $formKey);
             } catch (\Exception $e) {
                 
