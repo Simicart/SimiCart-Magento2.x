@@ -258,6 +258,8 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
         $fields = [
             'registration_ids' => $registrationIDs,
             'data'             => ["message" => $message],
+            'android' => array('priority' => 'high'),
+            'priority' => 10
         ];
 
         $api_key = $this->getConfig(
