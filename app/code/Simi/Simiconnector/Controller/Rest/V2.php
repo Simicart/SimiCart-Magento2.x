@@ -57,7 +57,7 @@ class V2 extends Action
             $this->getResponse()->setHeader('Content-Type', 'application/json');
             $this->setData($result);
             $this->_eventManager
-                    ->dispatch('SimiconnectorRestV2', ['object' => $this, 'data' => $result]);
+                    ->dispatch('SimiconnectorRest', ['object' => $this, 'data' => $result]);
             $this->data = $this->getData();
             return $this->getResponse()->setBody(json_encode($this->data));
         } catch (\Exception $e) {
