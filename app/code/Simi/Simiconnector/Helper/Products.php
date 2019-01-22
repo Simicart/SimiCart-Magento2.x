@@ -168,8 +168,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
             $collection->setVisibility($this->productVisibility->getVisibleInSiteIds());
         }
-
-        $data       = $this->getData();
+        
         return $collection;
     }
 
@@ -233,7 +232,9 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             ->create('Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection');
         $attributeCollection->addIsFilterableFilter()
             ->addVisibleFilter()
-            ->addFieldToFilter('is_visible_on_front', 1);
+            ;
+        if ($this->is_search)
+            $attributeCollection->addFieldToFilter('is_filterable_in_search', 1);
 
         $allProductIds = $collection->getAllIds();
         $arrayIDs      = [];
@@ -352,11 +353,12 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         foreach ($attributeCollection as $attribute) {
             $attributeOptions = [];
             $attributeValues  = $collection->getAllAttributeValues($attribute->getAttributeCode());
-            if (($attribute->getData('is_visible') != '1') || ($attribute->getData('is_filterable') != '1')
-                || ($attribute->getData('is_visible_on_front') != '1')
+            if (($attribute->getData('is_visible') != '1')
+                || ($attribute->getData('is_filterable') != '1')
                 || (in_array($attribute->getDefaultFrontendLabel(), $titleFilters))) {
                 continue;
             }
+
             foreach ($attributeValues as $productId => $optionIds) {
                 if (isset($optionIds[0]) && isset($arrayIDs[$productId]) && ($arrayIDs[$productId] != null)) {
                     $optionIds = explode(',', $optionIds[0]);
