@@ -379,21 +379,25 @@ class Storeviews extends Apiabstract
         if (($data['resourceid'] == 'default') || ($data['resourceid'] == $this->storeManager->getStore()->getId())) {
             return;
         }
-        $storeCode = $this->simiObjectManager
+        try {
+            $storeCode = $this->simiObjectManager
                 ->get('Magento\Store\Model\StoreManagerInterface')->getStore($data['resourceid'])->getCode();
 
-        $store = $this->storeRepository->getActiveStoreByCode($storeCode);
+            $store = $this->storeRepository->getActiveStoreByCode($storeCode);
 
-        $defaultStoreView = $this->storeManager->getDefaultStoreView();
-        if ($defaultStoreView->getId() == $store->getId()) {
-            $this->storeCookieManager->deleteStoreCookie($store);
-        } else {
-            $this->storeCookieManager->setStoreCookie($store);
+            $defaultStoreView = $this->storeManager->getDefaultStoreView();
+            if ($defaultStoreView->getId() == $store->getId()) {
+                $this->storeCookieManager->deleteStoreCookie($store);
+            } else {
+                $this->storeCookieManager->setStoreCookie($store);
+            }
+
+            $this->storeManager->setCurrentStore(
+                $this->simiObjectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore($data['resourceid'])
+            );
+        } catch (\Exception $e) {
+
         }
-
-        $this->storeManager->setCurrentStore(
-            $this->simiObjectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore($data['resourceid'])
-        );
     }
 
     public function getStores()
