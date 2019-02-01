@@ -34,7 +34,7 @@ class Shipping extends \Simi\Simiconnector\Helper\Data
         if (!isset($method_code->method)) {
             return;
         }
-        $method        = $method_code->method;
+        $method = $method_code->method;
         $cartExtension = $this->_getQuote()->getExtensionAttributes();
         if ($cartExtension === null) {
             $cartExtension = $this->simiObjectManager->create('Magento\Quote\Api\Data\CartExtension');
@@ -48,15 +48,13 @@ class Shipping extends \Simi\Simiconnector\Helper\Data
         }
 
         $shipping = $shippingAssignment->getShipping();
-        if ($shipping === null) {
-            $shipping = $this->getShippingFactory()->create();
+        if ($shipping) {
+            $shipping->setMethod($method);
+            $shippingAssignment->setShipping($shipping);
+            $cartExtension->setShippingAssignments([$shippingAssignment]);
+            $quote = $this->_getQuote()->setExtensionAttributes($cartExtension);
+            $this->simiObjectManager->create('Magento\Quote\Api\CartRepositoryInterface')->save($quote);
         }
-        $shipping->setMethod($method);
-        $shippingAssignment->setShipping($shipping);
-        $cartExtension->setShippingAssignments([$shippingAssignment]);
-        $quote = $this->_getQuote()->setExtensionAttributes($cartExtension);
-
-        $this->simiObjectManager->create('Magento\Quote\Api\CartRepositoryInterface')->save($quote);
     }
 
     public function getAddress()
