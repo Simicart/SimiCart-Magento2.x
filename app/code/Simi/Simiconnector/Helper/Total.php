@@ -107,6 +107,12 @@ class Total extends Data
                     'simi_simiconnector_helper_total_settotal_after',
                     ['object' => $this, 'data' => $this->data]
                 );
+
+        if (isset($total['cash_on_delivery_fee'])) {           
+            $codFee = $total['cash_on_delivery_fee']->getValue();
+            $this->addCustomRow(__('Cash on Delivery fee'), 4, $codFee);
+        }
+
         $data       = $this->data;
     }
     
