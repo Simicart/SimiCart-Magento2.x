@@ -181,11 +181,13 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 $whereFunction = 'where';
                 if ($value[0] > 0) {
                     $this->filteredAttributes[$key] = $value;
-                    $select->$whereFunction('price_index.final_price >= ' . $value[0]);
+                    $minPrice = $value[0];
+                    $select->$whereFunction('price_index.final_price >= ' . $minPrice . " OR ( price_index.final_price = '0.0000' AND price_index.min_price >=" . $minPrice . ')');
                 }
                 if ($value[1] > 0) {
                     $this->filteredAttributes[$key] = $value;
-                    $select->$whereFunction('price_index.final_price < ' . $value[1]);
+                    $maxPrice = $value[1];
+                    $select->$whereFunction('price_index.final_price < ' . $maxPrice . " OR ( price_index.final_price = '0.0000' AND price_index.min_price >=" . $maxPrice . ')');
                 }
             } else {
                 if ($key == 'category_id') {
@@ -445,15 +447,27 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function _getPriceRanges($collection)
     {
+        $collection->addPriceData();
         $maxPrice = $collection->getMaxPrice();
+
         $index    = 1;
+        $counts = [];
         do {
             $range  = pow(10, strlen(floor($maxPrice)) - $index);
             $counts = $collection->getAttributeValueCountByRange('price', $range);
             $index++;
-        } while ($range > self::MIN_RANGE_POWER && $this->simiObjectManager
-            ->get('Simi\Simiconnector\Helper\Data')->countArray($counts) < 2);
+        } while ($range > self::MIN_RANGE_POWER && count($counts) < 2 && $index <= 2);
 
+        //re-forming array
+        if (isset($counts[''])) {
+            $counts[0] = $counts[''];
+            unset($counts['']);
+            $newCounts = [];
+            foreach ($counts as $key => $count) {
+                $newCounts[$key+1] = $counts[$key];
+            }
+            $counts = $newCounts;
+        }
         return ['range' => $range, 'counts' => $counts];
     }
 
