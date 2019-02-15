@@ -141,14 +141,14 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     public function _filter($collection, $params)
     {
         $cat_filtered = false;
-
-        if (isset($params['filter']['layer'])) {
-            $this->filterCollectionByAttribute($collection, $params, $cat_filtered);
-        }
-
+        
         //category
         if (!$cat_filtered && $this->category) {
             $collection->addCategoryFilter($this->category);
+        }
+
+        if (isset($params['filter']['layer'])) {
+            $this->filterCollectionByAttribute($collection, $params, $cat_filtered);
         }
 
         //related products
@@ -201,9 +201,35 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                     }
                     $this->filteredAttributes[$key] = $value;
                     $collection->addCategoriesFilter(['in' => $value]);
+                }elseif ($key == 'size') {
+                    $this->filteredAttributes[$key] = $value;                    
+                    # code...
+                    $productIds = [];
+                    $collectionChid         = $this->simiObjectManager
+                        ->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
+                  
+                    $collectionChid->addAttributeToSelect('*')
+                        ->addStoreFilter()
+                        ->addAttributeToFilter('status', 1)
+                        ->addFinalPrice();
+                    $collectionChid->addAttributeToFilter($key, ['finset' => $value]);                    
+                    $collectionChid->getSelect()
+                        ->joinLeft(
+                            array('link_table' => 'catalog_product_super_link'),
+                            'link_table.product_id = e.entity_id',
+                            array('product_id', 'parent_id')
+                        );
+
+                    $collectionChid->getSelect()->group('link_table.parent_id');
+
+                    foreach ($collectionChid as $product) {
+                        $productIds[] = $product->getParentId();
+                    }
+
+                    $collection->addAttributeToFilter('entity_id', array('in' => $productIds));                                        
                 } else {
-                    $this->filteredAttributes[$key] = $value;
-                    $collection->addAttributeToFilter($key, ['finset' => $value]);
+                    $this->filteredAttributes[$key] = $value;                    
+                    $collection->addAttributeToFilter($key, ['finset' => $value]);                    
                 }
             }
         }
@@ -234,9 +260,11 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             ->create('Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection');
         $attributeCollection->addIsFilterableFilter()
             ->addVisibleFilter()
-            ;
+            ->addFieldToFilter('is_visible_on_front', 1);
+
         if ($this->is_search)
             $attributeCollection->addFieldToFilter('is_filterable_in_search', 1);
+
 
         $allProductIds = $collection->getAllIds();
         $arrayIDs      = [];
@@ -355,12 +383,11 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         foreach ($attributeCollection as $attribute) {
             $attributeOptions = [];
             $attributeValues  = $collection->getAllAttributeValues($attribute->getAttributeCode());
-            if (($attribute->getData('is_visible') != '1')
-                || ($attribute->getData('is_filterable') != '1')
+            if (($attribute->getData('is_visible') != '1') || ($attribute->getData('is_filterable') != '1')
+                || ($attribute->getData('is_visible_on_front') != '1')
                 || (in_array($attribute->getDefaultFrontendLabel(), $titleFilters))) {
                 continue;
             }
-
             foreach ($attributeValues as $productId => $optionIds) {
                 if (isset($optionIds[0]) && isset($arrayIDs[$productId]) && ($arrayIDs[$productId] != null)) {
                     $optionIds = explode(',', $optionIds[0]);
