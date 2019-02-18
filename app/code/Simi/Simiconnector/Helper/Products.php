@@ -260,6 +260,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             ->create('Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection');
         $attributeCollection->addIsFilterableFilter()
             ->addVisibleFilter()
+            ->addFieldToFilter('used_in_product_listing', 1)
             ->addFieldToFilter('is_visible_on_front', 1);
 
         if ($this->is_search)
