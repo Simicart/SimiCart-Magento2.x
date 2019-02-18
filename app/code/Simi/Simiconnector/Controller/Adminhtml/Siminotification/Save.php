@@ -51,10 +51,12 @@ class Save extends \Magento\Backend\App\Action
                 $data['notice_type']           = 0;
                 $data['notice_id']             = $model->getId();
                 if ($model->getImageUrl()) {
-                    $data['image_url'] = $imageHelper->getBaseUrl(false) . $model->getImageUrl();
-                    $list              = getimagesize($data['image_url']);
-                    $data['width']     = $list[0];
-                    $data['height']    = $list[1];
+                    try {
+                        $img_full_url = $imageHelper->getBaseUrl(false) . $model->getImageUrl();
+                        $list              = getimagesize($img_full_url);
+                        $data['width']     = $list[0];
+                        $data['height']    = $list[1];
+                    } catch (\Exception $e) {}
                 }
                 $resultSend = $simiObjectManager
                         ->get('Simi\Simiconnector\Helper\Siminotification')->sendNotice($data);

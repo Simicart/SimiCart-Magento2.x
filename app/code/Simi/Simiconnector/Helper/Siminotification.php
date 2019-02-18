@@ -59,7 +59,6 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
         $collectionDevice2 = $this->simiObjectManager
             ->get('Simi\Simiconnector\Model\Device')->getCollection()
             ->addFieldToFilter('device_id', ['in' => $deviceArray]);
-
         switch ($data['notice_sanbox']) {
             case '1':
                 $collectionDevice->addFieldToFilter('is_demo', 1);
@@ -105,6 +104,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
         $ch          = $this->getDirPEMfile($data);
         $dir         = $this->getDirPEMPassfile();
         $message     = $data['notice_content'];
+        $imageHelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data');
         $dbData = [
             'alert' => ['title'=>$data['notice_title'],'body'=>$message],
             'sound' => 'default',
@@ -118,12 +118,12 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
             'categoryID' => $data['category_id'],
             'categoryName' => $data['category_name'],
             'has_child' => $data['has_child'],
-            'imageUrl' => $data['image_url'],
+            'imageUrl' => $imageHelper->getBaseUrl(false) . $data['image_url'],
             'height' => $data['height'],
             'width' => $data['width'],
             'show_popup' => $data['show_popup'],
             'notice_id' => $data['notice_id'], // frank customize click and rate click
-            'notice_history_id' => $data['notice_history_id'],// frank customize click and rate click
+            'notice_history_id' => isset($data['notice_history_id'])?$data['notice_history_id']:'',// frank customize click and rate click
             'mutable-content' => 1,// Max add for the small image of the notification.
         ];
         $body = $dbData;
@@ -322,6 +322,9 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
         }
         $total   = count($collectionDevice);
         $message = $data;
+
+        $imageHelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data');
+        $message['image_url'] = $imageHelper->getBaseUrl(false) . $data['image_url'];
 
         $this->repeatSendAnddroid($total, $collectionDevice->getData(), $message);
 
