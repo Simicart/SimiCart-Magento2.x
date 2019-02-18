@@ -16,6 +16,7 @@ class Server
     public $simiObjectManager;
     public $coreRegistry;
     public $zendRequest;
+    public $result = [];
 
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
@@ -90,7 +91,12 @@ class Server
         if (is_callable([&$model, $this->method])) {
             //Avoid using direct function, need to change solution when found better one
             $callFunctionName = 'call_user_func_array';
-            return $callFunctionName([&$model, $this->method], [$data]);
+            $this->result = $callFunctionName([&$model, $this->method], [$data]);
+            $this->eventManager->dispatch(
+                'simi_simiconnector_model_server_return_' . $data['resource'],
+                ['object' => $this, 'data' => $this->data]
+            );
+            return $this->result;
         }
         throw new \Simi\Simiconnector\Helper\SimiException(__('Resource cannot callable.'), 4);
     }
