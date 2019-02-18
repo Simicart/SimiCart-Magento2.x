@@ -35,6 +35,18 @@ class Customer extends \Magento\Framework\Model\AbstractModel
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
 
+    public function reindexCustomerGrid() {
+        $indexerFactory = $this->simiObjectManager->get('Magento\Indexer\Model\IndexerFactory');
+        $indexerIds = array(
+            'customer_grid',
+        );
+        foreach ($indexerIds as $indexerId) {
+            $indexer = $indexerFactory->create();
+            $indexer->load($indexerId);
+            $indexer->reindexAll();
+        }
+    }
+
     public function _helperCustomer()
     {
         return $this->simiObjectManager->get('Simi\Simiconnector\Helper\Customer');
@@ -107,6 +119,11 @@ class Customer extends \Magento\Framework\Model\AbstractModel
             throw new \Simi\Simiconnector\Helper\SimiException(__('Account is already exist'), 4);
         }
         $customer = $this->_createCustomer($data);
+        try {
+            $this->reindexCustomerGrid();
+        } catch (\Exception $e) {
+
+        }
         $confirmationStatus = $this->getAccountManagement()->getConfirmationStatus($customer->getId());
         if ($confirmationStatus === \Magento\Customer\Api\AccountManagementInterface::ACCOUNT_CONFIRMATION_REQUIRED) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Account confirmation is required. '
@@ -119,6 +136,9 @@ class Customer extends \Magento\Framework\Model\AbstractModel
     {
         $data     = $data['contents'];
         $result   = [];
+        $currPass = $data->old_password;
+        $newPass  = $data->new_password;
+        $confPass = $data->com_password;
 
         $customer = $this->simiObjectManager->create('Magento\Customer\Model\Customer');
         $customer->setWebsiteId($this->storeManager->getStore()->getWebsiteId());
@@ -130,10 +150,9 @@ class Customer extends \Magento\Framework\Model\AbstractModel
             'email'     => $data->email,
         ];
 
-        if (isset($data->change_password) && $data->change_password == 1) {
-            $newPass  = $data->new_password;
-            $confPass = $data->com_password;
+        if ($data->change_password == 1) {
             $customer->setChangePassword(1);
+            $oldPass = $this->_getSession()->getCustomer()->getPasswordHash();
             if ($newPass != $confPass) {
                 throw new \Magento\Framework\Exception\InputException(
                     __('Password confirmation doesn\'t match entered password.')
@@ -161,14 +180,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel
         if (is_array($customerErrors)) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid profile information'), 4);
         }
-
-        $subscriberFactory = $this->simiObjectManager->get('Magento\Newsletter\Model\SubscriberFactory');
-        if (isset($data->news_letter) && ($data->news_letter == '1')) {
-            $subscriberFactory->create()->subscribeCustomerById($customer->getId());
-        } else {
-            $subscriberFactory->create()->unsubscribeCustomerById($customer->getId());
-        }
-
+        $customer->setConfirmation(null);
         $customer->save();
         $this->_getSession()->setCustomer($customer);
         return $customer;
