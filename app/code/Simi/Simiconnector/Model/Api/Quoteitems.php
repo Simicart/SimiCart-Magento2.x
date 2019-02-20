@@ -111,13 +111,8 @@ class Quoteitems extends Apiabstract
         /*
          * The same with param parsing on Simi\Simiconnector\Model\Server, but to Array instead
          */
-        $contents            = $controller->getRequest()->getContent();
-        if ($contents && ($contents != '')) {
-            $contents = urldecode($contents);
-            $params   = json_decode($contents, true);
-        }
+        $params = isset($data['contents_array'])?$data['contents_array']:array();
         $params = isset($params)?$this->convertParams($params):array();
-
         if (isset($params['qty'])) {
             $filter        = $this->simiObjectManager
                     ->create('\Magento\Framework\Filter\LocalizedToNormalized', ['locale' => $this->simiObjectManager
