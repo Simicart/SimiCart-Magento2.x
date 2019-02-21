@@ -37,7 +37,7 @@ class Wishlistitems extends Apiabstract
             $sharingCode           = $this->WISHLIST->getSharingCode();
             $this->RETURN_MESSAGE = $this->getStoreConfig('simiconnector/wishlist/sharing_message') . ' '
                     . $this->simiObjectManager->get('Magento\Framework\UrlInterface')
-                    ->getUrl('*/shared/index', ['code' => $sharingCode]);
+                    ->getUrl('wishlist/shared/index', ['code' => $sharingCode]);
             $this->RETURN_URL     = $this->simiObjectManager->get('Magento\Framework\UrlInterface')
                     ->getUrl('wishlist/shared/index', ['code' => $sharingCode]);
         } else {
