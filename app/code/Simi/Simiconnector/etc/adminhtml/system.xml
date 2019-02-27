@@ -64,6 +64,9 @@
                     <label>Banner Aspect Ratio</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Aspectratio</source_model>
                 </field>
+                <field id="app_dedicated_coupon" translate="label" type="text" sortOrder="1199" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Mobile App Dedicated Coupon</label>
+                </field>
                 <field id="open_url_in_app" translate="label" type="select" sortOrder="1299" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Open url in app</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

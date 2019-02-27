@@ -4,4 +4,8 @@
         <observer name="simi_connector_sales_sales_order_save_after"
                   instance="Simi\Simiconnector\Observer\SalesOrderSaveAfter" />
     </event>
+    <event name="sales_quote_collect_totals_before">
+        <observer name="simi_connector_sales_quote_collect_totals_before"
+                  instance="Simi\Simiconnector\Observer\SalesQuoteCollectTotalsBefore" />
+    </event>
 </config>
