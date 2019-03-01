@@ -10,6 +10,7 @@ class Payment extends \Simi\Simiconnector\Helper\Data
 {
 
     public $detail;
+    public $dataToSave;
 
     public function _getCart()
     {
@@ -38,7 +39,10 @@ class Payment extends \Simi\Simiconnector\Helper\Data
     {
         $this->_setListPayment();
         $this->setListCase();
-
+        $this->dataToSave = $data;
+        $this->simiObjectManager->get('\Magento\Framework\Event\ManagerInterface')
+            ->dispatch('simiconnector_save_payment_method_before', ['object' => $this, 'data' => $this->dataToSave]);
+        $data = $this->dataToSave;
         $method = ['method' => strtolower($data->method)];
         if (isset($data->cc_type) && $data->cc_type) {
             $method = ['method'       => strtolower($data->method),
@@ -50,6 +54,9 @@ class Payment extends \Simi\Simiconnector\Helper\Data
             ];
         }
         $this->_getOnepage()->savePayment($method);
+
+        $this->simiObjectManager->get('\Magento\Framework\Event\ManagerInterface')
+            ->dispatch('simiconnector_save_payment_method_after', ['object' => $this, 'data' => $this->dataToSave]);
     }
 
     /**
