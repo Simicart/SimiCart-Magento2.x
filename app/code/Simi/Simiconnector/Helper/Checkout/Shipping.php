@@ -35,26 +35,11 @@ class Shipping extends \Simi\Simiconnector\Helper\Data
             return;
         }
         $method = $method_code->method;
-        $cartExtension = $this->_getQuote()->getExtensionAttributes();
-        if ($cartExtension === null) {
-            $cartExtension = $this->simiObjectManager->create('Magento\Quote\Api\Data\CartExtension');
-        }
-
-        $shippingAssignments = $cartExtension->getShippingAssignments();
-        if (empty($shippingAssignments)) {
-            $shippingAssignment = $this->simiObjectManager->create('Magento\Quote\Model\ShippingAssignmentFactory');
-        } else {
-            $shippingAssignment = $shippingAssignments[0];
-        }
-
-        $shipping = $shippingAssignment->getShipping();
-        if ($shipping) {
-            $shipping->setMethod($method);
-            $shippingAssignment->setShipping($shipping);
-            $cartExtension->setShippingAssignments([$shippingAssignment]);
-            $quote = $this->_getQuote()->setExtensionAttributes($cartExtension);
-            $this->simiObjectManager->create('Magento\Quote\Api\CartRepositoryInterface')->save($quote);
-        }
+        $quote = $this->_getQuote();
+        $shippingAddress = $quote->getShippingAddress();
+        $shippingAddress->setCollectShippingRates(true)
+            ->collectShippingRates()
+            ->setShippingMethod($method);
     }
 
     public function getAddress()
