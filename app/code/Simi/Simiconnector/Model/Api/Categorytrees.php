@@ -39,20 +39,18 @@ class Categorytrees extends Apiabstract
     public function getChildCatArray($level = 0, &$optionArray = [], $parent_id = 0)
     {
         if (!$this->categoryArray) {
+            $categoryCollection = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
+                ->getCollection()
+                ->addAttributeToSelect('*')
+                ->setOrder('position', 'asc');
             if ($this->visible_array) {
-                $this->categoryArray = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
-                    ->getCollection()
-                    ->addFieldToFilter('entity_id', ['nin' => $this->visible_array])
-                    ->addAttributeToSelect('*')
-                    ->setOrder('position', 'asc')
-                    ->getData();
-            } else {
-                $this->categoryArray = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
-                    ->getCollection()
-                    ->addAttributeToSelect('*')
-                    ->setOrder('position', 'asc')
-                    ->getData();
+                $categoryCollection
+                    ->addFieldToFilter('entity_id', ['nin' => $this->visible_array]);
             }
+            if ($this->getStoreConfig('simiconnector/general/filter_categories_by_include_in_menu')) {
+                $categoryCollection->addAttributeToFilter('include_in_menu', 1);
+            }
+            $this->categoryArray = $categoryCollection->getData();
         }
         $beforeString = '';
         for ($i=0; $i< $level; $i++) {

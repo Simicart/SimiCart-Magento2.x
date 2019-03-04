@@ -20,6 +20,7 @@
                 <image_aspect_ratio>1</image_aspect_ratio>
                 <is_rtl>0</is_rtl>
                 <open_url_in_app>1</open_url_in_app>
+                <filter_categories_by_include_in_menu>1</filter_categories_by_include_in_menu>
             </general>  
             <currency>                                           
                 <thousand_separator>,</thousand_separator>

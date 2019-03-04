@@ -52,6 +52,11 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <can_be_empty>1</can_be_empty>
                 </field>
+                <field id="filter_categories_by_include_in_menu" translate="label" type="select" sortOrder="949" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Filter categories by 'Include in Menu' values</label>
+                    <comment>Category would be shown if only its 'Include in Menu' value is 'Yes'</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
                 <field id="categories_in_app" translate="label" type="text" sortOrder="999" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Hidden categories on app</label>
                     <comment>Category IDs (separated by comma). Eg. 2, 4, 15</comment>

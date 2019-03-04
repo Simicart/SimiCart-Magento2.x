@@ -43,6 +43,10 @@ class Categories extends Apiabstract
                 $this->builderQuery->addFieldToFilter('entity_id', ['nin' => $this->visible_array]);
             }
         }
+
+        if ($this->getStoreConfig('simiconnector/general/filter_categories_by_include_in_menu')) {
+            $this->builderQuery->addAttributeToFilter('include_in_menu', 1);
+        }
     }
 
     public function index()
