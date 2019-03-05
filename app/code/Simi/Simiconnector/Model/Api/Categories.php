@@ -8,9 +8,14 @@ namespace Simi\Simiconnector\Model\Api;
 
 class Categories extends Apiabstract
 {
-
-    public $DEFAULT_ORDER = 'position';
     public $visible_array;
+
+    public function getDefaultDir() {
+        return 'asc';
+    }
+    public function getDefaultOrder() {
+        return 'position';
+    }
 
     public function setBuilderQuery()
     {
