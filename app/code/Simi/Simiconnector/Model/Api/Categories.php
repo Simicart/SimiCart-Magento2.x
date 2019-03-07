@@ -36,12 +36,12 @@ class Categories extends Apiabstract
                     $childArrayItem->getData('parent_id') == $data['resourceid'])
                     $idArray[] = $childArrayItem->getId();
             }
-
-            if ($this->visible_array) {
-                $idArray = array_intersect($idArray, $this->visible_array);
-            }
             $this->builderQuery = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
                 ->getCollection()->addAttributeToSelect('*')->addFieldToFilter('entity_id', ['in' => $idArray]);
+                
+            if ($this->visible_array) {
+                $this->builderQuery->addFieldToFilter('entity_id', ['nin' => $this->visible_array]);
+            }
         } else {
             $this->builderQuery = $category->getChildrenCategories()->addAttributeToSelect('*');
             if ($this->visible_array) {
