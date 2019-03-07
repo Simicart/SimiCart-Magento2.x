@@ -15,6 +15,7 @@ class Orders extends Apiabstract
     public $detail_onepage;
     public $place_order;
     public $order_placed_info;
+    public $time_zone = null;
 
     public function _getCart()
     {
@@ -380,6 +381,12 @@ class Orders extends Apiabstract
         $order['billing_address'] = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
                 ->getAddressDetail($orderModel->getBillingAddress(), $customer);
         $order['order_items']     = $this->_getProductFromOrderHistoryDetail($orderModel);
+        if (!$this->time_zone) {
+            $this->time_zone = $this->simiObjectManager->create('\Magento\Framework\Stdlib\DateTime\TimezoneInterface');
+        }
+        $order['created_at']      = $this->time_zone->date($order['created_at'])->format('Y-m-d H:i:s');
+        $order['updated_at']      = $this->time_zone->date($order['updated_at'])->format('Y-m-d H:i:s');
+
         $order['total']           = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Total')
                 ->showTotalOrder($orderModel);
     }
