@@ -83,6 +83,30 @@ class Categorytrees extends Apiabstract
                         ->get('Magento\Cms\Model\Template\FilterProvider')
                         ->getPageFilter()->filter($categoryModel->getData('description'));
                 
+                unset($category['all_children']);
+                unset($category['attribute_set_id']);
+                unset($category['available_sort_by']);
+                unset($category['breadcrumbs_priority']);
+                unset($category['children']);
+                unset($category['custom_design_from']);
+                unset($category['custom_design_to']);
+                unset($category['redirect_priority']);
+                unset($category['updated_at']);
+                unset($category['created_at']);
+                unset($category['in_html_sitemap']);
+                unset($category['include_in_menu']);
+                unset($category['is_anchor']);
+                unset($category['sizechart']);
+                unset($category['use_in_crosslinking']);
+                unset($category['whatsapp_category']);
+                unset($category['position']);
+                unset($category['path_in_store']);
+                unset($category['default_sort_by']);
+                unset($category['custom_layout_update']);
+                unset($category['custom_use_parent_settings']);
+                unset($category['custom_apply_to_products']);
+                unset($category['custom_design']);
+                unset($category['filter_price_range']);
                 $this->getChildCatArray($level, $category['child_cats'], $category['entity_id']);
                 $optionArray[] = $category;
             }
