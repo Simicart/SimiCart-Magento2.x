@@ -91,19 +91,25 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         if($minimalAmount = $minimalPriceCalculator->getAmount($product)){
             $_minimalPrice = $minimalAmount->getValue();
         }
-
-        $_simplePricesTax        = ($_taxHelper->displayPriceIncludingTax() || $_taxHelper->displayBothPrices());
+        /*
+        *final price excluded tax
+        */
         $finalPrice = $this->product->getPriceInfo()->getPrice(\Magento\Catalog\Pricing\Price\FinalPrice::PRICE_CODE);
         $_convertedFinalPrice = $finalPrice->getAmount()->getBaseAmount();
-
         $_specialPriceStoreLabel = $this->getProductAttribute('special_price')->getStoreLabel();
 
+        /*
+        *   Bundle Product
+        */
         if ($product->getTypeId() == "bundle") {
             return $this->helper('\Simi\Simiconnector\Helper\Bundle\Price')
                 ->formatPriceFromProduct($product, $is_detail);
         }
-
+        /*
+        *   Simple/Configurable/Virtual/Downloadable
+        */
         if ($product->getTypeId() != 'grouped') {
+            $_simplePricesTax        = ($_taxHelper->displayPriceIncludingTax() || $_taxHelper->displayBothPrices());
             $_weeeTaxAmount          = $_weeeHelper->getAmountExclTax($product);
             $_weeeTaxAttributes      = $_weeeHelper
                 ->getProductWeeeAttributesForRenderer($product, null, null, null, true);
@@ -113,7 +119,21 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             $_weeeTaxAmountInclTaxes = $this->convertPrice($_weeeTaxAmountInclTaxes);
 
             //price box
-            $_convertedPrice    = $this->convertPrice($product->getData('price'));
+            $_price = $product->getData('price');
+            $customerSession = $this->simiObjectManager->create('\Magento\Customer\Model\Session');
+            if ($customerSession->isLoggedIn() && $cust_group = $customerSession->getCustomer()->getGroupId()) {
+                $tier_prices = $product->getTierPrice();
+                if(count($tier_prices) > 0){
+                    foreach($tier_prices as $tier_price){
+                        if ($tier_price['price_qty'] == '1' && $tier_price['cust_group'] == $cust_group) {
+                            $_price = $tier_price['website_price'];
+                            break;
+                        }
+                    }
+                }
+            }
+
+            $_convertedPrice    = $this->convertPrice($_price);
             if($product->getTypeId() == 'configurable'){
                 $_convertedPrice    = $this->convertPrice($product->getPriceInfo()->getPrice(\Magento\ConfigurableProduct\Pricing\Price\ConfigurableRegularPrice::PRICE_CODE)->getValue());
             }
@@ -121,8 +141,11 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             $_regularPrice      = $this->catalogHelper->getTaxPrice($product, $_convertedPrice, $_simplePricesTax);
             $_finalPrice        = $_convertedFinalPrice;
             $_finalPriceInclTax = $this->catalogHelper->getTaxPrice($product, $_convertedFinalPrice, true);
-
-            if ($_finalPrice >= $_price) {
+            /*
+            * compare final price (excluded tax) with price (excluded tax) to decide if it has special price
+            *
+            */
+            if (round($_finalPrice, 2) >= round($_price, 2)) {
                 $priveV2['has_special_price'] = 0;
                 if ($_taxHelper->displayBothPrices()) {
                     $this->displayBothPrice(
@@ -171,7 +194,11 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
                 $priveV2['low_price_label'] = __('As low as');
                 $this->setTaxLowPrice($priveV2, $_minimalPriceDisplayValue);
             }
-        } else { // group product
+        } 
+        /*
+        *   Group Product
+        */
+        else {
             $this->displayGroupPrice($priveV2, $_minimalPrice, $_convertedFinalPrice, $product, $_taxHelper, $is_detail);
         }
         return $priveV2;
