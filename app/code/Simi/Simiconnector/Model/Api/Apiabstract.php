@@ -30,6 +30,7 @@ abstract class Apiabstract
     public $resource;
     public $storeRepository;
     public $storeCookieManager;
+    public $message = '';
 
     /**
      * Singular key.
@@ -131,6 +132,23 @@ abstract class Apiabstract
         return $this;
     }
 
+    /**
+     * get Return Message
+     * @return message (array or string)
+     */
+    public function getMessage() {
+        return $this->message;
+    }
+
+    /**
+     * Set Return Message
+     * @return message (array or string)
+     */
+    public function setMessage($messsage) {
+        $this->message = $messsage;
+        return $this;
+    }
+
     public function store()
     {
         return $this->getDetail([]);
@@ -229,38 +247,47 @@ abstract class Apiabstract
 
     public function callApi($data)
     {
-        $this->renewCustomerSesssion($data);
+        $this->renewCustomerSession($data);
         $this->setDataValue($data);
         $this->setBuilderQuery(null);
         $this->setPluralKey($data['resource']);
         $this->setSingularKey($data['resource']);
+        $result = [];
         if ($data['is_method'] == 1) {
             if (isset($data['resourceid']) && $data['resourceid'] != '') {
-                return $this->show($data['resourceid']);
+                $result =  $this->show($data['resourceid']);
             } else {
-                return $this->index();
+                $result = $this->index();
             }
         } elseif ($data['is_method'] == 2) {
             if (isset($data['params']['is_put']) && $data['params']['is_put'] == '1'
                 && !$this->scopeConfig->getValue('simiconnector/methods_support/put')) {
-                return $this->update($data['resourceid']);
+                $result = $this->update($data['resourceid']);
             } else if (isset($data['params']['is_delete']) && $data['params']['is_delete'] == '1'
                 && !$this->scopeConfig->getValue('simiconnector/methods_support/delete')) {
-                return $this->destroy($data['resourceid']);
-            }
-            return $this->store();
+                $result = $this->destroy($data['resourceid']);
+            } else
+                $result = $this->store();
         } elseif ($data['is_method'] == 3) {
-            return $this->update($data['resourceid']);
+            $result = $this->update($data['resourceid']);
         } elseif ($data['is_method'] == 4) {
-            return $this->destroy($data['resourceid']);
+            $result = $this->destroy($data['resourceid']);
         }
+
+        if ($message = $this->getMessage()) {
+            if (is_array($message))
+                $result['message'] = $message;
+            else
+                $result['message'] = array($message);
+        }
+        return $result;
     }
 
     public function getList($info, $all_ids, $total, $page_size, $from)
     {
         return [
             'all_ids' => $all_ids,
-            $this->getPluralKey() => $this->motifyFields($info),
+            $this->getPluralKey() => $this->modifyFields($info),
             'total' => $total,
             'page_size' => $page_size,
             'from' => $from,
@@ -269,7 +296,7 @@ abstract class Apiabstract
 
     public function getDetail($info)
     {
-        return [$this->getSingularKey() => $this->motifyFields($info)];
+        return [$this->getSingularKey() => $this->modifyFields($info)];
     }
 
     public function filter()
@@ -354,26 +381,26 @@ abstract class Apiabstract
     }
 
     //Max update to get fields
-    public function motifyFields($content)
+    public function modifyFields($content)
     {
         $data = $this->getData();
         $parameters = $data['params'];
         if (isset($parameters['fields']) && $parameters['fields']) {
             $fields = explode(',', $parameters['fields']);
-            $motify = [];
+            $modify = [];
             foreach ($content as $key => $item) {
                 if (in_array($key, $fields)) {
-                    $motify[$key] = $item;
+                    $modify[$key] = $item;
                 }
             }
-            return $motify;
+            return $modify;
         } else {
             return $content;
         }
     }
 
-    public function renewCustomerSesssion($data)
+    public function renewCustomerSession($data)
     {
-        $this->simiObjectManager->get('Simi\Simiconnector\Helper\Customer')->renewCustomerSesssion($data);
+        $this->simiObjectManager->get('Simi\Simiconnector\Helper\Customer')->renewCustomerSession($data);
     }
 }

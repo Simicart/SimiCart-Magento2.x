@@ -14,7 +14,7 @@ class Customer extends Data
         return $this->simiObjectManager->get('Magento\Customer\Model\Session');
     }
 
-    public function renewCustomerSesssion($data)
+    public function renewCustomerSession($data)
     {
         if (isset($data['params']['quote_id']) && $data['params']['quote_id']) {
             $checkoutsession = $this->simiObjectManager->get('Magento\Checkout\Model\Session');

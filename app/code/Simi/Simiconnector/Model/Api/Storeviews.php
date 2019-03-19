@@ -116,7 +116,7 @@ class Storeviews extends Apiabstract
                 'is_show_home_title'     => $this->getStoreConfig('simiconnector/general/is_show_home_title'),
                 'cust_group'             => $customerSession->getGroupId(),
                 'customer_identity'      => $customerSession->getSessionId(),
-                'customer_ip'            => $customerSession->getRemoteAddress(),
+                'customer_ip'            => $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Data')->getRealIp(),
                 'is_show_in_row_price' => $this->getStoreConfig('simiconnector/config_price/price_one_row'),
                 'is_show_price_for_guest' => $this->getStoreConfig('simiconnector/config_price/is_show_price_for_guest'),
                 'open_url_in_app' => $this->getStoreConfig('simiconnector/general/open_url_in_app'),
