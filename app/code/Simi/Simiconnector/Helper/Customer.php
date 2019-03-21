@@ -121,7 +121,7 @@ class Customer extends Data
 //        }
     }
 
-    public function validateSimiPass($username, $password, $from)
+    public function validateSimiPass($username, $password, $from = null)
     {
         $encodeMethod = 'md5';
         if ($from && $from == 'social_login') {
