@@ -121,9 +121,16 @@ class Customer extends Data
 //        }
     }
 
-    public function validateSimiPass($username, $password)
+    public function validateSimiPass($username, $password, $from)
     {
         $encodeMethod = 'md5';
+        if ($from && $from == 'social_login') {
+            if ($password == 'Simi123a@'.$encodeMethod($this->simiObjectManager
+                    ->get('Magento\Framework\App\Config\ScopeConfigInterface')
+                                ->getValue('simiconnector/general/secret_key') . $username)) {
+                return true;
+            }
+        }
         if ($password == $encodeMethod($this->simiObjectManager
                 ->get('Magento\Framework\App\Config\ScopeConfigInterface')
                                 ->getValue('simiconnector/general/secret_key') . $username)) {

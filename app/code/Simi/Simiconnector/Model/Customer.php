@@ -222,7 +222,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel
     {
         $data = (object) $data['params'];
         if (!isset($data->password) || !$this->simiObjectManager
-                ->get('Simi\Simiconnector\Helper\Customer')->validateSimiPass($data->email, $data->password)) {
+                ->get('Simi\Simiconnector\Helper\Customer')->validateSimiPass($data->email, $data->password,'social_login')) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Password is not Valid'), 4);
         }
         if (!$data->email) {
