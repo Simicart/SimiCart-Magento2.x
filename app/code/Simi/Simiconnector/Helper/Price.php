@@ -101,7 +101,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         * Rounded final price excluded tax
         */
         $finalPrice = $this->product->getPriceInfo()->getPrice(\Magento\Catalog\Pricing\Price\FinalPrice::PRICE_CODE);
-        $_convertedFinalPrice = $this->priceCurrency->round($finalPrice->getAmount()->getValue());
+        $_convertedFinalPrice = $this->priceCurrency->round($finalPrice->getAmount()->getBaseAmount());
         $_specialPriceStoreLabel = $this->getProductAttribute('special_price')->getStoreLabel();
 
         /*
@@ -139,14 +139,19 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
                 }
             }
 
-            $_convertedPrice    = $this->convertPrice($_price);
             if($product->getTypeId() == 'configurable'){
-                $_convertedPrice = $this->convertPrice($product->getPriceInfo()->getPrice(\Magento\ConfigurableProduct\Pricing\Price\ConfigurableRegularPrice::PRICE_CODE)->getValue());
+                $_price  = $product->getPriceInfo()
+                    ->getPrice(\Magento\ConfigurableProduct\Pricing\Price\ConfigurableRegularPrice::PRICE_CODE)
+                    ->getAmount()->getBaseAmount();
+                $_regularPrice      = $product->getPriceInfo()
+                    ->getPrice(\Magento\ConfigurableProduct\Pricing\Price\ConfigurableRegularPrice::PRICE_CODE)
+                    ->getAmount()->getValue();
+            } else {
+                $_price             = $this->convertPrice($_price);
+                $_regularPrice      = $this->catalogHelper->getTaxPrice($product, $_price, $_simplePricesTax);
             }
-            $_price             = $_convertedPrice;
-            $_regularPrice      = $this->catalogHelper->getTaxPrice($product, $_convertedPrice, $_simplePricesTax);
             $_finalPrice        = $_convertedFinalPrice;
-            $_finalPriceInclTax = $this->catalogHelper->getTaxPrice($product, $_convertedFinalPrice, true);
+            $_finalPriceInclTax = $this->priceCurrency->round($finalPrice->getAmount()->getValue());
             /*
             * compare final price (excluded tax) with price (excluded tax) to decide if it has special price
             *
