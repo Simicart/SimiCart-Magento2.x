@@ -101,7 +101,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         * Rounded final price excluded tax
         */
         $finalPrice = $this->product->getPriceInfo()->getPrice(\Magento\Catalog\Pricing\Price\FinalPrice::PRICE_CODE);
-        $_convertedFinalPrice = $this->priceCurrency->round($finalPrice->getAmount()->getBaseAmount());
+        $_convertedFinalPrice = $this->priceCurrency->round($finalPrice->getAmount()->getValue());
         $_specialPriceStoreLabel = $this->getProductAttribute('special_price')->getStoreLabel();
 
         /*
