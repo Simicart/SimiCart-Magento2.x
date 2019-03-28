@@ -63,18 +63,19 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         return $this->priceHelper->currencyByStore($value, $format, $includeContainer);
     }
 
+    public function convertPrice($price, $format = false)
+    {
+        if ($format) {
+            return $this->priceCurrency->convertAndFormat($price);
+        } else {
+            $price = $this->priceCurrency->convert($price);
+            return $this->priceCurrency->round($price);
+        }
+    }
+
     public function getProductAttribute($attribute)
     {
         return $this->product->getResource()->getAttribute($attribute);
-    }
-
-    public function convertPrice($price, $format = false)
-    {
-        $data = $this->getData();
-        if (isset($data['resourceid']) && ($data['resourceid'] == 'products')) {
-            return $price;
-        }
-        return $format ? $this->priceCurrency->convertAndFormat($price) : $this->priceCurrency->convert($price);
     }
 
     public function getStoreConfig($path)
@@ -97,10 +98,10 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             $_minimalPrice = $minimalAmount->getValue();
         }
         /*
-        *final price excluded tax
+        * Rounded final price excluded tax
         */
         $finalPrice = $this->product->getPriceInfo()->getPrice(\Magento\Catalog\Pricing\Price\FinalPrice::PRICE_CODE);
-        $_convertedFinalPrice = $finalPrice->getAmount()->getBaseAmount();
+        $_convertedFinalPrice = $this->priceCurrency->round($finalPrice->getAmount()->getBaseAmount());
         $_specialPriceStoreLabel = $this->getProductAttribute('special_price')->getStoreLabel();
 
         /*
@@ -140,7 +141,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
 
             $_convertedPrice    = $this->convertPrice($_price);
             if($product->getTypeId() == 'configurable'){
-                $_convertedPrice    = $this->convertPrice($product->getPriceInfo()->getPrice(\Magento\ConfigurableProduct\Pricing\Price\ConfigurableRegularPrice::PRICE_CODE)->getValue());
+                $_convertedPrice = $this->convertPrice($product->getPriceInfo()->getPrice(\Magento\ConfigurableProduct\Pricing\Price\ConfigurableRegularPrice::PRICE_CODE)->getValue());
             }
             $_price             = $_convertedPrice;
             $_regularPrice      = $this->catalogHelper->getTaxPrice($product, $_convertedPrice, $_simplePricesTax);
@@ -150,7 +151,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             * compare final price (excluded tax) with price (excluded tax) to decide if it has special price
             *
             */
-            if (round($_finalPrice, 2) >= round($_price, 2)) {
+            if ($_finalPrice >= $_price) {
                 $priveV2['has_special_price'] = 0;
                 if ($_taxHelper->displayBothPrices()) {
                     $this->displayBothPrice(
@@ -199,7 +200,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
                 $priveV2['low_price_label'] = __('As low as');
                 $this->setTaxLowPrice($priveV2, $_minimalPriceDisplayValue);
             }
-        } 
+        }
         /*
         *   Group Product
         */
