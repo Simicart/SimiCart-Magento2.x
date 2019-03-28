@@ -77,6 +77,11 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         return $format ? $this->priceCurrency->convertAndFormat($price) : $this->priceCurrency->convert($price);
     }
 
+    public function getStoreConfig($path)
+    {
+        return $this->scopeConfig->getValue($path,\Magento\Store\Model\ScopeInterface::SCOPE_STORE,$this->storeManager->getStore()->getCode());
+    }
+
     public function formatPriceFromProduct($product, $is_detail = false)
     {
         $priveV2        = [];
@@ -164,11 +169,11 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
                         $priveV2,
                         $_weeeTaxAmount,
                         $_weeeHelper,
-                        $_price,
                         $product,
                         $_weeeTaxAttributes,
                         $_weeeTaxAmountInclTaxes,
                         $_finalPrice,
+                        $_finalPriceInclTax,
                         $_taxHelper
                     );
                 }
@@ -264,11 +269,11 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         &$priveV2,
         &$_weeeTaxAmount,
         $_weeeHelper,
-        &$_price,
-        &$product,
+        $product,
         $_weeeTaxAttributes,
         $_weeeTaxAmountInclTaxes,
-        &$_finalPrice,
+        $_finalPrice,
+        $_finalPriceInclTax,
         $_taxHelper
     ) {
         $priveV2['show_ex_in_price'] = 0;
@@ -308,10 +313,10 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             }
         } else {
             $priveV2['price_label'] = __('Regular Price');
-            if ($_finalPrice == $_price) {
+            if ($_taxHelper->displayPriceExcludingTax()) {
                 $this->setTaxPrice($priveV2, $_finalPrice);
             } else {
-                $this->setTaxPrice($priveV2, $_price);
+                $this->setTaxPrice($priveV2, $_finalPriceInclTax);
             }
         }
     }
@@ -335,8 +340,8 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         &$product,
         $_weeeTaxAttributes,
         $_weeeTaxAmountInclTaxes,
-        &$_finalPrice,
-        &$_regularPrice,
+        $_finalPrice,
+        $_regularPrice,
         $_specialPriceStoreLabel,
         $_taxHelper
     ) {
@@ -412,16 +417,20 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         } else {
             $priveV2['price_label'] = __('Regular Price');
             $this->setTaxReguarlPrice($priveV2, $_regularPrice);
+            $_exclTax                       = $_finalPrice;
+            $_inclTax                       = $_finalPriceInclTax;
             if ($_taxHelper->displayBothPrices()) {
                 $priveV2['show_ex_in_price']    = 1;
                 $priveV2['special_price_label'] = $_specialPriceStoreLabel;
-                $_exclTax                       = $_finalPrice;
-                $_inclTax                       = $_finalPriceInclTax;
                 $this->setBothTaxPrice($priveV2, $_exclTax, $_inclTax);
             } else {
                 $priveV2['show_ex_in_price']    = 0;
                 $priveV2['special_price_label'] = $_specialPriceStoreLabel;
-                $this->setTaxPrice($priveV2, $_finalPrice);
+                if ($_taxHelper->displayPriceExcludingTax()) {
+                    $this->setTaxPrice($priveV2, $_exclTax);
+                } else {
+                    $this->setTaxPrice($priveV2, $_inclTax);
+                }
             }
         }
     }
