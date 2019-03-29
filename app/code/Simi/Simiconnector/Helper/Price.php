@@ -108,19 +108,19 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         */
         if ($product->getTypeId() != 'grouped') {
             if($product->getTypeId() == 'configurable'){
-                $_price  = $product->getPriceInfo()
+                $_price  = $this->priceCurrency->round($product->getPriceInfo()
                     ->getPrice(\Magento\ConfigurableProduct\Pricing\Price\ConfigurableRegularPrice::PRICE_CODE)
-                    ->getAmount()->getBaseAmount();
-                $_regularPrice      = $product->getPriceInfo()
+                    ->getAmount()->getBaseAmount());
+                $_regularPrice      = $this->priceCurrency->round($product->getPriceInfo()
                     ->getPrice(\Magento\ConfigurableProduct\Pricing\Price\ConfigurableRegularPrice::PRICE_CODE)
-                    ->getAmount()->getValue();
+                    ->getAmount()->getValue());
             } else {
-                $_price             = $product->getPriceInfo()
+                $_price             = $this->priceCurrency->round($product->getPriceInfo()
                     ->getPrice(\Magento\Catalog\Pricing\Price\RegularPrice::PRICE_CODE)
-                    ->getAmount()->getBaseAmount();
-                $_regularPrice      = $product->getPriceInfo()
+                    ->getAmount()->getBaseAmount());
+                $_regularPrice      = $this->priceCurrency->round($product->getPriceInfo()
                     ->getPrice(\Magento\Catalog\Pricing\Price\RegularPrice::PRICE_CODE)
-                    ->getAmount()->getValue();
+                    ->getAmount()->getValue());
             }
             $_weeeHelper = $this->helper('Magento\Weee\Helper\Data');
             $_weeeTaxAmount          = $_weeeHelper->getAmountExclTax($product);
