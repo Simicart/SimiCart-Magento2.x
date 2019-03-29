@@ -88,15 +88,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         $priveV2        = [];
         //$product       = $this->simiObjectManager->create('Magento\Catalog\Model\Product')->load($product->getId());
         $this->product = $product;
-
-        $_weeeHelper = $this->helper('Magento\Weee\Helper\Data');
         $_taxHelper  = $this->helper('Magento\Tax\Helper\Data');
-
-        $minimalPriceCalculator = $this->simiObjectManager->get('Magento\Catalog\Pricing\Price\MinimalPriceCalculatorInterface');
-        $_minimalPrice = 0;
-        if($minimalAmount = $minimalPriceCalculator->getAmount($product)){
-            $_minimalPrice = $minimalAmount->getValue();
-        }
         /*
         * Rounded final price excluded tax
         */
@@ -115,30 +107,6 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         *   Simple/Configurable/Virtual/Downloadable
         */
         if ($product->getTypeId() != 'grouped') {
-            $_simplePricesTax        = ($_taxHelper->displayPriceIncludingTax() || $_taxHelper->displayBothPrices());
-            $_weeeTaxAmount          = $_weeeHelper->getAmountExclTax($product);
-            $_weeeTaxAttributes      = $_weeeHelper
-                ->getProductWeeeAttributesForRenderer($product, null, null, null, true);
-            $_weeeTaxAmountInclTaxes = $_weeeTaxAmount;
-
-            $_weeeTaxAmount          = $this->convertPrice($_weeeTaxAmount);
-            $_weeeTaxAmountInclTaxes = $this->convertPrice($_weeeTaxAmountInclTaxes);
-
-            //price box
-            $_price = $product->getData('price');
-            $customerSession = $this->simiObjectManager->create('\Magento\Customer\Model\Session');
-            if ($customerSession->isLoggedIn() && $cust_group = $customerSession->getCustomer()->getGroupId()) {
-                $tier_prices = $product->getTierPrice();
-                if(count($tier_prices) > 0){
-                    foreach($tier_prices as $tier_price){
-                        if ($tier_price['price_qty'] == '1' && $tier_price['cust_group'] == $cust_group) {
-                            $_price = $tier_price['website_price'];
-                            break;
-                        }
-                    }
-                }
-            }
-
             if($product->getTypeId() == 'configurable'){
                 $_price  = $product->getPriceInfo()
                     ->getPrice(\Magento\ConfigurableProduct\Pricing\Price\ConfigurableRegularPrice::PRICE_CODE)
@@ -147,16 +115,28 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
                     ->getPrice(\Magento\ConfigurableProduct\Pricing\Price\ConfigurableRegularPrice::PRICE_CODE)
                     ->getAmount()->getValue();
             } else {
-                $_price             = $this->convertPrice($_price);
-                $_regularPrice      = $this->catalogHelper->getTaxPrice($product, $_price, $_simplePricesTax);
+                $_price             = $product->getPriceInfo()
+                    ->getPrice(\Magento\Catalog\Pricing\Price\RegularPrice::PRICE_CODE)
+                    ->getAmount()->getBaseAmount();
+                $_regularPrice      = $product->getPriceInfo()
+                    ->getPrice(\Magento\Catalog\Pricing\Price\RegularPrice::PRICE_CODE)
+                    ->getAmount()->getValue();
             }
+            $_weeeHelper = $this->helper('Magento\Weee\Helper\Data');
+            $_weeeTaxAmount          = $_weeeHelper->getAmountExclTax($product);
+            $_weeeTaxAttributes      = $_weeeHelper
+                ->getProductWeeeAttributesForRenderer($product, null, null, null, true);
+            $_weeeTaxAmountInclTaxes = $_weeeTaxAmount;
+            $_weeeTaxAmount          = $this->convertPrice($_weeeTaxAmount);
+            $_weeeTaxAmountInclTaxes = $this->convertPrice($_weeeTaxAmountInclTaxes);
+
             $_finalPrice        = $_convertedFinalPrice;
             $_finalPriceInclTax = $this->priceCurrency->round($finalPrice->getAmount()->getValue());
             /*
             * compare final price (excluded tax) with price (excluded tax) to decide if it has special price
             *
             */
-            if ($_finalPrice >= $_price) {
+            if (($product->getTypeId() == 'configurable') || ($_finalPriceInclTax >= $_regularPrice)) {
                 $priveV2['has_special_price'] = 0;
                 if ($_taxHelper->displayBothPrices()) {
                     $this->displayBothPrice(
@@ -178,6 +158,8 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
                         $product,
                         $_weeeTaxAttributes,
                         $_weeeTaxAmountInclTaxes,
+                        $_price,
+                        $_regularPrice,
                         $_finalPrice,
                         $_finalPriceInclTax,
                         $_taxHelper
@@ -197,10 +179,10 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
                     $_specialPriceStoreLabel,
                     $_taxHelper
                 );
-            }//end /* if ($_finalPrice == $_price): */
-            if ($this->getDisplayMinimalPrice($is_detail) && $_minimalPrice && $_minimalPrice < $_convertedFinalPrice) {
-                $_minimalPriceDisplayValue = $_minimalPrice;
-                $_minimalPriceDisplayValue  = $_minimalPrice + $_weeeTaxAmount;
+            }
+
+            if ($minimalPrice = $this->getMinimalPrice($_finalPriceInclTax)) {
+                $_minimalPriceDisplayValue  = $minimalPrice + $_weeeTaxAmount;
                 $priveV2['is_low_price']    = 1;
                 $priveV2['low_price_label'] = __('As low as');
                 $this->setTaxLowPrice($priveV2, $_minimalPriceDisplayValue);
@@ -210,21 +192,21 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         *   Group Product
         */
         else {
-            $this->displayGroupPrice($priveV2, $_minimalPrice, $_convertedFinalPrice, $product, $_taxHelper, $is_detail);
+            $this->displayGroupPrice($priveV2, $_convertedFinalPrice, $product, $_taxHelper, $is_detail);
         }
         return $priveV2;
     }
 
     public function displayBothPrice(
         &$priveV2,
-        &$_weeeTaxAmount,
+        $_weeeTaxAmount,
         $_weeeHelper,
-        &$_price,
+        $_price,
         $_finalPriceInclTax,
-        &$product,
+        $product,
         $_weeeTaxAttributes,
         $_weeeTaxAmountInclTaxes,
-        &$_finalPrice
+        $_finalPrice
     ) {
         $priveV2['show_ex_in_price'] = 1;
         if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 0)) {
@@ -273,21 +255,25 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function displaySinglePrice(
         &$priveV2,
-        &$_weeeTaxAmount,
+        $_weeeTaxAmount,
         $_weeeHelper,
         $product,
         $_weeeTaxAttributes,
         $_weeeTaxAmountInclTaxes,
+        $_price,
+        $_regularPrice,
         $_finalPrice,
         $_finalPriceInclTax,
         $_taxHelper
     ) {
         $priveV2['show_ex_in_price'] = 0;
+        $regularPrice = $_taxHelper->displayPriceIncludingTax() ?
+            $_regularPrice : $_price;
         if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, [0, 1])) {
             $priveV2['price_label'] = __('Regular Price');
             $weeeAmountToDisplay    = $_taxHelper->displayPriceIncludingTax() ?
                 $_weeeTaxAmountInclTaxes : $_weeeTaxAmount;
-            $this->setTaxReguarlPrice($priveV2, $_price + $weeeAmountToDisplay);
+            $this->setTaxRegularPrice($priveV2, $regularPrice + $weeeAmountToDisplay);
             if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 1)) {
                 $wee = '';
                 $this->getWeeeValue($wee, $priveV2, $_weeeTaxAttributes);
@@ -295,7 +281,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             }
         } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 4)) {
             $priveV2['price_label'] = __('Regular Price');
-            $this->setTaxReguarlPrice($priveV2, $_price + $_weeeTaxAmount);
+            $this->setTaxRegularPrice($priveV2, $regularPrice + $_weeeTaxAmount);
             if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 1)) {
                 $wee = '';
                 $this->getWeeeValue($wee, $priveV2, $_weeeTaxAttributes);
@@ -305,7 +291,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             $priveV2['price_label'] = __('Regular Price');
             $weeeAmountToDisplay    = $_taxHelper->displayPriceIncludingTax() ?
                 $_weeeTaxAmountInclTaxes : $_weeeTaxAmount;
-            $this->setTaxReguarlPrice($priveV2, $_price + $weeeAmountToDisplay);
+            $this->setTaxRegularPrice($priveV2, $regularPrice + $weeeAmountToDisplay);
             if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 1)) {
                 $wee = '';
                 foreach ($_weeeTaxAttributes as $_weeeTaxAttribute) {
@@ -340,10 +326,10 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function displaySpecialPrice(
         &$priveV2,
-        &$_weeeTaxAmount,
+        $_weeeTaxAmount,
         $_weeeHelper,
         $_finalPriceInclTax,
-        &$product,
+        $product,
         $_weeeTaxAttributes,
         $_weeeTaxAmountInclTaxes,
         $_finalPrice,
@@ -356,7 +342,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         $_originalWeeeTaxAmount       = $this->convertPrice($_originalWeeeTaxAmount);
         if ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 0)) {
             $priveV2['price_label'] = __('Regular Price');
-            $this->setTaxReguarlPrice($priveV2, $_regularPrice + $_originalWeeeTaxAmount);
+            $this->setTaxRegularPrice($priveV2, $_regularPrice + $_originalWeeeTaxAmount);
             if ($_taxHelper->displayBothPrices()) {
                 $priveV2['show_ex_in_price']    = 1;
                 $priveV2['special_price_label'] = $_specialPriceStoreLabel;
@@ -370,7 +356,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             }
         } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 1)) {
             $priveV2['price_label'] = __('Regular Price');
-            $this->setTaxReguarlPrice($priveV2, $_regularPrice + $_originalWeeeTaxAmount);
+            $this->setTaxRegularPrice($priveV2, $_regularPrice + $_originalWeeeTaxAmount);
             if ($_taxHelper->displayBothPrices()) {
                 $priveV2['show_ex_in_price']    = 1;
                 $priveV2['special_price_label'] = $_specialPriceStoreLabel;
@@ -393,7 +379,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 4)) {
             $priveV2['show_ex_in_price']    = 1;
             $priveV2['price_label']         = __('Regular Price');
-            $this->setTaxReguarlPrice($priveV2, $_regularPrice + $_originalWeeeTaxAmount);
+            $this->setTaxRegularPrice($priveV2, $_regularPrice + $_originalWeeeTaxAmount);
             $priveV2['special_price_label'] = $_specialPriceStoreLabel;
             $_exclTax                       = $_finalPrice + $_weeeTaxAmount;
             $_inclTax                       = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
@@ -405,7 +391,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         } elseif ($_weeeTaxAmount && $_weeeHelper->typeOfDisplay($product, 2)) {
             $priveV2['show_ex_in_price']    = 1;
             $priveV2['price_label']         = __('Regular Price');
-            $this->setTaxReguarlPrice($priveV2, $_regularPrice);
+            $this->setTaxRegularPrice($priveV2, $_regularPrice);
             $priveV2['special_price_label'] = $_specialPriceStoreLabel;
             $_exclTax                       = $_finalPrice;
             $_inclTax                       = $_finalPriceInclTax + $_weeeTaxAmountInclTaxes;
@@ -422,7 +408,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             $priveV2['show_weee_price'] = 1;
         } else {
             $priveV2['price_label'] = __('Regular Price');
-            $this->setTaxReguarlPrice($priveV2, $_regularPrice);
+            $this->setTaxRegularPrice($priveV2, $_regularPrice);
             $_exclTax                       = $_finalPrice;
             $_inclTax                       = $_finalPriceInclTax;
             if ($_taxHelper->displayBothPrices()) {
@@ -443,12 +429,16 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function displayGroupPrice(
         &$priveV2,
-        &$_minimalPrice,
-        &$_convertedFinalPrice,
-        &$product,
+        $_convertedFinalPrice,
+        $product,
         $_taxHelper,
         $is_detail
     ) {
+        $minimalPriceCalculator = $this->simiObjectManager->get('Magento\Catalog\Pricing\Price\MinimalPriceCalculatorInterface');
+        $_minimalPrice = 0;
+        if($minimalAmount = $minimalPriceCalculator->getAmount($product)){
+            $_minimalPrice = $minimalAmount->getValue();
+        }
         $showMinPrice = $this->getDisplayMinimalPrice($is_detail);
         if ($showMinPrice && $_minimalPrice) {
             $_exclTax = $this->catalogHelper->getTaxPrice($product, $_minimalPrice);
@@ -477,18 +467,20 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             }
         }
     }
-
-    public function getDisplayMinimalPrice($is_detail)
+    /*
+     * Get minimal price for configurable/simple/virtual/downloadable (exclude group and bundle)
+     * @param int/float $finalPrice (included tax)
+     * @return bool
+     */
+    public function getMinimalPrice($finalPriceValue)
     {
         $minimalPriceCalculator = $this->simiObjectManager->get('Magento\Catalog\Pricing\Price\MinimalPriceCalculatorInterface');
         if ($this->product) {
             $minTierPrice = $minimalPriceCalculator->getValue($this->product);
-
-            $finalPrice = $this->product->getPriceInfo()->getPrice(\Magento\Catalog\Pricing\Price\FinalPrice::PRICE_CODE);
-            $finalPriceValue = $finalPrice->getAmount()->getValue();
-            return !$is_detail
-                && $minTierPrice !== null
-                && $minTierPrice < $finalPriceValue;
+            if ($this->product->getTypeId() == 'configurable')
+                return $finalPriceValue;
+            if ($minTierPrice < $finalPriceValue)
+                return $minTierPrice;
         }
         return 0;
     }
@@ -501,7 +493,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
      * 4 show price - wee.
      * 5 show wee - price.
      */
-    public function setTaxReguarlPrice(&$price, $_price)
+    public function setTaxRegularPrice(&$price, $_price)
     {
         $price['regular_price'] = $_price;
     }
