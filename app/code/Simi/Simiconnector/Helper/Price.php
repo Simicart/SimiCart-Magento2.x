@@ -453,7 +453,7 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         }
 
         if ($price) {
-            if ($showMinPrice) {
+            if ($_minimalPrice) {
                 $priveV2['price_label'] = __('Starting at');
             }
             if ($_taxHelper->displayBothPrices()) {
