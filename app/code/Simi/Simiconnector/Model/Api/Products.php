@@ -243,6 +243,7 @@ class Products extends Apiabstract
         $registry = $this->simiObjectManager->get('\Magento\Framework\Registry');
         if (!$registry->registry('product') && $entity->getId()) {
             $registry->register('product', $entity);
+            $registry->register('current_product', $entity);
         }
         $layout      = $this->simiObjectManager->get('Magento\Framework\View\LayoutInterface');
         $block_att   = $layout->createBlock('Magento\Catalog\Block\Product\View\Attributes');

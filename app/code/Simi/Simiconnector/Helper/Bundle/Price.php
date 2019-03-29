@@ -206,9 +206,9 @@ class Price extends \Simi\Simiconnector\Helper\Price
 
         $msrp_price_base = $product->getPriceInfo()->getPrice('msrp_price')->getAmount()->getBaseAmount();
         $_finalPrice = $product->getFinalPrice() > $this->minimalPriceTax ?
-            $this->minimalPriceTax : $product->getFinalPrice();
+            $product->getFinalPrice() : $this->minimalPriceTax;
         $_finalPriceInclTax = $product->getFinalPrice() > $this->minimalPriceInclTax ?
-            $this->minimalPriceInclTax : $product->getFinalPrice();
+            $product->getFinalPrice() : $this->minimalPriceInclTax;
         $_weeeTaxAmount = 0;
 
         if ($product->getPriceType() == 1) {
