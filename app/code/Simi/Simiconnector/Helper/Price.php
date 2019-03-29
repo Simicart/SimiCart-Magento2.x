@@ -108,19 +108,19 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         */
         if ($product->getTypeId() != 'grouped') {
             if($product->getTypeId() == 'configurable'){
-                $_price  = $this->priceCurrency->round($product->getPriceInfo()
+                $_price  = $product->getPriceInfo()
                     ->getPrice(\Magento\ConfigurableProduct\Pricing\Price\ConfigurableRegularPrice::PRICE_CODE)
-                    ->getAmount()->getBaseAmount());
-                $_regularPrice      = $this->priceCurrency->round($product->getPriceInfo()
+                    ->getAmount()->getBaseAmount();
+                $_regularPrice      = $product->getPriceInfo()
                     ->getPrice(\Magento\ConfigurableProduct\Pricing\Price\ConfigurableRegularPrice::PRICE_CODE)
-                    ->getAmount()->getValue());
+                    ->getAmount()->getValue();
             } else {
-                $_price             = $this->priceCurrency->round($product->getPriceInfo()
+                $_price             = $product->getPriceInfo()
                     ->getPrice(\Magento\Catalog\Pricing\Price\RegularPrice::PRICE_CODE)
-                    ->getAmount()->getBaseAmount());
-                $_regularPrice      = $this->priceCurrency->round($product->getPriceInfo()
+                    ->getAmount()->getBaseAmount();
+                $_regularPrice      = $product->getPriceInfo()
                     ->getPrice(\Magento\Catalog\Pricing\Price\RegularPrice::PRICE_CODE)
-                    ->getAmount()->getValue());
+                    ->getAmount()->getValue();
             }
             $_weeeHelper = $this->helper('Magento\Weee\Helper\Data');
             $_weeeTaxAmount          = $_weeeHelper->getAmountExclTax($product);
@@ -180,8 +180,11 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
                     $_taxHelper
                 );
             }
-
-            if ($minimalPrice = $this->getMinimalPrice($_finalPriceInclTax)) {
+            if ($_taxHelper->displayPriceExcludingTax()) 
+                $minimalPrice = $this->getMinimalPrice($_finalPrice);
+            else
+                $minimalPrice = $this->getMinimalPrice($_finalPriceInclTax);
+            if ($minimalPrice) {
                 $_minimalPriceDisplayValue  = $minimalPrice + $_weeeTaxAmount;
                 $priveV2['is_low_price']    = 1;
                 $priveV2['low_price_label'] = __('As low as');
