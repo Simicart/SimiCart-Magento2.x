@@ -442,11 +442,10 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
         if($minimalAmount = $minimalPriceCalculator->getAmount($product)){
             $_minimalPrice = $minimalAmount->getValue();
         }
-        $showMinPrice = $this->getDisplayMinimalPrice($is_detail);
-        if ($showMinPrice && $_minimalPrice) {
+        if ($_minimalPrice) {
             $_exclTax = $this->catalogHelper->getTaxPrice($product, $_minimalPrice);
             $_inclTax = $this->catalogHelper->getTaxPrice($product, $_minimalPrice, true);
-            $price    = $showMinPrice ? $_minimalPrice : 0;
+            $price    = $_minimalPrice;
         } else {
             $price    = $_convertedFinalPrice;
             $_exclTax = $this->catalogHelper->getTaxPrice($product, $price);
