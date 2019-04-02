@@ -57,11 +57,13 @@ class Customers extends Apiabstract
                         throw new \Simi\Simiconnector\Helper\SimiException(__('Login Failed'), 4);
                     }
                     break;
+                /*
                 case 'sociallogin':
                     $this->builderQuery = $this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')
                         ->socialLogin($data);
                     $this->builderQuery->setData('wishlist_count', $this->getWishlistCount());
                     break;
+                */
                 case 'logout':
                     $lastCustomerId     = $this->simiObjectManager->get('Magento\Customer\Model\Session')
                         ->getCustomer()->getId();
@@ -122,6 +124,7 @@ class Customers extends Apiabstract
 
     public function getDetail($info)
     {
+        $data = $this->getData();
         $resultArray            = parent::getDetail($info);
         if ($this->RETURN_MESSAGE)
             $resultArray['message'] = [$this->RETURN_MESSAGE];
@@ -134,9 +137,9 @@ class Customers extends Apiabstract
             } else {
                 $resultArray['customer']['news_letter'] = '0';
             }
-            $hash = md5($this->simiObjectManager
-                            ->get('\Magento\Framework\App\Config\ScopeConfigInterface')
-                            ->getValue('simiconnector/general/secret_key') . $resultArray['customer']['email']);
+            $hash = $this->simiObjectManager
+                            ->get('Simi\Simiconnector\Helper\Customer')
+                            ->getToken($data);
             $resultArray['customer']['simi_hash'] = $hash;
         }
 

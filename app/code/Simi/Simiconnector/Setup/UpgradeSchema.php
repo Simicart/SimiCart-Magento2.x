@@ -82,7 +82,74 @@ class UpgradeSchema implements UpgradeSchemaInterface
                 );
             }
         }
-        
+
+
+        if (version_compare($context->getVersion(), '1.0.10') < 0) {
+            $mappingTableName = $setup->getTable('simipwa_social_customer_mapping');
+            if (!$setup->getConnection()->isTableExists($mappingTableName)) {
+                $table_token = $setup->getConnection()->newTable(
+                    $mappingTableName
+                )->addColumn(
+                    'id',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    null,
+                    ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                    'Token Id'
+                )->addColumn(
+                    'customer_id',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    null,
+                    ['nullable' => false],
+                    'Customer Id'
+                )->addColumn(
+                    'social_user_id',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    255,
+                    ['nullable' => false, 'default' => ''],
+                    'Social User Id'
+                )->addColumn(
+                    'provider_id',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    255,
+                    ['nullable' => false, 'default' => ''],
+                    'Provider Id'
+                );
+                $setup->getConnection()->createTable($table_token);
+            }
+
+            $tokenTableName = $setup->getTable('simiconnector_customer_token');
+            if (!$setup->getConnection()->isTableExists($tokenTableName)) {
+                $table_token = $setup->getConnection()->newTable(
+                    $tokenTableName
+                )->addColumn(
+                    'id',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    null,
+                    ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true],
+                    'Token Id'
+                )->addColumn(
+                    'customer_id',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    null,
+                    ['nullable' => false],
+                    'Customer Id'
+                )->addColumn(
+                    'token',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                    255,
+                    ['nullable' => false, 'default' => ''],
+                    'Token value'
+                )->addColumn(
+                    'created_time',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
+                    255,
+                    ['nullable' => true, 'default' => null],
+                    'Created Time'
+                );
+                $setup->getConnection()->createTable($table_token);
+            }
+        }
+
         $setup->endSetup();
     }
 }
