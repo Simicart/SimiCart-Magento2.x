@@ -136,7 +136,10 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
             * compare final price (excluded tax) with price (excluded tax) to decide if it has special price
             *
             */
-            if (($product->getTypeId() == 'configurable') || ($_finalPriceInclTax >= $_regularPrice)) {
+            if (
+                //(!$is_detail && ($product->getTypeId() == 'configurable')) || 
+                ($_finalPriceInclTax >= $_regularPrice)
+            ) {
                 $priveV2['has_special_price'] = 0;
                 if ($_taxHelper->displayBothPrices()) {
                     $this->displayBothPrice(
@@ -181,9 +184,9 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
                 );
             }
             if ($_taxHelper->displayPriceExcludingTax()) 
-                $minimalPrice = $this->getMinimalPrice($_finalPrice);
+                $minimalPrice = $this->getMinimalPrice($_finalPrice, $is_detail);
             else
-                $minimalPrice = $this->getMinimalPrice($_finalPriceInclTax);
+                $minimalPrice = $this->getMinimalPrice($_finalPriceInclTax, $is_detail);
             if ($minimalPrice) {
                 $_minimalPriceDisplayValue  = $minimalPrice + $_weeeTaxAmount;
                 $priveV2['is_low_price']    = 1;
@@ -474,14 +477,17 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
      * @param int/float $finalPrice (included tax)
      * @return bool
      */
-    public function getMinimalPrice($finalPriceValue)
+    public function getMinimalPrice($finalPriceValue, $is_detail)
     {
         $minimalPriceCalculator = $this->simiObjectManager->get('Magento\Catalog\Pricing\Price\MinimalPriceCalculatorInterface');
         if ($this->product) {
             $minTierPrice = $minimalPriceCalculator->getValue($this->product);
-            if ($this->product->getTypeId() == 'configurable')
-                return $finalPriceValue;
-            if ($minTierPrice < $finalPriceValue)
+            //if (!$is_detail && ($this->product->getTypeId() == 'configurable'))
+            //    return $finalPriceValue;
+            if (
+                $minTierPrice && 
+                $minTierPrice < $finalPriceValue
+            )
                 return $minTierPrice;
         }
         return 0;
