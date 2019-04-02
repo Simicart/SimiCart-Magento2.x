@@ -161,6 +161,8 @@ class Customer extends Data
                 $createNewToken = false;
                 if ($data && isset($data['resourceid']) && $data['resourceid'] == 'login')
                     $createNewToken = true;
+                else if ($data && isset($data['resource']) && $data['resource'] == 'sociallogins')
+                    $createNewToken = true;
 
                 $tokenModel = $this->simiObjectManager->create('Simi\Simiconnector\Model\Customertoken')
                     ->getCollection()
