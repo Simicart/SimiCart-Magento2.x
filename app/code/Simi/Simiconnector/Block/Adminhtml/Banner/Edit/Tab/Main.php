@@ -262,10 +262,10 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         }
         $level+=1;
         foreach ($this->categoryArray as $category) {
-            if ($category['level'] != $level) {
+            if (!isset($category['level']) || ($category['level'] != $level) || !isset($category['name'])) {
                 continue;
             }
-            if (($parent_id == 0) || (($parent_id!=0) && ($category['parent_id'] == $parent_id))) {
+            if (($parent_id == 0) || (($parent_id!=0) && isset($category['parent_id']) &&  ($category['parent_id'] == $parent_id))) {
                 $optionArray[] = ['value' => $category['entity_id'], 'label' => $beforeString . $category['name']];
                 $this->getChildCatArray($level, $optionArray, $category['entity_id']);
             }
