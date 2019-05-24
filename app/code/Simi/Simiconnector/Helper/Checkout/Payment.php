@@ -89,7 +89,7 @@ class Payment extends \Simi\Simiconnector\Helper\Data
 
         foreach ($methods as $key => $method) {
             if ($this->_canUseMethod($method, $quote) && (!in_array($method->getCode(), $this->_getListPaymentNoUse())
-                    && (in_array($method->getCode(), $this->_getListPayment()) || $method->getConfigData('cctypes')))
+                    && in_array($method->getCode(), $this->_getListPayment()))
                 && ($total != 0 || $method->getCode() == 'free'
                     || ($quote->hasRecurringItems() && $method->canManageRecurringProfiles()))) {
                 $this->_assignMethod($method, $quote);
