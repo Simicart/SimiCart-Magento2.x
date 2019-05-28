@@ -291,6 +291,7 @@ class Orders extends Apiabstract
             }
             $order                     = [];
 
+            /*
             $savedOnce = false;
             
             if (!$quote->getBillingAddress()->getFirstName() && $customer->getData('default_billing')) {
@@ -310,7 +311,8 @@ class Orders extends Apiabstract
             }
             if ($savedOnce)
                 $this->_getOnepage()->getQuote()->collectTotals()->save();
-
+            */
+                
             $order['billing_address']  = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
                     ->getAddressDetail($quote->getBillingAddress(), $customer);
             $order['shipping_address'] = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
