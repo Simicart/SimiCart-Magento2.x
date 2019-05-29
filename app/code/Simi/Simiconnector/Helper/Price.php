@@ -479,16 +479,20 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
      */
     public function getMinimalPrice($finalPriceValue, $is_detail)
     {
-        $minimalPriceCalculator = $this->simiObjectManager->get('Magento\Catalog\Pricing\Price\MinimalPriceCalculatorInterface');
-        if ($this->product) {
-            $minTierPrice = $minimalPriceCalculator->getValue($this->product);
-            //if (!$is_detail && ($this->product->getTypeId() == 'configurable'))
-            //    return $finalPriceValue;
-            if (
-                $minTierPrice && 
-                $minTierPrice < $finalPriceValue
-            )
-                return $minTierPrice;
+        try {
+            $minimalPriceCalculator = $this->simiObjectManager->get('Magento\Catalog\Pricing\Price\MinimalPriceCalculatorInterface');
+            if ($this->product) {
+                $minTierPrice = $minimalPriceCalculator->getValue($this->product);
+                //if (!$is_detail && ($this->product->getTypeId() == 'configurable'))
+                //    return $finalPriceValue;
+                if (
+                    $minTierPrice && 
+                    $minTierPrice < $finalPriceValue
+                )
+                    return $minTierPrice;
+            }
+        } catch (\Exception $e) {
+
         }
         return 0;
     }
@@ -552,22 +556,26 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function getProductTierPricesLabel($product){
         $result =[];
-        $tierPriceModel = $product->getPriceInfo()->getPrice(\Magento\Catalog\Pricing\Price\TierPrice::PRICE_CODE);
-        $msrpShowOnGesture = $product->getPriceInfo()->getPrice('msrp_price')->isShowPriceOnGesture();
-        $tierPrices = $tierPriceModel->getTierPriceList();
-        if(count($tierPrices)){
-            foreach ($tierPrices as $index => $price) {
-                if ($msrpShowOnGesture && $price['price']->getValue() < $product->getMsrp()){
-                    $result[] =__('Buy %1 for: ', $price['price_qty']);
-                }else{
-                    $result[] = __(
-                        'Buy %1 for %2 each and save %3%',
-                        $price['price_qty'],
-                        $this->priceHelper->currency($price['price']->getValue(),false),
-                        $tierPriceModel->getSavePercent($price['price'])
-                    );
+        try {
+            $tierPriceModel = $product->getPriceInfo()->getPrice(\Magento\Catalog\Pricing\Price\TierPrice::PRICE_CODE);
+            $msrpShowOnGesture = $product->getPriceInfo()->getPrice('msrp_price')->isShowPriceOnGesture();
+            $tierPrices = $tierPriceModel->getTierPriceList();
+            if(count($tierPrices)){
+                foreach ($tierPrices as $index => $price) {
+                    if ($msrpShowOnGesture && $price['price']->getValue() < $product->getMsrp()){
+                        $result[] =__('Buy %1 for: ', $price['price_qty']);
+                    }else{
+                        $result[] = __(
+                            'Buy %1 for %2 each and save %3%',
+                            $price['price_qty'],
+                            $this->priceHelper->currency($price['price']->getValue(),false),
+                            $tierPriceModel->getSavePercent($price['price'])
+                        );
+                    }
                 }
             }
+        } catch (\Exception $e) {
+            
         }
 
         return $result;
