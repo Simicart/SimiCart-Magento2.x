@@ -137,8 +137,10 @@ class Reviews extends Apiabstract
             foreach ($entity->getRatingVotes() as $vote) {
                 $y += ($vote->getPercent() / 20);
             }
-            $x                          = (int) ($y / $this->simiObjectManager
-                    ->get('Simi\Simiconnector\Helper\Data')->countArray($entity->getRatingVotes()));
+            $count = $this->simiObjectManager
+            ->get('Simi\Simiconnector\Helper\Data')->countArray($entity->getRatingVotes());
+            $count = $count == 0 ? 1 : $count;
+            $x                          = (int) ($y / $count);
             $info_detail                = $entity->toArray($fields);
             $info_detail['rate_points'] = $x;
             $info[]                     = $info_detail;
