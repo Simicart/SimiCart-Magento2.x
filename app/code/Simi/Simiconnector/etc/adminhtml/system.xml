@@ -335,42 +335,6 @@
                     <comment>The message is used when customers share a product in their wishlist on Facebook, Twitter, Emails... It appears before the product URL.</comment>
                 </field>
             </group>
-            <group id="zopim" translate="label" type="text" sortOrder="799" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Zopim Configuration</label>
-                <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Enable</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="account_key" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Account Key</label>
-                    <comment>The message is used when customers share their wishlist on Facebook, Twitter, Emails... It appears before Wishlist URL.</comment>
-                </field>
-                <field id="show_profile" translate="label" type="select" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Allow show profile</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="name" translate="label" type="select" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Name</label>
-                    <source_model>Simi\Simiconnector\Model\Config\Source\Showandhideoption</source_model>
-                    <depends>
-                        <field id="*/*/show_profile">1</field>
-                    </depends>
-                </field>
-                <field id="email" translate="label" type="select" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Email</label>
-                    <source_model>Simi\Simiconnector\Model\Config\Source\Showandhideoption</source_model>
-                    <depends>
-                        <field id="*/*/show_profile">1</field>
-                    </depends>
-                </field>
-                <field id="phone" translate="label" type="select" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Phone</label>
-                    <source_model>Simi\Simiconnector\Model\Config\Source\Showandhideoption</source_model>
-                    <depends>
-                        <field id="*/*/show_profile">1</field>
-                    </depends>
-                </field>
-            </group>
             <group id="mixpanel" translate="label" type="text" sortOrder="899" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Mixpanel Configuration</label>
                 <field id="token" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
