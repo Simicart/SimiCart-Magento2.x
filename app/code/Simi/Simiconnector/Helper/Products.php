@@ -147,10 +147,6 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             $collection->addCategoryFilter($this->category);
         }
 
-        if (isset($params['filter']['layer'])) {
-            $this->filterCollectionByAttribute($collection, $params, $cat_filtered);
-        }
-
         //related products
         if (isset($params['filter']['related_to_id'])) {
             $product = $this->getProduct($params['filter']['related_to_id']);
@@ -167,6 +163,11 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         } else {
             $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
             $collection->setVisibility($this->productVisibility->getVisibleInSiteIds());
+        }
+
+
+        if (isset($params['filter']['layer'])) {
+            $this->filterCollectionByAttribute($collection, $params, $cat_filtered);
         }
         
         return $collection;
