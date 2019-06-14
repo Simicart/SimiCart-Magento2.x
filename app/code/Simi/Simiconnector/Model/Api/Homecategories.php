@@ -10,6 +10,8 @@ class Homecategories extends Apiabstract
 {
 
     public $DEFAULT_ORDER = 'sort_order';
+    const DEFAULT_LIMIT = 9999;
+
     public $visible_array;
 
     public function setSingularKey($singularKey)
@@ -99,7 +101,11 @@ class Homecategories extends Apiabstract
         }
         return $result;
     }
-    
+
+    public function getDefaultLimit() {
+        return self::DEFAULT_LIMIT;
+    }
+
     public function loadCategoryWithId($id)
     {
         $categoryModel    = $this->simiObjectManager

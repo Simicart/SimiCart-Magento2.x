@@ -58,7 +58,7 @@ abstract class Apiabstract extends \Simi\Simiconnector\Model\Api\Apiabstract
         return $this->getList($info, null, $total, $limit, $offset);
     }
 
-    public function renewCustomerSesssion($data)
+    public function renewCustomerSession($data)
     {
         return false;
     }

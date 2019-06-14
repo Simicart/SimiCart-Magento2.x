@@ -18,8 +18,16 @@ class Wishlistitems extends Apiabstract
     {
         $data     = $this->getData();
         $customer = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
-        if ($customer->getId() && ($customer->getId() != '')) {
-            $this->WISHLIST = $this->simiObjectManager
+        $code = false;
+        if (isset($data['params']) && isset($data['params']['code']))
+            $code = $data['params']['code'];
+        if ($code !== false ||
+            ($customer->getId() && ($customer->getId() != ''))) {
+            if ($code !== false)
+                $this->WISHLIST = $this->simiObjectManager
+                    ->get('Magento\Wishlist\Model\Wishlist')->loadByCode($code);
+            else
+                $this->WISHLIST = $this->simiObjectManager
                     ->get('Magento\Wishlist\Model\Wishlist')->loadByCustomerId($customer->getId(), true);
             //check if not shared
             if (!$this->WISHLIST->getShared()) {
@@ -29,7 +37,7 @@ class Wishlistitems extends Apiabstract
             $sharingCode           = $this->WISHLIST->getSharingCode();
             $this->RETURN_MESSAGE = $this->getStoreConfig('simiconnector/wishlist/sharing_message') . ' '
                     . $this->simiObjectManager->get('Magento\Framework\UrlInterface')
-                    ->getUrl('*/shared/index', ['code' => $sharingCode]);
+                    ->getUrl('wishlist/shared/index', ['code' => $sharingCode]);
             $this->RETURN_URL     = $this->simiObjectManager->get('Magento\Framework\UrlInterface')
                     ->getUrl('wishlist/shared/index', ['code' => $sharingCode]);
         } else {

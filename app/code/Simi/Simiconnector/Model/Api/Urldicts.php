@@ -4,6 +4,8 @@ namespace Simi\Simiconnector\Model\Api;
 
 class Urldicts extends Apiabstract
 {
+    public $params;
+    
     public function setBuilderQuery(){
         $data = $this->getData();
         if (isset($data['resourceid']) && $data['resourceid']) {
@@ -18,10 +20,31 @@ class Urldicts extends Apiabstract
                 'request_path' => ltrim($requestPath, '/'),
                 'store_id' => $storeId,
             ]);
-            if (!$this->builderQuery || !$this->builderQuery->getEntityType())
-                throw new \Simi\Simiconnector\Helper\SimiException(__('No URL Rewrite Found'), 4);
+            if (!$this->builderQuery || !$this->builderQuery->getEntityType()) {
+                $this->builderQuery = $this->simiObjectManager
+                    ->get('Simi\Simiconnector\Model\Cms')
+                    ->getCollection()
+                    ->addFieldToFilter('cms_url', $requestPath)->getFirstItem();
+                if (!$this->builderQuery || !$this->builderQuery->getId())
+                    throw new \Simi\Simiconnector\Helper\SimiException(__('No URL Rewrite Found'), 4);
+            }
+            $this->parseParams();
         }
     }
+    
+    public function parseParams() {
+        $requestPaths = explode('?', $_SERVER['REQUEST_URI']);
+        $this->params = array();
+        foreach ($requestPaths as $key => $value) {
+            if ($key == 0)
+                continue;
+            $params = array();
+            parse_str($value, $params);
+            $this->params = array_merge($this->params, $params);
+        }
+        unset($this->params['url']);
+    }
+    
     public function show() {
         $result = ['urldict'=>[]];
         $result['urldict']['entity_type'] = $this->builderQuery->getEntityType();
@@ -30,7 +53,6 @@ class Urldicts extends Apiabstract
         else if($this->builderQuery->getEntityType() == 'category')
             $result['urldict']['category_id'] = $this->builderQuery->getEntityId();
         $data = $this->getData();
-        
         if(isset($result['urldict']['product_id']) && $result['urldict']['product_id']) {
             $apiModel = $this->simiObjectManager->get('Simi\Simiconnector\Model\Api\Products');
             $data['resourceid'] = $result['urldict']['product_id'];
@@ -52,6 +74,8 @@ class Urldicts extends Apiabstract
                 $apiModel->setBuilderQuery();
                 $result['urldict']['simi_category_child'] = $apiModel->show();
             }
+
+            $data['params'] = $this->params;
             $productListModel = $this->simiObjectManager
                 ->get('Simi\Simiconnector\Model\Api\Products');
             $data['resourceid'] = null;
@@ -61,13 +85,34 @@ class Urldicts extends Apiabstract
             $data['params']['image_height'] = isset($data['params']['image_height'])?
                 $data['params']['image_height']:180;
             $data['params']['limit'] = 12;
+            
+            // Apply filter
+            $attributes = array();
+            foreach ($this->simiObjectManager
+                         ->get('\Magento\Catalog\Model\ResourceModel\Eav\Attribute')
+                         ->getCollection() as $attribute) {
+                $attributes[] = $attribute->getAttributecode();
+            }
+            $data['params'][self::FILTER]['layer'] = array();
+            foreach ($this->params as $key=>$value) {
+                if (in_array($key, $attributes))
+                    $data['params'][self::FILTER]['layer'][$key] = $value;
+            }
+            
+            // Apply sort 
+            if(isset($data['params']['product_list_order']))
+                $data['params']['order'] = $data['params']['product_list_order'];
+            if(isset($data['params']['product_list_dir']))
+                $data['params']['dir'] = $data['params']['product_list_dir'];
+            
             $productListModel->pluralKey = 'products';
             $productListModel->singularKey = 'product';
             $productListModel->setData($data);
             $productListModel->setBuilderQuery();
             $result['urldict']['simi_category_products'] = $productListModel->index();
-        } else
-            throw new \Simi\Simiconnector\Helper\SimiException(__('No URL Rewrite Found'), 4);
+        } else {
+            $result = parent::show();
+        }
         return $result;
     }
 }

@@ -9,27 +9,6 @@ namespace Simi\Simiconnector\Controller\Rest;
 
 class V2 extends Action
 {
-
-    /**
-     * @var \Magento\Framework\App\Cache\TypeListInterface
-     */
-    public $cacheTypeList;
-
-    /**
-     * @var \Magento\Framework\App\Cache\StateInterface
-     */
-    public $cacheState;
-
-    /**
-     * @var \Magento\Framework\App\Cache\Frontend\Pool
-     */
-    public $cacheFrontendPool;
-
-    /**
-     * @var \Magento\Framework\View\Result\PageFactory
-     */
-    public $resultPageFactory;
-
     /**
      * Flush cache storage
      *
@@ -78,7 +57,7 @@ class V2 extends Action
             $this->getResponse()->setHeader('Content-Type', 'application/json');
             $this->setData($result);
             $this->_eventManager
-                    ->dispatch($this->getRequest()->getFullActionName(), ['object' => $this, 'data' => $result]);
+                    ->dispatch('SimiconnectorRest', ['object' => $this, 'data' => $result]);
             $this->data = $this->getData();
             return $this->getResponse()->setBody(json_encode($this->data));
         } catch (\Exception $e) {

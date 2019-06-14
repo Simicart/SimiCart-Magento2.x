@@ -49,7 +49,7 @@ class Options extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function currency($value, $format = true, $includeContainer = true)
     {
-        return $this->priceHelper->currencyByStore($value, $format, $includeContainer);
+        return $this->priceHelper->currencyByStore($value, null, $format, $includeContainer);
     }
 
     public function getOptions($product)

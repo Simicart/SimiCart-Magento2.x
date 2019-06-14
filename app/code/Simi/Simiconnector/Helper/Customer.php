@@ -14,7 +14,7 @@ class Customer extends Data
         return $this->simiObjectManager->get('Magento\Customer\Model\Session');
     }
 
-    public function renewCustomerSesssion($data)
+    public function renewCustomerSession($data)
     {
         if (isset($data['params']['quote_id']) && $data['params']['quote_id']) {
             $checkoutsession = $this->simiObjectManager->get('Magento\Checkout\Model\Session');
@@ -24,9 +24,16 @@ class Customer extends Data
                 && (($data['resourceid'] == 'login') || ($data['resourceid'] == 'sociallogin'))) {
             return;
         }
-        if (isset($data['contents_array']['email']) && isset($data['contents_array']['password'])) {
-            $data['params']['email']    = $data['contents_array']['email'];
-            $data['params']['password'] = $data['contents_array']['password'];
+        if (isset($data['params']['email']) && isset($data['params']['simi_hash'])) {
+            $data['params']['password'] = $data['params']['simi_hash'];
+        } else if (isset($data['contents_array']['email'])) {
+            if (isset($data['contents_array']['password'])) {
+                $data['params']['email']    = $data['contents_array']['email'];
+                $data['params']['password'] = $data['contents_array']['password'];
+            } else if (isset($data['contents_array']['simi_hash'])) {
+                $data['params']['email']    = $data['contents_array']['email'];
+                $data['params']['password'] = $data['contents_array']['simi_hash'];
+            }
         }
 
         if ((!$data['params']['email']) || (!$data['params']['password'])) {
@@ -107,21 +114,73 @@ class Customer extends Data
         if (isset($data->suffix) && $data->suffix) {
             $customer->setSuffix($data->suffix);
         }
-        if (!isset($data->password)) {
-            $encodeMethod = 'md5';
-            $data->password = 'simipassword'
-                    . rand(pow(10, 9), pow(10, 10)) . substr($encodeMethod(microtime()), rand(0, 26), 5);
-        }
+//        if (!isset($data->password)) {
+//            $encodeMethod = 'md5';
+//            $data->password = 'simipassword'
+//                    . rand(pow(10, 9), pow(10, 10)) . substr($encodeMethod(microtime()), rand(0, 26), 5);
+//        }
     }
 
-    public function validateSimiPass($username, $password)
+    public function validateSimiPass($username, $password, $from = null)
     {
+        $tokenModel = $this->simiObjectManager->get('Simi\Simiconnector\Model\Customertoken')
+            ->getCollection()
+            ->addFieldToFilter('token', $password)
+            ->getFirstItem();
+        if ($tokenModel->getId() && $customerId = $tokenModel->getData('customer_id')) {
+            $customerModel = $this->simiObjectManager->get('Magento\Customer\Model\Customer')->load($customerId);
+            if ($customerEmail = $customerModel->getData('email')) {
+                if ($customerEmail == $username)
+                    return true;
+            }
+        }
+        /*
         $encodeMethod = 'md5';
+        if ($from && $from == 'social_login') {
+            if ($password == 'Simi123a@'.$encodeMethod($this->simiObjectManager
+                    ->get('Magento\Framework\App\Config\ScopeConfigInterface')
+                                ->getValue('simiconnector/general/secret_key') . $username)) {
+                return true;
+            }
+        }
         if ($password == $encodeMethod($this->simiObjectManager
                 ->get('Magento\Framework\App\Config\ScopeConfigInterface')
                                 ->getValue('simiconnector/general/secret_key') . $username)) {
             return true;
         }
+        */
         return false;
+    }
+
+
+    public function getToken($data) {
+        $customerSession = $this->_getSession();
+        if ($customerSession->isLoggedIn()) {
+            $customerId = $this->_getSession()->getCustomer()->getId();
+            if ($customerId) {
+                $createNewToken = false;
+                if ($data && isset($data['resourceid']) && $data['resourceid'] == 'login')
+                    $createNewToken = true;
+                else if ($data && isset($data['resource']) && $data['resource'] == 'sociallogins')
+                    $createNewToken = true;
+
+                $tokenModel = $this->simiObjectManager->create('Simi\Simiconnector\Model\Customertoken')
+                    ->getCollection()
+                    ->addFieldToFilter('customer_id', $customerId)
+                    ->getFirstItem();
+                if (!$tokenModel->getId() || $createNewToken) {
+                    $encodeMethod = 'md5';
+                    $newToken = 'tk_'
+                    . $encodeMethod(rand(pow(10, 9), pow(10, 10)))
+                    . $encodeMethod(microtime());
+                    $tokenModel->setData('token', $newToken);
+                    $tokenModel->setData('customer_id', $customerId);
+                    $tokenModel->setData('created_time', time());
+                    $tokenModel->save();
+                }
+                return $tokenModel->getData('token');
+            }
+        }
+        return '';
     }
 }

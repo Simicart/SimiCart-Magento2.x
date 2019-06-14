@@ -16,6 +16,7 @@ class Server
     public $simiObjectManager;
     public $coreRegistry;
     public $zendRequest;
+    public $result = [];
 
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
@@ -42,6 +43,11 @@ class Server
         return $this->data;
     }
 
+    public function _getCheckoutSession()
+    {
+        return $this->simiObjectManager->create('Magento\Checkout\Model\Session');
+    }
+
     /**
      * @return mixed|string
      * @throws Exception
@@ -65,6 +71,11 @@ class Server
         if (!isset($data['resource'])) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid method.'), 4);
         }
+
+        if(!$this->_getCheckoutSession()->getData('simiconnector_platform')) {
+            $this->_getCheckoutSession()->setData('simiconnector_platform', 'native');
+        }
+
         if ((strpos($data['resource'], 'migrate')) !== false) {
             $migrateResource = explode('_', $data['resource'])[1];
             $className = 'Simi\\' . ucfirst($data['module']) . '\Model\Api\Migrate\\' . ucfirst($migrateResource);
@@ -80,7 +91,12 @@ class Server
         if (is_callable([&$model, $this->method])) {
             //Avoid using direct function, need to change solution when found better one
             $callFunctionName = 'call_user_func_array';
-            return $callFunctionName([&$model, $this->method], [$data]);
+            $this->result = $callFunctionName([&$model, $this->method], [$data]);
+            $this->eventManager->dispatch(
+                'simi_simiconnector_model_server_return_' . $data['resource'],
+                ['object' => $this, 'data' => $this->data]
+            );
+            return $this->result;
         }
         throw new \Simi\Simiconnector\Helper\SimiException(__('Resource cannot callable.'), 4);
     }
@@ -128,8 +144,7 @@ class Server
          *
          *
         */
-        $this->zendRequest = $this->simiObjectManager->get('Simi\Simiconnector\Helper\RequestHttp');
-        $contents            = $this->zendRequest->getRawBody();
+        $contents            = $controller->getRequest()->getContent();
         $contents_array      = [];
         if ($contents && ($contents != '')) {
             $contents_paser = urldecode($contents);

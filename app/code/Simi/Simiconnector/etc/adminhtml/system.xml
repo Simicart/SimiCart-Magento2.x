@@ -52,6 +52,11 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <can_be_empty>1</can_be_empty>
                 </field>
+                <field id="filter_categories_by_include_in_menu" translate="label" type="select" sortOrder="949" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Filter categories by 'Include in Menu' values</label>
+                    <comment>Category would be shown if only its 'Include in Menu' value is 'Yes'</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
                 <field id="categories_in_app" translate="label" type="text" sortOrder="999" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Hidden categories on app</label>
                     <comment>Category IDs (separated by comma). Eg. 2, 4, 15</comment>
@@ -63,6 +68,9 @@
                 <field id="image_aspect_ratio" translate="label" type="select" sortOrder="1149" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Banner Aspect Ratio</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Aspectratio</source_model>
+                </field>
+                <field id="app_dedicated_coupon" translate="label" type="text" sortOrder="1199" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Mobile App Dedicated Coupon</label>
                 </field>
                 <field id="open_url_in_app" translate="label" type="select" sortOrder="1299" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Open url in app</label>
@@ -327,42 +335,6 @@
                     <comment>The message is used when customers share a product in their wishlist on Facebook, Twitter, Emails... It appears before the product URL.</comment>
                 </field>
             </group>
-            <group id="zopim" translate="label" type="text" sortOrder="799" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Zopim Configuration</label>
-                <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Enable</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="account_key" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Account Key</label>
-                    <comment>The message is used when customers share their wishlist on Facebook, Twitter, Emails... It appears before Wishlist URL.</comment>
-                </field>
-                <field id="show_profile" translate="label" type="select" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Allow show profile</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
-                <field id="name" translate="label" type="select" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Name</label>
-                    <source_model>Simi\Simiconnector\Model\Config\Source\Showandhideoption</source_model>
-                    <depends>
-                        <field id="*/*/show_profile">1</field>
-                    </depends>
-                </field>
-                <field id="email" translate="label" type="select" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Email</label>
-                    <source_model>Simi\Simiconnector\Model\Config\Source\Showandhideoption</source_model>
-                    <depends>
-                        <field id="*/*/show_profile">1</field>
-                    </depends>
-                </field>
-                <field id="phone" translate="label" type="select" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Phone</label>
-                    <source_model>Simi\Simiconnector\Model\Config\Source\Showandhideoption</source_model>
-                    <depends>
-                        <field id="*/*/show_profile">1</field>
-                    </depends>
-                </field>
-            </group>
             <group id="mixpanel" translate="label" type="text" sortOrder="899" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Mixpanel Configuration</label>
                 <field id="token" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -390,6 +362,25 @@
                 <field id="put" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Support PUT method</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="customchat" translate="label" type="text" sortOrder="1299" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Live chat Configuration</label>
+                <field id="enable" translate="label" type="select" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="head_script" translate="label" type="textarea" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Head Script</label>
+                    <depends>
+                        <field id="*/*/enable">1</field>
+                    </depends>
+                </field>
+                <field id="body_script" translate="label" type="textarea" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Body Script</label>
+                    <depends>
+                        <field id="*/*/enable">1</field>
+                    </depends>
                 </field>
             </group>
         </section>

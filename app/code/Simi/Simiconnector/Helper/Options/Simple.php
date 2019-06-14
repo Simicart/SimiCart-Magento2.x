@@ -39,7 +39,7 @@ class Simple extends \Simi\Simiconnector\Helper\Options
             $item['type']       = $option->getType();
             $item['position']   = $option->getSortOrder();
             $item['isRequired'] = $option->getIsRequire();
-            $this->getFileOption($option, $item);
+            $this->getExtraInfo($option, $item);
             if ($option->getGroupByType() == \Magento\Catalog\Model\Product\Option::OPTION_GROUP_SELECT) {
                 foreach ($option->getValues() as $value) {
                     $item_value = [
@@ -90,10 +90,16 @@ class Simple extends \Simi\Simiconnector\Helper\Options
         return $options;
     }
     
-    private function getFileOption($option, &$item)
+    private function getExtraInfo($option, &$item)
     {
         if ($option->getType() == "file") {
+            $item['image_size_x'] = $option->getData('image_size_x');
+            $item['image_size_y'] = $option->getData('image_size_y');
+            $item['sku'] = $option->getData('sku');
             $item['file_extension'] = $option->getFileExtension();
+            $item['input_name'] = 'options_'.$option->getData('option_id').'_file';
+        } else if($option->getData('max_characters')) {
+            $item['max_characters'] = $option->getData('max_characters');
         }
     }
 }

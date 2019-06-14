@@ -258,29 +258,29 @@ class Address extends Data
         if ($is_register_mode) {
             $customer_email = $billingAddress->email;
             $customer       = $this->simiObjectManager->get('Magento\Customer\Model\Customer')
-                    ->setWebsiteId($this->storeManager->getStore()->getWebsiteId())
-                    ->loadByEmail($customer_email);
+                ->setWebsiteId($this->storeManager->getStore()->getWebsiteId())
+                ->loadByEmail($customer_email);
             if ($customer->getData('entity_id') != null) {
                 throw new \Simi\Simiconnector\Helper\SimiException(__('There is already a customer '
-                                . 'registered using this email address. '
-                                . 'Please login using this email address or enter '
-                                . 'a different email address to register your account.'), 7);
+                    . 'registered using this email address. '
+                    . 'Please login using this email address or enter '
+                    . 'a different email address to register your account.'), 7);
             }
         }
 
         $address                         = $this->convertDataAddress($billingAddress);
         $address['save_in_address_book'] = '1';
 
-        if (isset($billingAddress->entity_id)) {
+        if (isset($billingAddress->entity_id) && $billingAddress->entity_id) {
             $addressInterface = $this->simiObjectManager
-                    ->create('Magento\Customer\Api\AddressRepositoryInterface')->getById($billingAddress->entity_id);
+                ->create('Magento\Customer\Api\AddressRepositoryInterface')->getById($billingAddress->entity_id);
 
             $billingAddress                  = $this->simiObjectManager
                 ->get('Magento\Quote\Model\Quote\Address')->importCustomerAddressData($addressInterface);
             $this->_getQuote()->setBillingAddress($billingAddress);
             return;
         }
-        
+
         $addressInterface                = $this->simiObjectManager
             ->create('Magento\Customer\Api\Data\AddressInterface');
         $billingAddress                  = $this->simiObjectManager
@@ -314,8 +314,46 @@ class Address extends Data
     /*
      * Get Geocode result from Lat and Long
      */
+    public function getLocationInfo($lat, $lng) {
+        try {
+            $url    = 'https://geocode.xyz/'
+                . trim($lat) . ',' . trim($lng) . '?geoit=xml';
 
-    public function getLocationInfo($lat, $lng)
+            $note = file_get_contents($url);
+            $data = simplexml_load_string($note);
+            if ($data->geocode) {
+                $addresses = [];
+                $addresses['city'] = isset($data->city)?(string)$data->city:'';
+                $addresses['state'] = isset($data->state)?
+                    (string)$data->state:(
+                    isset($data->region)?
+                        (string)$data->region:
+                        '');
+                $addresses['country'] = isset($data->country)?
+                    (string)$data->country:(
+                    isset($data->prov)?
+                        (string)$data->prov:
+                        '');
+                $addresses['zipcode'] = isset($data->postal)?
+                    (string)$data->postal:
+                    '';
+
+                $addresses['address'] = isset($data->staddress)?
+                    (string)$data->staddress:(
+                    isset($data->region) ?
+                        (string)$data->region:
+                        '');
+                $addresses['geocoding'] = $data;
+                return $addresses;
+            } else {
+                return false;
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function oldGetLocationInfo($lat, $lng)
     {
         try {
             $url    = 'http://maps.googleapis.com/maps/api/geocode/json?latlng='

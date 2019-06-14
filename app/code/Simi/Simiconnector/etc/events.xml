@@ -4,4 +4,8 @@
         <observer name="siminotification_product_save_before" 
                   instance="Simi\Simiconnector\Observer\CatalogProductSaveBefore" />
     </event>
+    <event name="sales_quote_address_save_before">
+        <observer name="simi_connector_sales_quote_address_save_before"
+                  instance="Simi\Simiconnector\Observer\SalesQuoteAddressSaveBefore" />
+    </event>
 </config>

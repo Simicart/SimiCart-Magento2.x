@@ -11,7 +11,7 @@ abstract class Apiabstract
 
     public $FILTER_RESULT = true;
 
-    const DEFAULT_DIR = 'asc';
+    const DEFAULT_DIR = 'desc';
     const DEFAULT_LIMIT = 15;
     const DIR = 'dir';
     const ORDER = 'order';
@@ -30,6 +30,7 @@ abstract class Apiabstract
     public $resource;
     public $storeRepository;
     public $storeCookieManager;
+    public $message = '';
 
     /**
      * Singular key.
@@ -131,7 +132,23 @@ abstract class Apiabstract
         return $this;
     }
 
-    //start
+    /**
+     * get Return Message
+     * @return message (array or string)
+     */
+    public function getMessage() {
+        return $this->message;
+    }
+
+    /**
+     * Set Return Message
+     * @return message (array or string)
+     */
+    public function setMessage($messsage) {
+        $this->message = $messsage;
+        return $this;
+    }
+
     public function store()
     {
         return $this->getDetail([]);
@@ -148,7 +165,7 @@ abstract class Apiabstract
             $page = $parameters[self::PAGE];
         }
 
-        $limit = self::DEFAULT_LIMIT;
+        $limit = $this->getDefaultLimit();
         if (isset($parameters[self::LIMIT]) && $parameters[self::LIMIT]) {
             $limit = $parameters[self::LIMIT];
         }
@@ -189,6 +206,17 @@ abstract class Apiabstract
         return $this->getList($info, $all_ids, $total, $limit, $offset);
     }
 
+    //Limit - dir - order
+    public function getDefaultLimit() {
+        return self::DEFAULT_LIMIT;
+    }
+    public function getDefaultDir() {
+        return self::DEFAULT_DIR;
+    }
+    public function getDefaultOrder() {
+        return $this->DEFAULT_ORDER;
+    }
+
     public function show()
     {
         $entity = $this->builderQuery;
@@ -212,7 +240,6 @@ abstract class Apiabstract
         return $this->getDetail([]);
     }
 
-    //end
     public function getBuilderQuery()
     {
         return $this->builderQuery;
@@ -220,38 +247,47 @@ abstract class Apiabstract
 
     public function callApi($data)
     {
-        $this->renewCustomerSesssion($data);
+        $this->renewCustomerSession($data);
         $this->setDataValue($data);
         $this->setBuilderQuery(null);
         $this->setPluralKey($data['resource']);
         $this->setSingularKey($data['resource']);
+        $result = [];
         if ($data['is_method'] == 1) {
             if (isset($data['resourceid']) && $data['resourceid'] != '') {
-                return $this->show($data['resourceid']);
+                $result =  $this->show($data['resourceid']);
             } else {
-                return $this->index();
+                $result = $this->index();
             }
         } elseif ($data['is_method'] == 2) {
             if (isset($data['params']['is_put']) && $data['params']['is_put'] == '1'
                 && !$this->scopeConfig->getValue('simiconnector/methods_support/put')) {
-                return $this->update($data['resourceid']);
+                $result = $this->update($data['resourceid']);
             } else if (isset($data['params']['is_delete']) && $data['params']['is_delete'] == '1'
                 && !$this->scopeConfig->getValue('simiconnector/methods_support/delete')) {
-                return $this->destroy($data['resourceid']);
-            }
-            return $this->store();
+                $result = $this->destroy($data['resourceid']);
+            } else
+                $result = $this->store();
         } elseif ($data['is_method'] == 3) {
-            return $this->update($data['resourceid']);
+            $result = $this->update($data['resourceid']);
         } elseif ($data['is_method'] == 4) {
-            return $this->destroy($data['resourceid']);
+            $result = $this->destroy($data['resourceid']);
         }
+
+        if ($message = $this->getMessage()) {
+            if (is_array($message))
+                $result['message'] = $message;
+            else
+                $result['message'] = array($message);
+        }
+        return $result;
     }
 
     public function getList($info, $all_ids, $total, $page_size, $from)
     {
         return [
             'all_ids' => $all_ids,
-            $this->getPluralKey() => $this->motifyFields($info),
+            $this->getPluralKey() => $this->modifyFields($info),
             'total' => $total,
             'page_size' => $page_size,
             'from' => $from,
@@ -260,7 +296,7 @@ abstract class Apiabstract
 
     public function getDetail($info)
     {
-        return [$this->getSingularKey() => $this->motifyFields($info)];
+        return [$this->getSingularKey() => $this->modifyFields($info)];
     }
 
     public function filter()
@@ -280,9 +316,9 @@ abstract class Apiabstract
     public function _order($parameters)
     {
         $query = $this->builderQuery;
-        $order = isset($parameters[self::ORDER]) ? $parameters[self::ORDER] : $this->DEFAULT_ORDER;
+        $order = isset($parameters[self::ORDER]) ? $parameters[self::ORDER] : $this->getDefaultOrder();
         $order = str_replace('|', '.', $order);
-        $dir = isset($parameters[self::DIR]) ? $parameters[self::DIR] : self::DEFAULT_DIR;
+        $dir = isset($parameters[self::DIR]) ? $parameters[self::DIR] : $this->getDefaultDir();
         $query->setOrder($order, $dir);
     }
 
@@ -345,26 +381,26 @@ abstract class Apiabstract
     }
 
     //Max update to get fields
-    public function motifyFields($content)
+    public function modifyFields($content)
     {
         $data = $this->getData();
         $parameters = $data['params'];
         if (isset($parameters['fields']) && $parameters['fields']) {
             $fields = explode(',', $parameters['fields']);
-            $motify = [];
+            $modify = [];
             foreach ($content as $key => $item) {
                 if (in_array($key, $fields)) {
-                    $motify[$key] = $item;
+                    $modify[$key] = $item;
                 }
             }
-            return $motify;
+            return $modify;
         } else {
             return $content;
         }
     }
 
-    public function renewCustomerSesssion($data)
+    public function renewCustomerSession($data)
     {
-        $this->simiObjectManager->get('Simi\Simiconnector\Helper\Customer')->renewCustomerSesssion($data);
+        $this->simiObjectManager->get('Simi\Simiconnector\Helper\Customer')->renewCustomerSession($data);
     }
 }

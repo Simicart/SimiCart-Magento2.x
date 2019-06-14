@@ -95,7 +95,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function _prepareColumns()
     {
-        $this->addColumn('cms_id', [
+        $this->addColumn('simi_cms_id', [
             'header' => __('ID'),
             'index'  => 'cms_id',
         ]);

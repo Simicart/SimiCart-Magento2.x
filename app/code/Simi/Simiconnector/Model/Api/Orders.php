@@ -15,6 +15,7 @@ class Orders extends Apiabstract
     public $detail_onepage;
     public $place_order;
     public $order_placed_info;
+    public $time_zone = null;
 
     public function _getCart()
     {
@@ -44,10 +45,10 @@ class Orders extends Apiabstract
                 return;
             } else {
                 $this->builderQuery = $this->simiObjectManager->create('Magento\Sales\Model\Order')
-                        ->load($data['resourceid']);
+                        ->loadByIncrementId($data['resourceid']);
                 if (!$this->builderQuery->getId()) {
                     $this->builderQuery = $this->simiObjectManager->create('Magento\Sales\Model\Order')
-                            ->loadByIncrementId($data['resourceid']);
+                            ->load($data['resourceid']);
                 }
                 if (!$this->builderQuery->getId()) {
                     throw new \Simi\Simiconnector\Helper\SimiException(__('Cannot find the Order'), 6);
@@ -106,6 +107,10 @@ class Orders extends Apiabstract
             $this->_initCheckout();
             $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
                     ->saveShippingAddress($parameters['s_address']);
+            if (!isset($parameters['b_address']) && (!$this->_getQuote()->getBillingAddress()->getFirstName())) {
+                $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
+                    ->saveBillingAddress($parameters['s_address']);
+            }
         }
 
         if (isset($parameters['coupon_code'])) {
@@ -185,26 +190,15 @@ class Orders extends Apiabstract
         $order = ['invoice_number' => $this->_getCheckoutSession()->getLastRealOrderId(),
             'payment_method' => $this->_getOnepage()->getQuote()->getPayment()->getMethodInstance()->getCode()
         ];
-
-        /*
-         * save To App report
-         */
         try {
-            $data = $this->getData();
             $orderModel        = $this->simiObjectManager->create('Magento\Sales\Model\Order')
                 ->loadByIncrementId($this->_getCheckoutSession()->getLastRealOrderId());
             if($orderModel->getCanSendNewEmailFlag()) {
                 $orderSender = $this->simiObjectManager->get('\Magento\Sales\Model\Order\Email\Sender\OrderSender');
                 $orderSender->send($orderModel);
             }
-            $orderId = $orderModel->getId();
-            $newTransaction = $this->simiObjectManager->create('Simi\Simiconnector\Model\Appreport');
-            $newTransaction->setOrderId($orderId);
-            if (isset($data['params']['platform']))
-                $newTransaction->setPlatform($data['params']['platform']);
-            $newTransaction->save();
         } catch (\Exception $exc) {
-            throw new \Simi\Simiconnector\Helper\SimiException($exc->getMessage());
+
         }
 
         /*
@@ -248,7 +242,7 @@ class Orders extends Apiabstract
 
         $session = $this->_getOnepage()->getCheckout();
         $session->resetCheckout();
-        
+
         $this->order_placed_info = $order;
         $this->eventManager->dispatch(
             'simi_simiconnector_model_api_orders_onepage_store_after',
@@ -261,6 +255,9 @@ class Orders extends Apiabstract
 
     public function cleanCheckoutSession()
     {
+        /*
+         * Be VERY carefully uncommenting the lines below, will cause errors saving image custom options
+         *
         try {
             $quote = $this->_getQuote();
             $quote->setIsActive(false);
@@ -268,6 +265,7 @@ class Orders extends Apiabstract
         } catch (\Exception $e) {
             $this->_getCheckoutSession()->clearQuote()->clearStorage();
         }
+        */
         $checkoutSession = $this->_getCheckoutSession();
         $checkoutSession->clearQuote();
         $checkoutSession->clearStorage();
@@ -292,6 +290,29 @@ class Orders extends Apiabstract
                 $list_payment[] = $paymentHelper->getDetailsPayment($method);
             }
             $order                     = [];
+
+            /*
+            $savedOnce = false;
+            
+            if (!$quote->getBillingAddress()->getFirstName() && $customer->getData('default_billing')) {
+                $defaultBilling = $this->simiObjectManager->create('\Magento\Framework\DataObject');
+                $defaultBilling->entity_id = $customer->getData('default_billing');
+                $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
+                        ->saveBillingAddress($defaultBilling);
+                $savedOnce = true;
+            }
+
+            if (!$quote->getShippingAddress()->getFirstName() && $customer->getData('default_shipping')) {
+                $defaultShipping = $this->simiObjectManager->create('\Magento\Framework\DataObject');
+                $defaultShipping->entity_id = $customer->getData('default_shipping');
+                $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
+                        ->saveShippingAddress($defaultShipping);
+                $savedOnce = true;
+            }
+            if ($savedOnce)
+                $this->_getOnepage()->getQuote()->collectTotals()->save();
+            */
+                
             $order['billing_address']  = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
                     ->getAddressDetail($quote->getBillingAddress(), $customer);
             $order['shipping_address'] = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
@@ -362,6 +383,12 @@ class Orders extends Apiabstract
         $order['billing_address'] = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
                 ->getAddressDetail($orderModel->getBillingAddress(), $customer);
         $order['order_items']     = $this->_getProductFromOrderHistoryDetail($orderModel);
+        if (!$this->time_zone) {
+            $this->time_zone = $this->simiObjectManager->create('\Magento\Framework\Stdlib\DateTime\TimezoneInterface');
+        }
+        $order['created_at']      = $this->time_zone->date($order['created_at'])->format('Y-m-d H:i:s');
+        $order['updated_at']      = $this->time_zone->date($order['updated_at'])->format('Y-m-d H:i:s');
+
         $order['total']           = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Total')
                 ->showTotalOrder($orderModel);
     }
@@ -375,11 +402,15 @@ class Orders extends Apiabstract
             if ($item->getProductOptions()) {
                 $options = $this->_getOptions($item->getProductType(), $item->getProductOptions());
             }
+            $images = array();
+            if ($product = $item->getProduct()) {
+                $images = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Products')
+                ->getImageProduct($product);
+            }
             $productInfo[] = array_merge(
                 ['option' => $options],
                 $item->toArray(),
-                ['image' => $this->simiObjectManager->get('Simi\Simiconnector\Helper\Products')
-                ->getImageProduct($item->getProduct())]
+                ['image' => $images]
             );
         }
 

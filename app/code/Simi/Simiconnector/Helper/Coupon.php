@@ -26,8 +26,8 @@ class Coupon extends \Simi\Simiconnector\Helper\Data
             $return['discount'] = abs($total['discount']->getValue());
         }
         $couponCodeLenght = strlen($couponCode);
-        if ($couponCodeLenght) {
-            if ($couponCode == $this->_getCart()->getQuote()->getCouponCode() && $return['discount'] != 0) {
+        if ($couponCodeLenght) {            
+            if ($couponCode == $this->_getCart()->getQuote()->getCouponCode()) {
                 $message = __('Coupon code "%1" was applied.', $couponCode);
             } else {
                 $message = __('Coupon code "%1" is not valid.', $couponCode);

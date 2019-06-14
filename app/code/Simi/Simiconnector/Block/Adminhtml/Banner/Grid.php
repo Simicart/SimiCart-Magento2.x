@@ -79,11 +79,8 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function _prepareCollection()
     {
-        $webId      = $this->getWebsiteIdFromUrl();
         $collection = $this->collectionFactory->create();
-
         $this->setCollection($collection);
-
         return parent::_prepareCollection();
     }
 
@@ -94,7 +91,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function _prepareColumns()
     {
-        $this->addColumn('banner_id', [
+        $this->addColumn('simi_banner_id', [
             'header' => __('ID'),
             'index'  => 'banner_id',
         ]);

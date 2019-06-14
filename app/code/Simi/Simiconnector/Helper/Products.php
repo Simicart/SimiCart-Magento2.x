@@ -101,15 +101,15 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     {
         $this->is_search = $is_search;
         $data       = $this->getData();
-        $controller = $data['controller'];
+        $controller = isset($data['controller'])?$data['controller']:null;
         $parameters = $data['params'];
 
         if (isset($parameters[\Simi\Simiconnector\Model\Api\Apiabstract::FILTER])) {
             $filter = $parameters[\Simi\Simiconnector\Model\Api\Apiabstract::FILTER];
-            if ($is_search == 1) {
+            if ($is_search == 1 && $controller) {
                 $controller->getRequest()->setParam('q', (string) $filter['q']);
             }
-            if (isset($filter['layer'])) {
+            if (isset($filter['layer']) && $controller) {
                 $filter_layer = $filter['layer'];
                 $params       = [];
                 foreach ($filter_layer as $key => $value) {
@@ -121,7 +121,12 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
         $collection         = $this->simiObjectManager
             ->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
-        $collection->addAttributeToSelect('*')
+
+        $fields = '*';
+        if (isset($parameters['fields']) && $parameters['fields']) {
+            $fields = explode(',', $parameters['fields']);
+        }
+        $collection->addAttributeToSelect($fields)
             ->addStoreFilter()
             ->addAttributeToFilter('status', 1)
             ->addFinalPrice();
@@ -136,11 +141,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     public function _filter($collection, $params)
     {
         $cat_filtered = false;
-
-        if (isset($params['filter']['layer'])) {
-            $this->filterCollectionByAttribute($collection, $params, $cat_filtered);
-        }
-
+        
         //category
         if (!$cat_filtered && $this->category) {
             $collection->addCategoryFilter($this->category);
@@ -164,9 +165,11 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             $collection->setVisibility($this->productVisibility->getVisibleInSiteIds());
         }
 
-        $data       = $this->getData();
-        $controller = $data['controller'];
 
+        if (isset($params['filter']['layer'])) {
+            $this->filterCollectionByAttribute($collection, $params, $cat_filtered);
+        }
+        
         return $collection;
     }
 
@@ -179,11 +182,13 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 $whereFunction = 'where';
                 if ($value[0] > 0) {
                     $this->filteredAttributes[$key] = $value;
-                    $select->$whereFunction('price_index.final_price >= ' . $value[0]);
+                    $minPrice = $value[0];
+                    $select->$whereFunction('price_index.final_price >= ' . $minPrice . " OR ( price_index.final_price = '0.0000' AND price_index.min_price >=" . $minPrice . ')');
                 }
                 if ($value[1] > 0) {
                     $this->filteredAttributes[$key] = $value;
-                    $select->$whereFunction('price_index.final_price < ' . $value[1]);
+                    $maxPrice = $value[1];
+                    $select->$whereFunction('price_index.final_price < ' . $maxPrice . " OR ( price_index.final_price = '0.0000' AND price_index.min_price >=" . $maxPrice . ')');
                 }
             } else {
                 if ($key == 'category_id') {
@@ -197,9 +202,35 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                     }
                     $this->filteredAttributes[$key] = $value;
                     $collection->addCategoriesFilter(['in' => $value]);
+                }elseif ($key == 'size') {
+                    $this->filteredAttributes[$key] = $value;                    
+                    # code...
+                    $productIds = [];
+                    $collectionChid         = $this->simiObjectManager
+                        ->create('Magento\Catalog\Model\ResourceModel\Product\Collection');
+                  
+                    $collectionChid->addAttributeToSelect('*')
+                        ->addStoreFilter()
+                        ->addAttributeToFilter('status', 1)
+                        ->addFinalPrice();
+                    $collectionChid->addAttributeToFilter($key, ['finset' => $value]);                    
+                    $collectionChid->getSelect()
+                        ->joinLeft(
+                            array('link_table' => 'catalog_product_super_link'),
+                            'link_table.product_id = e.entity_id',
+                            array('product_id', 'parent_id')
+                        );
+
+                    $collectionChid->getSelect()->group('link_table.parent_id');
+
+                    foreach ($collectionChid as $product) {
+                        $productIds[] = $product->getParentId();
+                    }
+
+                    $collection->addAttributeToFilter('entity_id', array('in' => $productIds));                                        
                 } else {
-                    $this->filteredAttributes[$key] = $value;
-                    $collection->addAttributeToFilter($key, ['finset' => $value]);
+                    $this->filteredAttributes[$key] = $value;                    
+                    $collection->addAttributeToFilter($key, ['finset' => $value]);                    
                 }
             }
         }
@@ -230,7 +261,12 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             ->create('Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection');
         $attributeCollection->addIsFilterableFilter()
             ->addVisibleFilter()
+            ->addFieldToFilter('used_in_product_listing', 1)
             ->addFieldToFilter('is_visible_on_front', 1);
+
+        if ($this->is_search)
+            $attributeCollection->addFieldToFilter('is_filterable_in_search', 1);
+
 
         $allProductIds = $collection->getAllIds();
         $arrayIDs      = [];
@@ -440,15 +476,27 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function _getPriceRanges($collection)
     {
+        $collection->addPriceData();
         $maxPrice = $collection->getMaxPrice();
+
         $index    = 1;
+        $counts = [];
         do {
             $range  = pow(10, strlen(floor($maxPrice)) - $index);
             $counts = $collection->getAttributeValueCountByRange('price', $range);
             $index++;
-        } while ($range > self::MIN_RANGE_POWER && $this->simiObjectManager
-            ->get('Simi\Simiconnector\Helper\Data')->countArray($counts) < 2);
+        } while ($range > self::MIN_RANGE_POWER && count($counts) < 2 && $index <= 2);
 
+        //re-forming array
+        if (isset($counts[''])) {
+            $counts[0] = $counts[''];
+            unset($counts['']);
+            $newCounts = [];
+            foreach ($counts as $key => $count) {
+                $newCounts[$key+1] = $counts[$key];
+            }
+            $counts = $newCounts;
+        }
         return ['range' => $range, 'counts' => $counts];
     }
 
@@ -484,12 +532,14 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
                     ->init($product, 'product_page_image_medium')
                     ->setImageFile($file)
+                    ->keepFrame(FALSE)
                     ->resize($width, $height)
                     ->getUrl();
             }
             return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
                 ->init($product, 'product_page_image_medium')
                 ->setImageFile($product->getFile())
+                ->keepFrame(FALSE)
                 ->resize($width, $height)
                 ->getUrl();
         }
@@ -497,12 +547,14 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
                 ->init($product, 'product_page_image_medium')
                 ->setImageFile($file)
+                ->keepFrame(FALSE)
                 ->resize(600, 600)
                 ->getUrl();
         }
         return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
             ->init($product, 'product_page_image_medium')
             ->setImageFile($product->getFile())
+            ->keepFrame(FALSE)
             ->resize(600, 600)
             ->getUrl();
     }

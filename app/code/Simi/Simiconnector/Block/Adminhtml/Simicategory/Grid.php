@@ -80,11 +80,8 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function _prepareCollection()
     {
-        $webId      = $this->getWebsiteIdFromUrl();
         $collection = $this->collectionFactory->create();
-
         $this->setCollection($collection);
-
         return parent::_prepareCollection();
     }
 
@@ -95,7 +92,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function _prepareColumns()
     {
-        $this->addColumn('simicategory_id', [
+        $this->addColumn('simi_simicategory_id', [
             'header' => __('ID'),
             'index'  => 'simicategory_id',
         ]);

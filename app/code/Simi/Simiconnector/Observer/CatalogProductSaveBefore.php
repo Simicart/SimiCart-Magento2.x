@@ -9,7 +9,6 @@
 
 namespace Simi\Simiconnector\Observer;
 
-use Magento\Framework\DataObject as Object;
 use Magento\Framework\Event\ObserverInterface;
 
 class CatalogProductSaveBefore implements ObserverInterface

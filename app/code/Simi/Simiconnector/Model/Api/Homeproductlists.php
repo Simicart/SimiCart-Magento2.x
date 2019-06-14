@@ -74,15 +74,28 @@ class Homeproductlists extends Apiabstract
         }
         $typeArray              = $listHelper->getListTypeId();
         $dataArray['type_name'] = $typeArray[$listModel->getData('list_type')];
+        $fields = array(
+            'entity_id','entity_id','entity_type_id','attribute_set_id','type_id','sku','name','created_at',
+            'updated_at','has_options','required_options','cat_index_position','price','tax_class_id','final_price',
+            'description','short_description','is_salable','url_key,url_path'
+        );
         if ($this->SHOW_PRODUCT_ARRAY) {
             $productCollection                          = $listHelper->getProductCollection($listModel);
             $productListAPIModel = $this->simiObjectManager->get('Simi\Simiconnector\Model\Api\Products');
             $productListAPIModel->setData($this->getData());
             $productListAPIModelData                    = $this->getData();
             $productListAPIModelData['resourceid']      = null;
+
+            if (isset($productListAPIModelData['params']) && is_object($productListAPIModelData['params']))
+                $productListAPIModelData['params']->fields = implode(',', $fields);
+            else if (isset($productListAPIModelData['params']) && is_array($productListAPIModelData['params']))
+                $productListAPIModelData['params']['fields'] = implode(',', $fields);
+            else
+                $productListAPIModelData['params']          = array('fields'=> implode(',', $fields));
+
             $productListAPIModel->setData($productListAPIModelData);
             $productListAPIModel->reload_detail_product = true;
-            $productListAPIModel->setBuilderQuery();
+            $productListAPIModel->setFilterByHomeList();
             $productListAPIModel->FILTER_RESULT         = false;
             $productListAPIModel->builderQuery          = $productCollection;
             $productListAPIModel->pluralKey             = 'products';

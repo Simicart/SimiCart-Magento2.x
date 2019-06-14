@@ -23,6 +23,7 @@ class Cmspages extends Apiabstract
             $visibilityTable    = $this->resource->getTableName('simiconnector_visibility');
             $cmsCollection      = $this->simiObjectManager->get('Simi\Simiconnector\Model\Cms')
                 ->getCollection()->addFieldToFilter('type', '1')
+                ->addFieldToFilter('cms_status', '1')
                 ->applyAPICollectionFilter($visibilityTable, $typeID, $this->storeManager
                     ->getStore()->getId());
             $this->builderQuery = $cmsCollection;

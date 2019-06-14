@@ -27,6 +27,15 @@ class Action extends \Magento\Framework\App\Action\Action
         $this->cacheState        = $cacheState;
         $this->cacheFrontendPool = $cacheFrontendPool;
         $this->resultPageFactory  = $resultPageFactory;
+        // Read Magento\Framework\App\Request\CsrfValidator for reason
+        if ($this->getRequest() && $this->getRequest()->isPost()) {
+            try {
+                $formKey = $this->simiObjectManager->get('\Magento\Framework\Data\Form\FormKey')->getFormKey();
+                $this->getRequest()->setParam('form_key', $formKey);
+            } catch (\Exception $e) {
+                
+            }
+        }
     }
 
     private function preDispatch()
@@ -68,7 +77,7 @@ class Action extends \Magento\Framework\App\Action\Action
             {
                 $head = [];
                 //change back to $_SERVER and to get Headers
-                foreach ($_1SERVER as $name => $value) {
+                foreach ($_SERVER as $name => $value) {
                     if (substr($name, 0, 5) == 'HTTP_') {
                         $name = str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))));
                         $head[$name] = $value;

@@ -43,7 +43,7 @@ class Price extends \Simi\Simiconnector\Helper\Price
 
         $_weeeTaxAmount = 0;
 
-        if ($product->getPriceType() == 1) {
+        if ($product->getPriceType() == 1 && $_weeeHelper && is_callable($_weeeHelper, 'getAmountForDisplay')) {
             $_weeeTaxAmount = $_weeeHelper->getAmountForDisplay($product);
             $_weeeTaxAmountInclTaxes = $_weeeTaxAmount;
             if ($_weeeHelper->isTaxable()) {
@@ -111,13 +111,13 @@ class Price extends \Simi\Simiconnector\Helper\Price
         return $priceV2;
     }
 
-    public function getDisplayMinimalPrice()
-    {
-        if ($this->product) {
-            return $this->product->getMinimalPrice();
-        }
-        return 0;
-    }
+//    public function getDisplayMinimalPrice()
+//    {
+//        if ($this->product) {
+//            return $this->product->getMinimalPrice();
+//        }
+//        return 0;
+//    }
 
     /**
      * @param $price
@@ -206,9 +206,9 @@ class Price extends \Simi\Simiconnector\Helper\Price
 
         $msrp_price_base = $product->getPriceInfo()->getPrice('msrp_price')->getAmount()->getBaseAmount();
         $_finalPrice = $product->getFinalPrice() > $this->minimalPriceTax ?
-            $this->minimalPriceTax : $product->getFinalPrice();
+            $product->getFinalPrice() : $this->minimalPriceTax;
         $_finalPriceInclTax = $product->getFinalPrice() > $this->minimalPriceInclTax ?
-            $this->minimalPriceInclTax : $product->getFinalPrice();
+            $product->getFinalPrice() : $this->minimalPriceInclTax;
         $_weeeTaxAmount = 0;
 
         if ($product->getPriceType() == 1) {
