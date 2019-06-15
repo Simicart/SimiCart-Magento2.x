@@ -202,7 +202,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                     }
                     $this->filteredAttributes[$key] = $value;
                     $collection->addCategoriesFilter(['in' => $value]);
-                }elseif ($key == 'size') {
+                }elseif ($key == 'size' || $key == 'color') {
                     $this->filteredAttributes[$key] = $value;                    
                     # code...
                     $productIds = [];
@@ -249,21 +249,21 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             ->addFinalPrice();
     }
 
-    public function getLayerNavigator($collection = null)
+    public function getLayerNavigator($collection = null, $params = null)
     {
         if (!$collection) {
             $collection = $this->builderQuery;
         }
-        $data       = $this->getData();
-        $params = $data['params'];
-
+        if (!$params) {
+            $data       = $this->getData();
+            $params = isset($data['params'])?$data['params']:array();
+        }
         $attributeCollection = $this->simiObjectManager
             ->create('Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection');
         $attributeCollection->addIsFilterableFilter()
             ->addVisibleFilter()
-            ->addFieldToFilter('used_in_product_listing', 1)
+            //->addFieldToFilter('used_in_product_listing', 1) //cody comment out jun152019
             ->addFieldToFilter('is_visible_on_front', 1);
-
         if ($this->is_search)
             $attributeCollection->addFieldToFilter('is_filterable_in_search', 1);
 
@@ -313,6 +313,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($selectedFilters) > 0) {
             $layerArray['layer_state'] = $selectedFilters;
         }
+
         return $layerArray;
     }
 
@@ -347,13 +348,14 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             if (is_array($value)) {
                 $value = $value[0];
             }
-            foreach ($attribute->getSource()->getAllOptions() as $layerFilter) {
-                if ($layerFilter['value'] == $value) {
-                    $layerFilter['attribute'] = $key;
-                    $layerFilter['title'] = $attribute->getDefaultFrontendLabel();
-                    $selectedFilters[]    = $layerFilter;
+            if ($attribute)
+                foreach ($attribute->getSource()->getAllOptions() as $layerFilter) {
+                    if ($layerFilter['value'] == $value) {
+                        $layerFilter['attribute'] = $key;
+                        $layerFilter['title'] = $attribute->getDefaultFrontendLabel();
+                        $selectedFilters[]    = $layerFilter;
+                    }
                 }
-            }
         }
         return $selectedFilters;
     }

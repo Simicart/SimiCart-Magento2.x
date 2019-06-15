@@ -1,62 +1,34 @@
 type Query {
-    simihomecategory (
-        id: Int @doc(description: "Id of the home category")
-    ): Simihomecategories
-    @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\Simihomecategories")
-    simihomebanner(
-        limit: Int ,
-        offset: Int
-    ): Simihomebanners
-    @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\Simihomebanners")
+    simiproducts (
+        search: String @doc(description: "Performs a full-text search using the specified key words."),
+        filter: ProductFilterInput @doc(description: "Identifies which product attributes to search for and return."),
+        simiFilter: String @doc(description: "Simiconnector filter."),
+        pageSize: Int = 20 @doc(description: "Specifies the maximum number of results to return at once. This attribute is optional."),
+        currentPage: Int = 1 @doc(description: "Specifies which page of results to return. The default value is 1."),
+        sort: ProductSortInput @doc(description: "Specifies which attribute to sort on, and whether to return the results in ascending or descending order.")
+     ): Simiproducts
+    @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\Simiproducts") @doc(description: "The products query searches for products that match the criteria specified in the search and filter attributes")
 }
 
-type Simihomecategories @doc(description: "Simihomecategory implementation") {
-    total: Int @doc(description: "The number of items returned")
-    items: [Simihomecategory] @doc(description: "An array of home categories")
+
+type Simiproducts @doc(description: "The Products object is the top-level object returned in a product search") {
+    items: [ProductInterface] @doc(description: "An array of products that match the specified search criteria")
+    page_info: SearchResultPageInfo @doc(description: "An object that includes the page_info and currentPage values specified in the query")
+    total_count: Int @doc(description: "The number of products returned")
+    filters: [LayerFilter] @resolver(class: "Magento\\CatalogGraphQl\\Model\\Resolver\\LayerFilters") @doc(description: "Layered navigation filters array")
+    sort_fields: SortFields @doc(description: "An object that includes the default sort field and all available sort fields") @resolver(class: "Magento\\CatalogGraphQl\\Model\\Resolver\\Category\\SortFields")
+    simi_filters: [SimiLayerFilter]
 }
 
-type Simihomecategory
-    @doc(description: "Home category type resolver") {
-    simicategory_id: Int @doc(description: "Home Cate Id")
-    simicategory_name: String @doc(description: "Image Tablet")
-    simicategory_filename: String @doc(description: "Image")
-    simicategory_filename_tablet: String @doc(description: "Image Tablet")
-    category_id: Int @doc(description: "Category Id")
-    status: Int @doc(description: "Status")
-    sort_order: String @doc(description: "Sort Order")
-    matrix_width_percent: Int @doc(description: "Matrix Width Percent")
-    matrix_height_percent: Int @doc(description: "Matrix Height Percent")
-    matrix_width_percent_tablet: Int @doc(description: "Matrix Width Percent Tablet")
-    matrix_height_percent_tablet: Int @doc(description: "Matrix Height Percent Tablet")
-    matrix_row: Int @doc(description: "Matrix Row")
+type SimiLayerFilter {
+    name: String @doc(description: "Layered navigation filter name")
+    request_var: String @doc(description: "Request variable name for filter query")
+    filter_items_count: Int @doc(description: "Count of filter items in filter group")
+    filter_items: [SimiLayerFilterItem] @doc(description: "Array of filter items")
 }
 
-type Simihomebanners @doc(description: "Home Banners implementation") {
-    total: Int
-    all_ids: [String]
-    homebanners: [Simihomebanner]
-    page_size: Int
-    from: Int
-}
-
-type Simihomebanner {
-    banner_id: Int
-    banner_name: String
-    banner_url: String
-    banner_name_tablet: String
-    banner_title: String
-    status: Int
-    type: Int
-    category_id: Int
-    product_id: Int
-    sort_order: String
-    entity_id: Int
-    content_type: Int
-    item_id: Int
-    width: Int
-    height: Int
-    width_tablet: Int
-    height_tablet: Int
-    has_children: Boolean
-    cat_name: String
+type SimiLayerFilterItem {
+    label: String @doc(description: "Filter label")
+    value_string: String @doc(description: "Value for filter request variable to be used in query")
+    items_count: Int @doc(description: "Count of items by filter")
 }
