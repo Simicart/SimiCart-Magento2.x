@@ -83,6 +83,7 @@ class Simiproducts implements ResolverInterface
 
         $searchCriteria->setCurrentPage($args['currentPage']);
         $searchCriteria->setPageSize($args['pageSize']);
+
         if (!isset($args['search']) && !isset($args['filter'])) {
             throw new GraphQlInputException(
                 __("'search' or 'filter' input argument is required.")
@@ -124,7 +125,7 @@ class Simiproducts implements ResolverInterface
                 'total_pages' => $maxPages
             ],
             'layer_type' => $layerType,
-            'simi_filters' => $simiProductFilters?json_decode($simiProductFilters):''
+            'simi_filters' => $simiProductFilters?json_decode($simiProductFilters):array()
         ];
 
         return $data;

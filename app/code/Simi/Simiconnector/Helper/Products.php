@@ -260,10 +260,12 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         }
         $attributeCollection = $this->simiObjectManager
             ->create('Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection');
-        $attributeCollection->addIsFilterableFilter()
-            ->addVisibleFilter()
+        $attributeCollection
+            ->addIsFilterableFilter()
+            //->addVisibleFilter() //cody comment out jun152019
             //->addFieldToFilter('used_in_product_listing', 1) //cody comment out jun152019
-            ->addFieldToFilter('is_visible_on_front', 1);
+            //->addFieldToFilter('is_visible_on_front', 1) //cody comment out jun152019
+        ;
         if ($this->is_search)
             $attributeCollection->addFieldToFilter('is_filterable_in_search', 1);
 
@@ -307,7 +309,10 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
         $paramArray = (array)$params;
         $selectedFilters = $this->_getSelectedFilters();
-        $selectableFilters = $this->_getSelectableFilters($collection, $paramArray, $selectedFilters, $layerFilters);
+        $selectableFilters = count($allProductIds)?
+            $this->_getSelectableFilters($collection, $paramArray, $selectedFilters, $layerFilters):
+            array()
+        ;
 
         $layerArray = ['layer_filter' => $selectableFilters];
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($selectedFilters) > 0) {
@@ -363,9 +368,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     public function _getSelectableFilters($collection, $paramArray, $selectedFilters, $layerFilters)
     {
         $selectableFilters = [];
-        if (is_array($paramArray) && isset($paramArray['filter']) && ($this->simiObjectManager
-                    ->get('Simi\Simiconnector\Helper\Data')
-                    ->countCollection($collection) >= 1)) {
+        if (is_array($paramArray) && isset($paramArray['filter'])) {
             foreach ($layerFilters as $layerFilter) {
                 $filterable = true;
                 foreach ($selectedFilters as $key => $value) {
@@ -387,9 +390,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         foreach ($attributeCollection as $attribute) {
             $attributeOptions = [];
             $attributeValues  = $collection->getAllAttributeValues($attribute->getAttributeCode());
-            if (($attribute->getData('is_visible') != '1') || ($attribute->getData('is_filterable') != '1')
-                || ($attribute->getData('is_visible_on_front') != '1')
-                || (in_array($attribute->getDefaultFrontendLabel(), $titleFilters))) {
+            if (in_array($attribute->getDefaultFrontendLabel(), $titleFilters)) {
                 continue;
             }
             foreach ($attributeValues as $productId => $optionIds) {

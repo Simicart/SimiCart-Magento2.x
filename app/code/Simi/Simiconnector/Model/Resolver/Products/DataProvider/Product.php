@@ -88,19 +88,28 @@ class Product
             'filter' => array()
         );
         //apply filter
+        if ($args && isset($args['filter']['category_id']['eq'])) {
+            $category = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
+                ->load($args['filter']['category_id']['eq']);
+            //$collection = $category->getProductCollection();
+            $collection->addCategoryFilter($category);
+        }
         if ($args && isset($args['simiFilter']) && $simiFilter = json_decode($args['simiFilter'], true)) {
             $cat_filtered = false;
             if (isset($simiFilter['cat'])) {
                 $simiFilter['category_id'] = $simiFilter['cat'];
                 unset($simiFilter['cat']);
             }
-            $params = array(
-                'filter' => array(
-                    'layer' => $simiFilter
-                )
-            );
+            $params['filter']['layer'] = $simiFilter;
+            $needToFilter = true;
             $helper->filterCollectionByAttribute($collection, $params, $cat_filtered);
+            /*
+             * To remove the filtered attribute to get all availabel filters (including the filtered values)
+             */
+            $helper->filteredAttributes = [];
         }
+
+        $helper->filteredAttributes = [];
 
         //get filter options
         if ($simiProductFilters = $helper->getLayerNavigator($collection, $params)) {
