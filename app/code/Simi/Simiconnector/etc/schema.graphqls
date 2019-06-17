@@ -8,6 +8,10 @@ type Query {
         sort: ProductSortInput @doc(description: "Specifies which attribute to sort on, and whether to return the results in ascending or descending order.")
      ): Simiproducts
     @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\Simiproducts") @doc(description: "The products query searches for products that match the criteria specified in the search and filter attributes")
+    simiStoreConfig(
+        storeId: Int @doc(description: "Change store view id"),
+        currency: String @doc(description: "Change currency")
+     ): SimiStoreConfig @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\Simistoreconfigresolver") @doc(description: "The store config query")
 }
 
 
@@ -31,4 +35,8 @@ type SimiLayerFilterItem {
     label: String @doc(description: "Filter label")
     value_string: String @doc(description: "Value for filter request variable to be used in query")
     items_count: Int @doc(description: "Count of items by filter")
+}
+
+type SimiStoreConfig {
+    config_json: String @doc(description: "Simiconnector store configuration values")
 }

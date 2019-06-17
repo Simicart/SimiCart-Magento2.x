@@ -36,7 +36,7 @@ class Customer extends Data
             }
         }
 
-        if ((!$data['params']['email']) || (!$data['params']['password'])) {
+        if (!isset($data['params']['email']) || !isset($data['params']['password'])) {
             return;
         }
 
