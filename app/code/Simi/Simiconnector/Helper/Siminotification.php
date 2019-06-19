@@ -122,7 +122,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
             'height' => $data['height'],
             'width' => $data['width'],
             'show_popup' => $data['show_popup'],
-            'notice_id' => $data['notice_id'], // frank customize click and rate click
+            'notice_id' => isset($data['notice_id'])?$data['notice_id']:'0', // frank customize click and rate click
             'notice_history_id' => isset($data['notice_history_id'])?$data['notice_history_id']:'',// frank customize click and rate click
             'mutable-content' => 1,// Max add for the small image of the notification.
         ];
