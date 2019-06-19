@@ -25,6 +25,7 @@ class Simistoreconfigdataprovider extends DataProviderInterface
     public function getSimiStoreConfigData($args): array
     {
         $storeApi = $this->simiObjectManager->get('Simi\Simiconnector\Model\Api\Storeviews');
+        $storeManager = $this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
         $params = array();
         if ($args) {
             $params = $args;
@@ -37,7 +38,10 @@ class Simistoreconfigdataprovider extends DataProviderInterface
         );
         $storeApi->setData($data);
         $storeApi->setSingularKey('storeviews');
+        $storeApi->setBuilderQuery();
         return array(
+            'store_id' => (int)$storeManager->getStore()->getId(),
+            'currency' => $storeManager->getStore()->getCurrentCurrencyCode(),
             'config_json' => json_encode($storeApi->show())
         );
     }

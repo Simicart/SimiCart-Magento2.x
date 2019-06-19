@@ -38,5 +38,7 @@ type SimiLayerFilterItem {
 }
 
 type SimiStoreConfig {
+    store_id: String @doc(description: "Current store Id")
+    currency: String @doc(description: "Current currency")
     config_json: String @doc(description: "Simiconnector store configuration values")
 }
