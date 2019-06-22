@@ -18,6 +18,11 @@ class SidResolver
     {
         $contents            = $this->request->getContent();
         $contents_array      = [];
+        if ($simiSessId = $this->request->getParam('simiSessId')) {
+            if ($simiSessId != '') {
+                return $simiSessId;
+            }
+        }
         if ($contents && ($contents != '')) {
             $contents_parser = urldecode($contents);
             $contents_array = json_decode($contents_parser, true);
