@@ -3,9 +3,13 @@
     <type name="Magento\Framework\GraphQl\Query\Resolver\Argument\FieldEntityAttributesPool">
         <arguments>
             <argument name="attributesInstances" xsi:type="array">
-                <item name="products" xsi:type="object">Magento\CatalogGraphQl\Model\Resolver\Products\FilterArgument\ProductEntityAttributesForAst</item>
+                <item name="simiproducts" xsi:type="object">Magento\CatalogGraphQl\Model\Resolver\Products\FilterArgument\ProductEntityAttributesForAst</item>
             </argument>
         </arguments>
     </type>
     <preference for="Simi\Simiconnector\Api\SimiconnectorapiInterface" type="Simi\Simiconnector\Api\Simiconnectorapi"/>
+    <!-- consider removing if it cause error on < 2.1.0 version of Magento -->
+    <type name="Magento\Framework\Session\SidResolverInterface">
+        <plugin name="simiconnector_sid_resolver_plugin" type="Simi\Simiconnector\Plugin\SidResolver" />
+    </type>
 </config>

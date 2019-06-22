@@ -8,4 +8,8 @@
         <observer name="simi_connector_sales_quote_address_save_before"
                   instance="Simi\Simiconnector\Observer\SalesQuoteAddressSaveBefore" />
     </event>
+    <event name="customer_session_init">
+        <observer name="simi_connector_customer_session_init"
+                  instance="Simi\Simiconnector\Observer\CustomerSessionInit" />
+    </event>
 </config>
