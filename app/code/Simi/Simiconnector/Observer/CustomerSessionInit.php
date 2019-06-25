@@ -3,6 +3,7 @@
 namespace Simi\Simiconnector\Observer;
 
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Authorization\Model\UserContextInterface;
 
 class CustomerSessionInit implements ObserverInterface
 {
@@ -33,42 +34,45 @@ class CustomerSessionInit implements ObserverInterface
             $contents_array = json_decode($contents_parser, true);
         }
         $this->simiObjectManager->create('\Magento\Framework\Session\SessionManager');
+        $storeManager = $this->simiObjectManager
+            ->get('Magento\Store\Model\StoreManagerInterface');
+        $simiStoreId = $this->request->getParam('simiStoreId');
+        $simiCurrency = $this->request->getParam('simiCurrency');
         if ($contents_array) {
-            $storeManager = $this->simiObjectManager
-                ->get('Magento\Store\Model\StoreManagerInterface');
             if (isset($contents_array['variables']['simiStoreId'])) {
                 $simiStoreId = $contents_array['variables']['simiStoreId'];
-                if ((int)$storeManager->getStore()->getId() != (int)$simiStoreId) {
-                    try {
-                        $storeCode = $this->simiObjectManager
-                            ->get('Magento\Store\Model\StoreManagerInterface')->getStore($simiStoreId)->getCode();
-
-                        $store = $this->storeRepository->getActiveStoreByCode($storeCode);
-                        $defaultStoreView = $this->storeManager->getDefaultStoreView();
-                        if ($defaultStoreView->getId() == $store->getId()) {
-                            $this->storeCookieManager->deleteStoreCookie($store);
-                        } else {
-                            $this->storeCookieManager->setStoreCookie($store);
-                        }
-                        $this->storeManager->setCurrentStore(
-                            $this->simiObjectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore($simiStoreId)
-                        );
-                    } catch (\Exception $e) {
-
-                    }
-                }
             }
-
             if (isset($contents_array['variables']['simiCurrency'])) {
                 $simiCurrency = $contents_array['variables']['simiCurrency'];
-                if ($simiCurrency != $storeManager->getStore()->getCurrentCurrencyCode()) {
-                    try {
-                        $this->storeManager->getStore()->setCurrentCurrencyCode($simiCurrency);
-                    } catch (\Exception $e) {
+            }
+        }
 
-                    }
+        if ($simiStoreId && $simiStoreId != '' && (int)$storeManager->getStore()->getId() != (int)$simiStoreId) {
+            try {
+                $storeCode = $this->simiObjectManager
+                    ->get('Magento\Store\Model\StoreManagerInterface')->getStore($simiStoreId)->getCode();
+
+                $store = $this->storeRepository->getActiveStoreByCode($storeCode);
+                $defaultStoreView = $this->storeManager->getDefaultStoreView();
+                if ($defaultStoreView->getId() == $store->getId()) {
+                    $this->storeCookieManager->deleteStoreCookie($store);
+                } else {
+                    $this->storeCookieManager->setStoreCookie($store);
                 }
+                $this->storeManager->setCurrentStore(
+                    $this->simiObjectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore($simiStoreId)
+                );
+            } catch (\Exception $e) {
+
+            }
+        }
+        if ($simiCurrency && $simiCurrency != '' && $simiCurrency != $storeManager->getStore()->getCurrentCurrencyCode()) {
+            try {
+                $this->storeManager->getStore()->setCurrentCurrencyCode($simiCurrency);
+            } catch (\Exception $e) {
+
             }
         }
     }
+
 }

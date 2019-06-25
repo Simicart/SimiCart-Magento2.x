@@ -21,31 +21,8 @@ class Simiconnectorapi implements \Simi\Simiconnector\Api\SimiconnectorapiInterf
         return $this;
     }
 
-    private function authorization()
-    {
-        try {
-            $userId = $this->authorization->getUserId();
-            $userType = $this->authorization->getUserType();
-            if ($userId && $userType == UserContextInterface::USER_TYPE_CUSTOMER) {
-                $storeManager = $this->simiObjectManager
-                    ->get('\Magento\Store\Model\StoreManagerInterface');
-                $customer = $this->simiObjectManager->get('Magento\Customer\Model\Customer')
-                    ->setWebsiteId($storeManager->getStore()->getWebsiteId())
-                    ->load($userId);
-                if ($customer && $customer->getId()) {
-                    $this->simiObjectManager
-                        ->get('Magento\Customer\Model\Session')
-                        ->setCustomerAsLoggedIn($customer);
-                }
-            }
-        } catch (\Exception $e) {
-
-        }
-    }
-
     private function _getServer()
     {
-        $this->authorization();
         $context = $this->simiObjectManager->create('Simi\Simiconnector\Controller\Rest\V2');
         $serverModel               = $this->simiObjectManager->get('Simi\Simiconnector\Model\Server');
         $serverModel->eventManager = $this->eventManager;
