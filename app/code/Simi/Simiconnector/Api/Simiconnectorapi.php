@@ -36,6 +36,31 @@ class Simiconnectorapi implements \Simi\Simiconnector\Api\SimiconnectorapiInterf
         $data['module'] = $data['module']?$data['module']:'Simiconnector';
     }
 
+    private function _getData($server) {
+        try {
+            $results = $server->run();
+        } catch (\Exception $e) {
+            $results = [];
+            $result  = [];
+            if (is_array($e->getMessage())) {
+                $messages = $e->getMessage();
+                foreach ($messages as $message) {
+                    $result[] = [
+                        'code'    => $e->getCode(),
+                        'message' => $message,
+                    ];
+                }
+            } else {
+                $result[] = [
+                    'code'    => $e->getCode(),
+                    'message' => $e->getMessage(),
+                ];
+            }
+            $results['errors'] = $result;
+        }
+        return $results;
+    }
+
     public function hasId($resource, $resource_id)
     {
         $server = $this->_getServer();
@@ -46,7 +71,7 @@ class Simiconnectorapi implements \Simi\Simiconnector\Api\SimiconnectorapiInterf
             'simi_simiconnector_model_server_initialize',
             ['object' => $server, 'data' => $data]
         );
-        $result = $server->run();
+        $result = $this->_getData($server);
         return array(
             'data' => $result
         );
@@ -63,7 +88,7 @@ class Simiconnectorapi implements \Simi\Simiconnector\Api\SimiconnectorapiInterf
             'simi_simiconnector_model_server_initialize',
             ['object' => $server, 'data' => $data]
         );
-        $result = $server->run();
+        $result = $this->_getData($server);
         return array(
             'data' => $result
         );

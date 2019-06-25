@@ -81,7 +81,6 @@ class Product
         /*
          * simiconnector changing
         */
-        $collection->addAttributeToSelect('*');
         $helper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Products');
         $helper->builderQuery = $collection;
         $params = array(
@@ -91,9 +90,10 @@ class Product
         if ($args && isset($args['filter']['category_id']['eq'])) {
             $category = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
                 ->load($args['filter']['category_id']['eq']);
-            //$collection = $category->getProductCollection();
-            $collection->addCategoryFilter($category);
+            $collection = $category->getProductCollection();
+            //$collection->addCategoryFilter($category);
         }
+        $collection->addAttributeToSelect('*');
         if ($args && isset($args['simiFilter']) && $simiFilter = json_decode($args['simiFilter'], true)) {
             $cat_filtered = false;
             if (isset($simiFilter['cat'])) {
