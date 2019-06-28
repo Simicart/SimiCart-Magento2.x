@@ -87,13 +87,25 @@ class Product
             'filter' => array()
         );
         //apply filter
+        $is_search = 0;
         if ($args && isset($args['filter']['category_id']['eq'])) {
             $category = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
                 ->load($args['filter']['category_id']['eq']);
             $collection = $category->getProductCollection();
-            //$collection->addCategoryFilter($category);
         }
+        if ($args && isset($args['search']) && $args['search']) {
+            $is_search = 1;
+            $helper->is_search = 1;
+            $params['filter']['q'] = $args['search'];
+            $helper->getSearchProducts($collection, $params);
+        }
+
         $collection->addAttributeToSelect('*');
+        $visibilityIds = $is_search
+            ? $this->visibility->getVisibleInSearchIds()
+            : $this->visibility->getVisibleInCatalogIds();
+        $collection->setVisibility($visibilityIds);
+
         if ($args && isset($args['simiFilter']) && $simiFilter = json_decode($args['simiFilter'], true)) {
             $cat_filtered = false;
             if (isset($simiFilter['cat'])) {
@@ -101,14 +113,12 @@ class Product
                 unset($simiFilter['cat']);
             }
             $params['filter']['layer'] = $simiFilter;
-            $needToFilter = true;
             $helper->filterCollectionByAttribute($collection, $params, $cat_filtered);
             /*
              * To remove the filtered attribute to get all availabel filters (including the filtered values)
              */
             $helper->filteredAttributes = [];
         }
-
         $helper->filteredAttributes = [];
 
         //get filter options
@@ -138,8 +148,7 @@ class Product
             }
         }
         /*
-         * end
-        */
+         * simiconnector hide filtering
         $this->collectionProcessor->process($collection, $searchCriteria, $attributes);
 
         if (!$isChildSearch) {
@@ -149,8 +158,11 @@ class Product
             $collection->setVisibility($visibilityIds);
         }
         $collection->load();
-
         // Methods that perform extra fetches post-load
+        */
+        /*
+         * end
+        */
         if (in_array('media_gallery_entries', $attributes)) {
             $collection->addMediaGalleryData();
         }

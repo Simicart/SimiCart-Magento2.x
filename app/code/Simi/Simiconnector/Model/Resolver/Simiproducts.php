@@ -9,7 +9,7 @@ namespace Simi\Simiconnector\Model\Resolver;
 
 use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Simi\Simiconnector\Model\Resolver\Products\Query\Filter;
-use Magento\CatalogGraphQl\Model\Resolver\Products\Query\Search;
+use Simi\Simiconnector\Model\Resolver\Products\Query\Search;
 use Magento\Framework\GraphQl\Config\Element\Field;
 use Magento\Framework\GraphQl\Exception\GraphQlInputException;
 use Magento\Framework\GraphQl\Query\Resolver\Argument\SearchCriteria\Builder;
@@ -91,7 +91,7 @@ class Simiproducts implements ResolverInterface
         } elseif (isset($args['search'])) {
             $layerType = Resolver::CATALOG_LAYER_SEARCH;
             $this->searchFilter->add($args['search'], $searchCriteria);
-            $searchResult = $this->searchQuery->getResult($searchCriteria, $info);
+            $searchResult = $this->searchQuery->getResult($args, $searchCriteria, $info);
         } else {
             $layerType = Resolver::CATALOG_LAYER_CATEGORY;
             $searchResult = $this->filterQuery->getResult($args, $searchCriteria, $info);
