@@ -137,8 +137,7 @@ class Simiproducts implements ResolverInterface
             'simi_simiconnector_graphql_simiproducts_after',
             ['object' => $this, 'data' => $this->result]
         );
-        return json_encode($this->result);
 
-        return $data;
+        return $this->result;
     }
 }
