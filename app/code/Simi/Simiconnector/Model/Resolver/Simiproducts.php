@@ -23,6 +23,8 @@ use Magento\CatalogGraphQl\Model\Resolver\Products\SearchCriteria\Helper\Filter 
  */
 class Simiproducts implements ResolverInterface
 {
+    public $result; //simiconnector
+
     /**
      * @var Builder
      */
@@ -116,7 +118,9 @@ class Simiproducts implements ResolverInterface
 
         $registry = $this->simiObjectManager->get('\Magento\Framework\Registry');
         $simiProductFilters = $registry->registry('simiProductFilters');
-        $data = [
+
+        //simiconnector changing
+        $this->result = [
             'total_count' => $searchResult->getTotalCount(),
             'items' => $searchResult->getProductsSearchResult(),
             'page_info' => [
@@ -127,6 +131,13 @@ class Simiproducts implements ResolverInterface
             'layer_type' => $layerType,
             'simi_filters' => $simiProductFilters?json_decode($simiProductFilters):array()
         ];
+
+        $this->eventManager = $this->simiObjectManager->get('\Magento\Framework\Event\ManagerInterface');
+        $this->eventManager->dispatch(
+            'simi_simiconnector_graphql_simiproducts_after',
+            ['object' => $this, 'data' => $this->result]
+        );
+        return json_encode($this->result);
 
         return $data;
     }

@@ -22,6 +22,7 @@ class Simiproductdetailextrafieldresolver implements ResolverInterface
      * @var MetadataPool
      */
     private $metadataPool;
+    public $extraFields;
 
     /**
      * @param MetadataPool $metadataPool
@@ -59,10 +60,35 @@ class Simiproductdetailextrafieldresolver implements ResolverInterface
                 $productModel    = $this->simiObjectManager->create('Magento\Catalog\Model\Product')->load($productId);
                 $options = $this->simiObjectManager
                     ->get('\Simi\Simiconnector\Helper\Options')->getOptions($productModel);
-                $extraFields = array(
-                    'app_options' => $options
+
+                $ratings      = $this->simiObjectManager
+                    ->get('\Simi\Simiconnector\Helper\Review')->getRatingStar($productModel->getId());
+                $total_rating = $this->simiObjectManager
+                    ->get('\Simi\Simiconnector\Helper\Review')->getTotalRate($ratings);
+                $avg          = $this->simiObjectManager
+                    ->get('\Simi\Simiconnector\Helper\Review')->getAvgRate($ratings, $total_rating);
+                $app_reviews  = [
+                    'rate'             => $avg,
+                    'number'           => $ratings[5],
+                    '5_star_number'    => $ratings[4],
+                    '4_star_number'    => $ratings[3],
+                    '3_star_number'    => $ratings[2],
+                    '2_star_number'    => $ratings[1],
+                    '1_star_number'    => $ratings[0],
+                    'form_add_reviews' => $this->simiObjectManager
+                        ->get('\Simi\Simiconnector\Helper\Review')->getReviewToAdd(),
+                ];
+
+                $this->extraFields = array(
+                    'app_options' => $options,
+                    'app_reviews' => $app_reviews
                 );
-                return json_encode($extraFields);
+                $this->eventManager = $this->simiObjectManager->get('\Magento\Framework\Event\ManagerInterface');
+                $this->eventManager->dispatch(
+                    'simi_simiconnector_graphql_product_detail_extra_field_after',
+                    ['object' => $this, 'data' => $this->extraFields]
+                );
+                return json_encode($this->extraFields);
             }
         } catch (\Exception $e) {
             return '';
