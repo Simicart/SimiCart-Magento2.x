@@ -56,7 +56,7 @@ class Simiproductdetailextrafieldresolver implements ResolverInterface
             }
             $productModel = $productCollection->getFirstItem();
             if ($productId = $productModel->getId()) {
-                //$productModel    = $this->simiObjectManager->create('Magento\Catalog\Model\Product')->load($productId);
+                $productModel    = $this->simiObjectManager->create('Magento\Catalog\Model\Product')->load($productId);
                 $options = $this->simiObjectManager
                     ->get('\Simi\Simiconnector\Helper\Options')->getOptions($productModel);
                 $extraFields = array(
