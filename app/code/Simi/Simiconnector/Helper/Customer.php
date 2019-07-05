@@ -17,8 +17,14 @@ class Customer extends Data
     public function renewCustomerSession($data)
     {
         if (isset($data['params']['quote_id']) && $data['params']['quote_id']) {
+            $quoteId = $data['params']['quote_id'];
+            $quoteIdMask = $this->simiObjectManager->get('Magento\Quote\Model\QuoteIdMask');
+            if ($quoteIdMask->load($quoteId, 'masked_id')) {
+                if ($quoteIdMask && $maskQuoteId = $quoteIdMask->getData('quote_id'))
+                    $quoteId = $maskQuoteId;
+            }
             $checkoutsession = $this->simiObjectManager->get('Magento\Checkout\Model\Session');
-            $checkoutsession->setQuoteId($data['params']['quote_id']);
+            $checkoutsession->setQuoteId($quoteId);
         }
         if (($data['resource'] == 'customers')
                 && (($data['resourceid'] == 'login') || ($data['resourceid'] == 'sociallogin'))) {
