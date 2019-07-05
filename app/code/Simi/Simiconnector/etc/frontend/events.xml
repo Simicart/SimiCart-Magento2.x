@@ -8,4 +8,8 @@
         <observer name="simi_connector_sales_quote_collect_totals_before"
                   instance="Simi\Simiconnector\Observer\SalesQuoteCollectTotalsBefore" />
     </event>
+    <event name="model_load_before">
+        <observer name="simi_simiconnector_model_load_before"
+                  instance="Simi\Simiconnector\Observer\ModelLoadBefore" />
+    </event>
 </config>

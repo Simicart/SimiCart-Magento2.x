@@ -24,7 +24,8 @@ class Uploadfiles extends Apiabstract
             strpos($file['type'], 'application') !== false)
             throw new \Simi\Simiconnector\Helper\SimiException(__('No supported type'), 4);
 
-        $file_name = rand().md5(time()).$file['name'];
+        $encodeMethod = 'md5';
+        $file_name = rand().$encodeMethod(time()).$file['name'];
         $file_tmp =$file['tmp_name'];
         $file_type = $file['type'];
         if (move_uploaded_file($file_tmp,$media.$file_name))
@@ -36,7 +37,7 @@ class Uploadfiles extends Apiabstract
                     'full_path'=>$media.$file_name,
                     'quote_path'=>$oriPath.$file_name,
                     'order_path'=>$oriPath.$file_name,
-                    'secret_key'=>substr(md5(file_get_contents($media.$file_name)), 0, 20)
+                    'secret_key'=>substr($encodeMethod(file_get_contents($media.$file_name)), 0, 20)
                 )
             );
         }

@@ -294,7 +294,7 @@ class Storeviews extends Apiabstract
             ->get('Magento\Framework\App\CacheInterface')
             ->load($cacheId);
         if ($data) {
-            return unserialize($data);
+            return json_decode($data);
         } else {
             $list = [];
             $country_default = $this->getStoreConfig('general/country/default');
@@ -324,7 +324,7 @@ class Storeviews extends Apiabstract
             }
             $this->simiObjectManager
                 ->get('Magento\Framework\App\CacheInterface')
-                ->save(serialize($list), $cacheId);
+                ->save(json_encode($list), $cacheId);
             return $list;
         }
     }
