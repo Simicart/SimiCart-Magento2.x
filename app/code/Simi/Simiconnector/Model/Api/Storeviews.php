@@ -293,8 +293,8 @@ class Storeviews extends Apiabstract
         $data = $this->simiObjectManager
             ->get('Magento\Framework\App\CacheInterface')
             ->load($cacheId);
-        if ($data) {
-            return json_decode($data);
+        if ($data && $arrayData = json_decode($data, true)) {
+            return $arrayData;
         } else {
             $list = [];
             $country_default = $this->getStoreConfig('general/country/default');
