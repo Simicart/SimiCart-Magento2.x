@@ -152,15 +152,16 @@ class Customer extends \Magento\Framework\Model\AbstractModel
 
         if ($data->change_password == 1) {
             $customer->setChangePassword(1);
-            $oldPass = $this->_getSession()->getCustomer()->getPasswordHash();
-            if ($newPass != $confPass) {
-                throw new \Magento\Framework\Exception\InputException(
-                    __('Password confirmation doesn\'t match entered password.')
-                );
+            if ($customer->authenticate($data->email, $currPass)) {
+                if ($newPass != $confPass) {
+                    throw new \Magento\Framework\Exception\InputException(
+                        __('Password confirmation doesn\'t match entered password.')
+                    );
+                }
+                $customer->setPassword($newPass);
+                $customer->setConfirmation($confPass);
+                $customer->setPasswordConfirmation($confPass);
             }
-            $customer->setPassword($newPass);
-            $customer->setConfirmation($confPass);
-            $customer->setPasswordConfirmation($confPass);
         }
         $this->setCustomerData($customer, $data);
         $customerForm   = $this->simiObjectManager->get('Magento\Customer\Model\Form');
