@@ -16,6 +16,7 @@ class Simiconnectorapi implements \Simi\Simiconnector\Api\SimiconnectorapiInterf
     )
     {
         $this->simiObjectManager = $simiObjectManager;
+        $this->simiObjectManager->get('\Magento\Framework\Registry')->register('simi_magento_rest', true);
         $this->eventManager = $eventManager;
         $this->authorization = $authorization;
         return $this;
