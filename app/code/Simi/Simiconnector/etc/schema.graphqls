@@ -12,7 +12,7 @@ type Query {
         storeId: Int @doc(description: "Change store view id"),
         currency: String @doc(description: "Change currency")
      ): SimiStoreConfig @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\Simistoreconfigresolver") @doc(description: "The store config query")
-    simiProductDetaileExtraField (
+    simiProductDetailExtraField (
         filter: ProductFilterInput
     ) : String @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\Simiproductdetailextrafieldresolver") @doc(description: "Extra field to product details"),
 }
