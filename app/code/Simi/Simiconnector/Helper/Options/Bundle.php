@@ -21,6 +21,7 @@ class Bundle extends \Simi\Simiconnector\Helper\Options
                 $optionModel = $this->simiObjectManager->get('Magento\Bundle\Model\Option')->load($index);
                 if ($optionModel->getId()) {
                     $bundle_options['options'][$index]['isRequired'] = $optionModel->getData('required');
+                    $bundle_options['options'][$index]['type'] = $optionModel->getData('type');
                 }
             }
         }
