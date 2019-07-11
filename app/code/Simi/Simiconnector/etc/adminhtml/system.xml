@@ -76,6 +76,10 @@
                     <label>Open url in app</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="show_discount_label_in_product" translate="label" type="select" sortOrder="1399" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show discount label in product</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
             </group>
             <group id="currency" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Currency Display Configuration</label>
