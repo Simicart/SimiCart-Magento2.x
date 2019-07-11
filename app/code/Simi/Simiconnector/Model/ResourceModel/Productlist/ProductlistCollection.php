@@ -24,11 +24,12 @@ class ProductlistCollection extends \Magento\Framework\Model\ResourceModel\Db\Co
         return $this->getProductCollectionByType(
             $listModel->getData('list_type'),
             $simiObjectManager,
-            $listModel->getData('list_products')
+            $listModel->getData('list_products'),
+            $listModel
         );
     }
 
-    public function getProductCollectionByType($type, $simiObjectManager, $listProduct = '')
+    public function getProductCollectionByType($type, $simiObjectManager, $listProduct = '', $listModel = null)
     {
         $collection = $simiObjectManager->create('Magento\Catalog\Model\Product')->getCollection()
             ->addAttributeToSelect($simiObjectManager->get('Magento\Catalog\Model\Config')
@@ -99,6 +100,15 @@ class ProductlistCollection extends \Magento\Framework\Model\ResourceModel\Db\Co
             //Recently Added
             case 5:
                 $collection->setOrder('created_at', 'desc');
+                break;
+            //Recently Added
+            case 6:
+                if ($listModel && $cateId = $listModel->getData('category_id')) {
+                    $categoryModel = $simiObjectManager->create('\Magento\Catalog\Model\Category')->load($cateId);
+                    if ($categoryModel->getId())
+                        $collection->addCategoryFilter($categoryModel);
+                    $collection->setOrder('cat_index_position', 'asc');
+                }
                 break;
             default:
                 break;

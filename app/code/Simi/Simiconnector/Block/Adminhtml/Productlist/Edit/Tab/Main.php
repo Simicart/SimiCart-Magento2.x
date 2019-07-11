@@ -170,7 +170,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         );
 
         if (!isset($data['list_type'])) {
-            $data['list_type'] = 2;
+            $data['list_type'] = 6;
         }
 
         $fieldset->addField(
@@ -181,11 +181,19 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'label'    => __('Product List Type'),
             'title'    => __('Product List Type'),
             'required' => false,
-            'disabled' => $isElementDisabled,
+            'disabled' => true,
             'options'  => $this->simiObjectManager->get('Simi\Simiconnector\Helper\Productlist')->getListTypeId(),
             'onchange' => 'changeType(this.value)',
                 ]
         );
+
+        $fieldset->addField('category_id', 'select', [
+            'name'     => 'category_id',
+            'label'    => __('Category'),
+            'title'    => __('Category'),
+            'required' => true,
+            'values'   => $this->simiObjectManager->get('Simi\Simiconnector\Helper\Catetree')->getChildCatArray(),
+        ]);
 
         $fieldset->addField(
             'list_products',
