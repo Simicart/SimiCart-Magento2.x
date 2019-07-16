@@ -150,6 +150,22 @@ class UpgradeSchema implements UpgradeSchemaInterface
             }
         }
 
+        if (version_compare($context->getVersion(), '1.0.12') < 0) {
+            $tableName = $setup->getTable('simiconnector_product_list');
+            if ($setup->getConnection()->isTableExists($tableName) == true) {
+                $connection = $setup->getConnection();
+                $connection->addColumn(
+                    $tableName,
+                    'category_id',
+                    ['type' => \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                        'nullable' => true,
+                        'default' => 0,
+                        'COMMENT' => 'Category Id']
+                );
+            }
+        }
+
+
         $setup->endSetup();
     }
 }

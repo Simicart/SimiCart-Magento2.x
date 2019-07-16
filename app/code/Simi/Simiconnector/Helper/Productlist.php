@@ -12,7 +12,8 @@ class Productlist extends Data
             2 => __('Best Seller'),
             3 => __('Most View'),
             4 => __('Newly Updated'),
-            5 => __('Recently Added')
+            5 => __('Recently Added'),
+            6 => __('Category Products'),
         ];
     }
 
@@ -24,6 +25,7 @@ class Productlist extends Data
             ['value' => 3, 'label' => __('Most View')],
             ['value' => 4, 'label' => __('Newly Updated')],
             ['value' => 5, 'label' => __('Recently Added')],
+            ['value' => 6, 'label' => __('Category Products')],
         ];
     }
 

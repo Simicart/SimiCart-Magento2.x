@@ -217,6 +217,8 @@ class Storeviews extends Apiabstract
                 ->getStoreConfig('catalog/frontend/flat_catalog_product'),
                     'catalog_frontend_parse_url_directives'  => $this
                 ->getStoreConfig('catalog/frontend/parse_url_directives'),
+                    'show_discount_label_in_product'         => $this
+                ->getStoreConfig('simiconnector/general/show_discount_label_in_product'),
                 ],
                 'cataloginventory' => [
                     'cataloginventory_item_options_manage_stock'          => $this
@@ -293,8 +295,8 @@ class Storeviews extends Apiabstract
         $data = $this->simiObjectManager
             ->get('Magento\Framework\App\CacheInterface')
             ->load($cacheId);
-        if ($data) {
-            return unserialize($data);
+        if ($data && $arrayData = json_decode($data, true)) {
+            return $arrayData;
         } else {
             $list = [];
             $country_default = $this->getStoreConfig('general/country/default');
@@ -324,7 +326,7 @@ class Storeviews extends Apiabstract
             }
             $this->simiObjectManager
                 ->get('Magento\Framework\App\CacheInterface')
-                ->save(serialize($list), $cacheId);
+                ->save(json_encode($list), $cacheId);
             return $list;
         }
     }

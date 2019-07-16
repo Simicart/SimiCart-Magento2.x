@@ -21,7 +21,7 @@ class Quoteitems extends Apiabstract
 
     public function _getCart()
     {
-        return $this->simiObjectManager->create('Magento\Checkout\Model\Cart');
+        return $this->simiObjectManager->get('Magento\Checkout\Model\Cart');
     }
 
     public function _getQuote()
@@ -33,6 +33,7 @@ class Quoteitems extends Apiabstract
     {
         $data = $this->getData();
         $quote              = $this->_getQuote();
+        $this->estimateShipping();
         if (isset($data['resourceid']) &&
             $data['resourceid'] && isset($data['params']) &&
             isset($data['params']['move_to_wishlist']) &&
@@ -122,7 +123,6 @@ class Quoteitems extends Apiabstract
 
         $product               = $this->_initProduct($params['product']);
         $cart->addProduct($product, $params);
-        $cart->save();
         $this->_getSession()->setCartWasUpdated(true);
         $this->eventManager->dispatch(
             'checkout_cart_add_product_complete',
@@ -343,5 +343,55 @@ class Quoteitems extends Apiabstract
         $categoryModel    = $this->simiObjectManager
                 ->create('Magento\Catalog\Model\Product')->load($id);
         return $categoryModel;
+    }
+    
+    protected function estimateShipping() {
+        $quote              = $this->_getQuote();
+        
+        $customerSession = $this->simiObjectManager->get('Magento\Customer\Model\Session');
+        if ($quote->getItemsCount() > 0 && $customerSession->isLoggedIn()) {
+            $defaultShippingId = $customerSession->getCustomer()->getDefaultShipping();
+            $addressArray = [];
+            foreach ($customerSession->getCustomer()->getAddresses() as $index => $address) {
+                $addressArray[] = $index;
+            }
+            if(!in_array($defaultShippingId, $addressArray)) {
+                if(count($addressArray) > 0) {
+                    $defaultShippingId = $addressArray[0];
+                } else {
+                    $defaultShippingId = null;
+                }
+            }
+            if($defaultShippingId) {
+                $defaultShipping = $this->simiObjectManager
+                ->create('Magento\Customer\Model\Address')->load($defaultShippingId);
+                if (!$quote->getIsVirtual()) {
+                    $quote->getShippingAddress()->addData($defaultShipping->toArray());
+                    $quote->getShippingAddress()
+                    ->setCollectShippingRates(true)
+                    ->collectShippingRates();
+                    $shippingRates = $quote->getShippingAddress()->getGroupedAllShippingRates();
+                    $shippingMethod = null;
+                    foreach ($shippingRates as $carrierRates) {
+                        foreach ($carrierRates as $rate) {
+                            $shippingMethod = $rate;
+                            break;
+                        }
+                        if($shippingMethod) {
+                            break;
+                        }
+                    }
+                    if($shippingMethod) {
+                        $this->estimateShipping = $shippingMethod;
+                        $this->estimateAddress = $defaultShipping;
+                        $quote->getShippingAddress()->setShippingMethod($shippingMethod->getCode());
+                    }
+                    $quote->save();
+                }
+                $quote->collectTotals();
+            } else {
+                $quote->getShippingAddress()->setShippingMethod(null);
+            }
+        }
     }
 }

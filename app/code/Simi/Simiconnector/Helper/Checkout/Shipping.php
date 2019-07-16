@@ -21,7 +21,7 @@ class Shipping extends \Simi\Simiconnector\Helper\Data
 
     public function _getCart()
     {
-        return $this->simiObjectManager->create('Magento\Checkout\Model\Cart');
+        return $this->simiObjectManager->get('Magento\Checkout\Model\Cart');
     }
 
     public function _getQuote()

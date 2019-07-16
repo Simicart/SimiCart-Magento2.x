@@ -21,7 +21,8 @@
                 <is_rtl>0</is_rtl>
                 <open_url_in_app>1</open_url_in_app>
                 <filter_categories_by_include_in_menu>1</filter_categories_by_include_in_menu>
-            </general>  
+                <show_discount_label_in_product>1</show_discount_label_in_product>
+            </general>
             <currency>                                           
                 <thousand_separator>,</thousand_separator>
                 <decimal_separator>.</decimal_separator>
