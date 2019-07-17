@@ -527,36 +527,27 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             return __('%1 - %2', $formattedFromPrice, $helper->currency($toPrice, true, false));
         }
     }
-
+    
     public function getImageProduct($product, $file = null, $width = null, $height = null)
     {
-        if (!($width === null) && !($height === null)) {
-            if ($file) {
-                return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
-                    ->init($product, 'product_page_image_medium')
-                    ->setImageFile($file)
-                    ->keepFrame(FALSE)
-                    ->resize($width, $height)
-                    ->getUrl();
-            }
-            return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
-                ->init($product, 'product_page_image_medium')
-                ->setImageFile($product->getFile())
-                ->keepFrame(FALSE)
-                ->resize($width, $height)
-                ->getUrl();
+        $file = $file ?: $product->getFile() ?: $product->getImage();
+        if (!$file || $file === 'no_selection') {
+            $imageHelper = \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Catalog\Helper\Image::class);
+            $placeholderImageUrl = $imageHelper->getDefaultPlaceholderUrl('image');
+            return $placeholderImageUrl;
         }
-        if ($file) {
+        if (!($width === null) && !($height === null)) {
             return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
                 ->init($product, 'product_page_image_medium')
                 ->setImageFile($file)
                 ->keepFrame(FALSE)
-                ->resize(600, 600)
+                ->resize($width, $height)
                 ->getUrl();
         }
+
         return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
             ->init($product, 'product_page_image_medium')
-            ->setImageFile($product->getFile())
+            ->setImageFile($file)
             ->keepFrame(FALSE)
             ->resize(600, 600)
             ->getUrl();
