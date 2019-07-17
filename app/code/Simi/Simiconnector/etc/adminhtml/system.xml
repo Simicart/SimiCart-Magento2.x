@@ -27,6 +27,10 @@
                     <label>Base URL</label>
                     <comment>eg. http://simicart.com/, leave it blank if you want to use default value from Building Dashboard</comment>
                 </field>
+                <field id="pwa_studio_client_ver_number" translate="label" type="text" sortOrder="349" showInDefault="1">
+                    <label>PWA Studio Client version number</label>
+                    <comment>Use for pwa client using Pwa-studio. example value: 4.3.1 or 1563345513232</comment>
+                </field>
                 <field id="is_show_price_zero" translate="label" type="select" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Show option price if it's $0.00?</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -35,10 +39,12 @@
                     <label>Show "All Products" link in Category?</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <!--
                 <field id="cms_shipping_condition" translate="label" type="text" sortOrder="599" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Show CMS content in product detail</label>
                     <comment>Please enter its CMS ID SimiCart Simiconnector/CMS</comment>
                 </field>
+                -->
                 <field id="is_show_sample_data" translate="label" type="select" sortOrder="699" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Update order review when select payment method</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

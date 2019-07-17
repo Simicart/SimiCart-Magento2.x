@@ -42,7 +42,10 @@ class Simistoreconfigdataprovider extends DataProviderInterface
         return array(
             'store_id' => (int)$storeManager->getStore()->getId(),
             'currency' => $storeManager->getStore()->getCurrentCurrencyCode(),
-            'config_json' => json_encode($storeApi->show())
+            'pwa_studio_client_ver_number' => $this->simiObjectManager
+                ->get('\Magento\Framework\App\Config\ScopeConfigInterface')
+                ->getValue('simiconnector/general/pwa_studio_client_ver_number'),
+            'config_json' => json_encode($storeApi->show()),
         );
     }
 }
