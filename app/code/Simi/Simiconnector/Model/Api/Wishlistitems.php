@@ -57,6 +57,8 @@ class Wishlistitems extends Apiabstract
 
     public function index()
     {
+        $data                 = $this->getData();
+        $parameters           = $data['params'];
         $result        = parent::index();
         $addition_info = [];
         foreach ($this->builderQuery as $itemModel) {

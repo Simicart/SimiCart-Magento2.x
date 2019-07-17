@@ -528,28 +528,19 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         }
     }
     
-    public function getImageProduct($product, $file = null, $width = null, $height = null)
+    public function getImageProduct($product, $file = null, $width = 600, $height = 600)
     {
         $file = $file ?: $product->getFile() ?: $product->getImage();
         if (!$file || $file === 'no_selection') {
-            $imageHelper = \Magento\Framework\App\ObjectManager::getInstance()->get(\Magento\Catalog\Helper\Image::class);
+            $imageHelper = $this->simiObjectManager->get('Magento\Catalog\Helper\Image');
             $placeholderImageUrl = $imageHelper->getDefaultPlaceholderUrl('image');
             return $placeholderImageUrl;
         }
-        if (!($width === null) && !($height === null)) {
-            return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
-                ->init($product, 'product_page_image_medium')
-                ->setImageFile($file)
-                ->keepFrame(FALSE)
-                ->resize($width, $height)
-                ->getUrl();
-        }
-
         return $this->simiObjectManager->get('Magento\Catalog\Helper\Image')
             ->init($product, 'product_page_image_medium')
             ->setImageFile($file)
             ->keepFrame(FALSE)
-            ->resize(600, 600)
+            ->resize($width, $height)
             ->getUrl();
     }
 
