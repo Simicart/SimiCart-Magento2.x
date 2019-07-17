@@ -217,6 +217,8 @@ class Storeviews extends Apiabstract
                 ->getStoreConfig('catalog/frontend/flat_catalog_product'),
                     'catalog_frontend_parse_url_directives'  => $this
                 ->getStoreConfig('catalog/frontend/parse_url_directives'),
+                    'show_discount_label_in_product'         => $this
+                ->getStoreConfig('simiconnector/general/show_discount_label_in_product'),
                 ],
                 'cataloginventory' => [
                     'cataloginventory_item_options_manage_stock'          => $this

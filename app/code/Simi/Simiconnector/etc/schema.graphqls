@@ -43,5 +43,6 @@ type SimiLayerFilterItem {
 type SimiStoreConfig {
     store_id: String @doc(description: "Current store Id")
     currency: String @doc(description: "Current currency")
+    pwa_studio_client_ver_number: String @doc(description: "Client PWA Studio version number")
     config_json: String @doc(description: "Simiconnector store configuration values")
 }

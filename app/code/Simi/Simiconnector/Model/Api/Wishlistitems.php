@@ -167,7 +167,7 @@ class Wishlistitems extends Apiabstract
             if ($isSaleAble) {
                 $item    = $this->simiObjectManager->create('Magento\Wishlist\Model\Item')->load($itemId);
                 $item->setQty('1');
-                $cart    = $this->simiObjectManager->create('Magento\Checkout\Model\Cart');
+                $cart    = $this->simiObjectManager->get('Magento\Checkout\Model\Cart');
                 $options = $this->simiObjectManager->get('Magento\Wishlist\Model\Item\Option')->getCollection()
                         ->addItemFilter([$itemId]);
                 $item->setOptions($options->getOptionsByItem($itemId));
@@ -211,7 +211,7 @@ class Wishlistitems extends Apiabstract
 
         $addedItems = array();
 
-        $cart       = $this->simiObjectManager->create('Magento\Checkout\Model\Cart');
+        $cart       = $this->simiObjectManager->get('Magento\Checkout\Model\Cart');
         $collection = $wishlist->getItemCollection()
             ->setVisibilityFilter();
 

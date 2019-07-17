@@ -216,7 +216,11 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                         document.querySelectorAll('.field-list_products')[0].style.display = 'block';
                         document.querySelectorAll('#list_products')[0].classList.add('required-entry');
                         break;
+                    case '6':
+                        document.querySelectorAll('.field-category_id')[0].style.display = 'block';
+                        break;
                     default:
+                        document.querySelectorAll('.field-category_id')[0].style.display = 'none';
                         document.querySelectorAll('.field-list_products')[0].style.display = 'none';
                         document.querySelectorAll('#list_products')[0].classList.remove('required-entry');
                 }

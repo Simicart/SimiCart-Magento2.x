@@ -14,6 +14,11 @@ class Customer extends Data
         return $this->simiObjectManager->get('Magento\Customer\Model\Session');
     }
 
+    public function _getCart()
+    {
+        return $this->simiObjectManager->get('Magento\Checkout\Model\Cart');
+    }
+
     public function renewCustomerSession($data)
     {
         if (isset($data['params']['quote_id']) && $data['params']['quote_id']) {
@@ -23,8 +28,11 @@ class Customer extends Data
                 if ($quoteIdMask && $maskQuoteId = $quoteIdMask->getData('quote_id'))
                     $quoteId = $maskQuoteId;
             }
-            $checkoutsession = $this->simiObjectManager->get('Magento\Checkout\Model\Session');
-            $checkoutsession->setQuoteId($quoteId);
+            $quoteModel = $this->simiObjectManager->get('Magento\Quote\Model\Quote')->load($quoteId);
+            if ($quoteModel->getId() && $quoteModel->getData('is_active')) {
+                $this->_getSession()->setQuoteId($quoteId);
+                $this->_getCart()->setQuote($quoteModel);
+            }
         }
         if (($data['resource'] == 'customers')
                 && (($data['resourceid'] == 'login') || ($data['resourceid'] == 'sociallogin'))) {

@@ -75,6 +75,15 @@ class Address extends Data
                 $data[$address] = "";
             }
         }
+
+        // address default value
+        $address_default = ['street', 'country_id', 'region_id', 'city', 'zipcode', 'telephone'];
+        foreach ($address_default as $address_key) {
+            $path  = "simiconnector/hideaddress/" . $address_key. "_default";
+            $value = $this->getStoreConfig($path);
+            $data[$address_key.'_default'] = $value;
+        }
+
         //sample add custom address fields
         $data['custom_fields']   = [];
         /*
