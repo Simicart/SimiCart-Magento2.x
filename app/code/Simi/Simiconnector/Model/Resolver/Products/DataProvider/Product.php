@@ -170,6 +170,18 @@ class Product
             $collection->addOptionsToResult();
         }
 
+        //simi add pagination + sort
+        if (isset($args['currentPage']) && isset($args['pageSize'])) {
+            $collection->setPageSize($args['pageSize']);
+            $collection->setCurPage($args['currentPage']);
+        }
+        if (isset($args['sort'])) {
+            foreach ($args['sort'] as $atr=>$dir) {
+                $collection->setOrder($atr, $dir);
+            }
+        }
+
+
         $searchResult = $this->searchResultsFactory->create();
         $searchResult->setSearchCriteria($searchCriteria);
         $searchResult->setItems($collection->getItems());

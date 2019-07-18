@@ -85,6 +85,7 @@ class Search
         array $args, //simiconnector changing
         SearchCriteriaInterface $searchCriteria, ResolveInfo $info) : SearchResult
     {
+        /* simiconnector comment
         $idField = $this->metadataPool->getMetadata(
             \Magento\Catalog\Api\Data\ProductInterface::class
         )->getIdentifierField();
@@ -104,8 +105,12 @@ class Search
         $filter = $this->filterHelper->generate($idField, 'in', $searchIds);
         $searchCriteria = $this->filterHelper->remove($searchCriteria, 'search_term');
         $searchCriteria = $this->filterHelper->add($searchCriteria, $filter);
-        $searchResult = $this->filterQuery->getResult($args, $searchCriteria, $info, true); //simiconnector change
+        */
+        // simiconnector change
+        $searchResult = $this->filterQuery->getResult($args, $searchCriteria, $info, true);
+        $products = $searchResult->getProductsSearchResult();
 
+        /* simiconnector comment this
         $searchCriteria->setPageSize($realPageSize);
         $searchCriteria->setCurrentPage($realCurrentPage);
         $paginatedProducts = $this->paginateList($searchResult, $searchCriteria);
@@ -125,6 +130,7 @@ class Search
                 }
             }
         }
+        */
 
         return $this->searchResultFactory->create($searchResult->getTotalCount(), $products);
     }
