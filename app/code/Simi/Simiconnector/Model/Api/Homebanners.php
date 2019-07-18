@@ -59,10 +59,17 @@ class Homebanners extends Apiabstract
                 $item['function_warning'] = true;
             }
 
-            if ($item['type'] == 2) {
+            if ($item['type'] == 2) { //category
                 $categoryModel        = $this->loadCategoryWithId($item['category_id']);
                 $item['has_children'] = $categoryModel->hasChildren();
                 $item['cat_name']     = $categoryModel->getName();
+                $item['url_key']    = $categoryModel->getData('url_key');
+            } else if ($item['type'] == 1) { //product
+                $productModel         = $this->simiObjectManager
+                    ->create('\Magento\Catalog\Model\Product')->load($item['product_id']);
+                if ($productModel->getId()) {
+                    $item['url_key']    = $productModel->getData('url_key');
+                }
             }
 
             $result['homebanners'][$index] = $item;
