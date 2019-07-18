@@ -63,7 +63,7 @@ class Homebanners extends Apiabstract
                 $categoryModel        = $this->loadCategoryWithId($item['category_id']);
                 $item['has_children'] = $categoryModel->hasChildren();
                 $item['cat_name']     = $categoryModel->getName();
-                $item['url_key']    = $categoryModel->getData('url_key');
+                $item['url_path'] = $categoryModel->getUrlPath();
             } else if ($item['type'] == 1) { //product
                 $productModel         = $this->simiObjectManager
                     ->create('\Magento\Catalog\Model\Product')->load($item['product_id']);

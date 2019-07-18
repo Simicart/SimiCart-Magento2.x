@@ -75,7 +75,7 @@ class Homecategories extends Apiabstract
                 $item['function_warning'] = true;
             }
             $categoryModel    = $this->loadCategoryWithId($item['category_id']);
-            $item['url_key'] = $categoryModel->getData('url_key');
+            $item['url_path'] = $categoryModel->getUrlPath();
             $item['cat_name'] = $categoryModel->getName();
             $childCollection  = $this->getVisibleChildren($item['category_id']);
             if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countCollection($childCollection)) {
