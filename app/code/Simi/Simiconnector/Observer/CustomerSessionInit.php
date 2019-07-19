@@ -7,6 +7,7 @@ use Magento\Authorization\Model\UserContextInterface;
 
 class CustomerSessionInit implements ObserverInterface
 {
+    //set currency and storeview if sent (graphql and system rest)
 
     private $simiObjectManager;
     private $request;
