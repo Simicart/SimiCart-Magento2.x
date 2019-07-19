@@ -13,7 +13,7 @@ class SidResolver
         $this->simiObjectManager = $simiObjectManager;
         $this->request = $request;
     }
-
+    //add session id to continue session with graphql
     public function afterGetSid($sidResolver, $result)
     {
         $contents            = $this->request->getContent();
