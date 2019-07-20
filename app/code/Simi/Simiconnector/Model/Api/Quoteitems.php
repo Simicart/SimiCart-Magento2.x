@@ -250,7 +250,6 @@ class Quoteitems extends Apiabstract
                     break;
             }
 
-            var_dump(get_class($entity));die;
             $quoteitem           = $entity->toArray($fields);
             $quoteitem['option'] = $options;
             $quoteitem['image']  = $this->simiObjectManager
