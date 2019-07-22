@@ -105,8 +105,12 @@ class Wishlistitems extends Apiabstract
                     ->checkIfSelectedAllRequiredOptions($itemModel, $options),
                 'product_sharing_message'       => $productSharingMessage,
                 'product_sharing_url'           => $product->getProductUrl(),
-                'app_prices'                    => $this->simiObjectManager
-                    ->get('\Simi\Simiconnector\Helper\Price')->formatPriceFromProduct($product, true),
+                'product_url_key'               => $product->getData('url_key'),
+                'product_sku'                   => $product->getSku(),
+                'app_prices'                    => (isset($parameters['no_price']) && $parameters['no_price']) ?
+                    array():
+                    $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Price')
+                        ->formatPriceFromProduct($product, true),
             ];
         }
         foreach ($result['wishlistitems'] as $index => $item) {
