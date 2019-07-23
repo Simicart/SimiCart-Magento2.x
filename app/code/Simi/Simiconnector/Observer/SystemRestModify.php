@@ -48,7 +48,7 @@ class SystemRestModify implements ObserverInterface
                     $item['simi_image']  = $this->simiObjectManager
                         ->create('Simi\Simiconnector\Helper\Products')
                         ->getImageProduct($product);
-
+                    $item['simi_sku']  = $product->getData('sku');
                     $contentArray['items'][$index] = $item;
                 }
             }
