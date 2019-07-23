@@ -191,10 +191,9 @@ class Products extends Apiabstract
             $info_detail['images']        = $images;
             $info_detail['app_prices']    = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Price')
                 ->formatPriceFromProduct($entity);
-            $info_detail['app_reviews']   = [
-                'rate'   => $avg,
-                'number' => $ratings[5],
-            ];
+            $info_detail['app_reviews']      = $this->simiObjectManager
+                ->get('\Simi\Simiconnector\Helper\Review')
+                ->getProductReviews($entity->getId(), false);
             $info_detail['product_label'] = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Simiproductlabel')
                 ->getProductLabel($entity);
             $info[]                       = $info_detail;
@@ -268,16 +267,9 @@ class Products extends Apiabstract
             ->get('\Simi\Simiconnector\Helper\Wishlist')->getWishlistItemId($entity);
         $info['product_label']    = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Simiproductlabel')->getProductLabel($entity);
-        $info['app_reviews']      = [
-            'rate'             => $avg,
-            'number'           => $ratings[5],
-            '5_star_number'    => $ratings[4],
-            '4_star_number'    => $ratings[3],
-            '3_star_number'    => $ratings[2],
-            '2_star_number'    => $ratings[1],
-            '1_star_number'    => $ratings[0],
-            'form_add_reviews' => $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Review')->getReviewToAdd(),
-        ];
+        $info['app_reviews']      = $this->simiObjectManager
+            ->get('\Simi\Simiconnector\Helper\Review')
+            ->getProductReviews($entity->getId());
         $info['product_label']    = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Simiproductlabel')->getProductLabel($entity);
         $info['product_video']    = $this->simiObjectManager

@@ -192,4 +192,20 @@ class Review extends \Simi\Simiconnector\Helper\Data
             throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid method.'), 4);
         }
     }
+
+    public function getProductReviews($productId, $getForm = true) {
+        $ratings      = $this->getRatingStar($productId);
+        $total_rating = $this->getTotalRate($ratings);
+        $avg          = $this->getAvgRate($ratings, $total_rating);
+        return [
+            'rate'             => $avg,
+            'number'           => $ratings[5],
+            '5_star_number'    => $ratings[4],
+            '4_star_number'    => $ratings[3],
+            '3_star_number'    => $ratings[2],
+            '2_star_number'    => $ratings[1],
+            '1_star_number'    => $ratings[0],
+            'form_add_reviews' => $getForm?$this->getReviewToAdd():null,
+        ];
+    }
 }

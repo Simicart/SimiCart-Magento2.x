@@ -24,7 +24,13 @@ type Simiproducts @doc(description: "The Products object is the top-level object
     total_count: Int @doc(description: "The number of products returned")
     filters: [LayerFilter] @resolver(class: "Magento\\CatalogGraphQl\\Model\\Resolver\\LayerFilters") @doc(description: "Layered navigation filters array")
     sort_fields: SortFields @doc(description: "An object that includes the default sort field and all available sort fields") @resolver(class: "Magento\\CatalogGraphQl\\Model\\Resolver\\Category\\SortFields")
-    simi_filters: [SimiLayerFilter]
+    simi_filters: [SimiLayerFilter] @doc(description: "Simi Filter options")
+    simiProductListItemExtraField : [SimiProductListItemExtraField] @doc(description: "Extra fields for product listing item")
+}
+
+type SimiProductListItemExtraField {
+    sku : String
+    extraData: String
 }
 
 type SimiLayerFilter {

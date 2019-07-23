@@ -100,7 +100,7 @@ class Product
             $helper->getSearchProducts($collection, $params);
         }
 
-        $collection->addAttributeToSelect('*');
+        $collection->addAttributeToSelect('*')->addFinalPrice();
         $visibilityIds = $is_search
             ? $this->visibility->getVisibleInSearchIds()
             : $this->visibility->getVisibleInCatalogIds();

@@ -66,23 +66,9 @@ class Simiproductdetailextrafieldresolver implements ResolverInterface
                 $options = $this->simiObjectManager
                     ->get('\Simi\Simiconnector\Helper\Options')->getOptions($productModel);
 
-                $ratings      = $this->simiObjectManager
-                    ->get('\Simi\Simiconnector\Helper\Review')->getRatingStar($productModel->getId());
-                $total_rating = $this->simiObjectManager
-                    ->get('\Simi\Simiconnector\Helper\Review')->getTotalRate($ratings);
-                $avg          = $this->simiObjectManager
-                    ->get('\Simi\Simiconnector\Helper\Review')->getAvgRate($ratings, $total_rating);
-                $app_reviews  = [
-                    'rate'             => $avg,
-                    'number'           => $ratings[5],
-                    '5_star_number'    => $ratings[4],
-                    '4_star_number'    => $ratings[3],
-                    '3_star_number'    => $ratings[2],
-                    '2_star_number'    => $ratings[1],
-                    '1_star_number'    => $ratings[0],
-                    'form_add_reviews' => $this->simiObjectManager
-                        ->get('\Simi\Simiconnector\Helper\Review')->getReviewToAdd(),
-                ];
+                $app_reviews  = $this->simiObjectManager
+                    ->get('\Simi\Simiconnector\Helper\Review')
+                    ->getProductReviews($productModel->getId());
 
                 $layout      = $this->simiObjectManager->get('Magento\Framework\View\LayoutInterface');
                 $block_att   = $layout->createBlock('Magento\Catalog\Block\Product\View\Attributes');

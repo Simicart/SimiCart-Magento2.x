@@ -24,6 +24,7 @@ use Magento\CatalogGraphQl\Model\Resolver\Products\SearchCriteria\Helper\Filter 
 class Simiproducts implements ResolverInterface
 {
     public $result; //simiconnector
+    public $productExtraData; //simiconnector
 
     /**
      * @var Builder
@@ -120,21 +121,50 @@ class Simiproducts implements ResolverInterface
         $simiProductFilters = $registry->registry('simiProductFilters');
 
         //simiconnector changing
+        $this->eventManager = $this->simiObjectManager->get('\Magento\Framework\Event\ManagerInterface');
+
+        $products = $searchResult->getProductsSearchResult();
+        foreach ($products as $index => $product) {
+            $sku = $product['sku'];
+            $productModel = $this->simiObjectManager->get('Magento\Catalog\Model\Product')
+                ->getCollection()
+                ->addAttributeToFilter('sku', $sku)
+                ->getFirstItem();
+            if ($productModel->getId()) {
+                $productModel = $this->simiObjectManager->get('Magento\Catalog\Model\Product')
+                    ->load($productModel->getId());
+                $options = $this->simiObjectManager
+                    ->get('\Simi\Simiconnector\Helper\Options')->getOptions($productModel);
+                $this->productExtraData = array(
+                    'attribute_values' => $productModel->toArray(),
+                    'app_options' => $options,
+                    'app_reviews' => $this->simiObjectManager
+                        ->get('\Simi\Simiconnector\Helper\Review')
+                        ->getProductReviews($productModel->getId())
+                );
+                $this->eventManager->dispatch(
+                    'simi_simiconnector_graphql_simi_product_list_item_after',
+                    ['object' => $this, 'extraData' => $this->productExtraData]
+                );
+                $product['extraData'] = json_encode($this->productExtraData);
+                $products[$index] = $product;
+            }
+        }
         $this->result = [
             'total_count' => $searchResult->getTotalCount(),
-            'items' => $searchResult->getProductsSearchResult(),
+            'items' => $products,
             'page_info' => [
                 'page_size' => $searchCriteria->getPageSize(),
                 'current_page' => $currentPage,
                 'total_pages' => $maxPages
             ],
             'layer_type' => $layerType,
+            'simiProductListItemExtraField' => $products,
             'simi_filters' => $simiProductFilters?json_decode($simiProductFilters):array()
         ];
 
-        $this->eventManager = $this->simiObjectManager->get('\Magento\Framework\Event\ManagerInterface');
         $this->eventManager->dispatch(
-            'simi_simiconnector_graphql_simiproducts_after',
+            'simi_simiconnector_graphql_simi_product_list_after',
             ['object' => $this, 'data' => $this->result]
         );
 
