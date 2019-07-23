@@ -555,29 +555,36 @@ class Price extends \Magento\Framework\App\Helper\AbstractHelper
     }
 
     public function getProductTierPricesLabel($product){
+        $currencyCode   = $this->storeManager->getStore()->getCurrentCurrencyCode();
+        $currency       = $this->simiObjectManager->create('Magento\Directory\Model\CurrencyFactory')
+        ->create()->load($currencyCode);
+        $currencySymbol = $currency->getCurrencySymbol();
+        
         $result =[];
-        try {
-            $tierPriceModel = $product->getPriceInfo()->getPrice(\Magento\Catalog\Pricing\Price\TierPrice::PRICE_CODE);
-            $msrpShowOnGesture = $product->getPriceInfo()->getPrice('msrp_price')->isShowPriceOnGesture();
-            $tierPrices = $tierPriceModel->getTierPriceList();
-            if(count($tierPrices)){
-                foreach ($tierPrices as $index => $price) {
-                    if ($msrpShowOnGesture && $price['price']->getValue() < $product->getMsrp()){
-                        $result[] =__('Buy %1 for: ', $price['price_qty']);
-                    }else{
-                        $result[] = __(
-                            'Buy %1 for %2 each and save %3%',
-                            $price['price_qty'],
-                            $this->priceHelper->currency($price['price']->getValue(),false),
-                            $tierPriceModel->getSavePercent($price['price'])
-                        );
-                    }
+        $tierPriceModel = $product->getPriceInfo()->getPrice(\Magento\Catalog\Pricing\Price\TierPrice::PRICE_CODE);
+        $msrpShowOnGesture = $product->getPriceInfo()->getPrice('msrp_price')->isShowPriceOnGesture();
+        $tierPrices = $tierPriceModel->getTierPriceList();
+        if(count($tierPrices)){
+            foreach ($tierPrices as $index => $price) {
+                if ($msrpShowOnGesture && $price['price']->getValue() < $product->getMsrp()){
+                    $result[] =__('Buy %1 for: ', $price['price_qty']);
+                } else if($product->getTypeId() == "bundle") {
+                    $result[] = __(
+                                   'Buy %1 with %2% discount each',
+                                   $price['price_qty'],
+                                   intval($price['percentage_value'])
+                                   );
+                } else {
+                    $result[] = __(
+                                   'Buy %1 for %2 each and save %3%',
+                                   $price['price_qty'],
+                                   $currencySymbol . $price['price']->getValue(),
+                                   $tierPriceModel->getSavePercent($price['price'])
+                                   );
                 }
             }
-        } catch (\Exception $e) {
-            
         }
-
+        
         return $result;
     }
 }
