@@ -86,26 +86,40 @@ class Product
         $params = array(
             'filter' => array()
         );
-        //apply filter
+        /*
+         * apply filter
+         */
         $is_search = 0;
+        //filter by category
         if ($args && isset($args['filter']['category_id']['eq'])) {
             $category = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
                 ->load($args['filter']['category_id']['eq']);
             $collection = $category->getProductCollection();
         }
+        $collection->addAttributeToSelect('*')->addFinalPrice();
+        //filter by search query
         if ($args && isset($args['search']) && $args['search']) {
             $is_search = 1;
             $helper->is_search = 1;
             $params['filter']['q'] = $args['search'];
             $helper->getSearchProducts($collection, $params);
         }
+        //filter by graphql attribute filter (excluded search and category)
+        if ($args && isset($args['filter'])) {
+            foreach ($args['filter'] as $attr=>$value) {
+                if ($attr != 'category_id' && $attr != 'q') {
+                    $collection->addAttributeToFilter($attr, $value);
+                }
+            }
+        }
 
-        $collection->addAttributeToSelect('*')->addFinalPrice();
+        //apply visibility filter
         $visibilityIds = $is_search
             ? $this->visibility->getVisibleInSearchIds()
             : $this->visibility->getVisibleInCatalogIds();
         $collection->setVisibility($visibilityIds);
 
+        //filter product by simi_filter
         if ($args && isset($args['simiFilter']) && $simiFilter = json_decode($args['simiFilter'], true)) {
             $cat_filtered = false;
             if (isset($simiFilter['cat'])) {
@@ -114,14 +128,11 @@ class Product
             }
             $params['filter']['layer'] = $simiFilter;
             $helper->filterCollectionByAttribute($collection, $params, $cat_filtered);
-            /*
-             * To remove the filtered attribute to get all availabel filters (including the filtered values)
-             */
-            $helper->filteredAttributes = [];
         }
+        //To remove the filtered attribute to get all available filters (including the filtered values)
         $helper->filteredAttributes = [];
 
-        //get filter options
+        //get simi_filter options
         if ($simiProductFilters = $helper->getLayerNavigator($collection, $params)) {
             $simiFilterOptions = array();
             if (isset($simiProductFilters['layer_filter'])) {

@@ -133,11 +133,8 @@ class Simiproducts implements ResolverInterface
             if ($productModel->getId()) {
                 $productModel = $this->simiObjectManager->get('Magento\Catalog\Model\Product')
                     ->load($productModel->getId());
-                $options = $this->simiObjectManager
-                    ->get('\Simi\Simiconnector\Helper\Options')->getOptions($productModel);
                 $this->productExtraData = array(
                     'attribute_values' => $productModel->toArray(),
-                    'app_options' => $options,
                     'app_reviews' => $this->simiObjectManager
                         ->get('\Simi\Simiconnector\Helper\Review')
                         ->getProductReviews($productModel->getId())
