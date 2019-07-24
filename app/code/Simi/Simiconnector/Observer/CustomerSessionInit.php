@@ -28,6 +28,13 @@ class CustomerSessionInit implements ObserverInterface
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
+        $state = $this->simiObjectManager->get('Magento\Framework\App\State');
+        if (
+            $state->getAreaCode() !== \Magento\Framework\App\Area::AREA_WEBAPI_REST &&
+            $state->getAreaCode() !== 'graphql' //AREA_GRAPHQL not available before 2.3.1
+        )
+            return;
+        
         $contents            = $this->request->getContent();
         $contents_array      = [];
         if ($contents && ($contents != '')) {
