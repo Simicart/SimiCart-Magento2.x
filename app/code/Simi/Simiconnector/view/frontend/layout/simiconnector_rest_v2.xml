@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="2columns-left" xsi:noNamespaceSchemaLocation="../../../../../../../lib/internal/Magento/Framework/View/Layout/etc/page_configuration.xsd">
-    <body>		
-        <referenceContainer name="content">			
-            <block class="Simi\Simiconnector\Block\Rest\V2" name="rest_v2" template="rest/v2.phtml">
-            </block>
-        </referenceContainer>     
-    </body>
-</page>
