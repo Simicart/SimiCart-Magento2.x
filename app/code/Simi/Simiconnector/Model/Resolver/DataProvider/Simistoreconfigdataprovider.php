@@ -22,8 +22,7 @@ class Simistoreconfigdataprovider extends DataProviderInterface
      *
      * @return array
      */
-    public function getSimiStoreConfigData($args): array
-    {
+    public function getSimiStoreConfigData($args){
         $storeApi = $this->simiObjectManager->get('Simi\Simiconnector\Model\Api\Storeviews');
         $storeManager = $this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
         $params = array();

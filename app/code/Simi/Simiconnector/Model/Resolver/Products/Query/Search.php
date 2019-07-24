@@ -83,7 +83,8 @@ class Search
      */
     public function getResult(
         array $args, //simiconnector changing
-        SearchCriteriaInterface $searchCriteria, ResolveInfo $info) : SearchResult
+        SearchCriteriaInterface $searchCriteria,
+        ResolveInfo $info) : SearchResult
     {
         /* simiconnector comment
         $idField = $this->metadataPool->getMetadata(
