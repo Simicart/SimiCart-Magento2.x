@@ -73,9 +73,9 @@ class Product
         array $args, //simiconnector changing
         SearchCriteriaInterface $searchCriteria,
         array $attributes = [],
-        bool $isSearch = NULL,
-        bool $isChildSearch = NULL
-    ): SearchResultsInterface {
+        bool $isSearch = null,
+        bool $isChildSearch = null
+    ) {
         /** @var \Magento\Catalog\Model\ResourceModel\Product\Collection $collection */
         $collection = $this->collectionFactory->create();
         /*

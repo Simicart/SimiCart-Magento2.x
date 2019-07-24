@@ -69,8 +69,8 @@ class Filter
         array $args, //simiconnector changing
         SearchCriteriaInterface $searchCriteria,
         ResolveInfo $info,
-        bool $isSearch = NULL
-    ): SearchResult {
+        bool $isSearch = null
+    ) {
         $fields = $this->getProductFields($info);
         $products = $this->productDataProvider->getList($args, $searchCriteria, $fields, $isSearch); //simiconnector changing
         $productArray = [];
@@ -89,7 +89,7 @@ class Filter
      * @param ResolveInfo $info
      * @return string[]
      */
-    private function getProductFields(ResolveInfo $info) : array
+    private function getProductFields(ResolveInfo $info)
     {
         $fieldNames = [];
         foreach ($info->fieldNodes as $node) {

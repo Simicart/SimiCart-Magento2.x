@@ -84,7 +84,7 @@ class Search
     public function getResult(
         array $args, //simiconnector changing
         SearchCriteriaInterface $searchCriteria,
-        ResolveInfo $info) : SearchResult
+        ResolveInfo $info)
     {
         /* simiconnector comment
         $idField = $this->metadataPool->getMetadata(
@@ -143,7 +143,7 @@ class Search
      * @param SearchCriteriaInterface $searchCriteria
      * @return int[]
      */
-    private function paginateList(SearchResult $searchResult, SearchCriteriaInterface $searchCriteria) : array
+    private function paginateList(SearchResult $searchResult, SearchCriteriaInterface $searchCriteria)
     {
         $length = $searchCriteria->getPageSize();
         // Search starts pages from 0
