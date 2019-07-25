@@ -15,6 +15,7 @@ type Query {
     simiProductDetailExtraField (
         filter: ProductFilterInput
     ) : String @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\Simiproductdetailextrafieldresolver") @doc(description: "Extra field to product details"),
+    simiRootCate : CategoryTree @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\SimiRootCate") @doc(description: "Extra field to product details"),
 }
 
 

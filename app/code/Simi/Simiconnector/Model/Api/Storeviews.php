@@ -194,6 +194,14 @@ class Storeviews extends Apiabstract
                 'wishlist_wishlist_link_use_qty' => $this->getStoreConfig('wishlist/wishlist_link/use_qty'),
             ],
             'catalog'           => [
+                'seo' => [
+                    'product_url_suffix' => $this
+                        ->getStoreConfig('catalog/seo/product_url_suffix'),
+                    'category_url_suffix' => $this
+                        ->getStoreConfig('catalog/seo/category_url_suffix'),
+                    'product_use_categories_inherit' => $this
+                        ->getStoreConfig('catalog/seo/product_use_categories_inherit'),
+                ],
                 'frontend'         => [
                     'view_products_default'                  => $this
                 ->getStoreConfig('simiconnector/general/show_product_type'),
