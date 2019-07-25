@@ -13,7 +13,5 @@
         <plugin name="simiconnector_sid_resolver_plugin" type="Simi\Simiconnector\Plugin\SidResolver" />
     </type>
     <!-- override to add cart with old date type model magento instead of webapi model - uncomment it with simi pwa studio -->
-    <!--
-        <preference for="Magento\Catalog\Model\Webapi\Product\Option\Type\Date" type="Simi\Simiconnector\Override\Model\Product\Option\Type\Date" />
-    -->
+    <preference for="Magento\Catalog\Model\Webapi\Product\Option\Type\Date" type="Simi\Simiconnector\Override\Model\Product\Option\Type\Date" />
 </config>
