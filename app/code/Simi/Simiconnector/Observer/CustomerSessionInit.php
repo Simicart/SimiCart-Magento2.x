@@ -28,19 +28,8 @@ class CustomerSessionInit implements ObserverInterface
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        try {
-            $productMetadata = $this->simiObjectManager->get('Magento\Framework\App\ProductMetadataInterface');
-            if ($productMetadata && $magentoVersion = $productMetadata->getVersion()) {
-                if (
-                    strpos($magentoVersion, '2.0') === 0 ||
-                    strpos($magentoVersion, '2.1') === 0
-                ) {
-                    return; //filter out 2.0 and 2.1 version
-                }
-            }
-        } catch (\Exception $e) {
+        if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->isVersion(array('2.0', '2.1')))
             return;
-        }
         $state = $this->simiObjectManager->get('Magento\Framework\App\State');
         if (
             $state->getAreaCode() !== \Magento\Framework\App\Area::AREA_WEBAPI_REST &&

@@ -406,4 +406,25 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         $ips = explode(' ', str_replace(',', ' ', $ipaddress));
         return $ips[0];
     }
+
+    /**
+     * Check magento version if it is one of input
+     *
+     * @param array[string] $versions the request key for file
+     * @return bool
+     */
+    public function isVersion($versions) {
+        try {
+            $productMetadata = $this->simiObjectManager->get('Magento\Framework\App\ProductMetadataInterface');
+            if ($productMetadata && $magentoVersion = $productMetadata->getVersion()) {
+                foreach ($versions as $version) {
+                    if (strpos($magentoVersion, $version) === 0)
+                        return true;
+                }
+            }
+        }
+        catch (\Exception $e) {
+        }
+        return false;
+    }
 }
