@@ -131,7 +131,7 @@ class Simiproducts implements ResolverInterface
                 ->addAttributeToFilter('sku', $sku)
                 ->getFirstItem();
             if ($productModel->getId()) {
-                $productModel = $this->simiObjectManager->get('Magento\Catalog\Model\Product')
+                $productModel = $this->simiObjectManager->create('Magento\Catalog\Model\Product')
                     ->load($productModel->getId());
                 $this->productExtraData = array(
                     'attribute_values' => $productModel->toArray(),
