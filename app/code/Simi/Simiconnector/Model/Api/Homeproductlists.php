@@ -73,7 +73,8 @@ class Homeproductlists extends Apiabstract
             $item['function_warning'] = true;
         }
         $typeArray              = $listHelper->getListTypeId();
-        $dataArray['type_name'] = $typeArray[$listModel->getData('list_type')];
+        $listTypeIndex          = $listModel->getData('list_type');
+        $dataArray['type_name'] = isset($typeArray[$listTypeIndex])?$typeArray[$listTypeIndex]:$typeArray[6];
         $fields = array(
             'entity_id','entity_id','entity_type_id','attribute_set_id','type_id','sku','name','created_at',
             'updated_at','has_options','required_options','cat_index_position','price','tax_class_id','final_price',
