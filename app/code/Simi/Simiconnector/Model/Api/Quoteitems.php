@@ -393,8 +393,8 @@ class Quoteitems extends Apiabstract
                         }
                     }
                     if($shippingMethod) {
-                        $this->estimateShipping = $shippingMethod;
-                        $this->estimateAddress = $defaultShipping;
+                        $this->estimateShipping = $shippingMethod->toArray();
+                        $this->estimateAddress = $defaultShipping->toArray();
                         $quote->getShippingAddress()->setShippingMethod($shippingMethod->getCode());
                     }
                     $quote->save();
