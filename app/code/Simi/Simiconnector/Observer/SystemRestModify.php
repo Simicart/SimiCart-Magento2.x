@@ -8,11 +8,14 @@ use Magento\Framework\Event\ObserverInterface;
 class SystemRestModify implements ObserverInterface
 {
     private $simiObjectManager;
+    private $inputParamsResolver;
 
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $simiObjectManager
+        \Magento\Framework\ObjectManagerInterface $simiObjectManager,
+        \Magento\Webapi\Controller\Rest\InputParamsResolver $inputParamsResolver
     ) {
         $this->simiObjectManager = $simiObjectManager;
+        $this->inputParamsResolver = $inputParamsResolver;
     }
 
 
@@ -24,6 +27,11 @@ class SystemRestModify implements ObserverInterface
        $contentArray = $obj->getContentArray();
        if ($routeData && isset($routeData['routePath'])){
            if (
+               strpos($routeData['routePath'], 'V1/guest-carts/:cartId/payment-methods') !== false ||
+               strpos($routeData['routePath'], 'V1/carts/mine/payment-methods') !== false
+           ) {
+               $this->_addDataToPayment($contentArray, $routeData);
+           } else if (
                strpos($routeData['routePath'], 'V1/guest-carts/:cartId') !== false ||
                strpos($routeData['routePath'], 'V1/carts/mine') !== false
            ) {
@@ -33,6 +41,36 @@ class SystemRestModify implements ObserverInterface
            }
        }
        $obj->setContentArray($contentArray);
+    }
+
+    //modify payment api
+    private function _addDataToPayment(&$contentArray, $routeData) {
+        if (is_array($contentArray) && $routeData && isset($routeData['serviceClass'])) {
+            $inputParams = $this->inputParamsResolver->resolve();
+            if ($inputParams && is_array($inputParams) && isset($inputParams[0])) {
+                $quoteId = $inputParams[0];
+                $quoteIdMask = $this->simiObjectManager->get('Magento\Quote\Model\QuoteIdMask');
+                if ($quoteIdMask->load($quoteId, 'masked_id')) {
+                    if ($quoteIdMask && $maskQuoteId = $quoteIdMask->getData('quote_id'))
+                        $quoteId = $maskQuoteId;
+                }
+                $quoteModel = $this->simiObjectManager->get('Magento\Quote\Model\Quote')->load($quoteId);
+                if ($quoteModel->getId() && $quoteModel->getData('is_active')) {
+                    $this->simiObjectManager->get('Magento\Customer\Model\Session')->setQuoteId($quoteId);
+                    $this->simiObjectManager->get('Magento\Checkout\Model\Cart')->setQuote($quoteModel);
+                }
+            }
+
+            $paymentHelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Checkout\Payment');
+            foreach ($paymentHelper->getMethods() as $method) {
+                foreach ($contentArray as $index=>$restPayment) {
+                    if ($method->getCode() == $restPayment['code']) {
+                        $restPayment['simi_payment_data'] = $paymentHelper->getDetailsPayment($method);
+                    }
+                    $contentArray[$index] = $restPayment;
+                }
+            }
+        }
     }
 
     //modify quote item
