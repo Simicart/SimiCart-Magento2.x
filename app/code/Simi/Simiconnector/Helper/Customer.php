@@ -32,6 +32,7 @@ class Customer extends Data
             if ($quoteModel->getId() && $quoteModel->getData('is_active')) {
                 $this->_getSession()->setQuoteId($quoteId);
                 $this->_getCart()->setQuote($quoteModel);
+                $this->simiObjectManager->get('Magento\Checkout\Model\Session')->setQuoteId($quoteId);
             }
         }
         if (($data['resource'] == 'customers')
