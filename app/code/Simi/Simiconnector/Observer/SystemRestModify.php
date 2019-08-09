@@ -56,8 +56,7 @@ class SystemRestModify implements ObserverInterface
                 }
                 $quoteModel = $this->simiObjectManager->get('Magento\Quote\Model\Quote')->load($quoteId);
                 if ($quoteModel->getId() && $quoteModel->getData('is_active')) {
-                    $this->simiObjectManager->get('Magento\Customer\Model\Session')->setQuoteId($quoteId);
-                    $this->simiObjectManager->get('Magento\Checkout\Model\Cart')->setQuote($quoteModel);
+                    $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->setQuoteToSession($quoteModel);
                 }
             }
 
