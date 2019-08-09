@@ -28,11 +28,13 @@ class Customer extends Data
                 if ($quoteIdMask && $maskQuoteId = $quoteIdMask->getData('quote_id'))
                     $quoteId = $maskQuoteId;
             }
-            $quoteModel = $this->simiObjectManager->get('Magento\Quote\Model\Quote')->load($quoteId);
+            $quoteModel = $this->simiObjectManager->create('Magento\Quote\Model\Quote')->load($quoteId);
             if ($quoteModel->getId() && $quoteModel->getData('is_active')) {
-                $this->_getSession()->setQuoteId($quoteId);
-                $this->_getCart()->setQuote($quoteModel);
-                $this->simiObjectManager->get('Magento\Checkout\Model\Session')->setQuoteId($quoteId);
+                try {
+                    $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->setQuoteToSession($quoteModel);
+                } catch (\Exception $e) {
+
+                }
             }
         }
         if (($data['resource'] == 'customers')
