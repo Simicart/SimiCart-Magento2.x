@@ -95,7 +95,7 @@ class Urldicts extends Apiabstract
             }
             $data['params'][self::FILTER]['layer'] = array();
             foreach ($this->params as $key=>$value) {
-                if (in_array($key, $attributes))
+                if (in_array($key, $attributes) && $key !== 'email' && $key !== 'simi_hash')
                     $data['params'][self::FILTER]['layer'][$key] = $value;
             }
             
