@@ -17,8 +17,19 @@ class Wishlist extends Data
             $wishlist = $this->simiObjectManager->get('Magento\Wishlist\Model\Wishlist')
                     ->loadByCustomerId($customer->getId(), true);
             foreach ($wishlist->getItemCollection() as $item) {
-                if ($item->getProduct()->getId() == $product->getId()) {
-                    return $item->getId();
+                $wishlistItemId = $item->getId();
+                $wishlistItemProductId = $item->getProduct()->getId();
+                if ($wishlistItemProductId == $product->getId()) {
+                    return $wishlistItemId;
+                } else {
+                    $parentProducts = $this->simiObjectManager->create('Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable')
+                        ->getParentIdsByChild($product->getId());
+                    if($parentProducts && isset($parentProducts[0])){
+                        $parentProduct = $parentProducts[0];
+                        if($parentProduct->getId() && $parentProduct->getId() == $wishlistItemProductId){ 
+                            return $wishlistItemId;
+                        }
+                    }
                 }
             }
         }
