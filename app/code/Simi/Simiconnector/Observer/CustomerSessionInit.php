@@ -72,6 +72,10 @@ class CustomerSessionInit implements ObserverInterface
                 $this->storeManager->setCurrentStore(
                     $this->simiObjectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore($simiStoreId)
                 );
+
+                $storeKey = \Magento\Store\Model\StoreManagerInterface::CONTEXT_STORE;
+                $this->httpContext = $this->simiObjectManager->get('Magento\Framework\App\Http\Context');
+                $this->httpContext->setValue($storeKey, $storeCode, $this->storeManager->getDefaultStoreView()->getCode());
             } catch (\Exception $e) {
 
             }
