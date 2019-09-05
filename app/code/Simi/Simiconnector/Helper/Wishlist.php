@@ -12,7 +12,7 @@ class Wishlist extends Data
 
     public function getWishlistItemId($product)
     {
-        $customer = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
+        $customer = $this->simiObjectManager->create('Magento\Customer\Model\Session')->getCustomer();
         if ($customer->getId() && ($customer->getId() != '')) {
             $wishlist = $this->simiObjectManager->get('Magento\Wishlist\Model\Wishlist')
                     ->loadByCustomerId($customer->getId(), true);
