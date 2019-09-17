@@ -18,6 +18,9 @@ type Query {
     simiRootCate : CategoryTree @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\SimiRootCate") @doc(description: "Extra field to product details"),
 }
 
+type Mutation {
+    subscribe(email: String!): Subscribe @resolver(class: "\\Simi\\Simiconnector\\Model\\Resolver\\Subscribe") @doc(description: "Subscribe email to magento subscribed list for guest.")
+}
 
 type Simiproducts @doc(description: "The Products object is the top-level object returned in a product search") {
     items: [ProductInterface] @doc(description: "An array of products that match the specified search criteria")
@@ -53,4 +56,9 @@ type SimiStoreConfig {
     pwa_studio_client_ver_number: String @doc(description: "Client PWA Studio version number")
     root_category_id: Int @doc(description: "Root Category Id of storeview")
     config_json: String @doc(description: "Simiconnector store configuration values")
+}
+
+type Subscribe {
+    status: String
+    message: String
 }
