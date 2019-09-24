@@ -403,14 +403,19 @@ class Orders extends Apiabstract
                 $options = $this->_getOptions($item->getProductType(), $item->getProductOptions());
             }
             $images = array();
+	        $parent_sku = null;
             if ($product = $item->getProduct()) {
                 $images = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Products')
                 ->getImageProduct($product);
+	            if ($item->getProductType() == 'configurable'){
+		            $parent_sku = $product->getSku();
+	            }
             }
             $productInfo[] = array_merge(
                 ['option' => $options],
                 $item->toArray(),
-                ['image' => $images]
+                ['image' => $images],
+	            ['parent_sku' => $parent_sku]
             );
         }
 
