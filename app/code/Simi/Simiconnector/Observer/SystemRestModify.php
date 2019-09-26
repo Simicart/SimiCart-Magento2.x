@@ -26,19 +26,27 @@ class SystemRestModify implements ObserverInterface
        $request = $observer->getData('request');
        $contentArray = $obj->getContentArray();
        if ($routeData && isset($routeData['routePath'])){
-           if (
-               strpos($routeData['routePath'], 'V1/guest-carts/:cartId/payment-methods') !== false ||
-               strpos($routeData['routePath'], 'V1/carts/mine/payment-methods') !== false
-           ) {
-               $this->_addDataToPayment($contentArray, $routeData);
-           } else if (
-               strpos($routeData['routePath'], 'V1/guest-carts/:cartId') !== false ||
-               strpos($routeData['routePath'], 'V1/carts/mine') !== false
-           ) {
-               $this->_addDataToQuoteItem($contentArray);
-           } else if (strpos($routeData['routePath'], 'integration/customer/token') !== false) {
-               $this->_addCustomerIdentity($contentArray, $requestContent, $request);
-           }
+	       if (
+		       strpos($routeData['routePath'], 'V1/guest-carts/:cartId/payment-methods') !== false ||
+		       strpos($routeData['routePath'], 'V1/carts/mine/payment-methods') !== false ||
+		       strpos($routeData['routePath'], 'V1/guest-carts/:cartId/shipping-information') !== false ||
+		       strpos($routeData['routePath'], 'V1/carts/mine/shipping-information') !== false
+	       ) {
+		       if ( isset($contentArray['payment_methods']) &&
+		            (strpos($routeData['routePath'], 'V1/guest-carts/:cartId/shipping-information') !== false ||
+		             strpos($routeData['routePath'], 'V1/carts/mine/shipping-information') !== false)){
+			       $this->_addDataToPayment($contentArray['payment_methods'], $routeData);
+		       }else{
+			       $this->_addDataToPayment($contentArray, $routeData);
+		       }
+	       } else if (
+		       strpos($routeData['routePath'], 'V1/guest-carts/:cartId') !== false ||
+		       strpos($routeData['routePath'], 'V1/carts/mine') !== false
+	       ) {
+		       $this->_addDataToQuoteItem($contentArray);
+	       } else if (strpos($routeData['routePath'], 'integration/customer/token') !== false) {
+		       $this->_addCustomerIdentity($contentArray, $requestContent, $request);
+	       }
        }
        $obj->setContentArray($contentArray);
     }
