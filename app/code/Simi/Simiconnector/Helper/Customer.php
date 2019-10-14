@@ -147,7 +147,7 @@ class Customer extends Data
         if ($tokenModel->getId() && $customerId = $tokenModel->getData('customer_id')) {
             $customerModel = $this->simiObjectManager->get('Magento\Customer\Model\Customer')->load($customerId);
             if ($customerEmail = $customerModel->getData('email')) {
-                if ($customerEmail == $username)
+                if (strtolower($customerEmail) == strtolower($username))
                     return true;
             }
         }
