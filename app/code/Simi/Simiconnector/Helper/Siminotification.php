@@ -15,18 +15,18 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
 
     public function sendNotice($data)
     {
-        $trans   = $this->send($data);
-        // update notification history
         $history = $this->simiObjectManager->get('Simi\Simiconnector\Model\History');
-        if (!$trans) {
-            $data['status'] = 0;
-        } else {
-            $data['status'] = 1;
-        }
-
         $history->setData($data);
         $history->save();
-        return $trans;
+        $data['notice_history_id'] = $history->getData('history_id');
+        
+        $trans   = $this->send($data);
+        if (!$trans) {
+            $history->setData('status', 0);
+        } else {
+            $history->setData('status', 1);
+        }
+        $history->save();
     }
 
     public function send(&$data)
@@ -128,7 +128,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
         ];
         $body = $dbData;
         $body['aps'] = $dbData;
-        $payload     = json_encode($body);
+        // $payload     = json_encode($body);
         $totalDevice = count($collectionDevice);
 
         $i           = 0;
@@ -137,6 +137,24 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
         $device_ids =[];
 
         foreach ($collectionDevice as $item) {
+            $deviceModel = $this->simiObjectManager
+                ->get('\Simi\Simiconnector\Model\Device')
+                ->load($item->getId());
+           
+            $listString = $deviceModel->getData('noti_unread');
+            if ($listString == '') {
+                $arrayNotiUnread = [];
+            }else{
+                $arrayNotiUnread = explode(',', str_replace(' ', '', $listString));
+            }
+
+            array_push($arrayNotiUnread, $data['notice_history_id']);
+            $deviceModel->setData('noti_unread', implode(", ",$arrayNotiUnread));
+            $deviceModel->save();
+
+            $body['aps']['badge'] = sizeof($arrayNotiUnread);
+            $payload     = json_encode($body);
+
             $device_ids[$item->getDeviceToken()] = $item->getId();
             if ($i == 100) {
                 $result = $this->repeatSendiOS($tokenArray, $payload, $ch);
@@ -320,6 +338,23 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
         if ($collectionDevice->getSize() == 0) {
             return true;
         }
+
+        foreach ($collectionDevice as $item) {
+            $deviceModel = $this->simiObjectManager
+                    ->get('\Simi\Simiconnector\Model\Device')
+                    ->load($item->getId());
+            $listString = $deviceModel->getData('noti_unread');
+            if ($listString == '') {
+                $arrayNotiUnread = [];
+            }else{
+                $arrayNotiUnread = explode(',', str_replace(' ', '', $listString));
+            }
+            
+            array_push($arrayNotiUnread, $data['notice_history_id']);
+            $deviceModel->setData('noti_unread', implode(", ",$arrayNotiUnread));
+            $deviceModel->save();
+        }
+
         $total   = count($collectionDevice);
         $message = $data;
 

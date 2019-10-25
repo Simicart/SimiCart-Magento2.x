@@ -179,6 +179,7 @@ class Device extends \Magento\Framework\Model\AbstractModel
                 ->getItemByColumnValue('device_token', $deviceData->device_token);
         if ($existed_device && $existed_device->getId()) {
             $this->setId($existed_device->getId());
+            $this->setNotiUnread($existed_device->getNotiUnread());
         }
         $this->save();
     }

@@ -165,6 +165,21 @@ class UpgradeSchema implements UpgradeSchemaInterface
             }
         }
 
+        if (version_compare($context->getVersion(), '1.0.12') < 0) {
+            $tableName = $setup->getTable('simiconnector_device');
+            if ($setup->getConnection()->isTableExists($tableName) == true) {
+                $connection = $setup->getConnection();
+                $connection->addColumn(
+                    $tableName,
+                    'noti_unread',
+                    ['type' => \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
+                        'nullable' => true,
+                        'default' => "",
+                        'COMMENT' => 'Notification unread'] 
+                );
+            }
+        }
+
 
         $setup->endSetup();
     }

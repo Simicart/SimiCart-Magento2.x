@@ -23,23 +23,24 @@ class Notifications extends Apiabstract
                     ->getCollection()
                     ->getItemByColumnValue('device_token', $data['params']['device_token']);
             if (!$deviceModel || !($deviceModel->getId())) {
-                $this->builderQuery = $this->simiObjectManager->get('\Simi\Simiconnector\Model\Siminotification')
+                $this->builderQuery = $this->simiObjectManager->get('\Simi\Simiconnector\Model\History')
                         ->getCollection();
                 return;
             }
             $shownList = [];
             foreach ($this->simiObjectManager
                     ->get('\Simi\Simiconnector\Model\History')->getCollection() as $noticeHistory) {
-                $noticeId = $noticeHistory->getData('notice_id');
+                $noticeId = $noticeHistory->getData('history_id');
                 if ($noticeId && !in_array($noticeId, $shownList)) {
                     if (in_array($deviceModel->getId(), explode(',', str_replace(' ', '', $noticeHistory
                             ->getData('devices_pushed'))))) {
-                        $shownList[] = $noticeHistory->getData('notice_id');
+                        $shownList[] = $noticeHistory->getData('history_id');
                     }
                 }
             }
-            $this->builderQuery = $this->simiObjectManager->get('\Simi\Simiconnector\Model\Siminotification')
-                    ->getCollection()->addFieldToFilter('notice_id', ['in' => $shownList]);
+            $this->builderQuery = $this->simiObjectManager->get('\Simi\Simiconnector\Model\History')
+                    ->getCollection()->addFieldToFilter('history_id', ['in' => $shownList])
+                    ->setOrder('history_id','DESC');
         }
     }
 
