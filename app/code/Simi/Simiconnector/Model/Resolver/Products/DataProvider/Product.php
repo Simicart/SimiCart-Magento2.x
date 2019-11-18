@@ -103,6 +103,9 @@ class Product
             $helper->is_search = 1;
             $params['filter']['q'] = $args['search'];
             $helper->getSearchProducts($collection, $params);
+            if (!isset($args['sort'])) {
+                $collection->setOrder('relevance', 'desc');
+            } 
         }
         //filter by graphql attribute filter (excluded search and category)
         if ($args && isset($args['filter'])) {

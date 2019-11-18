@@ -8,11 +8,14 @@ use Magento\Framework\Event\ObserverInterface;
 class SystemRestModify implements ObserverInterface
 {
     private $simiObjectManager;
+    private $inputParamsResolver;
 
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $simiObjectManager
+        \Magento\Framework\ObjectManagerInterface $simiObjectManager,
+        \Magento\Webapi\Controller\Rest\InputParamsResolver $inputParamsResolver
     ) {
         $this->simiObjectManager = $simiObjectManager;
+        $this->inputParamsResolver = $inputParamsResolver;
     }
 
 
@@ -23,16 +26,58 @@ class SystemRestModify implements ObserverInterface
        $request = $observer->getData('request');
        $contentArray = $obj->getContentArray();
        if ($routeData && isset($routeData['routePath'])){
-           if (
-               strpos($routeData['routePath'], 'V1/guest-carts/:cartId') !== false ||
-               strpos($routeData['routePath'], 'V1/carts/mine') !== false
-           ) {
-               $this->_addDataToQuoteItem($contentArray);
-           } else if (strpos($routeData['routePath'], 'integration/customer/token') !== false) {
-               $this->_addCustomerIdentity($contentArray, $requestContent, $request);
-           }
+	       if (
+		       strpos($routeData['routePath'], 'V1/guest-carts/:cartId/payment-methods') !== false ||
+		       strpos($routeData['routePath'], 'V1/carts/mine/payment-methods') !== false ||
+		       strpos($routeData['routePath'], 'V1/guest-carts/:cartId/shipping-information') !== false ||
+		       strpos($routeData['routePath'], 'V1/carts/mine/shipping-information') !== false
+	       ) {
+		       if ( isset($contentArray['payment_methods']) &&
+		            (strpos($routeData['routePath'], 'V1/guest-carts/:cartId/shipping-information') !== false ||
+		             strpos($routeData['routePath'], 'V1/carts/mine/shipping-information') !== false)){
+			       $this->_addDataToPayment($contentArray['payment_methods'], $routeData);
+		       }else{
+			       $this->_addDataToPayment($contentArray, $routeData);
+		       }
+	       } else if (
+		       strpos($routeData['routePath'], 'V1/guest-carts/:cartId') !== false ||
+		       strpos($routeData['routePath'], 'V1/carts/mine') !== false
+	       ) {
+		       $this->_addDataToQuoteItem($contentArray);
+	       } else if (strpos($routeData['routePath'], 'integration/customer/token') !== false) {
+		       $this->_addCustomerIdentity($contentArray, $requestContent, $request);
+	       }
        }
        $obj->setContentArray($contentArray);
+    }
+
+    //modify payment api
+    private function _addDataToPayment(&$contentArray, $routeData) {
+        if (is_array($contentArray) && $routeData && isset($routeData['serviceClass'])) {
+            $inputParams = $this->inputParamsResolver->resolve();
+            if ($inputParams && is_array($inputParams) && isset($inputParams[0])) {
+                $quoteId = $inputParams[0];
+                $quoteIdMask = $this->simiObjectManager->get('Magento\Quote\Model\QuoteIdMask');
+                if ($quoteIdMask->load($quoteId, 'masked_id')) {
+                    if ($quoteIdMask && $maskQuoteId = $quoteIdMask->getData('quote_id'))
+                        $quoteId = $maskQuoteId;
+                }
+                $quoteModel = $this->simiObjectManager->get('Magento\Quote\Model\Quote')->load($quoteId);
+                if ($quoteModel->getId() && $quoteModel->getData('is_active')) {
+                    $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->setQuoteToSession($quoteModel);
+                }
+            }
+
+            $paymentHelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Checkout\Payment');
+            foreach ($paymentHelper->getMethods() as $method) {
+                foreach ($contentArray as $index=>$restPayment) {
+                    if ($method->getCode() == $restPayment['code']) {
+                        $restPayment['simi_payment_data'] = $paymentHelper->getDetailsPayment($method);
+                    }
+                    $contentArray[$index] = $restPayment;
+                }
+            }
+        }
     }
 
     //modify quote item

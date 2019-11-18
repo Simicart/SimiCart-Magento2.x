@@ -57,7 +57,7 @@ class Simiproductdetailextrafieldresolver implements ResolverInterface
             }
             $productModel = $productCollection->getFirstItem();
             if ($productId = $productModel->getId()) {
-                $productModel    = $this->simiObjectManager->create('Magento\Catalog\Model\Product')->load($productId);
+                // $productModel    = $this->simiObjectManager->create('Magento\Catalog\Model\Product')->load($productId);
                 $registry = $this->simiObjectManager->get('\Magento\Framework\Registry');
                 if (!$registry->registry('product') && $productModel->getId()) {
                     $registry->register('product', $productModel);

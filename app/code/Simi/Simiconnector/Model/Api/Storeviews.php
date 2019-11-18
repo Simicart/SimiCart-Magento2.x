@@ -125,6 +125,7 @@ class Storeviews extends Apiabstract
                 'connector_version' => $connectorVersion,
                 'is_support_put' => $this->getStoreConfig('simiconnector/methods_support/put'),
                 'is_support_delete' => $this->getStoreConfig('simiconnector/methods_support/delete'),
+                'pwa_studio_client_ver_number' => $this->getStoreConfig('simiconnector/general/pwa_studio_client_ver_number'),
                 'default_title' => $this->getStoreConfig('design/head/default_title'),
                 'default_description' => $this->getStoreConfig('design/head/default_description'),
                 'title_prefix' => $this->getStoreConfig('design/head/title_prefix'),

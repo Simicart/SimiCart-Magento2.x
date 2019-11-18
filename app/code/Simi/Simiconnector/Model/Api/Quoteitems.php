@@ -13,6 +13,8 @@ class Quoteitems extends Apiabstract
     public $RETURN_MESSAGE;
     public $removed_items;
     public $detail_list;
+    public $estimateShipping;
+    public $estimateAddress;
 
     public function _getSession()
     {
@@ -33,7 +35,7 @@ class Quoteitems extends Apiabstract
     {
         $data = $this->getData();
         $quote              = $this->_getQuote();
-        $this->estimateShipping();
+//        $this->estimateShipping();
         if (isset($data['resourceid']) &&
             $data['resourceid'] && isset($data['params']) &&
             isset($data['params']['move_to_wishlist']) &&
@@ -182,6 +184,7 @@ class Quoteitems extends Apiabstract
 
     public function index()
     {
+        $this->estimateShipping();
         $this->_getQuote()->collectTotals()->save();
         $collection = $this->builderQuery;
         $collection->addFieldToFilter('item_id', ['nin' => $this->removed_items])
@@ -323,6 +326,14 @@ class Quoteitems extends Apiabstract
     {
         $result          = parent::getList($info, $all_ids, $total, $page_size, $from);
         $result['total'] = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Total')->getTotal();
+        
+        if($this->estimateAddress && $this->estimateShipping) {
+            $result['estimate_shipping'] = [
+                'address' => $this->estimateAddress,
+                'shipping_method' => $this->estimateShipping
+            ];
+        }
+        
         if ($this->RETURN_MESSAGE) {
             $result['message'] = [$this->RETURN_MESSAGE];
         }
@@ -382,8 +393,8 @@ class Quoteitems extends Apiabstract
                         }
                     }
                     if($shippingMethod) {
-                        $this->estimateShipping = $shippingMethod;
-                        $this->estimateAddress = $defaultShipping;
+                        $this->estimateShipping = $shippingMethod->toArray();
+                        $this->estimateAddress = $defaultShipping->toArray();
                         $quote->getShippingAddress()->setShippingMethod($shippingMethod->getCode());
                     }
                     $quote->save();

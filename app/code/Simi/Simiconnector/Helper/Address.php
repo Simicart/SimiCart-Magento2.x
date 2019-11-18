@@ -306,17 +306,25 @@ class Address extends Data
     {
         $address                         = $this->convertDataAddress($shippingAddress);
         $address['save_in_address_book'] = '1';
-        if (!isset($shippingAddress->entity_id)) {
-            $shippingAddress->entity_id = '';
-        }
-        $saveShipping = $this->_getOnepage()->saveShipping($address, $shippingAddress->entity_id);
-
-        if(count($saveShipping) != 0 && isset($saveShipping['error']) && $saveShipping['error'] ==1 ) {
-            $errorMessage ="";
-            foreach ($saveShipping['message'] as $message) {
-               $errorMessage .= $message->__toString()."\n";
+        
+        if (isset($shippingAddress->entity_id)) {
+            $saveShipping = $this->_getOnepage()->saveShipping($address, $shippingAddress->entity_id);
+            
+            if (count($saveShipping) != 0 && isset($saveShipping['error']) && $saveShipping['error'] ==1) {
+                $errorMessage ="";
+                foreach ($saveShipping['message'] as $message) {
+                    $errorMessage .= $message->__toString()."\n";
+                }
+                throw new \Simi\Simiconnector\Helper\SimiException($errorMessage, 4);
             }
-            throw new \Simi\Simiconnector\Helper\SimiException($errorMessage , 4);
+        } else {
+            $quote = $this->_getQuote();
+            $quote->getShippingAddress()->addData($address);
+            $quote->getShippingAddress()
+            ->setCollectShippingRates(true)
+            ->collectShippingRates();
+            $quote->save();
+            $quote->collectTotals();
         }
     }
 

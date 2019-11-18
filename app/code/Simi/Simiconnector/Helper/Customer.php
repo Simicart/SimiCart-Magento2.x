@@ -28,10 +28,13 @@ class Customer extends Data
                 if ($quoteIdMask && $maskQuoteId = $quoteIdMask->getData('quote_id'))
                     $quoteId = $maskQuoteId;
             }
-            $quoteModel = $this->simiObjectManager->get('Magento\Quote\Model\Quote')->load($quoteId);
+            $quoteModel = $this->simiObjectManager->create('Magento\Quote\Model\Quote')->load($quoteId);
             if ($quoteModel->getId() && $quoteModel->getData('is_active')) {
-                $this->_getSession()->setQuoteId($quoteId);
-                $this->_getCart()->setQuote($quoteModel);
+                try {
+                    $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->setQuoteToSession($quoteModel);
+                } catch (\Exception $e) {
+
+                }
             }
         }
         if (($data['resource'] == 'customers')
@@ -144,7 +147,7 @@ class Customer extends Data
         if ($tokenModel->getId() && $customerId = $tokenModel->getData('customer_id')) {
             $customerModel = $this->simiObjectManager->get('Magento\Customer\Model\Customer')->load($customerId);
             if ($customerEmail = $customerModel->getData('email')) {
-                if ($customerEmail == $username)
+                if (strtolower($customerEmail) == strtolower($username))
                     return true;
             }
         }
