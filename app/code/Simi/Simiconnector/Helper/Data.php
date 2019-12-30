@@ -439,13 +439,13 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                 ->create('\Magento\Store\Model\StoreManagerInterface')->getStore());
             $this->simiObjectManager->get('\Magento\Quote\Api\CartRepositoryInterface')->save($quoteModel->collectTotals());
             $quoteModel = $this->simiObjectManager->get('\Magento\Quote\Api\CartRepositoryInterface')->get($quoteModel->getId());
+            $this->simiObjectManager->get('\Magento\Customer\Model\Session')->setQuoteId($quoteId);
+            $this->simiObjectManager->get('\Magento\Checkout\Model\Cart')->setQuote($quoteModel);
+            $this->simiObjectManager->get('\Magento\Checkout\Model\Session')->clearQuote();
+            $this->simiObjectManager->get('\Magento\Checkout\Model\Session')->setQuoteId($quoteId);
+            $this->simiObjectManager->get('\Magento\Checkout\Model\Session')->replaceQuote($quoteModel);
         } catch (\Exception $e) {
 
         }
-        $this->simiObjectManager->get('\Magento\Customer\Model\Session')->setQuoteId($quoteId);
-        $this->simiObjectManager->get('\Magento\Checkout\Model\Cart')->setQuote($quoteModel);
-        $this->simiObjectManager->get('\Magento\Checkout\Model\Session')->clearQuote();
-        $this->simiObjectManager->get('\Magento\Checkout\Model\Session')->setQuoteId($quoteId);
-        $this->simiObjectManager->get('\Magento\Checkout\Model\Session')->replaceQuote($quoteModel);
     }
 }
