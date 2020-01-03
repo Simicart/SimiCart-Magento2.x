@@ -26,27 +26,32 @@ class SystemRestModify implements ObserverInterface
        $request = $observer->getData('request');
        $contentArray = $obj->getContentArray();
        if ($routeData && isset($routeData['routePath'])){
-	       if (
-		       strpos($routeData['routePath'], 'V1/guest-carts/:cartId/payment-methods') !== false ||
-		       strpos($routeData['routePath'], 'V1/carts/mine/payment-methods') !== false ||
-		       strpos($routeData['routePath'], 'V1/guest-carts/:cartId/shipping-information') !== false ||
-		       strpos($routeData['routePath'], 'V1/carts/mine/shipping-information') !== false
-	       ) {
-		       if ( isset($contentArray['payment_methods']) &&
-		            (strpos($routeData['routePath'], 'V1/guest-carts/:cartId/shipping-information') !== false ||
-		             strpos($routeData['routePath'], 'V1/carts/mine/shipping-information') !== false)){
-			       $this->_addDataToPayment($contentArray['payment_methods'], $routeData);
-		       }else{
-			       $this->_addDataToPayment($contentArray, $routeData);
-		       }
-	       } else if (
-		       strpos($routeData['routePath'], 'V1/guest-carts/:cartId') !== false ||
-		       strpos($routeData['routePath'], 'V1/carts/mine') !== false
-	       ) {
-		       $this->_addDataToQuoteItem($contentArray);
-	       } else if (strpos($routeData['routePath'], 'integration/customer/token') !== false) {
-		       $this->_addCustomerIdentity($contentArray, $requestContent, $request);
-	       }
+           if (
+               strpos($routeData['routePath'], 'V1/guest-carts/:cartId/payment-methods') !== false ||
+               strpos($routeData['routePath'], 'V1/carts/mine/payment-methods') !== false ||
+               strpos($routeData['routePath'], 'V1/guest-carts/:cartId/shipping-information') !== false ||
+               strpos($routeData['routePath'], 'V1/carts/mine/shipping-information') !== false
+           ) {
+               if ( isset($contentArray['payment_methods']) &&
+                    (strpos($routeData['routePath'], 'V1/guest-carts/:cartId/shipping-information') !== false ||
+                     strpos($routeData['routePath'], 'V1/carts/mine/shipping-information') !== false)){
+                   $this->_addDataToPayment($contentArray['payment_methods'], $routeData);
+               }else{
+                   $this->_addDataToPayment($contentArray, $routeData);
+               }
+               if (isset($contentArray['totals']['items'])) {
+                   $totalData = $contentArray['totals'];
+                   $this->_addDataToQuoteItem($totalData);
+                   $contentArray['totals'] = $totalData;
+               }
+           } else if (
+               strpos($routeData['routePath'], 'V1/guest-carts/:cartId') !== false ||
+               strpos($routeData['routePath'], 'V1/carts/mine') !== false
+           ) {
+               $this->_addDataToQuoteItem($contentArray);
+           } else if (strpos($routeData['routePath'], 'integration/customer/token') !== false) {
+               $this->_addCustomerIdentity($contentArray, $requestContent, $request);
+           }
        }
        $obj->setContentArray($contentArray);
     }
@@ -94,6 +99,25 @@ class SystemRestModify implements ObserverInterface
                         ->create('Simi\Simiconnector\Helper\Products')
                         ->getImageProduct($product);
                     $item['simi_sku']  = $product->getData('sku');
+                    $item['url_key']  = $product->getData('url_key');
+
+                    $parentProducts = $this->simiObjectManager
+                        ->create('Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable')
+                        ->getParentIdsByChild($product->getId());
+                    $imageProductModel = $product;
+                    if($parentProducts && isset($parentProducts[0])){
+                        $media_gallery = $imageProductModel->getMediaGallery();
+                        $parentProductModel = $this->simiObjectManager->create('\Magento\Catalog\Model\Product')->load($parentProducts[0]);
+                        if ($media_gallery && isset($media_gallery['images']) && is_array($media_gallery['images']) && !count($media_gallery['images'])) {
+                            $imageProductModel = $parentProductModel;
+                        }
+                        $item['url_key'] = $parentProductModel->getData('url_key');
+                    }
+                    $item['image'] =  $this->simiObjectManager
+                        ->create('Simi\Simiconnector\Helper\Products')
+                        ->getImageProduct($imageProductModel);
+
+
                     $contentArray['items'][$index] = $item;
                 }
             }

@@ -441,7 +441,11 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             $quoteModel = $this->simiObjectManager->get('\Magento\Quote\Api\CartRepositoryInterface')->get($quoteModel->getId());
             $this->simiObjectManager->get('\Magento\Customer\Model\Session')->setQuoteId($quoteId);
             $this->simiObjectManager->get('\Magento\Checkout\Model\Cart')->setQuote($quoteModel);
-            $this->simiObjectManager->get('\Magento\Checkout\Model\Session')->clearQuote();
+            try { //not a very important function
+                $this->simiObjectManager->get('\Magento\Checkout\Model\Session')->clearQuote();
+            } catch (\Exception $e) {
+
+            }
             $this->simiObjectManager->get('\Magento\Checkout\Model\Session')->setQuoteId($quoteId);
             $this->simiObjectManager->get('\Magento\Checkout\Model\Session')->replaceQuote($quoteModel);
         } catch (\Exception $e) {
