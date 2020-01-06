@@ -434,10 +434,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     public function setQuoteToSession($quoteModel) {
         $quoteId = $quoteModel->getId();
         try {
-            $quoteModel->collectTotals()->save();
             $quoteModel->setStore($this->simiObjectManager
                 ->create('\Magento\Store\Model\StoreManagerInterface')->getStore());
-            $this->simiObjectManager->get('\Magento\Quote\Api\CartRepositoryInterface')->save($quoteModel->collectTotals());
+            $this->simiObjectManager->get('\Magento\Quote\Api\CartRepositoryInterface')->save($quoteModel);
             $quoteModel = $this->simiObjectManager->get('\Magento\Quote\Api\CartRepositoryInterface')->get($quoteModel->getId());
             $this->simiObjectManager->get('\Magento\Customer\Model\Session')->setQuoteId($quoteId);
             $this->simiObjectManager->get('\Magento\Checkout\Model\Cart')->setQuote($quoteModel);
