@@ -29,8 +29,7 @@ class Customermap extends AbstractModel
         Registry $registry,
         CustomermapRM $resource,
         Collection $resourceCollection
-    )
-    {
+    ) {
 
 
         $this->simiObjectManager = $simiObjectManager;
@@ -55,9 +54,9 @@ class Customermap extends AbstractModel
 
     public function createCustomer($params)
     {
-        $email = isset($params['email'])?$params['email']:$params['uid'].$params['providerId'].'@simisocial.com';
-        $firstName = isset($params['firstname'])?$params['firstname']:' ';
-        $lastName = isset($params['lastname'])?$params['lastname']:' ';
+        $email = isset($params['email']) ? $params['email'] : $params['uid'] . $params['providerId'] . '@simisocial.com';
+        $firstName = isset($params['firstname']) ? $params['firstname'] : ' ';
+        $lastName = isset($params['lastname']) ? $params['lastname'] : ' ';
         $existedCustomer = $this->simiObjectManager->create('Magento\Customer\Model\Customer')->getCollection()
             ->addFieldToFilter('email', $email)
             ->getFirstItem();
@@ -90,6 +89,27 @@ class Customermap extends AbstractModel
         return $customer;
     }
 
+    public function checkOldCustomer($params)
+    {
+        $encodeMethod = 'md5';
+
+        //create pass from email
+        $createPassFromEmail = '';
+        $email = $params->email;
+        $secretKey = $this->simiObjectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('simiconnector/general/secret_key');
+
+        $createPassFromEmail = 'Simi123a@' . $encodeMethod($secretKey . $email);
+
+        //so sanh pass
+        if ($createPassFromEmail == 'Simi123a@' . $encodeMethod($this->simiObjectManager
+            ->get('Magento\Framework\App\Config\ScopeConfigInterface')
+            ->getValue('simiconnector/general/secret_key') . $email)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /*
      * @params - array [providerId, uid, email (opt.), firstname (opt.), lastname (opt.), hash (opt.)]
      */
@@ -103,6 +123,20 @@ class Customermap extends AbstractModel
             ->getFirstItem();
         if ($customerMap->getId()) {
             return $this->simiObjectManager->create('Magento\Customer\Model\Customer')->load($customerMap->getCustomerId());
+        } else if ($this->checkOldCustomer($params)) {
+            $customer = $this->simiObjectManager
+                ->get('Simi\Simiconnector\Helper\Customer')->getCustomerByEmail($params->email);
+            if (!$customer->getId()) {
+                if (!$params->firstname) {
+                    $params->firstname = __('Firstname');
+                }
+                if (!$params->lastname) {
+                    $params->lastname = __('Lastname');
+                }
+                $customer = $this->simiObjectManager->create('Magento\Customer\Model\Customer')->_createCustomer($params);
+            }
+            $this->simiObjectManager->get('Simi\Simiconnector\Helper\Customer')->loginByCustomer($customer);
+            return $customer;
         } else {
             return $this->createCustomer($params);
         }

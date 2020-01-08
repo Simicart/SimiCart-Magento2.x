@@ -151,7 +151,6 @@ class Customer extends Data
                     return true;
             }
         }
-        /*
         $encodeMethod = 'md5';
         if ($from && $from == 'social_login') {
             if ($password == 'Simi123a@'.$encodeMethod($this->simiObjectManager
@@ -165,7 +164,6 @@ class Customer extends Data
                                 ->getValue('simiconnector/general/secret_key') . $username)) {
             return true;
         }
-        */
         return false;
     }
 
@@ -176,10 +174,10 @@ class Customer extends Data
             $customerId = $this->_getSession()->getCustomer()->getId();
             if ($customerId) {
                 $createNewToken = false;
-                if ($data && isset($data['resourceid']) && $data['resourceid'] == 'login')
-                    $createNewToken = true;
-                else if ($data && isset($data['resource']) && $data['resource'] == 'sociallogins')
-                    $createNewToken = true;
+                // if ($data && isset($data['resourceid']) && $data['resourceid'] == 'login')
+                //     $createNewToken = true;
+                // else if ($data && isset($data['resource']) && $data['resource'] == 'sociallogins')
+                //     $createNewToken = true;
 
                 $tokenModel = $this->simiObjectManager->create('Simi\Simiconnector\Model\Customertoken')
                     ->getCollection()
