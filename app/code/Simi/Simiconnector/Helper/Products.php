@@ -177,7 +177,12 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     {
         foreach ($params['filter']['layer'] as $key => $value) {
             if ($key == 'price') {
-                $value  = explode('-', $value);
+                if(strpos($value, ',')) {
+                    $value  = explode(',', $value);
+                } else {
+                    $value  = explode('-', $value);
+                }
+
                 $select = $collection->getSelect();
                 $whereFunction = 'where';
                 if ($value[0] > 0) {
@@ -307,6 +312,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             ];
         }
 
+
         $paramArray = (array)$params;
         $selectedFilters = $this->_getSelectedFilters();
         $selectableFilters = count($allProductIds)?
@@ -315,6 +321,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         ;
 
         $layerArray = ['layer_filter' => $selectableFilters];
+
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($selectedFilters) > 0) {
             $layerArray['layer_state'] = $selectedFilters;
         }
@@ -460,13 +467,24 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 ];
             }
         }
+
+        $range = [];
+        if(isset($priceRanges['min']) && isset($priceRanges['max'])) {
+            $max = $priceRanges['max'];
+            $min = $priceRanges['min'];
+            $range[] = [
+                'value' => $min . '-' . $max,
+                'label' => $this->_renderRangeLabel($min, $max),
+            ];
+        }
+
         if ($this->simiObjectManager
                 ->get('Simi\Simiconnector\Helper\Data')
                 ->countArray($filters) >= 1) {
             $layerFilters[] = [
                 'attribute' => 'price',
                 'title'     => __('Price'),
-                'filter'    => array_values($filters),
+                'filter'    => array_values($range),
             ];
         }
     }
@@ -481,6 +499,27 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     {
         $collection->addPriceData();
         $maxPrice = $collection->getMaxPrice();
+        $minPrice = $collection->getMinPrice();
+
+        $max = 0;
+        $min = 0;
+        $arrayKeys = array_keys($collection->getItems());
+        foreach ($collection->getItems() as $index => $item) {
+            $finalPrice = $item->getFinalPrice();
+            if($index === $arrayKeys[0]) {
+                $max = $finalPrice;
+                $min = $finalPrice;
+            } else {
+                if ($finalPrice > $max) {
+                    $max = $finalPrice;
+                }
+
+                if ($finalPrice < $min) {
+                    $min = $finalPrice;
+                }
+            }
+        }
+
 
         $index    = 1;
         $counts = [];
@@ -489,6 +528,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             $counts = $collection->getAttributeValueCountByRange('price', $range);
             $index++;
         } while ($range > self::MIN_RANGE_POWER && count($counts) < 2 && $index <= 2);
+
 
         //re-forming array
         if (isset($counts[''])) {
@@ -500,7 +540,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             }
             $counts = $newCounts;
         }
-        return ['range' => $range, 'counts' => $counts];
+        return ['range' => $range, 'counts' => $counts, 'min' => $min, 'max' => $max];
     }
 
     /*
