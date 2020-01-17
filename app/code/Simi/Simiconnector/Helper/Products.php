@@ -176,7 +176,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     public function filterCollectionByAttribute($collection, $params, &$cat_filtered)
     {
         foreach ($params['filter']['layer'] as $key => $value) {
-            if ($key == 'price') {
+            if ($key == 'price' || $key == 'price_range') {
                 if(strpos($value, ',')) {
                     $value  = explode(',', $value);
                 } else {
@@ -484,7 +484,15 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             $layerFilters[] = [
                 'attribute' => 'price',
                 'title'     => __('Price'),
-                'filter'    => array_values($range),
+                'filter'    => array_values($filters),
+            ];
+        }
+
+        if($this->simiObjectManager->get('\Simi\Simiconnector\Helper\Data')->countArray($range) >= 1) {
+            $layerFilters[] = [
+                'attribute' => 'range_price',
+                'title' => __('Price'),
+                'filter' => array_values($range)
             ];
         }
     }
@@ -499,7 +507,6 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     {
         $collection->addPriceData();
         $maxPrice = $collection->getMaxPrice();
-        $minPrice = $collection->getMinPrice();
 
         $max = 0;
         $min = 0;
