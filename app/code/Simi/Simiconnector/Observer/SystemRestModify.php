@@ -100,6 +100,7 @@ class SystemRestModify implements ObserverInterface
                         ->getImageProduct($product);
                     $item['simi_sku']  = $product->getData('sku');
                     $item['url_key']  = $product->getData('url_key');
+                    $item['name']  = $product->getName();
 
                     $parentProducts = $this->simiObjectManager
                         ->create('Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable')
