@@ -432,6 +432,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * Set quote model to sessions
      */
     public function setQuoteToSession($quoteModel) {
+        $appState = $this->simiObjectManager->get('\Magento\Framework\App\State');
+            if($appState->getAreaCode() == 'adminhtml') return;//not allowed admin area
         $quoteId = $quoteModel->getId();
         try {
             $quoteModel->setStore($this->simiObjectManager
