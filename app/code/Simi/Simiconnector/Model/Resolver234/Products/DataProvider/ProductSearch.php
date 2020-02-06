@@ -84,22 +84,21 @@ class ProductSearch
         array $args //simiconnector changing
     ): SearchResultsInterface {
         /** @var Collection $collection */
-        $collection = $this->collectionFactory->create();
+        // $collection = $this->collectionFactory->create();
 
-        //Join search results
-        $this->getSearchResultsApplier($searchResult, $collection, $this->getSortOrderArray($searchCriteria))->apply();
+        // //Join search results
+        // $this->getSearchResultsApplier($searchResult, $collection, $this->getSortOrderArray($searchCriteria))->apply();
 
-        $this->collectionPreProcessor->process($collection, $searchCriteria, $attributes);
-        $collection->load();
-        $this->collectionPostProcessor->process($collection, $attributes);
-
+        // $this->collectionPreProcessor->process($collection, $searchCriteria, $attributes);
+        // $collection->load();
+        // $this->collectionPostProcessor->process($collection, $attributes);
 
         /*
          * simiconnector changing
         */
+        $collection = null;
         $this->simiObjectManager = \Magento\Framework\App\ObjectManager::getInstance();
         $helper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Products');
-        $helper->builderQuery = $collection;
         $params = array(
             'filter' => array()
         );
@@ -107,13 +106,6 @@ class ProductSearch
          * apply filter
          */
         $is_search = 0;
-        //filter by category
-        if ($args && isset($args['filter']['category_id']['eq'])) {
-            $category = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
-                ->load($args['filter']['category_id']['eq']);
-            $collection = $category->getProductCollection();
-        }
-        $collection->addAttributeToSelect('*')->addFinalPrice();
         //filter by search query
         if ($args && isset($args['search']) && $args['search']) {
             $is_search = 1;
@@ -124,6 +116,19 @@ class ProductSearch
                 $collection->setOrder('relevance', 'desc');
             }
         }
+        //filter by category
+        if ($args && isset($args['filter']['category_id']['eq'])) {
+            $category = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
+                ->load($args['filter']['category_id']['eq']);
+            $collection = $category->getProductCollection();
+        } else if (!$is_search || !$collection) {
+            $category = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
+                ->load($this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface')->getStore()->getRootCategoryId());
+            $collection = $category->getProductCollection();
+        }
+        $helper->builderQuery = $collection;
+
+        $collection->addAttributeToSelect('*')->addFinalPrice();
         //filter by graphql attribute filter (excluded search and category)
         if ($args && isset($args['filter'])) {
             foreach ($args['filter'] as $attr=>$value) {
