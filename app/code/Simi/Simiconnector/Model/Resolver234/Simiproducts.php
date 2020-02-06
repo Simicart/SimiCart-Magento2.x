@@ -153,7 +153,9 @@ class Simiproducts implements ResolverInterface
             'search_result' => $searchResult,
             'layer_type' => isset($args['search']) ? Resolver::CATALOG_LAYER_SEARCH : Resolver::CATALOG_LAYER_CATEGORY,
             'simiProductListItemExtraField' => $products,
-            'simi_filters' => $simiProductFilters?json_decode($simiProductFilters):array()
+            'simi_filters' => $simiProductFilters?json_decode($simiProductFilters):array(),
+            'minPrice' => $registry->registry('simi_min_price'),
+            'maxPrice' => $registry->registry('simi_max_price')
         ];
 
         $this->eventManager->dispatch(

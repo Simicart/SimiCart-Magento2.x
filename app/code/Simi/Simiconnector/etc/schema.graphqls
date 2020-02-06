@@ -30,6 +30,8 @@ type Simiproducts @doc(description: "The Products object is the top-level object
     sort_fields: SortFields @doc(description: "An object that includes the default sort field and all available sort fields") @resolver(class: "Magento\\CatalogGraphQl\\Model\\Resolver\\Category\\SortFields")
     simi_filters: [SimiLayerFilter] @doc(description: "Simi Filter options")
     simiProductListItemExtraField : [SimiProductListItemExtraField] @doc(description: "Extra fields for product listing item")
+    maxPrice: Float @doc(description: "Max price Before filtering")
+    minPrice: Float @doc(description: "Min price Before filtering")
 }
 
 type SimiProductListItemExtraField {
