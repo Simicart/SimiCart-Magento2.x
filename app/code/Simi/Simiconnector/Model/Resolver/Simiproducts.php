@@ -157,7 +157,9 @@ class Simiproducts implements ResolverInterface
             ],
             'layer_type' => $layerType,
             'simiProductListItemExtraField' => $products,
-            'simi_filters' => $simiProductFilters?json_decode($simiProductFilters):array()
+            'simi_filters' => $simiProductFilters?json_decode($simiProductFilters):array(),
+            'minPrice' => $registry->registry('simi_min_price'),
+            'maxPrice' => $registry->registry('simi_max_price')
         ];
 
         $this->eventManager->dispatch(
