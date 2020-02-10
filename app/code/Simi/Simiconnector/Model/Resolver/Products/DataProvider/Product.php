@@ -97,6 +97,12 @@ class Product
             $collection = $category->getProductCollection();
         }
         $collection->addAttributeToSelect('*')->addFinalPrice();
+        
+        //get min and max price before filtering
+        $registry = $this->simiObjectManager->get('\Magento\Framework\Registry');
+        $registry->register('simi_min_price', $collection->getMinPrice());
+        $registry->register('simi_max_price', $collection->getMaxPrice());
+
         //filter by search query
         if ($args && isset($args['search']) && $args['search']) {
             $is_search = 1;
