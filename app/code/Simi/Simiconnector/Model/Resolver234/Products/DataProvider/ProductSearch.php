@@ -196,7 +196,10 @@ class ProductSearch
             $collection->setCurPage($args['currentPage']);
         }
         if (isset($args['simiProductSort'])) {
-            $collection->setOrder($args['simiProductSort']['attribute'], $args['simiProductSort']['direction']);
+            if ($args['simiProductSort']['attribute'] == 'most_viewed')
+                $this->applySimiViewCountSort($collection, $args['simiProductSort']['direction']);
+            else
+                $collection->setOrder($args['simiProductSort']['attribute'], $args['simiProductSort']['direction']);
         } else if (isset($args['sort'])) {
             foreach ($args['sort'] as $atr=>$dir) {
                 $collection->setOrder($atr, $dir);
@@ -211,46 +214,19 @@ class ProductSearch
         return $searchResults;
     }
 
-    /**
-     * Create searchResultApplier
-     *
-     * @param SearchResultInterface $searchResult
-     * @param Collection $collection
-     * @param array $orders
-     * @return SearchResultApplierInterface
-     */
-    private function getSearchResultsApplier(
-        SearchResultInterface $searchResult,
-        Collection $collection,
-        array $orders
-    ): SearchResultApplierInterface {
-        return $this->searchResultApplierFactory->create(
-            [
-                'collection' => $collection,
-                'searchResult' => $searchResult,
-                'orders' => $orders
-            ]
+    public function applySimiViewCountSort($collection, $dir) {
+        $resource = $this->simiObjectManager->create('\Magento\Framework\App\ResourceConnection');
+        $reportEventTable = $collection->getResource()->getTable('report_event');
+        $conn = $resource->getConnection('catalog');
+        $subSelect = $conn->select()->from(
+            ['report_event_table' => $reportEventTable],
+            'COUNT(report_event_table.event_id)'
+        )->where('report_event_table.object_id = e.entity_id');
+        $collection->getSelect()->columns(
+            ['views' => $subSelect]
+        )->order(
+            'views '  . $dir
         );
     }
 
-    /**
-     * Format sort orders into associative array
-     *
-     * E.g. ['field1' => 'DESC', 'field2' => 'ASC", ...]
-     *
-     * @param SearchCriteriaInterface $searchCriteria
-     * @return array
-     */
-    private function getSortOrderArray(SearchCriteriaInterface $searchCriteria)
-    {
-        $ordersArray = [];
-        $sortOrders = $searchCriteria->getSortOrders();
-        if (is_array($sortOrders)) {
-            foreach ($sortOrders as $sortOrder) {
-                $ordersArray[$sortOrder->getField()] = $sortOrder->getDirection();
-            }
-        }
-
-        return $ordersArray;
-    }
 }
