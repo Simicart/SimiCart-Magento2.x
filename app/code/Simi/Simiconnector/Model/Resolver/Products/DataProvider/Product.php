@@ -190,18 +190,35 @@ class Product
             $collection->setCurPage($args['currentPage']);
         }
         if (isset($args['simiProductSort'])) {
-            $collection->setOrder($args['simiProductSort']['attribute'], $args['simiProductSort']['direction']);
+            if ($args['simiProductSort']['attribute'] == 'most_viewed')
+                $this->applySimiViewCountSort($collection, $args['simiProductSort']['direction']);
+            else
+                $collection->setOrder($args['simiProductSort']['attribute'], $args['simiProductSort']['direction']);
         } else if (isset($args['sort'])) {
             foreach ($args['sort'] as $atr=>$dir) {
                 $collection->setOrder($atr, $dir);
             }
         }
 
-
         $searchResult = $this->searchResultsFactory->create();
         $searchResult->setSearchCriteria($searchCriteria);
         $searchResult->setItems($collection->getItems());
         $searchResult->setTotalCount($collection->getSize());
         return $searchResult;
+    }
+
+    public function applySimiViewCountSort($collection, $dir) {
+        $resource = $this->simiObjectManager->create('\Magento\Framework\App\ResourceConnection');
+        $reportEventTable = $collection->getResource()->getTable('report_event');
+        $conn = $resource->getConnection('catalog');
+        $subSelect = $conn->select()->from(
+            ['report_event_table' => $reportEventTable],
+            'COUNT(report_event_table.event_id)'
+        )->where('report_event_table.object_id = e.entity_id');
+        $collection->getSelect()->columns(
+            ['views' => $subSelect]
+        )->order(
+            'views '  . $dir
+        );
     }
 }
