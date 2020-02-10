@@ -195,7 +195,9 @@ class ProductSearch
             $collection->setPageSize($args['pageSize']);
             $collection->setCurPage($args['currentPage']);
         }
-        if (isset($args['sort'])) {
+        if (isset($args['simiProductSort'])) {
+            $collection->setOrder($args['simiProductSort']['attribute'], $args['simiProductSort']['direction']);
+        } else if (isset($args['sort'])) {
             foreach ($args['sort'] as $atr=>$dir) {
                 $collection->setOrder($atr, $dir);
             }
