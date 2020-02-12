@@ -49,27 +49,20 @@ class Review extends \Simi\Simiconnector\Helper\Data
                 $star[5] ++;
                 $y = 0;
                 foreach ($review->getRatingVotes() as $vote) {
-                    $y += ($vote->getPercent() / 20);
-                }
-                $ratingVotes = $this->simiObjectManager
-                        ->get('Simi\Simiconnector\Helper\Data')->countArray($review->getRatingVotes());
-                if (!$ratingVotes || $ratingVotes == 0)
-                	continue;
-                $x = (int) ($y / $ratingVotes);
-                $z = $y % 3;
-                $x = $z < 5 ? $x : $x + 1;
-                if ($x == 1) {
-                    $star[0] ++;
-                } elseif ($x == 2) {
-                    $star[1] ++;
-                } elseif ($x == 3) {
-                    $star[2] ++;
-                } elseif ($x == 4) {
-                    $star[3] ++;
-                } elseif ($x == 5) {
-                    $star[4] ++;
-                } elseif ($x == 0) {
-                    $star[5] --;
+                    $x = ($vote->getPercent() / 20);
+                    if ($x == 1) {
+                        $star[0] ++;
+                    } elseif ($x == 2) {
+                        $star[1] ++;
+                    } elseif ($x == 3) {
+                        $star[2] ++;
+                    } elseif ($x == 4) {
+                        $star[3] ++;
+                    } elseif ($x == 5) {
+                        $star[4] ++;
+                    } elseif ($x == 0) {
+                        $star[5] --;
+                    }
                 }
             }
         }
