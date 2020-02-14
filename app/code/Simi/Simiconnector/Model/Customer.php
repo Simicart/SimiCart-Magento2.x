@@ -254,7 +254,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel
      * $data->password
      */
 
-    private function _createCustomer($data)
+    public function _createCustomer($data)
     {
         $customer = $this->simiObjectManager->create('Magento\Customer\Api\Data\CustomerInterface')
             ->setFirstname($data->firstname)

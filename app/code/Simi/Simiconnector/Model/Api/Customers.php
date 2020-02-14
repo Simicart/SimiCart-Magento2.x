@@ -57,13 +57,11 @@ class Customers extends Apiabstract
                         throw new \Simi\Simiconnector\Helper\SimiException(__('Login Failed'), 4);
                     }
                     break;
-                /*
                 case 'sociallogin':
                     $this->builderQuery = $this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')
                         ->socialLogin($data);
                     $this->builderQuery->setData('wishlist_count', $this->getWishlistCount());
                     break;
-                */
                 case 'logout':
                     $lastCustomerId     = $this->simiObjectManager->get('Magento\Customer\Model\Session')
                         ->getCustomer()->getId();
