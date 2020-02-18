@@ -409,7 +409,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             $options = $attribute->getSource()->getAllOptions();
             $filters = [];
             foreach ($options as $option) {
-                if ($option['value'] && isset($attributeOptions[$option['value']])
+                if (isset($option['value']) && isset($attributeOptions[$option['value']])
                     && $attributeOptions[$option['value']]) {
                     $option['count'] = $attributeOptions[$option['value']];
                     $filters[]       = $option;
