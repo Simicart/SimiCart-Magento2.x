@@ -119,14 +119,9 @@ class Simiproducts implements ResolverInterface
 
         $products = $searchResult->getProductsSearchResult();
         foreach ($products as $index => $product) {
-            $sku = $product['sku'];
-            $productModel = $this->simiObjectManager->get('Magento\Catalog\Model\Product')
-                ->getCollection()
-                ->addAttributeToFilter('sku', $sku)
-                ->getFirstItem();
+            //already the model loaded directly (see app/code/Simi/Simiconnector/Model/Resolver234/Products/DataProvider/ProductSearch.php)
+            $productModel = $product['model'];
             if ($productModel->getId()) {
-                $productModel = $this->simiObjectManager->create('Magento\Catalog\Model\Product')
-                    ->load($productModel->getId());
                 $this->productExtraData = array(
                     'attribute_values' => $productModel->toArray(),
                     'app_reviews' => $this->simiObjectManager

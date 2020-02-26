@@ -198,6 +198,8 @@ class ProductSearch
         if (isset($args['simiProductSort'])) {
             if ($args['simiProductSort']['attribute'] == 'most_viewed')
                 $this->applySimiViewCountSort($collection, $args['simiProductSort']['direction']);
+            elseif ($args['simiProductSort']['attribute'] == 'top_rated')
+	            $this->applySimiTopRatedSort($collection, $args['simiProductSort']['direction']);
             else
                 $collection->setOrder($args['simiProductSort']['attribute'], $args['simiProductSort']['direction']);
         } else if (isset($args['sort'])) {
@@ -206,11 +208,16 @@ class ProductSearch
             }
         }
 
+        $items = array();
+        foreach ($collection->getData() as $index => $product) {
+            $items[(int)$product['entity_id']] = $this->simiObjectManager->create('Magento\Catalog\Model\Product')
+                ->load($product['entity_id']);
+        }
 
         $searchResults = $this->searchResultsFactory->create();
         $searchResults->setSearchCriteria($searchCriteria);
-        $searchResults->setItems($collection->getItems());
         $searchResults->setTotalCount($collection->getSize());
+        $searchResults->setItems($items);
         return $searchResults;
     }
 
@@ -228,5 +235,20 @@ class ProductSearch
             'views '  . $dir
         );
     }
+
+	public function applySimiTopRatedSort($collection, $dir) {
+		$collection->joinField(
+			'rating_summary',
+			'review_entity_summary',
+			'rating_summary',
+			'entity_pk_value=entity_id',
+			array(
+				'entity_type' => 1,
+				'store_id'    => $this->simiObjectManager->get( '\Magento\Store\Model\StoreManagerInterface' )->getStore()->getId()
+			),
+			'left'
+		);
+		$collection->getSelect()->order( 'rating_summary ' . $dir );
+	}
 
 }
