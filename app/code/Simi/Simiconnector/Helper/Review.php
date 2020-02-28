@@ -46,9 +46,9 @@ class Review extends \Simi\Simiconnector\Helper\Data
         $star[5] = 0;
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($reviews) > 0) {
             foreach ($reviews->getItems() as $review) {
+                $star[5] ++;
                 $y = 0;
                 foreach ($review->getRatingVotes() as $vote) {
-                    $star[5] ++;
                     $x = ($vote->getPercent() / 20);
                     if ($x == 1) {
                         $star[0] ++;
