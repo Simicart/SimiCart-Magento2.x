@@ -35,18 +35,22 @@ class SalesQuoteAddressSaveBefore implements ObserverInterface
 
     public function execute(\Magento\Framework\Event\Observer $observer)
     {
-        $quote = $this->_getQuote();
-        $coupon = $quote->getCouponCode();
-        if ($coupon && $coupon != '') {
-            $isApp = strpos($this->simiObjectManager
-                ->get('\Magento\Framework\Url')->getCurrentUrl(), 'simiconnector');
-            $pre_fix = (string)$this->simiObjectManager->create('Simi\Simiconnector\Helper\Data')
-                ->getStoreConfig('simiconnector/general/app_dedicated_coupon');
-            if ($pre_fix && ($pre_fix != '') && ($isApp === false) && $coupon) {
-                if (strpos(strtolower($coupon), strtolower($pre_fix)) !== false) {
-                    $quote->setCouponCode('')->collectTotals()->save();
+        try {
+            $quote = $this->_getQuote();
+            $coupon = $quote->getCouponCode();
+            if ($coupon && $coupon != '') {
+                $isApp = strpos($this->simiObjectManager
+                    ->get('\Magento\Framework\Url')->getCurrentUrl(), 'simiconnector');
+                $pre_fix = (string)$this->simiObjectManager->create('Simi\Simiconnector\Helper\Data')
+                    ->getStoreConfig('simiconnector/general/app_dedicated_coupon');
+                if ($pre_fix && ($pre_fix != '') && ($isApp === false) && $coupon) {
+                    if (strpos(strtolower($coupon), strtolower($pre_fix)) !== false) {
+                        $quote->setCouponCode('')->collectTotals()->save();
+                    }
                 }
             }
+        } catch (\Exception $e) {
+
         }
     }
 }
