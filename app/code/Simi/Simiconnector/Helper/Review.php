@@ -91,49 +91,43 @@ class Review extends \Simi\Simiconnector\Helper\Data
     public function getReviewToAdd()
     {
         $block    = $this->simiObjectManager->get('Magento\Review\Block\Form');
-        $is_allow = $block->getAllowWriteReviewFlag();
-        if ($is_allow) {
-            $info  = [];
-            $rates = [];
-            if ($block->getRatings() && $block->getRatings()->getSize()) {
-                foreach ($block->getRatings() as $_rating) {
-                    $_options = [];
-                    foreach ($_rating->getOptions() as $_option) {
-                        $_options[] = [
-                            'key'   => $_rating->getId(),
-                            'value' => $_option->getId(),
-                        ];
-                    }
-                    $rates[] = [
-                        'rate_code'    => $block->escapeHtml($_rating->getRatingCode()),
-                        'rate_options' => $_options,
+        $info  = [];
+        $rates = [];
+        if ($block->getRatings() && $block->getRatings()->getSize()) {
+            foreach ($block->getRatings() as $_rating) {
+                $_options = [];
+                foreach ($_rating->getOptions() as $_option) {
+                    $_options[] = [
+                        'key'   => $_rating->getId(),
+                        'value' => $_option->getId(),
                     ];
                 }
+                $rates[] = [
+                    'rate_code'    => $block->escapeHtml($_rating->getRatingCode()),
+                    'rate_options' => $_options,
+                ];
             }
-            $info[] = ['rates'       => $rates, 'form_review' => [
-                    'key_1'    => 'nickname',
-                    'key_2'    => 'title',
-                    'key_3'    => 'detail',
-                    'form_key' => [
-                        [
-                            'key'   => 'nickname',
-                            'value' => 'Nickname'
-                        ],
-                        [
-                            'key'   => 'title',
-                            'value' => 'Title'
-                        ],
-                        [
-                            'key'   => 'detail',
-                            'value' => 'Detail'
-                        ],
-                    ]],
-            ];
-
-            return $info;
-        } else {
-            return [__('Only registered users can write reviews')];
         }
+        $info[] = ['rates'       => $rates, 'form_review' => [
+            'key_1'    => 'nickname',
+            'key_2'    => 'title',
+            'key_3'    => 'detail',
+            'form_key' => [
+                [
+                    'key'   => 'nickname',
+                    'value' => 'Nickname'
+                ],
+                [
+                    'key'   => 'title',
+                    'value' => 'Title'
+                ],
+                [
+                    'key'   => 'detail',
+                    'value' => 'Detail'
+                ],
+            ]],
+        ];
+        return $info;
     }
 
     public function _initProduct($product_id)
