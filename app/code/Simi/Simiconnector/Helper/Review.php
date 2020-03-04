@@ -138,7 +138,10 @@ class Review extends \Simi\Simiconnector\Helper\Data
     public function saveReview($data)
     {
         $allowGuest = $this->simiObjectManager->get('Magento\Review\Helper\Data')->getIsGuestAllowToWrite();
-        if (!$allowGuest) {
+        if (
+            !$allowGuest &&
+            !$this->simiObjectManager->get('Magento\Customer\Model\Session')->isLoggedIn()
+        ) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Guest can not write'), 4);
         }
         if (($product = $this->_initProduct($data['product_id'])) && !empty($data)) {
