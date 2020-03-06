@@ -25,6 +25,20 @@ class Simistoreconfigdataprovider extends DataProviderInterface
     public function getSimiStoreConfigData($args){
         $storeApi = $this->simiObjectManager->get('Simi\Simiconnector\Model\Api\Storeviews');
         $storeManager = $this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
+        $quoteId = $this->simiObjectManager->get('Magento\Checkout\Model\Session')->getQuoteId();
+        if ($quoteId) {
+            $quoteModel = $this->simiObjectManager->create('\Magento\Quote\Model\Quote')->load($quoteId);
+            if ($quoteModel->getId()) {
+                $storeId = $storeManager->getStore()->getId();
+                $currencyCode   = $this->storeManager->getStore()->getCurrentCurrencyCode();
+                if ($storeId && $quoteModel->getData('store_id') !== $storeId) {
+                    $quoteModel->setStoreId($storeId)->collectTotals()->save();
+                }
+                if ($currencyCode && $quoteModel->getQuoteCurrencyCode() !== $currencyCode) {
+                    $quoteModel->setQuoteCurrencyCode($currencyCode)->collectTotals()->save();
+                }
+            }
+        }
         $params = array();
         if ($args) {
             $params = $args;

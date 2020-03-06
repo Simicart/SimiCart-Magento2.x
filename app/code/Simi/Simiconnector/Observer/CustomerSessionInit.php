@@ -49,11 +49,17 @@ class CustomerSessionInit implements ObserverInterface
         $simiStoreId = $this->request->getParam('simiStoreId');
         $simiCurrency = $this->request->getParam('simiCurrency');
         if ($contents_array) {
-            if (isset($contents_array['variables']['simiStoreId'])) {
+            if (!$simiStoreId && isset($contents_array['variables']['simiStoreId'])) {
                 $simiStoreId = $contents_array['variables']['simiStoreId'];
             }
-            if (isset($contents_array['variables']['simiCurrency'])) {
+            if (!$simiStoreId && isset($contents_array['variables']['storeId'])) {
+                $simiStoreId = $contents_array['variables']['storeId'];
+            }
+            if (!$simiCurrency && isset($contents_array['variables']['simiCurrency'])) {
                 $simiCurrency = $contents_array['variables']['simiCurrency'];
+            }
+            if (!$simiCurrency && isset($contents_array['variables']['currency'])) {
+                $simiCurrency = $contents_array['variables']['currency'];
             }
         }
 

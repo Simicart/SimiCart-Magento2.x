@@ -436,12 +436,15 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
             if($appState->getAreaCode() == 'adminhtml') return;//not allowed admin area
         $quoteId = $quoteModel->getId();
         try {
+            $cart = $this->simiObjectManager->get('Magento\Checkout\Model\Cart');
+            if ($cart->getQuote() && $cart->getQuote()->getId() == $quoteId)
+                return;
             $quoteModel->setStore($this->simiObjectManager
                 ->create('\Magento\Store\Model\StoreManagerInterface')->getStore());
             $this->simiObjectManager->get('\Magento\Quote\Api\CartRepositoryInterface')->save($quoteModel);
             $quoteModel = $this->simiObjectManager->get('\Magento\Quote\Api\CartRepositoryInterface')->get($quoteModel->getId());
             $this->simiObjectManager->get('\Magento\Customer\Model\Session')->setQuoteId($quoteId);
-            $this->simiObjectManager->get('\Magento\Checkout\Model\Cart')->setQuote($quoteModel);
+            $cart->setQuote($quoteModel);
             try { //not a very important function
                 $this->simiObjectManager->get('\Magento\Checkout\Model\Session')->clearQuote();
             } catch (\Exception $e) {
