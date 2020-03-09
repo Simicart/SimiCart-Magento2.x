@@ -51,6 +51,9 @@ class Simiproducts implements ResolverInterface
      */
     private $searchApiCriteriaBuilder;
 
+    public $extraFields;
+    public $productExtraData;
+
     /**
      * @param Builder $searchCriteriaBuilder
      * @param Search $searchQuery
@@ -119,21 +122,56 @@ class Simiproducts implements ResolverInterface
 
         $products = $searchResult->getProductsSearchResult();
         foreach ($products as $index => $product) {
-            //already the model loaded directly (see app/code/Simi/Simiconnector/Model/Resolver234/Products/DataProvider/ProductSearch.php)
             $productModel = $product['model'];
             if ($productModel->getId()) {
-                $this->productExtraData = array(
-                    'attribute_values' => $productModel->toArray(),
-                    'app_reviews' => $this->simiObjectManager
+                if (count($products) > 1) { //listing
+                    $this->productExtraData = array(
+                        'attribute_values' => $productModel->toArray(),
+                        'app_reviews' => $this->simiObjectManager
+                            ->get('\Simi\Simiconnector\Helper\Review')
+                            ->getProductReviews($productModel->getId())
+                    );
+                    $this->eventManager->dispatch(
+                        'simi_simiconnector_graphql_simi_product_list_item_after',
+                        ['object' => $this, 'extraData' => $this->productExtraData]
+                    );
+                    $product['simiExtraField'] = json_encode($this->productExtraData);
+                    $products[$index] = $product;
+                } else { //details
+                    $registry = $this->simiObjectManager->get('\Magento\Framework\Registry');
+                    if (!$registry->registry('product') && $productModel->getId()) {
+                        $registry->register('product', $productModel);
+                        $registry->register('current_product', $productModel);
+                    }
+                    $options = $this->simiObjectManager
+                        ->get('\Simi\Simiconnector\Helper\Options')->getOptions($productModel);
+
+                    $app_reviews  = $this->simiObjectManager
                         ->get('\Simi\Simiconnector\Helper\Review')
-                        ->getProductReviews($productModel->getId())
-                );
-                $this->eventManager->dispatch(
-                    'simi_simiconnector_graphql_simi_product_list_item_after',
-                    ['object' => $this, 'extraData' => $this->productExtraData]
-                );
-                $product['extraData'] = json_encode($this->productExtraData);
-                $products[$index] = $product;
+                        ->getProductReviews($productModel->getId());
+
+                    $layout      = $this->simiObjectManager->get('Magento\Framework\View\LayoutInterface');
+                    $block_att   = $layout->createBlock('Magento\Catalog\Block\Product\View\Attributes');
+                    $_additional = $block_att->getAdditionalData();
+
+                    $tierPrice   = $this->simiObjectManager
+                        ->get('\Simi\Simiconnector\Helper\Price')->getProductTierPricesLabel($productModel);
+
+                    $this->extraFields = array(
+                        'attribute_values' => $productModel->toArray(),
+                        'app_options' => $options,
+                        'app_reviews' => $app_reviews,
+                        'additional'  => $_additional,
+                        'app_tier_prices' => $tierPrice,
+                    );
+                    $this->eventManager = $this->simiObjectManager->get('\Magento\Framework\Event\ManagerInterface');
+                    $this->eventManager->dispatch(
+                        'simi_simiconnector_graphql_product_detail_extra_field_after',
+                        ['object' => $this, 'data' => $this->extraFields]
+                    );
+                    $product['simiExtraField'] = json_encode($this->extraFields);
+                    $products[$index] = $product;
+                }
             }
         }
 
@@ -147,7 +185,6 @@ class Simiproducts implements ResolverInterface
             ],
             'search_result' => $searchResult,
             'layer_type' => isset($args['search']) ? Resolver::CATALOG_LAYER_SEARCH : Resolver::CATALOG_LAYER_CATEGORY,
-            'simiProductListItemExtraField' => $products,
             'simi_filters' => $simiProductFilters?json_decode($simiProductFilters):array(),
             'minPrice' => $registry->registry('simi_min_price'),
             'maxPrice' => $registry->registry('simi_max_price')

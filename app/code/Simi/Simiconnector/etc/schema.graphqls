@@ -13,9 +13,6 @@ type Query {
         storeId: Int @doc(description: "Change store view id"),
         currency: String @doc(description: "Change currency")
      ): SimiStoreConfig @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\Simistoreconfigresolver") @doc(description: "The store config query")
-    simiProductDetailExtraField (
-        filter: ProductFilterInput
-    ) : String @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\Simiproductdetailextrafieldresolver") @doc(description: "Extra field to product details"),
     simiRootCate : CategoryTree @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\SimiRootCate") @doc(description: "Extra field to product details"),
 }
 
@@ -30,14 +27,12 @@ type Simiproducts @doc(description: "The Products object is the top-level object
     filters: [LayerFilter] @resolver(class: "Magento\\CatalogGraphQl\\Model\\Resolver\\LayerFilters") @doc(description: "Layered navigation filters array")
     sort_fields: SortFields @doc(description: "An object that includes the default sort field and all available sort fields") @resolver(class: "Magento\\CatalogGraphQl\\Model\\Resolver\\Category\\SortFields")
     simi_filters: [SimiLayerFilter] @doc(description: "Simi Filter options")
-    simiProductListItemExtraField : [SimiProductListItemExtraField] @doc(description: "Extra fields for product listing item")
     maxPrice: Float @doc(description: "Max price Before filtering")
     minPrice: Float @doc(description: "Min price Before filtering")
 }
 
-type SimiProductListItemExtraField {
-    sku : String
-    extraData: String
+interface ProductInterface {
+    simiExtraField: String @doc(description: "Simicart Product Extra Fields")
 }
 
 type SimiLayerFilter {
