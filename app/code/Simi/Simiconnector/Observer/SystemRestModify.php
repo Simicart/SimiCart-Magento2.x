@@ -125,7 +125,7 @@ class SystemRestModify implements ObserverInterface
         }
     }
 
-    //add SessionId to login api of system rest
+    //add SessionId + simiHash to login api of system rest
     private function _addCustomerIdentity(&$contentArray, $requestContent, $request) {
         if (is_string($contentArray) && $request->getParam('getSessionId') && $requestContent['username']) {
             $storeManager = $this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
@@ -138,11 +138,15 @@ class SystemRestModify implements ObserverInterface
                 $this->simiObjectManager
                     ->get('Magento\Customer\Model\Session')
                     ->setCustomerAsLoggedIn($requestCustomer);
+                $hash = $this->simiObjectManager
+                    ->get('Simi\Simiconnector\Helper\Customer')
+                    ->getToken(array());
                 $contentArray = array(
                     'customer_access_token' => $contentArray,
                     'customer_identity' => $this->simiObjectManager
                         ->get('Magento\Customer\Model\Session')
-                        ->getSessionId()
+                        ->getSessionId(),
+                    'simi_hash' => $hash,
                 );
             }
         }
