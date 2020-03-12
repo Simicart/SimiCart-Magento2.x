@@ -8,14 +8,11 @@ use Magento\Framework\Event\ObserverInterface;
 class SystemRestModify implements ObserverInterface
 {
     private $simiObjectManager;
-    private $inputParamsResolver;
 
     public function __construct(
-        \Magento\Framework\ObjectManagerInterface $simiObjectManager,
-        \Magento\Webapi\Controller\Rest\InputParamsResolver $inputParamsResolver
+        \Magento\Framework\ObjectManagerInterface $simiObjectManager
     ) {
         $this->simiObjectManager = $simiObjectManager;
-        $this->inputParamsResolver = $inputParamsResolver;
     }
 
 
@@ -59,20 +56,6 @@ class SystemRestModify implements ObserverInterface
     //modify payment api
     private function _addDataToPayment(&$contentArray, $routeData) {
         if (is_array($contentArray) && $routeData && isset($routeData['serviceClass'])) {
-            $inputParams = $this->inputParamsResolver->resolve();
-            if ($inputParams && is_array($inputParams) && isset($inputParams[0])) {
-                $quoteId = $inputParams[0];
-                $quoteIdMask = $this->simiObjectManager->get('Magento\Quote\Model\QuoteIdMask');
-                if ($quoteIdMask->load($quoteId, 'masked_id')) {
-                    if ($quoteIdMask && $maskQuoteId = $quoteIdMask->getData('quote_id'))
-                        $quoteId = $maskQuoteId;
-                }
-                $quoteModel = $this->simiObjectManager->get('Magento\Quote\Model\Quote')->load($quoteId);
-                if ($quoteModel->getId() && $quoteModel->getData('is_active')) {
-                    $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->setQuoteToSession($quoteModel);
-                }
-            }
-
             $paymentHelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Checkout\Payment');
             foreach ($paymentHelper->getMethods() as $method) {
                 foreach ($contentArray as $index=>$restPayment) {
