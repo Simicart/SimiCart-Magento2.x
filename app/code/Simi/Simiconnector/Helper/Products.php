@@ -387,14 +387,38 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function _filterByAtribute($collection, $attributeCollection, &$titleFilters, &$layerFilters, $arrayIDs)
     {
+        $childProductsIds      = [];
+        if ($arrayIDs && count($arrayIDs)) {
+            $childProducts = $this->simiObjectManager->create('Magento\Catalog\Model\ResourceModel\Product\Collection')
+                ->addAttributeToSelect('*')
+                ->addAttributeToFilter('type_id', 'simple');
+            $select = $childProducts->getSelect();
+            $select->joinLeft(
+                    array('link_table' => 'catalog_product_super_link'),
+                    'link_table.product_id = e.entity_id',
+                    array('product_id', 'parent_id')
+                );
+            $select = $childProducts->getSelect();
+            $select->where("link_table.parent_id IN (".implode(',', array_keys($arrayIDs)).")");
+            foreach ($childProducts->getAllIds() as $allProductId) {
+                $childProductsIds[$allProductId] = '1';
+            }
+        }
+
         foreach ($attributeCollection as $attribute) {
+            $attributeCode = $attribute->getAttributeCode();
             $attributeOptions = [];
             $attributeValues  = $collection->getAllAttributeValues($attribute->getAttributeCode());
             if (in_array($attribute->getDefaultFrontendLabel(), $titleFilters)) {
                 continue;
             }
             foreach ($attributeValues as $productId => $optionIds) {
-                if (isset($optionIds[0]) && isset($arrayIDs[$productId]) && ($arrayIDs[$productId] != null)) {
+                if (isset($optionIds[0]) &&
+                    (
+                        (isset($arrayIDs[$productId]) && ($arrayIDs[$productId] != null)) ||
+                        (isset($childProductsIds[$productId]) && ($childProductsIds[$productId] != null))
+                    )
+                ) {
                     $optionIds = explode(',', $optionIds[0]);
                     foreach ($optionIds as $optionId) {
                         if (isset($attributeOptions[$optionId])) {
