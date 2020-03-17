@@ -165,6 +165,7 @@ class ProductSearch
                         $filtersubOptions = array();
                         foreach ($layer_filter['filter'] as $filtersubOption) {
                             $filtersubOption['value_string'] = (string) $filtersubOption['value'];
+                            $filtersubOption['items_count'] = (int) $filtersubOption['count'];
                             $filtersubOptions[] = $filtersubOption;
                         }
                         $simiFilterOptions[] = array(
