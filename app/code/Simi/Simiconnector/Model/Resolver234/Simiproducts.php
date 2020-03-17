@@ -125,8 +125,11 @@ class Simiproducts implements ResolverInterface
             $productModel = $product['model'];
             if ($productModel->getId()) {
                 if (count($products) > 1) { //listing
+                    $attributes = $productModel->toArray();
+                    if (isset($attributes['description']))
+                        unset($attributes['description']);
                     $this->productExtraData = array(
-                        'attribute_values' => $productModel->toArray(),
+                        'attribute_values' => $attributes,
                         'app_reviews' => $this->simiObjectManager
                             ->get('\Simi\Simiconnector\Helper\Review')
                             ->getProductReviews($productModel->getId())
