@@ -213,7 +213,14 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                         ->addStoreFilter()
                         ->addAttributeToFilter('status', 1)
                         ->addFinalPrice();
-                    $collectionChid->addAttributeToFilter($key, ['finset' => $value]);                    
+                    if (is_array($value)) {
+                        $insetArray = array();
+                        foreach ($value as $child_value) {
+                            $insetArray[] = array('finset'=> array($child_value));
+                        }
+                        $collectionChid->addAttributeToFilter($key, $insetArray);
+                    } else
+                        $collectionChid->addAttributeToFilter($key, ['finset' => $value]);
                     $collectionChid->getSelect()
                         ->joinLeft(
                             array('link_table' => 'catalog_product_super_link'),
@@ -229,8 +236,15 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
                     $collection->addAttributeToFilter('entity_id', array('in' => $productIds));                                        
                 } else {
-                    $this->filteredAttributes[$key] = $value;                    
-                    $collection->addAttributeToFilter($key, ['finset' => $value]);                    
+                    $this->filteredAttributes[$key] = $value;
+                    if (is_array($value)) {
+                        $insetArray = array();
+                        foreach ($value as $child_value) {
+                            $insetArray[] = array('finset'=> array($child_value));
+                        }
+                        $collection->addAttributeToFilter($key, $insetArray);
+                    } else
+                        $collection->addAttributeToFilter($key, ['finset' => $value]);
                 }
             }
         }
