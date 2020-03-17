@@ -213,7 +213,14 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                         ->addStoreFilter()
                         ->addAttributeToFilter('status', 1)
                         ->addFinalPrice();
-                    $collectionChid->addAttributeToFilter($key, ['finset' => $value]);                    
+                    if (is_array($value)) {
+                        $insetArray = array();
+                        foreach ($value as $child_value) {
+                            $insetArray[] = array('finset'=> array($child_value));
+                        }
+                        $collectionChid->addAttributeToFilter($key, $insetArray);
+                    } else
+                        $collectionChid->addAttributeToFilter($key, ['finset' => $value]);
                     $collectionChid->getSelect()
                         ->joinLeft(
                             array('link_table' => 'catalog_product_super_link'),
@@ -229,8 +236,15 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
                     $collection->addAttributeToFilter('entity_id', array('in' => $productIds));                                        
                 } else {
-                    $this->filteredAttributes[$key] = $value;                    
-                    $collection->addAttributeToFilter($key, ['finset' => $value]);                    
+                    $this->filteredAttributes[$key] = $value;
+                    if (is_array($value)) {
+                        $insetArray = array();
+                        foreach ($value as $child_value) {
+                            $insetArray[] = array('finset'=> array($child_value));
+                        }
+                        $collection->addAttributeToFilter($key, $insetArray);
+                    } else
+                        $collection->addAttributeToFilter($key, ['finset' => $value]);
                 }
             }
         }
@@ -387,14 +401,38 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function _filterByAtribute($collection, $attributeCollection, &$titleFilters, &$layerFilters, $arrayIDs)
     {
+        $childProductsIds      = [];
+        if ($arrayIDs && count($arrayIDs)) {
+            $childProducts = $this->simiObjectManager->create('Magento\Catalog\Model\ResourceModel\Product\Collection')
+                ->addAttributeToSelect('*')
+                ->addAttributeToFilter('type_id', 'simple');
+            $select = $childProducts->getSelect();
+            $select->joinLeft(
+                    array('link_table' => 'catalog_product_super_link'),
+                    'link_table.product_id = e.entity_id',
+                    array('product_id', 'parent_id')
+                );
+            $select = $childProducts->getSelect();
+            $select->where("link_table.parent_id IN (".implode(',', array_keys($arrayIDs)).")");
+            foreach ($childProducts->getAllIds() as $allProductId) {
+                $childProductsIds[$allProductId] = '1';
+            }
+        }
+
         foreach ($attributeCollection as $attribute) {
+            $attributeCode = $attribute->getAttributeCode();
             $attributeOptions = [];
             $attributeValues  = $collection->getAllAttributeValues($attribute->getAttributeCode());
             if (in_array($attribute->getDefaultFrontendLabel(), $titleFilters)) {
                 continue;
             }
             foreach ($attributeValues as $productId => $optionIds) {
-                if (isset($optionIds[0]) && isset($arrayIDs[$productId]) && ($arrayIDs[$productId] != null)) {
+                if (isset($optionIds[0]) &&
+                    (
+                        (isset($arrayIDs[$productId]) && ($arrayIDs[$productId] != null)) ||
+                        (isset($childProductsIds[$productId]) && ($childProductsIds[$productId] != null))
+                    )
+                ) {
                     $optionIds = explode(',', $optionIds[0]);
                     foreach ($optionIds as $optionId) {
                         if (isset($attributeOptions[$optionId])) {
