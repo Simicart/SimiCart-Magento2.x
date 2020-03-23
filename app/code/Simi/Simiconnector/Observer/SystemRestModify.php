@@ -113,25 +113,29 @@ class SystemRestModify implements ObserverInterface
             }
             if ($isTotal && $quoteId) {
               $contentArray['simi_quote_id'] = $quoteId;
-              $quoteModel = $this->simiObjectManager->create('Magento\Quote\Model\Quote')
-                ->load($quoteId)->collectTotals()->save();
-              if ($quoteMessages = $quoteModel->getMessages()) {
-                if (count($quoteMessages) > 0) {
-                  $returnedMessages = array();
-                  foreach ($quoteMessages as $quoteMessage) {
-                    $returnedMessages[] = $quoteMessage->getText();
+              try {
+                $quoteModel = $this->simiObjectManager->create('Magento\Quote\Model\Quote')
+                  ->load($quoteId)->collectTotals()->save();
+                if ($quoteMessages = $quoteModel->getMessages()) {
+                  if (count($quoteMessages) > 0) {
+                    $returnedMessages = array();
+                    foreach ($quoteMessages as $quoteMessage) {
+                      $returnedMessages[] = $quoteMessage->getText();
+                    }
+                    $contentArray['simi_quote_messages'] = $returnedMessages;
                   }
-                  $contentArray['simi_quote_messages'] = $returnedMessages;
                 }
-              }
-              if ($quoteErrors = $quoteModel->getErrors()) {
-                if (count($quoteErrors) > 0) {
-                  $returnedErrors = array();
-                  foreach ($quoteErrors as $quoteError) {
-                    $returnedErrors[] = $quoteError->getText();
+                if ($quoteErrors = $quoteModel->getErrors()) {
+                  if (count($quoteErrors) > 0) {
+                    $returnedErrors = array();
+                    foreach ($quoteErrors as $quoteError) {
+                      $returnedErrors[] = $quoteError->getText();
+                    }
+                    $contentArray['simi_quote_errors'] = $returnedErrors;
                   }
-                  $contentArray['simi_quote_errors'] = $returnedErrors;
                 }
+              }catch (\Exception $e) {
+                
               }
             }
         }
