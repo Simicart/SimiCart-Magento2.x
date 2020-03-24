@@ -36,16 +36,16 @@ class SystemRestModify implements ObserverInterface
                }else{
                    $this->_addDataToPayment($contentArray, $routeData);
                }
-               if (isset($contentArray['totals']['items'])) {
-                   $totalData = $contentArray['totals'];
-                   $this->_addDataToQuoteItem($totalData);
-                   $contentArray['totals'] = $totalData;
-               }
+               // if (isset($contentArray['totals']['items'])) {
+               //     $totalData = $contentArray['totals'];
+               //     $this->_addDataToQuoteItem($totalData);
+               //     $contentArray['totals'] = $totalData;
+               // }
            } else if (
                strpos($routeData['routePath'], 'V1/guest-carts/:cartId') !== false ||
                strpos($routeData['routePath'], 'V1/carts/mine') !== false
            ) {
-               $this->_addDataToQuoteItem($contentArray);
+               $this->_addDataToQuoteItem($contentArray, strpos($routeData['routePath'], 'totals') !== false);
            } else if (strpos($routeData['routePath'], 'integration/customer/token') !== false) {
                $this->_addCustomerIdentity($contentArray, $requestContent, $request);
            }
@@ -54,7 +54,7 @@ class SystemRestModify implements ObserverInterface
     }
 
     //modify payment api
-    private function _addDataToPayment(&$contentArray, $routeData) {
+    private function _addDataToPayment(&$contentArray, $routeData = false) {
         if (is_array($contentArray) && $routeData && isset($routeData['serviceClass'])) {
             $paymentHelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Checkout\Payment');
             foreach ($paymentHelper->getMethods() as $method) {
@@ -69,12 +69,18 @@ class SystemRestModify implements ObserverInterface
     }
 
     //modify quote item
-    private function _addDataToQuoteItem(&$contentArray) {
+    private function _addDataToQuoteItem(&$contentArray, $isTotal = false) {
         if (isset($contentArray['items']) && is_array($contentArray['items'])) {
+            $stockRegistry = $this->simiObjectManager->create('Magento\CatalogInventory\Api\StockRegistryInterface');
+            $quoteId = null;
             foreach ($contentArray['items'] as $index => $item) {
                 $quoteItem = $this->simiObjectManager
                     ->get('Magento\Quote\Model\Quote\Item')->load($item['item_id']);
                 if ($quoteItem->getId()) {
+                    if (!$quoteId)
+                      $quoteId = $quoteItem->getQuoteId();
+                    if ($isTotal)
+                      continue;
                     $product = $this->simiObjectManager
                         ->create('Magento\Catalog\Model\Product')
                         ->load($quoteItem->getData('product_id'));
@@ -100,10 +106,37 @@ class SystemRestModify implements ObserverInterface
                     $item['image'] =  $this->simiObjectManager
                         ->create('Simi\Simiconnector\Helper\Products')
                         ->getImageProduct($imageProductModel);
-
-
+                    $stock = $stockRegistry->getStockItemBySku($product->getData('sku'))->getIsInStock();
+                    $item['stock_status'] = $stock;
                     $contentArray['items'][$index] = $item;
                 }
+            }
+            if ($isTotal && $quoteId) {
+              $contentArray['simi_quote_id'] = $quoteId;
+              try {
+                $quoteModel = $this->simiObjectManager->create('Magento\Quote\Model\Quote')
+                  ->load($quoteId)->collectTotals();
+                if ($quoteMessages = $quoteModel->getMessages()) {
+                  if (count($quoteMessages) > 0) {
+                    $returnedMessages = array();
+                    foreach ($quoteMessages as $quoteMessage) {
+                      $returnedMessages[] = $quoteMessage->getText();
+                    }
+                    $contentArray['simi_quote_messages'] = $returnedMessages;
+                  }
+                }
+                if ($quoteErrors = $quoteModel->getErrors()) {
+                  if (count($quoteErrors) > 0) {
+                    $returnedErrors = array();
+                    foreach ($quoteErrors as $quoteError) {
+                      $returnedErrors[] = $quoteError->getText();
+                    }
+                    $contentArray['simi_quote_errors'] = $returnedErrors;
+                  }
+                }
+              }catch (\Exception $e) {
+                
+              }
             }
         }
     }
