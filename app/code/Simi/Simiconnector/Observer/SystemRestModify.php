@@ -107,7 +107,7 @@ class SystemRestModify implements ObserverInterface
                         ->create('Simi\Simiconnector\Helper\Products')
                         ->getImageProduct($imageProductModel);
                     $stock = $stockRegistry->getStockItemBySku($product->getData('sku'))->getIsInStock();
-                    $item['stock_status'] = $stock;
+                    $item['stock_status'] = $stock && $product->isSaleable();
                     $contentArray['items'][$index] = $item;
                 }
             }
