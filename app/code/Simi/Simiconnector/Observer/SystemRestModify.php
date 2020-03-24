@@ -115,7 +115,7 @@ class SystemRestModify implements ObserverInterface
               $contentArray['simi_quote_id'] = $quoteId;
               try {
                 $quoteModel = $this->simiObjectManager->create('Magento\Quote\Model\Quote')
-                  ->load($quoteId)->collectTotals()->save();
+                  ->load($quoteId)->collectTotals();
                 if ($quoteMessages = $quoteModel->getMessages()) {
                   if (count($quoteMessages) > 0) {
                     $returnedMessages = array();
