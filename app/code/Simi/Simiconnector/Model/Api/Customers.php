@@ -21,24 +21,35 @@ class Customers extends Apiabstract
                     $this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')->forgetPassword($data);
                     $email                 = $data['params']['email'];
                     $this->builderQuery    = $this->simiObjectManager
-                            ->create('Magento\Customer\Model\Session')->getCustomer();
+                        ->create('Magento\Customer\Model\Session')->getCustomer();
                     $this->RETURN_MESSAGE = $message = __(
                         'If there is an account associated with %1 you will '
-                            . 'receive an email with a link to reset your password.',
+                        . 'receive an email with a link to reset your password.',
                         $email
                     );
                     break;
                 case 'createpassword':
-                    if (!isset($data['params']['password']))
+                    $data = (object) $data['contents'];
+                    if (!isset($data->password))
                         throw new \Simi\Simiconnector\Helper\SimiException(__('Missing new password'), 4);
-                    if (!isset($data['params']['rptoken']))
+                    if (!isset($data->rptoken))
                         throw new \Simi\Simiconnector\Helper\SimiException(__('Missing reset password token'), 4);
-                    $newPW = $data['params']['password'];
-                    $resetPasswordToken = $data['params']['rptoken'];
+                    $newPW = $data->password;
+                    $resetPasswordToken = $data->rptoken;
+                    // Check rp_token in database exist or not
+                    $customerData = $this->simiObjectManager->create('\Magento\Customer\Model\Customer');
+                    $customerSearch = $customerData->getCollection()->addFieldToFilter("rp_token", $resetPasswordToken);
+                    if (count($customerSearch) == 0) {
+                        throw new \Simi\Simiconnector\Helper\SimiException(__('Token expired or invalid !'), 4);
+                    }
+                    // If exist, create new password
                     $this->simiObjectManager
                         ->get('Magento\Customer\Model\Session')
                         ->setRpToken($resetPasswordToken);
                     $this->createPassword($newPW, $resetPasswordToken);
+                    $this->simiObjectManager
+                        ->get('Magento\Customer\Model\Session')
+                        ->setRpToken(null);
                     $this->builderQuery    = $this->simiObjectManager
                         ->get('Magento\Customer\Model\Session')->getCustomer();
                     $this->RETURN_MESSAGE = $message = __('You updated your password.');
@@ -67,7 +78,13 @@ class Customers extends Apiabstract
                         ->getCustomer()->getId();
                     if ($this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')->logout()) {
                         $this->builderQuery = $this->simiObjectManager
-                                ->get('Magento\Customer\Model\Customer')->load($lastCustomerId);
+                            ->get('Magento\Customer\Model\Customer')->load($lastCustomerId);
+                        // clear old quote
+                        $cart = $this->simiObjectManager->get('Magento\Checkout\Model\Cart');
+                        $quote = $this->simiObjectManager->create('Magento\Quote\Model\Quote');
+                        $cart->setQuote($quote);
+                        $newCustomer = $this->simiObjectManager->create('Magento\Customer\Model\Customer');
+                        $this->simiObjectManager->get('Magento\Customer\Model\Session')->setCustomer($newCustomer);
                     } else {
                         throw new \Simi\Simiconnector\Helper\SimiException(__('Logout Failed'), 4);
                     }
@@ -95,10 +112,12 @@ class Customers extends Apiabstract
     public function store()
     {
         $data                  = $this->getData();
-        $customer              = $this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')->register($data);
-        $this->builderQuery    = $customer;
-        $this->RETURN_MESSAGE = __("Thank you for registering with "
+        if ($data['resourceid'] !== "createpassword" && $data['resourceid'] !== "logout") {
+            $customer              = $this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')->register($data);
+            $this->builderQuery    = $customer;
+            $this->RETURN_MESSAGE = __("Thank you for registering with "
                 . $this->storeManager->getStore()->getName() . " store");
+        }
         return $this->show();
     }
 
