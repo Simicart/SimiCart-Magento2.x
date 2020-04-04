@@ -352,6 +352,13 @@ class Quoteitems extends Apiabstract
         $result['cart_total'] = $this->_getCart()->getItemsCount();
         $result['quote_id']   = $session->getQuoteId();
         $result['is_can_checkout'] = $is_can_checkout;
+        try {
+            $result['masked_id'] = $this->simiObjectManager
+                ->get('Magento\Quote\Model\QuoteIdToMaskedQuoteIdInterface')
+                ->execute($result['quote_id']);
+        } catch (\Exception $e) {
+
+        }
         
         $customerSession = $this->simiObjectManager->get('Magento\Customer\Model\Session');
         $result['customer_email'] = $customerSession->isLoggedIn()?
