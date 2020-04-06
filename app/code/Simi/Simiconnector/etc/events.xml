@@ -20,4 +20,12 @@
         <observer name="simi_simiconnector_system_rest_modify"
                   instance="Simi\Simiconnector\Observer\SystemRestModify" />
     </event>
+    <event name="controller_action_predispatch_customer_account_confirm">
+        <observer name="simi_simiconnector_customer_account_confirm"
+                  instance="Simi\Simiconnector\Observer\AccountConfirmDispatch" />
+    </event>
+    <event name="controller_action_predispatch_customer_account_createpassword">
+        <observer name="simi_simiconnector_customer_account_createpassword"
+                  instance="Simi\Simiconnector\Observer\AccountCreatePasswordDispatch" />
+    </event>
 </config>
