@@ -148,6 +148,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel
         ];
 
         if (isset($data->change_password) && $data->change_password == 1) {
+	        $this->validateOldPassword($data);
             $currPass = $data->old_password;
             $newPass  = $data->new_password;
             $confPass = $data->com_password;
@@ -181,11 +182,35 @@ class Customer extends \Magento\Framework\Model\AbstractModel
         if (is_array($customerErrors)) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid profile information'), 4);
         }
+
+	    if (isset($data->change_email) && $data->change_email == 1 && isset($data->new_email)) {
+		    $this->validateOldPassword($data);
+		    if (!filter_var($data->new_email, FILTER_VALIDATE_EMAIL)) {
+			    throw new \Exception(__('New email is not valid'), 4);
+		    }
+		    $customer->setEmail($data->new_email);
+	    }
+
         $customer->setConfirmation(null);
         $customer->save();
         $this->_getSession()->setCustomer($customer);
         return $customer;
     }
+
+	private function validateOldPassword($data) {
+		if (isset($data->old_password)) {
+			$websiteId = $this->storeManager->getStore()->getWebsiteId();
+			$customerAuth  = $this->simiObjectManager->get('Magento\Customer\Model\Customer')
+			                                         ->setWebsiteId($websiteId);
+			try {
+				$customerAuth->authenticate($data->email, $data->old_password);
+			} catch (\Exception $e) {
+				throw new \Exception(__('Please check your current email and password'), 4);
+			}
+		} else {
+			throw new \Exception(__('Please fill your current password'), 4);
+		}
+	}
 
     private function setCustomerData($customer, $data)
     {
