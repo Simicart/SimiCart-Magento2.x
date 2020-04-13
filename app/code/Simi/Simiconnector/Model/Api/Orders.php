@@ -44,13 +44,21 @@ class Orders extends Apiabstract
             if ($data['resourceid'] == 'onepage') {
                 return;
             } else {
-                $this->builderQuery = $this->simiObjectManager->create('Magento\Sales\Model\Order')
-                        ->loadByIncrementId($data['resourceid']);
-                if (!$this->builderQuery->getId() || isset($data['params']['by_entity_id'])) {
+                if (isset($data['params']['by_entity_id'])) {
                     $this->builderQuery = $this->simiObjectManager->create('Magento\Sales\Model\Order')
                             ->load($data['resourceid']);
                 }
-                if (!$this->builderQuery->getId()) {
+                try {
+                    $this->builderQuery = $this->simiObjectManager->create('Magento\Sales\Model\Order')
+                            ->loadByIncrementId($data['resourceid']);
+                } catch (\Exception $e) {
+
+                }
+                if (!$this->builderQuery || !$this->builderQuery->getId()) {
+                    $this->builderQuery = $this->simiObjectManager->create('Magento\Sales\Model\Order')
+                            ->load($data['resourceid']);
+                }
+                if (!$this->builderQuery || !$this->builderQuery->getId()) {
                     throw new \Simi\Simiconnector\Helper\SimiException(__('Cannot find the Order'), 6);
                 }
             }
