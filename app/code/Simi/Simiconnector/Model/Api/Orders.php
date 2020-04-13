@@ -46,7 +46,7 @@ class Orders extends Apiabstract
             } else {
                 $this->builderQuery = $this->simiObjectManager->create('Magento\Sales\Model\Order')
                         ->loadByIncrementId($data['resourceid']);
-                if (!$this->builderQuery->getId()) {
+                if (!$this->builderQuery->getId() || isset($data['params']['by_entity_id'])) {
                     $this->builderQuery = $this->simiObjectManager->create('Magento\Sales\Model\Order')
                             ->load($data['resourceid']);
                 }
@@ -368,6 +368,9 @@ class Orders extends Apiabstract
 
     private function _updateOrderInformation(&$order, $customer)
     {
+        if (!$customer || ($customer->getData('email') !== $order['customer_email']))
+            return;
+
         $orderModel               = $this->simiObjectManager
                 ->create('Magento\Sales\Model\Order')->load($order['entity_id']);
         $order['payment_method']  = $orderModel->getPayment()->getMethodInstance()->getTitle();
