@@ -147,11 +147,16 @@ class Customer extends \Magento\Framework\Model\AbstractModel
             'email'     => $data->email,
         ];
 
-	    // Fix bug 'invalid state change requested' when change password.
-	    // The reason is quote has customer_id is null
-	    $cart = $this->simiObjectManager->get('Magento\Checkout\Model\Cart');
-	    $cart->getQuote()->setData('customer_id', $customer->getId());
-	    $cart->saveQuote();
+	    try {
+		    // Fix bug 'invalid state change requested' when change password.
+		    // The reason is quote has customer_id is null
+		    $cart = $this->simiObjectManager->get( 'Magento\Checkout\Model\Cart' );
+		    $cart->getQuote()->setData( 'customer_id', $customer->getId() );
+		    $cart->saveQuote();
+	    }
+	    catch ( \Exception $e ) {
+		    throw new \Exception( __( 'Set customer to quote error!' ), 4 );
+	    }
 
         if (isset($data->change_password) && $data->change_password == 1) {
 	        $this->validateOldPassword($data);
