@@ -90,8 +90,9 @@ class CreatePassword extends \Magento\Customer\Controller\AbstractAccount implem
         }else{
             // already change password and token expired
             if (isset($link)) {
-                header("Location: {$link}");
-                exit;
+                $resultRedirect = $this->resultRedirectFactory->create();
+                $resultRedirect->setPath($link);
+                return $resultRedirect;
             }
         }
 
@@ -101,14 +102,13 @@ class CreatePassword extends \Magento\Customer\Controller\AbstractAccount implem
             $this->confirmByToken->execute($resetPasswordToken);
 
             if ($isDirectLink) {
+                $resultRedirect = $this->resultRedirectFactory->create();
                 $this->session->setRpToken($resetPasswordToken);
                 if (isset($link) && isset($customerEmail)) {
-                    header("Location: {$link}resetPassword.html?token={$resetPasswordToken}&mail={$customerEmail}");
-                    exit;
+                    $resultRedirect->setPath($link."resetPassword.html?token=".$resetPasswordToken."&mail=".$customerEmail);
+                    return $resultRedirect;
                 }
-                $resultRedirect = $this->resultRedirectFactory->create();
                 $resultRedirect->setPath('*/*/createpassword');
-
                 return $resultRedirect;
             } else {
                 /** @var \Magento\Framework\View\Result\Page $resultPage */
