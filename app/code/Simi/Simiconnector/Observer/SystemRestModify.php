@@ -111,8 +111,13 @@ class SystemRestModify implements ObserverInterface
                     $contentArray['items'][$index] = $item;
                 }
             }
-            if ($isTotal && $quoteId) {
+            if ($quoteId) {
               $contentArray['simi_quote_id'] = $quoteId;
+              $contentArray['simi_quote_masked_id'] = $this->simiObjectManager
+                ->create('Magento\Quote\Model\QuoteIdToMaskedQuoteIdInterface')
+                ->execute($quoteId);
+            }
+            if ($isTotal && $quoteId) {
               try {
                 $quoteModel = $this->simiObjectManager->create('Magento\Quote\Model\Quote')
                   ->load($quoteId)->collectTotals();
