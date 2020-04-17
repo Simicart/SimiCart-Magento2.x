@@ -145,7 +145,8 @@ class Confirm extends AbstractAccount implements HttpGetActionInterface
     public function execute()
     {
         $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
-        $link = $objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')->getValue('simiconnector/general/pwa_studio_url');
+        $link = $objectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')
+            ->getValue('simiconnector/general/pwa_studio_url');
 
         /** @var \Magento\Framework\Controller\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
@@ -153,8 +154,8 @@ class Confirm extends AbstractAccount implements HttpGetActionInterface
         if ($this->session->isLoggedIn()) {
             // if customer has been logged in
             if (isset($link)) {
-                header("Location: {$link}");
-                exit;
+                $resultRedirect->setPath($link);
+                return $resultRedirect;
             }
             $resultRedirect->setPath('*/*/');
             return $resultRedirect;
@@ -180,8 +181,8 @@ class Confirm extends AbstractAccount implements HttpGetActionInterface
             }
             // the first time login -> active success -> redirect to pwa
             if (isset($link)) {
-                header("Location: {$link}login.html");
-                exit;
+                $resultRedirect->setPath($link."login.html");
+                return $resultRedirect;
             }
             $this->messageManager->addSuccess($this->getSuccessMessage());
             $resultRedirect->setUrl($this->getSuccessRedirect());
