@@ -77,6 +77,12 @@ class Homecategories extends Apiabstract
             $categoryModel    = $this->loadCategoryWithId($item['category_id']);
             $item['url_path'] = $categoryModel->getUrlPath();
             $item['cat_name'] = $categoryModel->getName();
+
+            $productCollection = $categoryModel->getProductCollection();
+            $productStatus = $this->simiObjectManager->create('Magento\Catalog\Model\Product\Attribute\Source\Status');
+            $productCollection->addAttributeToFilter('status', ['in' => $productStatus->getVisibleStatusIds()]);
+            $item['product_size'] = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countCollection($productCollection);
+            
             $childCollection  = $this->getVisibleChildren($item['category_id']);
             if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countCollection($childCollection)) {
                 $item['has_children'] = true;
