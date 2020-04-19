@@ -130,6 +130,9 @@ class Simiproducts implements ResolverInterface
                         unset($attributes['description']);
                     $this->productExtraData = array(
                         'attribute_values' => $attributes,
+                        'app_options' => $this->simiObjectManager
+                            ->get('\Simi\Simiconnector\Helper\Options')
+                            ->getOptions($productModel),
                         'app_reviews' => $this->simiObjectManager
                             ->get('\Simi\Simiconnector\Helper\Review')
                             ->getProductReviews($productModel->getId())
