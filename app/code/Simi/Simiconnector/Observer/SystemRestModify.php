@@ -195,16 +195,13 @@ class SystemRestModify implements ObserverInterface
                                 ->addFieldToFilter('customer_id', $requestCustomer->getId())
                                 ->addFieldToFilter('store_id', $storeManager->getStore()->getId())
                                 ->getLastItem();
-                            $customerCart->merge($guestCart);
+                            $customerCart->merge($guestCart)->save();
                             $guestCart->setIsActive(false);
-                            $this->simiObjectManager->get('Magento\Quote\Api\CartRepositoryInterface')->save($customerCart);
-                            $this->simiObjectManager->get('Magento\Quote\Api\CartRepositoryInterface')->save($guestCart);
                         }
                     }
                 }
             }
         } catch (\Exception $e) {
-
         }
     }
 
