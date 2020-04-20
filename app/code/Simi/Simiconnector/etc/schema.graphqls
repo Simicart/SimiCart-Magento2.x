@@ -13,7 +13,10 @@ type Query {
         storeId: Int @doc(description: "Change store view id"),
         currency: String @doc(description: "Change currency")
      ): SimiStoreConfig @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\Simistoreconfigresolver") @doc(description: "The store config query")
-    simiRootCate : CategoryTree @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\SimiRootCate") @doc(description: "Extra field to product details"),
+    simiCategoryCms (
+        categoryId: Int
+    ): SimiCategoryCms @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\SimiCategoryCms") @doc(description: "Get Cms Config For Category")
+    simiRootCate : CategoryTree @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\SimiRootCate") @doc(description: "Extra field to product details")
 }
 
 type Mutation {
@@ -54,6 +57,11 @@ type SimiStoreConfig {
     pwa_studio_client_ver_number: String @doc(description: "Client PWA Studio version number")
     root_category_id: Int @doc(description: "Root Category Id of storeview")
     config_json: String @doc(description: "Simiconnector store configuration values")
+}
+
+type SimiCategoryCms {
+    display_mode: String @doc(description: "Category Display Mode")
+    cms_identifier: String @doc(description: "Cms block identifier")
 }
 
 type Subscribe {
