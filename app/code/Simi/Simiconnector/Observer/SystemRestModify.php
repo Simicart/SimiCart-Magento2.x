@@ -47,6 +47,8 @@ class SystemRestModify implements ObserverInterface
            ) {
                $this->_addDataToQuoteItem($contentArray, strpos($routeData['routePath'], 'totals') !== false);
            } else if (strpos($routeData['routePath'], 'integration/customer/token') !== false) {
+               //_mergeCart must be run before _addCustomerIdentity because _addCustomerIdentity is changing contentArray
+               $this->_mergeCart($contentArray, $requestContent, $request);
                $this->_addCustomerIdentity($contentArray, $requestContent, $request);
            }
        }
@@ -111,8 +113,13 @@ class SystemRestModify implements ObserverInterface
                     $contentArray['items'][$index] = $item;
                 }
             }
-            if ($isTotal && $quoteId) {
+            if ($quoteId) {
               $contentArray['simi_quote_id'] = $quoteId;
+              $contentArray['simi_quote_masked_id'] = $this->simiObjectManager
+                ->create('Magento\Quote\Model\QuoteIdToMaskedQuoteIdInterface')
+                ->execute($quoteId);
+            }
+            if ($isTotal && $quoteId) {
               try {
                 $quoteModel = $this->simiObjectManager->create('Magento\Quote\Model\Quote')
                   ->load($quoteId)->collectTotals();
@@ -167,4 +174,35 @@ class SystemRestModify implements ObserverInterface
             }
         }
     }
+
+    private function _mergeCart($contentArray, $requestContent, $request)
+    {
+        try {
+            if (is_string($contentArray) && $request->getParam('quote_id') && $requestContent['username']) {
+                $storeManager = $this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
+                $requestCustomer = $this->simiObjectManager->get('Magento\Customer\Model\Customer')
+                    ->setWebsiteId($storeManager->getStore()->getWebsiteId())
+                    ->loadByEmail($requestContent['username']);
+                $tokenCustomerId = $this->simiObjectManager->create('Magento\Integration\Model\Oauth\Token')
+                    ->loadByToken($contentArray)->getData('customer_id');
+                if ($requestCustomer && $requestCustomer->getId() == $tokenCustomerId) {
+                    $guestMaskedCartId = $request->getParam('quote_id');
+                    $quoteIdMask = $this->simiObjectManager->get('Magento\Quote\Model\QuoteIdMask');
+                    if ($quoteIdMask->load($guestMaskedCartId, 'masked_id')) {
+                        if ($quoteIdMask && $maskQuoteId = $quoteIdMask->getData('quote_id')) {
+                            $guestCart = $this->simiObjectManager->create('Magento\Quote\Model\Quote')->load($maskQuoteId);
+                            $customerCart = $this->simiObjectManager->create('Magento\Quote\Model\Quote')->getCollection()
+                                ->addFieldToFilter('customer_id', $requestCustomer->getId())
+                                ->addFieldToFilter('store_id', $storeManager->getStore()->getId())
+                                ->getLastItem();
+                            $customerCart->merge($guestCart)->save();
+                            $guestCart->setIsActive(false);
+                        }
+                    }
+                }
+            }
+        } catch (\Exception $e) {
+        }
+    }
+
 }
