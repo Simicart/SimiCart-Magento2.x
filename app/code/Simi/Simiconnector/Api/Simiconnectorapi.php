@@ -74,7 +74,7 @@ class Simiconnectorapi implements \Simi\Simiconnector\Api\SimiconnectorapiInterf
         );
         $result = $this->_getData($server);
         return array(
-            'data' => $result
+            'data' => json_decode(json_encode($result), true)
         );
     }
 

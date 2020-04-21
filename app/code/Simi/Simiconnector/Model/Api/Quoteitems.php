@@ -212,6 +212,8 @@ class Quoteitems extends Apiabstract
 
         $check_limit  = 0;
         $check_offset = 0;
+        
+        $is_can_checkout = '1';
 
         /*
          * Add options and image
@@ -263,10 +265,19 @@ class Quoteitems extends Apiabstract
                         $parameters['image_width'],
                         $parameters['image_height']
                     );
+            
+            $productModel    = $this->simiObjectManager->create('Magento\Catalog\Model\Product')->load($entity->getProduct()->getId());
+            if (!$productModel->isSalable()) {
+                $is_can_checkout = '0';
+                $quoteitem['product']['is_salable'] = 0;
+            } else {
+                $quoteitem['product']['is_salable'] = 1;
+            }
+            
             $info[]              = $quoteitem;
             $all_ids[]           = $entity->getId();
         }
-        $this->detail_list = $this->getList($info, $all_ids, $total, $limit, $offset);
+        $this->detail_list = $this->getList($info, $all_ids, $total, $limit, $offset, $is_can_checkout);
         $this->eventManager->dispatch(
             'simi_simiconnector_model_api_quoteitems_index_after',
             ['object' => $this, 'data' => $this->detail_list]
@@ -322,7 +333,7 @@ class Quoteitems extends Apiabstract
      * Add Message
      */
 
-    public function getList($info, $all_ids, $total, $page_size, $from)
+    public function getList($info, $all_ids, $total, $page_size, $from, $is_can_checkout = '1')
     {
         $result          = parent::getList($info, $all_ids, $total, $page_size, $from);
         $result['total'] = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Total')->getTotal();
@@ -340,6 +351,14 @@ class Quoteitems extends Apiabstract
         $session              = $this->_getSession();
         $result['cart_total'] = $this->_getCart()->getItemsCount();
         $result['quote_id']   = $session->getQuoteId();
+        $result['is_can_checkout'] = $is_can_checkout;
+        try {
+            $result['masked_id'] = $this->simiObjectManager
+                ->get('Magento\Quote\Model\QuoteIdToMaskedQuoteIdInterface')
+                ->execute($result['quote_id']);
+        } catch (\Exception $e) {
+
+        }
         
         $customerSession = $this->simiObjectManager->get('Magento\Customer\Model\Session');
         $result['customer_email'] = $customerSession->isLoggedIn()?
