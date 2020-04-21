@@ -62,6 +62,7 @@ type SimiStoreConfig {
 type SimiCategoryCms {
     display_mode: String @doc(description: "Category Display Mode")
     cms_identifier: String @doc(description: "Cms block identifier")
+    cms: String @doc(description: "Cms block")
 }
 
 type Subscribe {

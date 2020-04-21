@@ -35,13 +35,19 @@ class SimiCategoryCmsDataProvider extends DataProviderInterface
         $displayMode = $category->getDisplayMode();
         $landingPage = $category->getlandingPage();
         $cmsIdentifer = '';
+        $cms = '';
         if($landingPage) {
             $blockModel = $this->simiObjectManager->create('Magento\Cms\Model\Block')->load($landingPage);
             $cmsIdentifer = $blockModel->getIdentifier();
+            $block = $this->simiObjectManager->get('Magento\Framework\View\LayoutInterface')
+                ->createBlock('Magento\Cms\Block\Block');
+            $block->setBlockId($category['landing_page']);
+            $cms = $block->toHtml();
         }
         return [
             'display_mode' => $displayMode,
             'cms_identifier' => $cmsIdentifer,
+            'cms' => $cms
         ];
     }
 }
