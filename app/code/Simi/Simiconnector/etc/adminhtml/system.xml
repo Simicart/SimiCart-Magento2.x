@@ -90,6 +90,10 @@
                     <label>Show discount label in product</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="show_size_in_compare" translate="label" type="select" sortOrder="1499" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show 'Size' in Compare products</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
             </group>
             <group id="currency" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Currency Display Configuration</label>

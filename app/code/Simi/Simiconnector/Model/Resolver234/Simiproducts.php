@@ -121,6 +121,9 @@ class Simiproducts implements ResolverInterface
         $this->eventManager = $this->simiObjectManager->get('\Magento\Framework\Event\ManagerInterface');
 
         $products = $searchResult->getProductsSearchResult();
+        $isShowOptionsInListing = $this->simiObjectManager
+            ->get('Magento\Framework\App\Config\ScopeConfigInterface')
+            ->getValue('simiconnector/general/show_size_in_compare');
         foreach ($products as $index => $product) {
             $productModel = $product['model'];
             if ($productModel->getId()) {
@@ -128,8 +131,14 @@ class Simiproducts implements ResolverInterface
                     $attributes = $productModel->toArray();
                     if (isset($attributes['description']))
                         unset($attributes['description']);
+                    $options = null;
+                    if($isShowOptionsInListing){
+                        $options = $this->simiObjectManager
+                            ->get('\Simi\Simiconnector\Helper\Options')->getOptions($productModel);
+                    }
                     $this->productExtraData = array(
                         'attribute_values' => $attributes,
+                        'app_options' => $options,
                         'app_reviews' => $this->simiObjectManager
                             ->get('\Simi\Simiconnector\Helper\Review')
                             ->getProductReviews($productModel->getId())
