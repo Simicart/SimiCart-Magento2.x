@@ -138,6 +138,7 @@ class Payment extends \Simi\Simiconnector\Helper\Data
         $this->listPayment[] = 'free';
         $this->listPayment[] = 'banktransfer';
         $this->listPayment[] = 'phoenix_cashondelivery';
+        $this->listPayment[] = 'braintree';
     }
 
     public function _getListPayment()
@@ -160,6 +161,7 @@ class Payment extends \Simi\Simiconnector\Helper\Data
             'checkmo'                => 0,
             'free'                   => 0,
             'phoenix_cashondelivery' => 0,
+            'braintree'              => 0,
         ];
     }
 
@@ -183,6 +185,13 @@ class Payment extends \Simi\Simiconnector\Helper\Data
                         . $method->getConfigData('payable_to') . __('Send Check to: ')
                         . $method->getConfigData('mailing_address');
                     $detail['show_type']      = 0;
+                } else if ($code == "braintree") {
+                    $detail['payment_method'] = strtoupper($method->getCode());
+                    $detail['title']          = $method->getConfigData('title');
+                    $detail['show_type']      = 0;
+                    $detail['braintree_token']     = $this->simiObjectManager
+                        ->get('\Magento\Framework\App\Config\ScopeConfigInterface')
+                        ->getValue('siminiaconfig/braintree/braintree_token');
                 } else {
                     $detail['content']        = $method->getConfigData('instructions');
                     $detail['payment_method'] = strtoupper($method->getCode());
