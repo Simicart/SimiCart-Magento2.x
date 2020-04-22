@@ -22,7 +22,6 @@
                 <open_url_in_app>1</open_url_in_app>
                 <filter_categories_by_include_in_menu>1</filter_categories_by_include_in_menu>
                 <show_discount_label_in_product>1</show_discount_label_in_product>
-                <show_size_in_compare>0</show_size_in_compare>
             </general>
             <currency>                                           
                 <thousand_separator>,</thousand_separator>
@@ -97,5 +96,10 @@
                 <noti_purchase_enable>0</noti_purchase_enable>
             </noti_purchase>
         </simi_notifications>
+        <siminiaconfig>
+            <compareconfig>
+                <show_size_in_compare>0</show_size_in_compare>
+            </compareconfig>
+        </siminiaconfig>
     </default>
 </config>

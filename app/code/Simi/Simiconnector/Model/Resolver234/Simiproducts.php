@@ -123,7 +123,7 @@ class Simiproducts implements ResolverInterface
         $products = $searchResult->getProductsSearchResult();
         $isShowOptionsInListing = $this->simiObjectManager
             ->get('Magento\Framework\App\Config\ScopeConfigInterface')
-            ->getValue('simiconnector/general/show_size_in_compare');
+            ->getValue('siminiaconfig/compareconfig/show_size_in_compare');
         foreach ($products as $index => $product) {
             $productModel = $product['model'];
             if ($productModel->getId()) {

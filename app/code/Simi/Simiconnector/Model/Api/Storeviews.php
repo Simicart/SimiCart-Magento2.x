@@ -229,7 +229,7 @@ class Storeviews extends Apiabstract
                     'show_discount_label_in_product'         => $this
                 ->getStoreConfig('simiconnector/general/show_discount_label_in_product'),
                     'show_size_in_compare'                   => $this
-                ->getStoreConfig('simiconnector/general/show_size_in_compare'),
+                ->getStoreConfig('siminiaconfig/compareconfig/show_size_in_compare'),
                 ],
                 'cataloginventory' => [
                     'cataloginventory_item_options_manage_stock'          => $this

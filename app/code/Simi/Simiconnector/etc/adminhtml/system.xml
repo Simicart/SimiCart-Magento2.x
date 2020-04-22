@@ -90,10 +90,6 @@
                     <label>Show discount label in product</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="show_size_in_compare" translate="label" type="select" sortOrder="1499" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Show 'Size' in Compare products</label>
-                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                </field>
             </group>
             <group id="currency" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Currency Display Configuration</label>
@@ -601,6 +597,13 @@
                 <field id="braintree_token" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Checkout Braintree Token</label>
                     <comment>You can find this value in Braintree's Control Panel under Settings > API Keys > Tokenization Keys</comment>
+                </field>
+            </group>
+            <group id="compareconfig" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Compare Products Configuration</label>
+                <field id="show_size_in_compare" translate="label" type="select" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show 'Size' in Compare products</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
         </section>
