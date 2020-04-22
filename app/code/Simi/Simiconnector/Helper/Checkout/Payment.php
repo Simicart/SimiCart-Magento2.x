@@ -189,7 +189,7 @@ class Payment extends \Simi\Simiconnector\Helper\Data
                     $detail['payment_method'] = strtoupper($method->getCode());
                     $detail['title']          = $method->getConfigData('title');
                     $detail['show_type']      = 0;
-                    $detail['public_key']     = $this->simiObjectManager
+                    $detail['braintree_token']     = $this->simiObjectManager
                         ->get('\Magento\Framework\App\Config\ScopeConfigInterface')
                         ->getValue('siminiaconfig/braintree/braintree_token');
                 } else {
