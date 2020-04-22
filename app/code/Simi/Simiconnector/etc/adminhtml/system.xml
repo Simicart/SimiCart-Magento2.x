@@ -605,8 +605,7 @@
                     <label>Show 'Size' in Compare products</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Let api graphql return app_options in simiExtraField on listing products.
-                        It allows to show size row on compare modal.
-                        And it allows to show quickview button with bundle, downloadable product on listing.</comment>
+                        It allows to show size row on compare modal.</comment>
                 </field>
             </group>
         </section>
