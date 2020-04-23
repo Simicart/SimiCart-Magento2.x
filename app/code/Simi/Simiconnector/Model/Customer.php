@@ -93,7 +93,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel
 
     public function login($data)
     {
-        if ($data['params']['simi_hash']) {
+        if (isset($data['params']['simi_hash'])) {
             return $this->simiObjectManager->get('Simi\Simiconnector\Helper\Customer')
                 ->loginByEmailAndPass($data['params']['email'], $data['params']['simi_hash']);
         } else {
