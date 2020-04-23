@@ -36,11 +36,6 @@ class SystemRestModify implements ObserverInterface
                }else{
                    $this->_addDataToPayment($contentArray, $routeData);
                }
-               // if (isset($contentArray['totals']['items'])) {
-               //     $totalData = $contentArray['totals'];
-               //     $this->_addDataToQuoteItem($totalData);
-               //     $contentArray['totals'] = $totalData;
-               // }
            } else if (
                strpos($routeData['routePath'], 'V1/guest-carts/:cartId') !== false ||
                strpos($routeData['routePath'], 'V1/carts/mine') !== false
@@ -115,10 +110,17 @@ class SystemRestModify implements ObserverInterface
             }
             if ($quoteId) {
               $contentArray['simi_quote_id'] = $quoteId;
-              $contentArray['simi_quote_masked_id'] = $this->simiObjectManager
+              $existedMaskedId = $this->simiObjectManager
                 ->create('Magento\Quote\Model\QuoteIdToMaskedQuoteIdInterface')
                 ->execute($quoteId);
-            }
+              if (!$existedMaskedId) {
+                $existedMaskedId = $this->simiObjectManager
+                  ->create('Magento\Quote\Model\QuoteIdMask')
+                  ->setData('quote_id', $quoteId)
+                  ->save()->getData('masked_id');
+              }
+              $contentArray['simi_quote_masked_id'] = $existedMaskedId;
+            } 
             if ($isTotal && $quoteId) {
               try {
                 $quoteModel = $this->simiObjectManager->create('Magento\Quote\Model\Quote')
