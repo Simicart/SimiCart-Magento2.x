@@ -22,12 +22,12 @@ class SimiCategoryCmsDataProvider extends DataProviderInterface
      *
      * @return array
      */
-    public function getCategoryCms($args){
+    public function getCategoryCms($catId){
 
         $categoryId = $this->storeManager->getStore()->getRootCategoryId();
         
-        if($args && isset($args['categoryId']) && $args['categoryId']) {
-            $categoryId = $args['categoryId'];
+        if($catId) {
+            $categoryId = $catId;
         }
 
         $model = $this->simiObjectManager->create('\Magento\Catalog\Model\Category');

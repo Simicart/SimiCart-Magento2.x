@@ -33,6 +33,10 @@ class SimiCategoryCms implements ResolverInterface
         array $value = null,
         array $args = null
     ) {
-        return $this->cmsCategory->getCategoryCms($args);
+        $categoryId = null;
+        if($value && isset($value['id']) && $value['id']) {
+            $categoryId = $value['id'];
+        }
+        return $this->cmsCategory->getCategoryCms($categoryId);
     }
 }

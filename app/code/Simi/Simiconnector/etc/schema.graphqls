@@ -13,9 +13,6 @@ type Query {
         storeId: Int @doc(description: "Change store view id"),
         currency: String @doc(description: "Change currency")
      ): SimiStoreConfig @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\Simistoreconfigresolver") @doc(description: "The store config query")
-    simiCategoryCms (
-        categoryId: Int
-    ): SimiCategoryCms @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\SimiCategoryCms") @doc(description: "Get Cms Config For Category")
     simiRootCate : CategoryTree @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\SimiRootCate") @doc(description: "Extra field to product details")
 }
 
@@ -36,6 +33,10 @@ type Simiproducts @doc(description: "The Products object is the top-level object
 
 interface ProductInterface {
     simiExtraField: String @doc(description: "Simicart Product Extra Fields")
+}
+
+interface CategoryInterface {
+    simiCategoryCms: SimiCategoryCms  @doc(description: "Get Cms Config For Category") @resolver(class: "Simi\\Simiconnector\\Model\\Resolver\\SimiCategoryCms")
 }
 
 type SimiLayerFilter {
