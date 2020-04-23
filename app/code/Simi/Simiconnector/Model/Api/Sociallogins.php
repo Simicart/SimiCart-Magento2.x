@@ -43,6 +43,7 @@ class Sociallogins extends Apiabstract
                 ->get('Simi\Simiconnector\Helper\Customer')
                 ->getToken($data);
             $info['simi_hash'] = $hash;
+            $info['social_login'] = true;
         }
         return ['customer' => $this->modifyFields($info)];
     }
