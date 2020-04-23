@@ -121,22 +121,9 @@ class Customermap extends AbstractModel
             ->addFieldToFilter('provider_id', array('eq' => $providerId))
             ->addFieldToFilter('social_user_id', array('eq' => $uid))
             ->getFirstItem();
+
         if ($customerMap->getId()) {
             return $this->simiObjectManager->create('Magento\Customer\Model\Customer')->load($customerMap->getCustomerId());
-        } else if ($this->checkOldCustomer($params)) {
-            $customer = $this->simiObjectManager
-                ->get('Simi\Simiconnector\Helper\Customer')->getCustomerByEmail($params->email);
-            if (!$customer->getId()) {
-                if (!$params->firstname) {
-                    $params->firstname = __('Firstname');
-                }
-                if (!$params->lastname) {
-                    $params->lastname = __('Lastname');
-                }
-                $customer = $this->simiObjectManager->create('Magento\Customer\Model\Customer')->_createCustomer($params);
-            }
-            $this->simiObjectManager->get('Simi\Simiconnector\Helper\Customer')->loginByCustomer($customer);
-            return $customer;
         } else {
             return $this->createCustomer($params);
         }
