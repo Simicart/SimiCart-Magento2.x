@@ -16,7 +16,8 @@ class Address extends Data
 
     public function _getQuote()
     {
-        return $this->_getCart()->getQuote();
+        $quote = $this->_getCart()->getQuote();
+        return $this->simiObjectManager->get('\Magento\Quote\Api\CartRepositoryInterface')->getActive($quote->getId());
     }
 
     /*
