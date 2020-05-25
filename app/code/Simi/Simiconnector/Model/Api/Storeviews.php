@@ -230,6 +230,10 @@ class Storeviews extends Apiabstract
                 ->getStoreConfig('simiconnector/general/show_discount_label_in_product'),
                     'show_size_in_compare'                   => $this
                 ->getStoreConfig('siminiaconfig/compareconfig/show_size_in_compare'),
+                    'footer_title1'                            => $this
+                ->getStoreConfig('siminiaconfig/footer_link/ft_title1'),
+                    'footer_title2'                            => $this
+                ->getStoreConfig('siminiaconfig/footer_link/ft_title2'),
                     'footer_link'                            => $this
                 ->getStoreConfig('siminiaconfig/footer_link/ft_link'),
                 ],

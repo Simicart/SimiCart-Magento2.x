@@ -637,7 +637,13 @@
             </group>
             <group id="footer_link" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Footer Link (ecommerce by Simicart)</label>
-                <field id="ft_link" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="ft_title1" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title 1</label>
+                </field>
+                <field id="ft_title2" translate="label" type="text" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title 2</label>
+                </field>
+                <field id="ft_link" translate="label" type="text" sortOrder="19" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Link</label>
                     <comment>Must contain https:// or http://</comment>
                 </field>
