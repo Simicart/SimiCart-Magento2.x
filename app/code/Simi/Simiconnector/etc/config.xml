@@ -100,6 +100,9 @@
             <compareconfig>
                 <show_size_in_compare>0</show_size_in_compare>
             </compareconfig>
+            <footer_link>
+                <ft_link>https://www.simicart.com/pwa.html/</ft_link>
+            </footer_link>
         </siminiaconfig>
     </default>
 </config>
