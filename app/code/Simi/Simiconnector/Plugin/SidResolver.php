@@ -33,6 +33,15 @@ class SidResolver
                 return $simiSessId;
             }
         }
+        //in case of GET graphQL
+        $graphQLVariables = $this->request->getParam('variables');
+        if ($graphQLVariables) {
+            $graphQLVariables = json_decode($graphQLVariables, true);
+            if ($graphQLVariables && is_array($graphQLVariables)) {
+                if (isset($graphQLVariables['simiSessId']) && $graphQLVariables['simiSessId'])
+                    return $graphQLVariables['simiSessId'];
+            }
+        }
         return $result;
     }
 }
