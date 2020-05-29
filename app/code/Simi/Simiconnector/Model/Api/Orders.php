@@ -8,8 +8,137 @@ namespace Simi\Simiconnector\Model\Api;
 
 class Orders extends Apiabstract
 {
-
     public $DEFAULT_ORDER = 'entity_id';
+    public $RETURN_MESSAGE;
+    public $QUOTE_INITED  = false;
+    public $detail_onepage;
+    public $place_order;
+    public $order_placed_info;
+    public $time_zone = null;
+
+    public function _getCart()
+    {
+        return $this->simiObjectManager->get('Magento\Checkout\Model\Cart');
+    }
+
+    public function _getQuote()
+    {
+        return $this->_getCart()->getQuote();
+    }
+
+    public function _getCheckoutSession()
+    {
+        return $this->simiObjectManager->create('Magento\Checkout\Model\Session');
+    }
+
+    public function _getOnepage()
+    {
+        return $this->simiObjectManager->create('Magento\Checkout\Model\Type\Onepage');
+    }
+
+    public function setBuilderQuery()
+    {
+        $data = $this->getData();
+        if ($data['resourceid']) {
+            if ($data['resourceid'] == 'onepage') {
+                return;
+            } else {
+                if (isset($data['params']['by_entity_id'])) {
+                    $this->builderQuery = $this->simiObjectManager->create('Magento\Sales\Model\Order')
+                            ->load($data['resourceid']);
+                }
+                try {
+                    $this->builderQuery = $this->simiObjectManager->create('Magento\Sales\Model\Order')
+                            ->loadByIncrementId($data['resourceid']);
+                } catch (\Exception $e) {
+
+                }
+                if (!$this->builderQuery || !$this->builderQuery->getId()) {
+                    $this->builderQuery = $this->simiObjectManager->create('Magento\Sales\Model\Order')
+                            ->load($data['resourceid']);
+                }
+                if (!$this->builderQuery || !$this->builderQuery->getId()) {
+                    throw new \Simi\Simiconnector\Helper\SimiException(__('Cannot find the Order'), 6);
+                }
+            }
+        } else {
+            $this->builderQuery = $this->simiObjectManager->create('Magento\Sales\Model\Order')->getCollection()
+                    ->addFieldToFilter(
+                        'customer_id',
+                        $this->simiObjectManager->create('Magento\Customer\Model\Session')->getCustomer()->getId()
+                    )
+                    ->setOrder('entity_id', 'DESC');
+        }
+    }
+
+    /*
+     * Update Checkout Order (onepage) Information
+     */
+
+    public function update()
+    {
+        $data = $this->getData();
+        if ($data['resourceid'] == 'onepage') {
+            $this->_updateOrder();
+            return $this->show();
+        } else {
+            $order = $this->builderQuery;
+            $param = $data['contents'];
+            if ($param->status == 'cancel') {
+                $order->cancel();
+                $order->setState(\Magento\Sales\Model\Order::STATE_CANCELED, true);
+                $order->save();
+            } else {
+                $order->setState($param->status, true);
+                $order->save();
+            }
+            return $this->show();
+        }
+    }
+
+    private function _updateOrder()
+    {
+        $data       = $this->getData();
+        $parameters = (array) $data['contents'];
+
+        if (isset($parameters['b_address'])) {
+            $this->_initCheckout();
+            $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
+                    ->saveBillingAddress($parameters['b_address']);
+            if (!isset($parameters['s_address']) && (!$this->_getQuote()->getShippingAddress()->getFirstName())) {
+                $parameters['s_address'] = $parameters['b_address'];
+            }
+        }
+
+        if (isset($parameters['s_address'])) {
+            $this->_initCheckout();
+            $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
+                    ->saveShippingAddress($parameters['s_address']);
+            if (!isset($parameters['b_address']) && (!$this->_getQuote()->getBillingAddress()->getFirstName())) {
+                $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
+                    ->saveBillingAddress($parameters['s_address']);
+            }
+        }
+
+        if (isset($parameters['coupon_code'])) {
+            $this->RETURN_MESSAGE = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Coupon')
+                    ->setCoupon($parameters['coupon_code']);
+        }
+
+        if (isset($parameters['s_method'])) {
+            $this->simiObjectManager->get('Simi\Simiconnector\Helper\Checkout\Shipping')
+                    ->saveShippingMethod($parameters['s_method']);
+        }
+
+        if (isset($parameters['p_method'])) {
+            $this->simiObjectManager->get('Simi\Simiconnector\Helper\Checkout\Payment')
+                    ->savePaymentMethod($parameters['p_method']);
+        }
+
+        $this->_getOnepage()->getQuote()->collectTotals()->save();
+    }
+
+public $DEFAULT_ORDER = 'entity_id';
     public $RETURN_MESSAGE;
     public $QUOTE_INITED  = false;
     public $detail_onepage;
@@ -342,14 +471,18 @@ class Orders extends Apiabstract
         } else {
             $result = parent::show();
             if ($data['params']['reorder'] == 1) {
-                $order = $this->simiObjectManager->create('Magento\Sales\Model\Order')->load($data['resourceid']);
-                $cart  = $this->_getCart();
-                $items = $order->getItemsCollection();
-                foreach ($items as $item) {
-                    $cart->addOrderItem($item);
+                if ($this->builderQuery && $this->builderQuery->getId()) {
+                    // $order = $this->simiObjectManager->create('Magento\Sales\Model\Order')->load($data['resourceid']);
+                    $cart  = $this->_getCart();
+                    $items = $this->builderQuery->getItemsCollection();
+                    foreach ($items as $item) {
+                        $cart->addOrderItem($item);
+                    }
+                    $cart->save();
+                    $result['message'] = __('Reorder Succeeded');
+                } else {
+                    $result['message'] = __('Can not re-order this order');
                 }
-                $cart->save();
-                $result['message'] = __('Reorder Succeeded');
             }
             $order           = $result['order'];
             $customer        = $this->simiObjectManager->create('Magento\Customer\Model\Session')->getCustomer();
