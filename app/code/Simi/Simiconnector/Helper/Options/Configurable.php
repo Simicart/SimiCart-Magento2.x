@@ -42,7 +42,11 @@ class Configurable extends \Simi\Simiconnector\Helper\Options
                             is_array($option_data['products']) &&
                             count($option_data['products']) != 0
                         ) {
-                            $updatedOptions[] = $option_data;
+                            if($attribute_details['code'] === 'color') {
+                                $option_data['option_value'] = $this->getValueSwatch($option_data['id']);
+                            }
+                            if (isset($option_data['option_value']) && $option_data['option_value'])
+                                $updatedOptions[] = $option_data;
                         }
                     }
                     $attribute_details['options'] = $updatedOptions;
@@ -60,5 +64,16 @@ class Configurable extends \Simi\Simiconnector\Helper\Options
             $options['custom_options'] = $custom_options['custom_options'];
         }
         return $options;
+    }
+
+    private function getValueSwatch($id) {
+        $swatchHelper = $this->simiObjectManager->get('Magento\Swatches\Helper\Data');
+        $value = $swatchHelper->getSwatchesByOptionsId([$id]);
+        if (!isset($value[$id]['value']))
+            return;
+        if(strpos($value[$id]['value'], '#') === false) {
+            $value[$id]['value'] = $this->simiObjectManager->get('Magento\Swatches\Helper\Media')->getSwatchMediaUrl().$value[$id]['value'];
+        }
+        return $value[$id]['value'];
     }
 }
