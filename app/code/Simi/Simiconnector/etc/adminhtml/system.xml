@@ -592,20 +592,60 @@
             <label>SimiCart PWA-Studio</label>
             <tab>simi</tab>
             <resource>Simi_Simi::config_simi</resource>
-            <group id="braintree" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="braintree" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Braintree Configuration</label>
                 <field id="braintree_token" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Checkout Braintree Token</label>
                     <comment>You can find this value in Braintree's Control Panel under Settings > API Keys > Tokenization Keys</comment>
                 </field>
             </group>
-            <group id="compareconfig" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="compareconfig" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>Compare Products Configuration</label>
                 <field id="show_size_in_compare" translate="label" type="select" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Show 'Size' in Compare products</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Let api graphql return app_options in simiExtraField on listing products.
                         It allows to show size row on compare modal.</comment>
+                </field>
+            </group>
+            <group id="contactus" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Contact Page Configuration</label>
+                <field id="email" translate="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>EMAIL</label>
+                    <frontend_model>Simi\Simiconnector\Block\Adminhtml\Form\Field\Email</frontend_model>
+                    <backend_model>Simi\Simiconnector\Config\Backend\SimiConfig</backend_model>
+                    <comment>List email at contact page</comment>
+                </field>
+                <field id="hotline" translate="label" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>HOTLINE</label>
+                    <frontend_model>Simi\Simiconnector\Block\Adminhtml\Form\Field\Hotline</frontend_model>
+                    <backend_model>Simi\Simiconnector\Config\Backend\SimiConfig</backend_model>
+                    <comment>List telephone number at contact page</comment>
+                </field>
+                <field id="sms" translate="label" sortOrder="19" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>SMS</label>
+                    <frontend_model>Simi\Simiconnector\Block\Adminhtml\Form\Field\Sms</frontend_model>
+                    <backend_model>Simi\Simiconnector\Config\Backend\SimiConfig</backend_model>
+                    <comment>List telephone number receive SMS at contact page</comment>
+                </field>
+                <field id="website" translate="label" sortOrder="29" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>WEBSITE</label>
+                    <frontend_model>Simi\Simiconnector\Block\Adminhtml\Form\Field\Website</frontend_model>
+                    <backend_model>Simi\Simiconnector\Config\Backend\SimiConfig</backend_model>
+                    <comment>List links at contact page.</comment>
+                </field>
+            </group>
+            <group id="footer_link" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Footer Link (ecommerce by Simicart)</label>
+                <field id="ft_title1" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title 1</label>
+                </field>
+                <field id="ft_title2" translate="label" type="text" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title 2</label>
+                </field>
+                <field id="ft_link" translate="label" type="text" sortOrder="19" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Link</label>
+                    <comment>Must contain https:// or http://</comment>
                 </field>
             </group>
         </section>
