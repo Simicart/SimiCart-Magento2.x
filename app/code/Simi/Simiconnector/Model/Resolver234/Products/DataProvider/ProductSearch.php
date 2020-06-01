@@ -17,6 +17,7 @@ use Magento\Catalog\Model\ResourceModel\Product\Collection;
 use Magento\Catalog\Api\Data\ProductSearchResultsInterfaceFactory;
 use Magento\Framework\Api\SearchResultsInterface;
 use Magento\CatalogGraphQl\Model\Resolver\Products\DataProvider\Product\CollectionProcessorInterface;
+use Magento\Catalog\Model\Product\Visibility;
 
 /**
  * Product field data provider for product search, used for GraphQL resolver processing.
@@ -115,16 +116,19 @@ class ProductSearch
             if (!isset($args['sort'])) {
                 $collection->setOrder('relevance', 'desc');
             }
+            $collection->setVisibility(array('in' => array(Visibility::VISIBILITY_IN_SEARCH, Visibility::VISIBILITY_BOTH)));
         }
         //filter by category
         if ($args && isset($args['filter']['category_id']['eq'])) {
             $category = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
                 ->load($args['filter']['category_id']['eq']);
             $collection = $category->getProductCollection();
+            $collection->setVisibility(array('in' => array(Visibility::VISIBILITY_IN_CATALOG, Visibility::VISIBILITY_BOTH)));
         } else if (!$is_search || !$collection) {
             $category = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
                 ->load($this->simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface')->getStore()->getRootCategoryId());
             $collection = $category->getProductCollection();
+            $collection->setVisibility(array('in' => array(Visibility::VISIBILITY_IN_CATALOG, Visibility::VISIBILITY_BOTH)));
         }
         $helper->builderQuery = $collection;
 
