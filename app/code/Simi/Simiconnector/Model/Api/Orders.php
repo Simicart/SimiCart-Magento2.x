@@ -342,14 +342,18 @@ class Orders extends Apiabstract
         } else {
             $result = parent::show();
             if ($data['params']['reorder'] == 1) {
-                $order = $this->simiObjectManager->create('Magento\Sales\Model\Order')->load($data['resourceid']);
-                $cart  = $this->_getCart();
-                $items = $order->getItemsCollection();
-                foreach ($items as $item) {
-                    $cart->addOrderItem($item);
+                if ($this->builderQuery && $this->builderQuery->getId()) {
+                    // $order = $this->simiObjectManager->create('Magento\Sales\Model\Order')->load($data['resourceid']);
+                    $cart  = $this->_getCart();
+                    $items = $this->builderQuery->getItemsCollection();
+                    foreach ($items as $item) {
+                        $cart->addOrderItem($item);
+                    }
+                    $cart->save();
+                    $result['message'] = __('Reorder Succeeded');
+                } else {
+                    $result['message'] = __('Can not re-order this order');
                 }
-                $cart->save();
-                $result['message'] = __('Reorder Succeeded');
             }
             $order           = $result['order'];
             $customer        = $this->simiObjectManager->create('Magento\Customer\Model\Session')->getCustomer();
