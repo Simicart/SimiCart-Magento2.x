@@ -78,6 +78,13 @@ class Customers extends Apiabstract
                     if ($this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')->logout()) {
                         $this->builderQuery = $this->simiObjectManager
                             ->get('Magento\Customer\Model\Customer')->load($lastCustomerId);
+
+	                    //fix bug logout not clear old quote
+	                    $cart  = $this->simiObjectManager->get( 'Magento\Checkout\Model\Cart' );
+	                    $quote = $this->simiObjectManager->create( 'Magento\Quote\Model\Quote' );
+	                    $cart->setQuote( $quote );
+	                    $newCustomer = $this->simiObjectManager->create( 'Magento\Customer\Model\Customer' );
+	                    $this->simiObjectManager->get( 'Magento\Customer\Model\Session' )->setCustomer( $newCustomer );
                     } else {
                         throw new \Simi\Simiconnector\Helper\SimiException(__('Logout Failed'), 4);
                     }
