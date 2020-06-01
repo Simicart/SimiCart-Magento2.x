@@ -145,6 +145,12 @@ class Storeviews extends Apiabstract
                 'enable_guest_checkout' => $this->getStoreConfig('checkout/options/guest_checkout'),
                 'enable_agreements'     => ($this->getStoreConfig('checkout/options/enable_agreements') === null) ?
                 0 : $this->getStoreConfig('checkout/options/enable_agreements'),
+                'checkout_webview' => [
+                    'enable' => $this->getStoreConfig('simiconnector/checkout_config/enable_checkout_webview'),
+                    'checkout_url' => $this->getStoreConfig('simiconnector/checkout_config/checkout_page_url'),
+                    'success_url' => $this->getStoreConfig('simiconnector/checkout_config/url_success'),
+                    'fail_url' => $this->getStoreConfig('simiconnector/checkout_config/url_failed'),
+                ],
             ],
             'tax'               => [
                 'tax_display_type'               => $this->getStoreConfig('tax/display/type'),
