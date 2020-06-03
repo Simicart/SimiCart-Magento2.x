@@ -8,10 +8,12 @@
         <observer name="simi_connector_sales_quote_address_save_before"
                   instance="Simi\Simiconnector\Observer\SalesQuoteAddressSaveBefore" />
     </event>
+    <!-- fixed by plugin at Simi\Simiconnector\Plugin\CustomerSessionInit so this event catching is neccessary no more
     <event name="customer_session_init">
         <observer name="simi_connector_customer_session_init"
                   instance="Simi\Simiconnector\Observer\CustomerSessionInit" />
     </event>
+    -->
     <event name="controller_front_send_response_before">
         <observer name="simi_simiconnector_controller_front_send_response_before"
                   instance="Simi\Simiconnector\Observer\ControllerSendResponseBefore" />
