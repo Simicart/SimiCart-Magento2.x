@@ -648,6 +648,13 @@
                     <comment>Must contain https:// or http://</comment>
                 </field>
             </group>
+            <group id="storeview_api" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Store View API</label>
+                <field id="add_home_api_to_storeview_api" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Add Home API to Store View API</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
         </section>
     </system>
 </config>

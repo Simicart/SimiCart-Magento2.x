@@ -276,8 +276,12 @@ class Storeviews extends Apiabstract
                 'token' => $this->getStoreConfig('simiconnector/mixpanel/token'),
             ],
             'allowed_countries' => $this->getAllowedCountries(),
-            'stores'            => $this->getStores(),
+            'stores'            => $this->getStores()
         ];
+
+        if ($this->getStoreConfig('siminiaconfig/storeview_api/add_home_api_to_storeview_api')) {
+            $additionInfo['home_lite'] = $this->_getHomeLite();
+        }
 
         if ($checkout_info_setting = $this->simiObjectManager
                 ->get('\Simi\Simiconnector\Helper\Address')->getCheckoutAddressSetting()) {
@@ -456,6 +460,17 @@ class Storeviews extends Apiabstract
         $storeAPIModel->pluralKey    = 'stores';
         return $storeAPIModel->index();
     }
+
+    private function _getHomeLite(){
+        $data = $this->getData();
+        $data['resourceid'] = 'lite';
+        $homeAPIModel               = $this->simiObjectManager->get('Simi\Simiconnector\Model\Api\Homes');
+        $homeAPIModel->setData($data);
+        $homeAPIModel->pluralKey    = 'homes';
+        $homeAPIModel->singularKey = 'home';
+        return $homeAPIModel->show();
+    }
+
     private function _passwordValidationConfiguration(){
         $result = [];
         $result['minimum_password_length'] = $this->getStoreConfig('customer/password/minimum_password_length');
