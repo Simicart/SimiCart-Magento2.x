@@ -159,14 +159,15 @@ class Customers extends Apiabstract
                 ->getToken($data);
             $resultArray['customer']['simi_hash'] = $hash;
         }
-
-        $customerMap = $this->simiObjectManager->create('Simi\Simiconnector\Model\Customermap')->getCollection()
-            ->addFieldToFilter('customer_id', $resultArray['customer']['entity_id'])
-            ->getFirstItem();
-        if ($customerMap->getId()) {
-            $resultArray['customer']['social_login'] = true;
-        } else {
-            $resultArray['customer']['social_login'] = false;
+        if (isset($resultArray['customer']['entity_id'])) {
+            $customerMap = $this->simiObjectManager->create('Simi\Simiconnector\Model\Customermap')->getCollection()
+                ->addFieldToFilter('customer_id', $resultArray['customer']['entity_id'])
+                ->getFirstItem();
+            if ($customerMap->getId()) {
+                $resultArray['customer']['social_login'] = true;
+            } else {
+                $resultArray['customer']['social_login'] = false;
+            }
         }
 
         return $resultArray;
