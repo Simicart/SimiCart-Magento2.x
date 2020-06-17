@@ -126,11 +126,11 @@ class Quoteitems extends Apiabstract
         $product               = $this->_initProduct($params['product']);
         $cart->addProduct($product, $params);
         $this->_getSession()->setCartWasUpdated(true);
-        $this->eventManager->dispatch(
-            'checkout_cart_add_product_complete',
-            ['product' => $product, 'request' => $controller->getRequest(),
-            'response' => $controller->getResponse()]
-        );
+        // $this->eventManager->dispatch(
+        //     'checkout_cart_add_product_complete',
+        //     ['product' => $product, 'request' => $controller->getRequest(),
+        //     'response' => $controller->getResponse()]
+        // );
         $this->RETURN_MESSAGE = __('You added %1 to your shopping cart.', $product->getName());
     }
 
