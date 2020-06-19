@@ -96,5 +96,15 @@
                 <noti_purchase_enable>0</noti_purchase_enable>
             </noti_purchase>
         </simi_notifications>
+        <siminiaconfig>
+            <compareconfig>
+                <show_size_in_compare>0</show_size_in_compare>
+            </compareconfig>
+            <footer_link>
+                <ft_title1>eCommerce by </ft_title1>
+                <ft_title2>Simicart</ft_title2>
+                <ft_link>https://www.simicart.com/pwa.html/</ft_link>
+            </footer_link>
+        </siminiaconfig>
     </default>
 </config>

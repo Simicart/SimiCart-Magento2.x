@@ -80,7 +80,7 @@ class Homecategories extends Apiabstract
             $childCollection  = $this->getVisibleChildren($item['category_id']);
             if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countCollection($childCollection)) {
                 $item['has_children'] = true;
-                if ($data['params']['get_child_cat']) {
+                if (isset($data['params']['get_child_cat']) && $data['params']['get_child_cat']) {
                     $childArray = [];
                     foreach ($childCollection as $childCat) {
                         $childInfo            = $childCat->toArray();

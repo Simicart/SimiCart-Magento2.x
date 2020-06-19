@@ -91,10 +91,19 @@ class Wishlistitems extends Apiabstract
             } else {
                 $width  = $height = 200;
             }
+            $typeId = $product->getTypeId();
+            if($typeId === 'bundle') {
+                $budlePrice = $product->getPriceInfo()->getPrice('final_price');
+                $product_price = $budlePrice->getMinimalPrice()->getValue();
+                $product_regular_price = $budlePrice->getMaximalPrice()->getValue();
+            } else {
+                $product_regular_price = $product->getPrice();
+                $product_price = $product->getFinalPrice();
+            }
             $addition_info[$itemModel->getData('wishlist_item_id')] = [
                 'type_id'                       => $product->getTypeId(),
-                'product_regular_price'         => $product->getPrice(),
-                'product_price'                 => $product->getFinalPrice(),
+                'product_regular_price'         => $product_regular_price,
+                'product_price'                 => $product_price,
                 'stock_status'                  => $isSaleAble,
                 'product_image'                 => $this->simiObjectManager
                     ->get('\Simi\Simiconnector\Helper\Products')->getImageProduct($product, null, $width, $height),

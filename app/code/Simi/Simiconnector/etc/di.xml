@@ -14,4 +14,8 @@
     </type>
     <!-- override to add cart with old date type model magento instead of webapi model - uncomment it with simi pwa studio -->
     <preference for="Magento\Catalog\Model\Webapi\Product\Option\Type\Date" type="Simi\Simiconnector\Override\Model\Product\Option\Type\Date" />
+    <!-- session init observer fix from magento 2.3.5 (customer_session_init event removed) -->
+    <type name="Magento\Framework\App\FrontControllerInterface">
+        <plugin name="simiconnector_session_init_plugin" type="Simi\Simiconnector\Plugin\CustomerSessionInit" />
+    </type>
 </config>

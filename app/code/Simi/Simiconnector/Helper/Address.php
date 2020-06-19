@@ -213,9 +213,14 @@ class Address extends Data
             $email = $customer->getEmail();
         }
 
+        if (!isset($street[1])) {
+            $street[1] = null;
+        }
+
         if (!isset($street[2])) {
             $street[2] = null;
         }
+
         $detail = [
             'firstname'    => $data->getFirstname(),
             'lastname'     => $data->getLastname(),
@@ -223,6 +228,7 @@ class Address extends Data
             'suffix'       => $data->getSuffix(),
             'vat_id'       => $data->getVatId(),
             'street'       => $street[0],
+            'street2'       => $street[1],
             'city'         => $data->getCity(),
             'region'       => $data->getRegion(),
             'region_id'    => $data->getRegionId(),

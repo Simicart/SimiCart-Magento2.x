@@ -340,16 +340,29 @@ class Orders extends Apiabstract
             );
             return $this->detail_onepage;
         } else {
+            $isAuth = false;
+            if ($this->simiObjectManager->create('Magento\Customer\Model\Session')->isLoggedIn()) {
+                $customerId = $this->simiObjectManager->create('Magento\Customer\Model\Session')->getCustomer()->getId();
+                if ($customerId == $this->builderQuery->getData('customer_id'))
+                    $isAuth = true;
+            }
+            if (!$isAuth)
+                throw new \Simi\Simiconnector\Helper\SimiException(__('Not Authorized'), 6);
+
             $result = parent::show();
             if ($data['params']['reorder'] == 1) {
-                $order = $this->simiObjectManager->create('Magento\Sales\Model\Order')->load($data['resourceid']);
-                $cart  = $this->_getCart();
-                $items = $order->getItemsCollection();
-                foreach ($items as $item) {
-                    $cart->addOrderItem($item);
+                if ($this->builderQuery && $this->builderQuery->getId()) {
+                    // $order = $this->simiObjectManager->create('Magento\Sales\Model\Order')->load($data['resourceid']);
+                    $cart  = $this->_getCart();
+                    $items = $this->builderQuery->getItemsCollection();
+                    foreach ($items as $item) {
+                        $cart->addOrderItem($item);
+                    }
+                    $cart->save();
+                    $result['message'] = __('Reorder Succeeded');
+                } else {
+                    $result['message'] = __('Can not re-order this order');
                 }
-                $cart->save();
-                $result['message'] = __('Reorder Succeeded');
             }
             $order           = $result['order'];
             $customer        = $this->simiObjectManager->create('Magento\Customer\Model\Session')->getCustomer();
@@ -414,19 +427,19 @@ class Orders extends Apiabstract
                 $options = $this->_getOptions($item->getProductType(), $item->getProductOptions());
             }
             $images = array();
-	        $parent_sku = null;
+            $parent_sku = null;
             if ($product = $item->getProduct()) {
                 $images = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Products')
                 ->getImageProduct($product);
-	            if ($item->getProductType() == 'configurable'){
-		            $parent_sku = $product->getSku();
-	            }
+                if ($item->getProductType() == 'configurable'){
+                    $parent_sku = $product->getSku();
+                }
             }
             $productInfo[] = array_merge(
                 ['option' => $options],
                 $item->toArray(),
                 ['image' => $images],
-	            ['parent_sku' => $parent_sku]
+                ['parent_sku' => $parent_sku]
             );
         }
 

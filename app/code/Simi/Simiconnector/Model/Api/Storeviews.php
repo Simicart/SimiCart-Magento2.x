@@ -228,6 +228,14 @@ class Storeviews extends Apiabstract
                 ->getStoreConfig('catalog/frontend/parse_url_directives'),
                     'show_discount_label_in_product'         => $this
                 ->getStoreConfig('simiconnector/general/show_discount_label_in_product'),
+                    'show_size_in_compare'                   => $this
+                ->getStoreConfig('siminiaconfig/compareconfig/show_size_in_compare'),
+                    'footer_title1'                            => $this
+                ->getStoreConfig('siminiaconfig/footer_link/ft_title1'),
+                    'footer_title2'                            => $this
+                ->getStoreConfig('siminiaconfig/footer_link/ft_title2'),
+                    'footer_link'                            => $this
+                ->getStoreConfig('siminiaconfig/footer_link/ft_link'),
                 ],
                 'cataloginventory' => [
                     'cataloginventory_item_options_manage_stock'          => $this
@@ -268,8 +276,12 @@ class Storeviews extends Apiabstract
                 'token' => $this->getStoreConfig('simiconnector/mixpanel/token'),
             ],
             'allowed_countries' => $this->getAllowedCountries(),
-            'stores'            => $this->getStores(),
+            'stores'            => $this->getStores()
         ];
+
+        if ($this->getStoreConfig('siminiaconfig/storeview_api/add_home_api_to_storeview_api')) {
+            $additionInfo['home_lite'] = $this->_getHomeLite();
+        }
 
         if ($checkout_info_setting = $this->simiObjectManager
                 ->get('\Simi\Simiconnector\Helper\Address')->getCheckoutAddressSetting()) {
@@ -285,6 +297,33 @@ class Storeviews extends Apiabstract
             $additionInfo['instant_contact'] = $this->simiObjectManager
                     ->get('\Simi\Simiconnector\Helper\Instantcontact')->getContacts();
         }
+
+        $contactEmails = $this->getStoreConfig('siminiaconfig/contactus/email');
+        if ($contactEmails) {
+            $contactEmails = $this->simiObjectManager->get('Magento\Framework\Serialize\SerializerInterface')
+                ->unserialize($contactEmails);
+        }
+        $contactHotlines = $this->getStoreConfig('siminiaconfig/contactus/hotline');
+        if ($contactHotlines) {
+            $contactHotlines = $this->simiObjectManager->get('Magento\Framework\Serialize\SerializerInterface')
+                ->unserialize($contactHotlines);
+        }
+        $contactSms = $this->getStoreConfig('siminiaconfig/contactus/sms');
+        if ($contactSms) {
+            $contactSms = $this->simiObjectManager->get('Magento\Framework\Serialize\SerializerInterface')
+                ->unserialize($contactSms);
+        }
+        $contactWebsites = $this->getStoreConfig('siminiaconfig/contactus/website');
+        if ($contactWebsites) {
+            $contactWebsites = $this->simiObjectManager->get('Magento\Framework\Serialize\SerializerInterface')
+                ->unserialize($contactWebsites);
+        }
+        $additionInfo['contactus'] = [
+            'listEmail' => $contactEmails,
+            'listHotline' => $contactHotlines,
+            'listSms' => $contactSms,
+            'listWebsite' => $contactWebsites
+        ];
 
         $this->storeviewInfo = $additionInfo;
         $this->simiObjectManager->get('\Magento\Framework\Event\ManagerInterface')
@@ -421,6 +460,17 @@ class Storeviews extends Apiabstract
         $storeAPIModel->pluralKey    = 'stores';
         return $storeAPIModel->index();
     }
+
+    private function _getHomeLite(){
+        $data = $this->getData();
+        $data['resourceid'] = 'lite';
+        $homeAPIModel               = $this->simiObjectManager->get('Simi\Simiconnector\Model\Api\Homes');
+        $homeAPIModel->setData($data);
+        $homeAPIModel->pluralKey    = 'homes';
+        $homeAPIModel->singularKey = 'home';
+        return $homeAPIModel->show();
+    }
+
     private function _passwordValidationConfiguration(){
         $result = [];
         $result['minimum_password_length'] = $this->getStoreConfig('customer/password/minimum_password_length');
