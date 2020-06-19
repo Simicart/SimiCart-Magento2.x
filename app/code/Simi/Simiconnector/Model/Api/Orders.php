@@ -340,6 +340,15 @@ class Orders extends Apiabstract
             );
             return $this->detail_onepage;
         } else {
+            $isAuth = false;
+            if ($this->simiObjectManager->create('Magento\Customer\Model\Session')->isLoggedIn()) {
+                $customerId = $this->simiObjectManager->create('Magento\Customer\Model\Session')->getCustomer()->getId();
+                if ($customerId == $this->builderQuery->getData('customer_id'))
+                    $isAuth = true;
+            }
+            if (!$isAuth)
+                throw new \Simi\Simiconnector\Helper\SimiException(__('Not Authorized'), 6);
+
             $result = parent::show();
             if ($data['params']['reorder'] == 1) {
                 if ($this->builderQuery && $this->builderQuery->getId()) {
