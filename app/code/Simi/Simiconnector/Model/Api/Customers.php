@@ -94,8 +94,7 @@ class Customers extends Apiabstract
                         ->getCustomerByEmail($data['params']['customer_email']);
                     break;
                 default:
-                    $this->builderQuery = $this->simiObjectManager->get('Magento\Customer\Model\Customer')
-                        ->setWebsiteId($this->storeManager->getStore()->getWebsiteId())->load($data['resourceid']);
+                    throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid Resource Id'));
                     break;
             }
         } else {
