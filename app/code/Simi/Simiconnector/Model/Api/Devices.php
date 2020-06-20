@@ -13,13 +13,6 @@ class Devices extends Apiabstract
 
     public function setBuilderQuery()
     {
-        $data = $this->getData();
-        if ($data['resourceid']) {
-            $this->builderQuery = $this->simiObjectManager
-                    ->get('Simi\Simiconnector\Model\Device')->load($data['resourceid']);
-        } else {
-            $this->builderQuery = $this->simiObjectManager->get('Simi\Simiconnector\Model\Device')->getCollection();
-        }
     }
 
     public function store()
