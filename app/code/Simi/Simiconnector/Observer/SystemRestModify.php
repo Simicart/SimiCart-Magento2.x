@@ -157,6 +157,12 @@ class SystemRestModify implements ObserverInterface
             $requestCustomer = $this->simiObjectManager->get('Magento\Customer\Model\Customer')
                 ->setWebsiteId($storeManager->getStore()->getWebsiteId())
                 ->loadByEmail($requestContent['username']);
+            //fix quote billing address does not have customer Id
+            $quote = $this->simiObjectManager->create('\Magento\Quote\Model\Quote')->loadByCustomer($requestCustomer);
+            $billing = $quote->getBillingAddress();
+            if ($billing && $billing->getId() && !$billing->getCustomerId())
+              $billing->setCustomerId($requestCustomer->getId())->save();
+
             $tokenCustomerId = $this->simiObjectManager->create('Magento\Integration\Model\Oauth\Token')
                 ->loadByToken($contentArray)->getData('customer_id');
             if ($requestCustomer && $requestCustomer->getId() == $tokenCustomerId) {

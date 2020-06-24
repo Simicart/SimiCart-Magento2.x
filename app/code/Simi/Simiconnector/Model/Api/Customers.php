@@ -78,6 +78,13 @@ class Customers extends Apiabstract
                     if ($this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')->logout()) {
                         $this->builderQuery = $this->simiObjectManager
                             ->get('Magento\Customer\Model\Customer')->load($lastCustomerId);
+
+	                    //fix bug logout not clear old quote
+	                    $cart  = $this->simiObjectManager->get( 'Magento\Checkout\Model\Cart' );
+	                    $quote = $this->simiObjectManager->create( 'Magento\Quote\Model\Quote' );
+	                    $cart->setQuote( $quote );
+	                    $newCustomer = $this->simiObjectManager->create( 'Magento\Customer\Model\Customer' );
+	                    $this->simiObjectManager->get( 'Magento\Customer\Model\Session' )->setCustomer( $newCustomer );
                     } else {
                         throw new \Simi\Simiconnector\Helper\SimiException(__('Logout Failed'), 4);
                     }
@@ -87,8 +94,7 @@ class Customers extends Apiabstract
                         ->getCustomerByEmail($data['params']['customer_email']);
                     break;
                 default:
-                    $this->builderQuery = $this->simiObjectManager->get('Magento\Customer\Model\Customer')
-                        ->setWebsiteId($this->storeManager->getStore()->getWebsiteId())->load($data['resourceid']);
+                    throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid Resource Id'));
                     break;
             }
         } else {
@@ -152,14 +158,15 @@ class Customers extends Apiabstract
                 ->getToken($data);
             $resultArray['customer']['simi_hash'] = $hash;
         }
-
-        $customerMap = $this->simiObjectManager->create('Simi\Simiconnector\Model\Customermap')->getCollection()
-            ->addFieldToFilter('customer_id', $resultArray['customer']['entity_id'])
-            ->getFirstItem();
-        if ($customerMap->getId()) {
-            $resultArray['customer']['social_login'] = true;
-        } else {
-            $resultArray['customer']['social_login'] = false;
+        if (isset($resultArray['customer']['entity_id'])) {
+            $customerMap = $this->simiObjectManager->create('Simi\Simiconnector\Model\Customermap')->getCollection()
+                ->addFieldToFilter('customer_id', $resultArray['customer']['entity_id'])
+                ->getFirstItem();
+            if ($customerMap->getId()) {
+                $resultArray['customer']['social_login'] = true;
+            } else {
+                $resultArray['customer']['social_login'] = false;
+            }
         }
 
         return $resultArray;

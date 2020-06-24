@@ -55,11 +55,17 @@ class CustomerSessionInit implements ObserverInterface
             if (!$simiStoreId && isset($contents_array['variables']['storeId'])) {
                 $simiStoreId = $contents_array['variables']['storeId'];
             }
+            if (!$simiStoreId && isset($contents_array['simiStoreId'])) {
+                $simiStoreId = $contents_array['simiStoreId'];
+            }
             if (!$simiCurrency && isset($contents_array['variables']['simiCurrency'])) {
                 $simiCurrency = $contents_array['variables']['simiCurrency'];
             }
             if (!$simiCurrency && isset($contents_array['variables']['currency'])) {
                 $simiCurrency = $contents_array['variables']['currency'];
+            }
+            if (!$simiCurrency && isset($contents_array['simiCurrency'])) {
+                $simiCurrency = $contents_array['simiCurrency'];
             }
         }
         //in case of GET graphQL

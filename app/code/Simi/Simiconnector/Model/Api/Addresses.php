@@ -24,8 +24,15 @@ class Addresses extends Apiabstract
         $data = $this->getData();
         if ($data['resourceid']) {
             if ($data['resourceid'] != 'geocoding') {
-                $this->builderQuery = $this->simiObjectManager
-                            ->create('Magento\Customer\Model\Address')->load($data['resourceid']);
+                $auth = false;
+                $customer     = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
+                foreach ($customer->getAddresses() as $address) {
+                    if ($address->getId() == $data['resourceid'])
+                        $auth = true;
+                }
+                if ($auth)
+                    $this->builderQuery = $this->simiObjectManager
+                        ->create('Magento\Customer\Model\Address')->load($data['resourceid']);
                 return;
             }
         } else {
