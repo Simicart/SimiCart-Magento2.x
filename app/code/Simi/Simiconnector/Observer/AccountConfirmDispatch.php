@@ -13,18 +13,23 @@ class AccountConfirmDispatch implements ObserverInterface
 
     public function __construct(
         \Magento\Framework\UrlInterface $url,
+        \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         \Magento\Framework\App\Response\Http $redirect
     )
     {
+        $this->simiObjectManager = $simiObjectManager;
         $this->_url = $url;
         $this->_redirect = $redirect;
     }
 
     public function execute(Observer $observer)
     {
-        $event = $observer->getEvent();
-        $CustomRedirectionUrl = $this->_url->getUrl('simiconnector/account/confirm');
-        $this->_redirect->setRedirect($CustomRedirectionUrl);
-
+        $pwa_studio_url = $this->simiObjectManager
+            ->get('\Magento\Framework\App\Config\ScopeConfigInterface')
+            ->getValue('simiconnector/general/pwa_studio_url');
+        if ($pwa_studio_url) {
+            $CustomRedirectionUrl = $this->_url->getUrl('simiconnector/account/confirm');
+            $this->_redirect->setRedirect($CustomRedirectionUrl);
+        }
     }
 }
