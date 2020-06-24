@@ -304,32 +304,35 @@ class Storeviews extends Apiabstract
                     ->get('\Simi\Simiconnector\Helper\Instantcontact')->getContacts();
         }
 
-        $contactEmails = $this->getStoreConfig('siminiaconfig/contactus/email');
-        if ($contactEmails) {
-            $contactEmails = $this->simiObjectManager->get('Magento\Framework\Serialize\SerializerInterface')
-                ->unserialize($contactEmails);
+        if (class_exists('Magento\Framework\Serialize\Serializer\Json')) {
+            $serializerInterface = $this->simiObjectManager->get('Magento\Framework\Serialize\SerializerInterface');
+            $contactEmails = $this->getStoreConfig('siminiaconfig/contactus/email');
+            if ($contactEmails) {
+                $contactEmails = $serializerInterface
+                    ->unserialize($contactEmails);
+            }
+            $contactHotlines = $this->getStoreConfig('siminiaconfig/contactus/hotline');
+            if ($contactHotlines) {
+                $contactHotlines = $serializerInterface
+                    ->unserialize($contactHotlines);
+            }
+            $contactSms = $this->getStoreConfig('siminiaconfig/contactus/sms');
+            if ($contactSms) {
+                $contactSms = $serializerInterface
+                    ->unserialize($contactSms);
+            }
+            $contactWebsites = $this->getStoreConfig('siminiaconfig/contactus/website');
+            if ($contactWebsites) {
+                $contactWebsites = $serializerInterface
+                    ->unserialize($contactWebsites);
+            }
+            $additionInfo['contactus'] = [
+                'listEmail' => $contactEmails,
+                'listHotline' => $contactHotlines,
+                'listSms' => $contactSms,
+                'listWebsite' => $contactWebsites
+            ];
         }
-        $contactHotlines = $this->getStoreConfig('siminiaconfig/contactus/hotline');
-        if ($contactHotlines) {
-            $contactHotlines = $this->simiObjectManager->get('Magento\Framework\Serialize\SerializerInterface')
-                ->unserialize($contactHotlines);
-        }
-        $contactSms = $this->getStoreConfig('siminiaconfig/contactus/sms');
-        if ($contactSms) {
-            $contactSms = $this->simiObjectManager->get('Magento\Framework\Serialize\SerializerInterface')
-                ->unserialize($contactSms);
-        }
-        $contactWebsites = $this->getStoreConfig('siminiaconfig/contactus/website');
-        if ($contactWebsites) {
-            $contactWebsites = $this->simiObjectManager->get('Magento\Framework\Serialize\SerializerInterface')
-                ->unserialize($contactWebsites);
-        }
-        $additionInfo['contactus'] = [
-            'listEmail' => $contactEmails,
-            'listHotline' => $contactHotlines,
-            'listSms' => $contactSms,
-            'listWebsite' => $contactWebsites
-        ];
 
         $this->storeviewInfo = $additionInfo;
         $this->simiObjectManager->get('\Magento\Framework\Event\ManagerInterface')

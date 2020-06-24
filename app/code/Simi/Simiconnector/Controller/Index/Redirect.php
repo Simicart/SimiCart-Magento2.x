@@ -16,7 +16,8 @@ class Redirect extends \Magento\Framework\App\Action\Action
         $token = base64_decode($token);
         
         $secretKey = (String )$this->getStoreConfig('simiconnector/general/secret_key');
-        $secretKeyEncrypted = md5($secretKey);
+        $encodeMethod = 'md5';
+        $secretKeyEncrypted = $encodeMethod($secretKey);
 
         $key  = substr_replace($secretKeyEncrypted,$salt,strlen($salt),0);
 

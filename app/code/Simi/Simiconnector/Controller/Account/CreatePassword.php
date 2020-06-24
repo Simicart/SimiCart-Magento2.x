@@ -60,8 +60,8 @@ class CreatePassword extends \Magento\Customer\Controller\AbstractAccount implem
         $this->session = $customerSession;
         $this->resultPageFactory = $resultPageFactory;
         $this->accountManagement = $accountManagement;
-        $this->confirmByToken = $confirmByToken
-            ?? ObjectManager::getInstance()->get(ConfirmCustomerByToken::class);
+        $this->confirmByToken = $confirmByToken ? $confirmByToken :
+             ObjectManager::getInstance()->get(ConfirmCustomerByToken::class);
 
         parent::__construct($context);
     }
