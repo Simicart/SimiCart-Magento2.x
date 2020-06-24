@@ -13,9 +13,9 @@ use Magento\Framework\Serialize\SerializerInterface;
 
 class SimiConfig extends ConfigValue
 {
-    protected $serializer;
+    public $simiObjectManager;
     public function __construct(
-        SerializerInterface $serializer,
+        \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         Context $context,
         Registry $registry,
         ScopeConfigInterface $config,
@@ -24,22 +24,32 @@ class SimiConfig extends ConfigValue
         AbstractDb $resourceCollection = null,
         array $data = []
     ) {
-        $this->serializer = $serializer;
+        $this->simiObjectManager = $simiObjectManager;
         parent::__construct($context, $registry, $config, $cacheTypeList, $resource, $resourceCollection, $data);
     }
     public function beforeSave()
     {
-        $value = $this->getValue();
-        unset($value['__empty']);
-        $encodedValue = $this->serializer->serialize($value);
-        $this->setValue($encodedValue);
+        if (class_exists('Magento\Framework\Serialize\Serializer\Json')) {
+            $serializer = $this->simiObjectManager->get('Magento\Framework\Serialize\SerializerInterface');
+            $value = $this->getValue();
+            unset($value['__empty']);
+            $encodedValue = $serializer->serialize($value);
+            $this->setValue($encodedValue);
+        } else {
+            $this->setValue('');
+        }
     }
     protected function _afterLoad()
     {
-        $value = $this->getValue();
-        if ($value) {
-            $decodedValue = $this->serializer->unserialize($value);
-            $this->setValue($decodedValue);
+        if (class_exists('Magento\Framework\Serialize\Serializer\Json')) {
+            $serializer = $this->simiObjectManager->get('Magento\Framework\Serialize\SerializerInterface');
+            $value = $this->getValue();
+            if ($value) {
+                $decodedValue = $serializer->unserialize($value);
+                $this->setValue($decodedValue);
+            }
+        } else {
+            $this->setValue(array());
         }
     }
 }
