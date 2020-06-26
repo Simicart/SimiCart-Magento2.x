@@ -163,6 +163,11 @@ class SystemRestModify implements ObserverInterface
             if ($billing && $billing->getId() && !$billing->getCustomerId())
               $billing->setCustomerId($requestCustomer->getId())->save();
 
+            $shipping = $quote->getShippingAddress();
+            if ($shipping && $shipping->getId() && !$shipping->getCity()) {
+              $shipping->delete();
+            }
+
             $tokenCustomerId = $this->simiObjectManager->create('Magento\Integration\Model\Oauth\Token')
                 ->loadByToken($contentArray)->getData('customer_id');
             if ($requestCustomer && $requestCustomer->getId() == $tokenCustomerId) {
