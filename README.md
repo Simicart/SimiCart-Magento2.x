@@ -11,7 +11,7 @@ SimiCart helps you build a powerful mobile app to boost up your business. More t
  
 After installing Connector, SimiCart menu will appear in your Magento backend, where you can configure your app's layout and features.
  
-<img src="https://www.simicart.com/pwa/static/media/magento-mobile-app.3d02e4ff.png" alt="SimiCart Magento Mobile App">
+<img src="https://www.simicart.com/pwa/static/media/magento-mobile-app.13c3fefa.png" alt="SimiCart Magento Mobile App">
 
 <b>Features list:</b>
 <br>
