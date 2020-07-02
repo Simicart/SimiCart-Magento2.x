@@ -61,8 +61,8 @@ class Review extends \Simi\Simiconnector\Helper\Data
                     }
                 }
             }
-            $star[5] = $star[0] + $star[1] + $star[2] + $star[3] + $star[4];
         }
+        $star[5] = $star[0] + $star[1] + $star[2] + $star[3] + $star[4];
         return $star;
     }
 
