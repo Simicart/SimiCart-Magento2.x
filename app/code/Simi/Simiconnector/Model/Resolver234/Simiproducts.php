@@ -53,6 +53,7 @@ class Simiproducts implements ResolverInterface
 
     public $extraFields;
     public $productExtraData;
+    public $currentProductModel;
 
     /**
      * @param Builder $searchCriteriaBuilder
@@ -143,6 +144,7 @@ class Simiproducts implements ResolverInterface
                             ->get('\Simi\Simiconnector\Helper\Review')
                             ->getProductReviews($productModel->getId())
                     );
+                    $this->currentProductModel = $productModel;
                     $this->eventManager->dispatch(
                         'simi_simiconnector_graphql_simi_product_list_item_after',
                         ['object' => $this, 'extraData' => $this->productExtraData]
@@ -176,6 +178,7 @@ class Simiproducts implements ResolverInterface
                         'additional'  => $_additional,
                         'app_tier_prices' => $tierPrice,
                     );
+                    $this->currentProductModel = $productModel;
                     $this->eventManager = $this->simiObjectManager->get('\Magento\Framework\Event\ManagerInterface');
                     $this->eventManager->dispatch(
                         'simi_simiconnector_graphql_product_detail_extra_field_after',
