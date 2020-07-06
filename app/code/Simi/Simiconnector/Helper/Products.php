@@ -223,7 +223,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                         $collectionChid->addAttributeToFilter($key, ['finset' => $value]);
                     $collectionChid->getSelect()
                         ->joinLeft(
-                            array('link_table' => 'catalog_product_super_link'),
+                            array('link_table' => $collection->getResource()->getTable('catalog_product_super_link')),
                             'link_table.product_id = e.entity_id',
                             array('product_id', 'parent_id')
                         );
@@ -408,7 +408,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 ->addAttributeToFilter('type_id', 'simple');
             $select = $childProducts->getSelect();
             $select->joinLeft(
-                    array('link_table' => 'catalog_product_super_link'),
+                    array('link_table' => $collection->getResource()->getTable('catalog_product_super_link')),
                     'link_table.product_id = e.entity_id',
                     array('product_id', 'parent_id')
                 );
