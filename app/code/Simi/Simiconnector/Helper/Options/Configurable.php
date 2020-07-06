@@ -42,8 +42,12 @@ class Configurable extends \Simi\Simiconnector\Helper\Options
                             is_array($option_data['products']) &&
                             count($option_data['products']) != 0
                         ) {
+                            $isColorTypeSwatch = $this->simiObjectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')
+                            ->getValue('siminiaconfig/colorswatch/is_type_swatch');
                             if($attribute_details['code'] === 'color') {
-                                $option_data['option_value'] = $this->getValueSwatch($option_data['id']);
+                                if($isColorTypeSwatch){
+                                    $option_data['option_value'] = $this->getValueSwatch($option_data['id']);
+                                }
                             }
                             if (isset($option_data['option_value']) && $option_data['option_value'])
                                 $updatedOptions[] = $option_data;

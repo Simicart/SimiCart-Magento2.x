@@ -684,6 +684,14 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
+            <group id="colorswatch" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Color type swatch or text ?</label>
+                <field id="is_type_swatch" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show color type swatch on Configurable Product ?</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Switch to 'Yes' to have type swatch if simiconnector is only used for PWA Studio. Because default type of Native App is 'type text'.</comment>
+                </field>
+            </group>
         </section>
     </system>
 </config>
