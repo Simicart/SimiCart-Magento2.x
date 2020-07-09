@@ -178,18 +178,12 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         foreach ($params['filter']['layer'] as $key => $value) {
             if ($key == 'price') {
                 $value  = explode('-', $value);
-                $select = $collection->getSelect();
-                $whereFunction = 'where';
-                if ($value[0] > 0) {
-                    $this->filteredAttributes[$key] = $value;
-                    $minPrice = $value[0];
-                    $select->$whereFunction('price_index.final_price >= ' . $minPrice . " OR ( price_index.final_price = '0.0000' AND price_index.min_price >=" . $minPrice . ')');
-                }
-                if ($value[1] > 0) {
-                    $this->filteredAttributes[$key] = $value;
-                    $maxPrice = $value[1];
-                    $select->$whereFunction('price_index.final_price < ' . $maxPrice . " OR ( price_index.final_price = '0.0000' AND price_index.min_price >=" . $maxPrice . ')');
-                }
+                $priceFilter = array();
+                if (isset($value[0]))
+                    $priceFilter['from'] = $value[0];
+                if (isset($value[0]))
+                    $priceFilter['to'] = $value[1];
+                $collection->addFieldToFilter('price', $priceFilter);
             } else {
                 if ($key == 'category_id') {
                     $cat_filtered = true;
