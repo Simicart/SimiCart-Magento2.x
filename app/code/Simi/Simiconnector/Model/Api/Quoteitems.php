@@ -124,7 +124,7 @@ class Quoteitems extends Apiabstract
         }
 
         $product               = $this->_initProduct($params['product']);
-        $cart->addProduct($product, $params);
+        $cart->addProduct($product, $params)->save();
         $this->_getSession()->setCartWasUpdated(true);
         // $this->eventManager->dispatch(
         //     'checkout_cart_add_product_complete',
