@@ -323,8 +323,10 @@ class Orders extends Apiabstract
                 
             $order['billing_address']  = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
                     ->getAddressDetail($quote->getBillingAddress(), $customer);
-            $order['shipping_address'] = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
+            if(!$quote->getIsVirtual()) {
+                $order['shipping_address'] = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
                     ->getAddressDetail($quote->getShippingAddress(), $customer);
+            }
             $order['shipping']         = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Checkout\Shipping')
                     ->getMethods();
             $order['payment']          = $list_payment;
