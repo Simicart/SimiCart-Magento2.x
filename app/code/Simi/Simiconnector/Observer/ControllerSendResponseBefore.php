@@ -50,9 +50,9 @@ class ControllerSendResponseBefore implements ObserverInterface
                     $customerId = $customerContext->getUserId();
                     if ($customerId &&
                         $customerModel = $this->simiObjectManager->get('Magento\Customer\Model\Customer')->load($customerId)) {
-                        $this->simiObjectManager
-                            ->get('Magento\Customer\Model\Session')
-                            ->setCustomerAsLoggedIn($customerModel);
+                        // $this->simiObjectManager
+                        //     ->get('Magento\Customer\Model\Session')
+                        //     ->setCustomerAsLoggedIn($customerModel);
                         $inputData = $this->simiObjectManager->create('Magento\Webapi\Controller\Rest\ParamsOverrider')
                             ->override(array(), array('cartId'=>array('force' => true, 'value' => '%cart_id%')));
                         if ($inputData && isset($inputData['cartId'])) {
@@ -71,10 +71,11 @@ class ControllerSendResponseBefore implements ObserverInterface
                         }
                     }
                     if ($cartId) {
-                        $quoteModel = $this->simiObjectManager->get('Magento\Quote\Model\Quote')->load($cartId);
-                        if ($quoteModel->getId() && $quoteModel->getData('is_active')) {
-                            $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->setQuoteToSession($quoteModel);
-                        }
+                        // if ($quoteModel->getId() && $quoteModel->getData('is_active')) {
+                        //     $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->setQuoteToSession($quoteModel);
+                        // }
+                        $registry = $this->simiObjectManager->get('\Magento\Framework\Registry');
+                        $registry->register('simi_quote_from_rest', $cartId);
                     }
 
                     $routeData = array(
