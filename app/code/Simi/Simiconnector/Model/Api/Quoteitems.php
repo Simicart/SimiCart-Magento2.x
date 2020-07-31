@@ -185,7 +185,7 @@ class Quoteitems extends Apiabstract
     public function index()
     {
         $this->estimateShipping();
-        $this->_getQuote()->collectTotals()->save();
+        $this->_getQuote()->setTotalsCollectedFlag(false)->collectTotals()->save();
         $collection = $this->builderQuery;
         $collection->addFieldToFilter('item_id', ['nin' => $this->removed_items])
                 ->addFieldToFilter('parent_item_id', ['null' => true]);
