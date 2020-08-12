@@ -43,8 +43,11 @@ class Review extends \Simi\Simiconnector\Helper\Data
         $star[2] = 0;
         $star[3] = 0;
         $star[4] = 0;
+        $star[5] = 0;
+        $star[6] = 0;
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($reviews) > 0) {
             foreach ($reviews->getItems() as $review) {
+                $star[6]++;
                 $y = 0;
                 foreach ($review->getRatingVotes() as $vote) {
                     $x = ($vote->getPercent() / 20);
@@ -186,6 +189,7 @@ class Review extends \Simi\Simiconnector\Helper\Data
         $avg          = $this->getAvgRate($ratings, $total_rating);
         return [
             'rate'             => $avg,
+            'reviews_count'    => $ratings[6],
             'number'           => $ratings[5],
             '5_star_number'    => $ratings[4],
             '4_star_number'    => $ratings[3],
