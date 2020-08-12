@@ -121,6 +121,9 @@ class Wishlistitems extends Apiabstract
                     $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Price')
                         ->formatPriceFromProduct($product, true),
             ];
+            if ($product->getTypeId() == 'simple' && $product->getData('has_options')){
+	            $addition_info[$itemModel->getData('wishlist_item_id')]['simple_has_options'] = $product->getData('has_options');
+            }
         }
         foreach ($result['wishlistitems'] as $index => $item) {
             $result['wishlistitems'][$index] = array_merge($item, $addition_info[$item['wishlist_item_id']]);
