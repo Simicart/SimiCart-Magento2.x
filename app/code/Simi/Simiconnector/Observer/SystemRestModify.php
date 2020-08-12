@@ -157,20 +157,51 @@ class SystemRestModify implements ObserverInterface
             $requestCustomer = $this->simiObjectManager->get('Magento\Customer\Model\Customer')
                 ->setWebsiteId($storeManager->getStore()->getWebsiteId())
                 ->loadByEmail($requestContent['username']);
-            //fix quote billing address does not have customer Id
-            $quote = $this->simiObjectManager->create('\Magento\Quote\Model\Quote')->loadByCustomer($requestCustomer);
-            $billing = $quote->getBillingAddress();
-            if ($billing && $billing->getId()) {
-              if ($billing->getCity()) {
-                if (!$billing->getCustomerId())
-                  $billing->setCustomerId($requestCustomer->getId())->save();
-              } //else 
-                //$billing->delete();
-            }
-            $shipping = $quote->getShippingAddress();
-            if ($shipping && $shipping->getId() && !$shipping->getCity()) {
-              //$shipping->delete();
-            }
+	        //fix quote billing address does not have customer Id
+	        $quote = $this->simiObjectManager->create('\Magento\Quote\Model\Quote')->loadByCustomer($requestCustomer);
+	        $billing = $quote->getBillingAddress();
+	        if ($billing) {
+		        if ($billing->getId()) {
+			        if ( $billing->getCity() ) {
+				        if ( ! $billing->getCustomerId() ) {
+					        $billing->setCustomerId( $requestCustomer->getId() )->save();
+				        }
+			        }
+		        }
+		        if (!$billing->getCity()) {
+			        $billingAddressId = $requestCustomer->getDefaultBilling();
+			        $billingAddress = $this->simiObjectManager->create('\Magento\Customer\Model\Address')
+			                                                  ->load($billingAddressId);
+			        $address = $billingAddress->getData();
+			        //now setting the address as the quote billing address
+			        $quote->getBillingAddress()->setFirstname($address['firstname']);
+			        $quote->getBillingAddress()->setLastname($address['lastname']);
+			        $quote->getBillingAddress()->setStreet($address['street']);
+			        $quote->getBillingAddress()->setCity($address['city']);
+			        $quote->getBillingAddress()->setTelephone($address['telephone']);
+			        $quote->getBillingAddress()->setPostcode($address['postcode']);
+			        $quote->getBillingAddress()->setCountryId($address['country_id']);
+		        }
+	        }
+	        $shipping = $quote->getShippingAddress();
+	        if ($shipping && !$shipping->getCity()) {
+
+		        $shippingAddressId = $requestCustomer->getDefaultShipping();
+		        $shippingAddress = $this->simiObjectManager->create('\Magento\Customer\Model\Address')
+		                                                   ->load($shippingAddressId);
+		        $address = $shippingAddress->getData();
+
+		        //now setting the address as the quote billing address
+		        $quote->getShippingAddress()->setFirstname($address['firstname']);
+		        $quote->getShippingAddress()->setLastname($address['lastname']);
+		        $quote->getShippingAddress()->setStreet($address['street']);
+		        $quote->getShippingAddress()->setCity($address['city']);
+		        $quote->getShippingAddress()->setTelephone($address['telephone']);
+		        $quote->getShippingAddress()->setPostcode($address['postcode']);
+		        $quote->getShippingAddress()->setCountryId($address['country_id']);
+
+		        $shipping->save();
+	        }
 
             $tokenCustomerId = $this->simiObjectManager->create('Magento\Integration\Model\Oauth\Token')
                 ->loadByToken($contentArray)->getData('customer_id');
