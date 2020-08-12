@@ -19,6 +19,14 @@ class Payment extends \Simi\Simiconnector\Helper\Data
 
     public function _getQuote()
     {
+        $registry = $this->simiObjectManager->get('\Magento\Framework\Registry');
+        $cartId =  $registry->registry('simi_quote_from_rest');
+        if($cartId) {
+            $quoteModel = $this->simiObjectManager->get('Magento\Quote\Model\Quote')->load($cartId);
+            if ($quoteModel->getId() && $quoteModel->getData('is_active'))
+                return $quoteModel;
+        }
+
         return $this->_getCart()->getQuote();
     }
 

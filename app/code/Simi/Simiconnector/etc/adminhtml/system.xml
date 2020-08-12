@@ -9,18 +9,22 @@
             <label>General Settings</label>
             <tab>simi</tab>
             <resource>Simi_Simi::config_simi</resource>
-            <group id="general" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="generalconfigheader" translate="label" type="text" sortOrder="1" showInWebsite="1" showInStore="0"
+                   showInDefault="1">
+                <frontend_model>Simi\Simiconnector\Block\Adminhtml\Config\Generalconfigheader</frontend_model>
+            </group>
+            <group id="general" translate="label" type="text" sortOrder="49" showInDefault="1" showInWebsite="1" showInStore="1">
                 <label>General Configuration</label>
                 <field id="enable" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="secret_key" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Secret Key</label>
+                    <label>Secret Key &#128241;</label>
                     <comment>Your secret key (get from your Building Dashboard)</comment>
                 </field>
                 <field id="token_key" translate="label" type="text" sortOrder="249" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Token Key</label>
+                    <label>Token Key &#128241;</label>
                     <comment>Your token key (get from your Building Dashboard)</comment>
                 </field>
                 <field id="base_url" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -36,7 +40,7 @@
                     <comment>Use for pwa client using Pwa-studio. example value: 4.3.1 or 1563345513232</comment>
                 </field>
                 <field id="is_show_price_zero" translate="label" type="select" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Show option price if it's $0.00?</label>
+                    <label>Show option price if it's $0.00? &#128241;</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="is_show_all_product" translate="label" type="select" sortOrder="499" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -50,11 +54,11 @@
                 </field>
                 -->
                 <field id="is_show_sample_data" translate="label" type="select" sortOrder="699" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Update order review when select payment method</label>
+                    <label>Update order review when select payment method &#128241;</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="show_product_type" translate="label" type="select" sortOrder="799" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>View products default</label>
+                    <label>View products default &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\ViewType</source_model>
                 </field>
                 <field id="is_rtl" translate="label" type="select" sortOrder="899" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -63,12 +67,12 @@
                     <can_be_empty>1</can_be_empty>
                 </field>
                 <field id="filter_categories_by_include_in_menu" translate="label" type="select" sortOrder="949" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Filter categories by 'Include in Menu' values</label>
+                    <label>Filter categories by 'Include in Menu' values &#128241;</label>
                     <comment>Category would be shown if only its 'Include in Menu' value is 'Yes'</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="categories_in_app" translate="label" type="text" sortOrder="999" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Hidden categories on app</label>
+                    <label>Hidden categories on app &#128241;</label>
                     <comment>Category IDs (separated by comma). Eg. 2, 4, 15</comment>
                 </field>
                 <field id="is_show_home_title" translate="label" type="select" sortOrder="1099" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -76,14 +80,14 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="image_aspect_ratio" translate="label" type="select" sortOrder="1149" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Banner Aspect Ratio</label>
+                    <label>Banner Aspect Ratio &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Aspectratio</source_model>
                 </field>
                 <field id="app_dedicated_coupon" translate="label" type="text" sortOrder="1199" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Mobile App Dedicated Coupon</label>
+                    <label>Mobile App Dedicated Coupon &#128241;</label>
                 </field>
                 <field id="open_url_in_app" translate="label" type="select" sortOrder="1299" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Open url in app</label>
+                    <label>Open url in app &#128241;</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
                 <field id="show_discount_label_in_product" translate="label" type="select" sortOrder="1399" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -92,7 +96,7 @@
                 </field>
             </group>
             <group id="currency" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Currency Display Configuration</label>
+                <label>Currency Display Configuration &#128241;</label>
                 <field id="thousand_separator" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Thousand Separator</label>
                 </field>
@@ -253,7 +257,7 @@
                 </field>
             </group>
             <group id="terms_conditions" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Terms and Conditions</label>
+                <label>Terms and Conditions &#128241;</label>
                 <field id="enable_terms" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Show Terms and Conditions</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -272,7 +276,7 @@
                 </field>
             </group>
             <group id="instant_contact" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Instant Contact Configuration</label>
+                <label>Instant Contact Configuration &#128241;</label>
                 <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -321,7 +325,7 @@
                 </field>
             </group>
             <group id="barcode" translate="label" type="text" sortOrder="499" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Barcode Configuration</label>
+                <label>Barcode Configuration &#128241;</label>
                 <field id="pattern" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Barcode pattern</label>
                     <comment><![CDATA[Enter the pattern you want to generate barcodes. For Example:<br/><strong>[A.8] : 8 alpha<br/>[N.4] : 4 numeric<br/>[AN.6] : 6 alphanumeric<br/>BAR[A.4][AN.6] : BARADFA12NF0O</strong>]]></comment>
@@ -332,14 +336,14 @@
                 </field>
             </group>
             <group id="productlabel" translate="label" type="text" sortOrder="599" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Product Label Configuration</label>
+                <label>Product Label Configuration &#128241;</label>
                 <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
             <group id="wishlist" translate="label" type="text" sortOrder="699" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Wishlist Configuration</label>
+                <label>Wishlist Configuration &#128241;</label>
                 <field id="sharing_message" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Message For Sharing Wishlist</label>
                     <comment>The message is used when customers share their wishlist on Facebook, Twitter, Emails... It appears before Wishlist URL.</comment>
@@ -350,14 +354,14 @@
                 </field>
             </group>
             <group id="mixpanel" translate="label" type="text" sortOrder="899" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Mixpanel Configuration</label>
+                <label>Mixpanel Configuration &#128241;</label>
                 <field id="token" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Mixpanel Token</label>
                     <comment>Leave this field blank to disable Mixpanel on Application</comment>
                 </field>
             </group>
             <group id="config_price" translate="label" type="text" sortOrder="1099" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Price Configuration</label>
+                <label>Price Configuration &#128241;</label>
                 <field id="price_one_row" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Show price in a row</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -368,7 +372,7 @@
                 </field>
             </group>
             <group id="methods_support" translate="label" type="text" sortOrder="1199" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Supported Methods</label>
+                <label>Supported Methods &#128241;</label>
                 <field id="delete" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Support DELETE method</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -379,7 +383,7 @@
                 </field>
             </group>
             <group id="customchat" translate="label" type="text" sortOrder="1299" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Live chat Configuration</label>
+                <label>Live chat Configuration &#128241;</label>
                 <field id="enable" translate="label" type="select" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -398,7 +402,7 @@
                 </field>
             </group>
             <group id="checkout_config" translate="label" type="text" sortOrder="1999" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Checkout webview configurations</label>
+                <label>Checkout webview configurations &#128241;</label>
                 <field id="enable_checkout_webview" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Checkout page using webview</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -429,7 +433,7 @@
         </section>
         <section id="simi_notifications" translate="label" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
             <class>separator-top</class>
-            <label>Notification Configuration</label>
+            <label>Native App Notification Configuration</label>
             <tab>simi</tab>
             <resource>Simi_Simi::config_simi</resource>
             <group id="notification" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -682,6 +686,13 @@
                 <field id="add_home_api_to_storeview_api" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Add Home API to Store View API</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+            </group>
+            <group id="color_options" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Product color options</label>
+                <field id="is_color_type_text" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Display Type</label>
+                    <source_model>Simi\Simiconnector\Model\Config\Source\Pwaswatchdisplaytype</source_model>
                 </field>
             </group>
         </section>
