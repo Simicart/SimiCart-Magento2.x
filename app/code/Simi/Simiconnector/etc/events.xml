@@ -14,6 +14,7 @@
                   instance="Simi\Simiconnector\Observer\CustomerSessionInit" />
     </event>
     -->
+    <!-- no rest fixing since pwa-studio 7.0
     <event name="controller_front_send_response_before">
         <observer name="simi_simiconnector_controller_front_send_response_before"
                   instance="Simi\Simiconnector\Observer\ControllerSendResponseBefore" />
@@ -22,6 +23,8 @@
         <observer name="simi_simiconnector_system_rest_modify"
                   instance="Simi\Simiconnector\Observer\SystemRestModify" />
     </event>
+    -->
+    <!-- no forgot password using pwa by default
     <event name="controller_action_predispatch_customer_account_confirm">
         <observer name="simi_simiconnector_customer_account_confirm"
                   instance="Simi\Simiconnector\Observer\AccountConfirmDispatch" />
@@ -30,4 +33,5 @@
         <observer name="simi_simiconnector_customer_account_createpassword"
                   instance="Simi\Simiconnector\Observer\AccountCreatePasswordDispatch" />
     </event>
+    -->
 </config>
