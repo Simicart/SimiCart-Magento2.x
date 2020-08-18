@@ -96,7 +96,7 @@
                 </field>
             </group>
             <group id="currency" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Currency Display Configuration &#128241;</label>
+                <label>Currency Display Configuration</label>
                 <field id="thousand_separator" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Thousand Separator</label>
                 </field>
