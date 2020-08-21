@@ -178,7 +178,7 @@ class Payment extends \Simi\Simiconnector\Helper\Data
         $code = $method->getCode();
         $list = $this->getListCase();
 
-        $type = 1;
+        $type = 0;
         if (in_array($code, $this->_getListPayment())) {
             $type = $list[$code];
         }
