@@ -53,15 +53,17 @@ class SystemRestModify implements ObserverInterface
     //modify payment api
     private function _addDataToPayment(&$contentArray, $routeData = false) {
         if (is_array($contentArray) && $routeData && isset($routeData['serviceClass'])) {
-            $paymentHelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Checkout\Payment');
-            foreach ($paymentHelper->getMethods() as $method) {
-                foreach ($contentArray as $index=>$restPayment) {
-                    if ($method->getCode() == $restPayment['code']) {
-                        $restPayment['simi_payment_data'] = $paymentHelper->getDetailsPayment($method);
-                    }
-                    $contentArray[$index] = $restPayment;
-                }
+          $paymentHelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Checkout\Payment');
+          $paymentHelper->getMethods();
+          $paymentConfig = $this->simiObjectManager->create('\Magento\Payment\Model\Config');
+          foreach ($paymentConfig->getActiveMethods() as $method) {
+            foreach ($contentArray as $index=>$restPayment) {
+              if ($method->getCode() == $restPayment['code']) {
+                  $restPayment['simi_payment_data'] = $paymentHelper->getDetailsPayment($method);
+              }
+              $contentArray[$index] = $restPayment;
             }
+          }
         }
     }
 
