@@ -23,14 +23,14 @@ class Updatepwaversion extends \Magento\Framework\App\Action\Action
     public function execute()
     {
         $arr               = [];
-        $newValue = time();
-        $this->simiObjectManager
-            ->get('Magento\Framework\App\Config\Storage\WriterInterface')
-            ->save('simiconnector/general/pwa_studio_client_ver_number', $newValue);
-        $arr['new_value'] = $newValue;
-        $this->simiObjectManager
-            ->get('Magento\Framework\App\Cache\TypeListInterface')
-            ->cleanType('config');
+        // $newValue = time();
+        // $this->simiObjectManager
+        //     ->get('Magento\Framework\App\Config\Storage\WriterInterface')
+        //     ->save('simiconnector/general/pwa_studio_client_ver_number', $newValue);
+        // $arr['new_value'] = $newValue;
+        // $this->simiObjectManager
+        //     ->get('Magento\Framework\App\Cache\TypeListInterface')
+        //     ->cleanType('config');
         return $this->getResponse()->setBody(json_encode($arr));
     }
 }
