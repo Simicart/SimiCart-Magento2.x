@@ -176,13 +176,17 @@ class SystemRestModify implements ObserverInterface
 			                                                  ->load($billingAddressId);
 			        $address = $billingAddress->getData();
 			        //now setting the address as the quote billing address
-			        $quote->getBillingAddress()->setFirstname($address['firstname']);
-			        $quote->getBillingAddress()->setLastname($address['lastname']);
-			        $quote->getBillingAddress()->setStreet($address['street']);
-			        $quote->getBillingAddress()->setCity($address['city']);
-			        $quote->getBillingAddress()->setTelephone($address['telephone']);
-			        $quote->getBillingAddress()->setPostcode($address['postcode']);
-			        $quote->getBillingAddress()->setCountryId($address['country_id']);
+              try {
+  			        $quote->getBillingAddress()->setFirstname($address['firstname']);
+  			        $quote->getBillingAddress()->setLastname($address['lastname']);
+  			        $quote->getBillingAddress()->setStreet($address['street']);
+  			        $quote->getBillingAddress()->setCity($address['city']);
+  			        $quote->getBillingAddress()->setTelephone($address['telephone']);
+  			        $quote->getBillingAddress()->setPostcode($address['postcode']);
+  			        $quote->getBillingAddress()->setCountryId($address['country_id']);
+              } catch (\Exception $e) {
+
+              }
 		        }
 	        }
 	        $shipping = $quote->getShippingAddress();
@@ -194,15 +198,18 @@ class SystemRestModify implements ObserverInterface
 		        $address = $shippingAddress->getData();
 
 		        //now setting the address as the quote billing address
-		        $quote->getShippingAddress()->setFirstname($address['firstname']);
-		        $quote->getShippingAddress()->setLastname($address['lastname']);
-		        $quote->getShippingAddress()->setStreet($address['street']);
-		        $quote->getShippingAddress()->setCity($address['city']);
-		        $quote->getShippingAddress()->setTelephone($address['telephone']);
-		        $quote->getShippingAddress()->setPostcode($address['postcode']);
-		        $quote->getShippingAddress()->setCountryId($address['country_id']);
-
-		        $shipping->save();
+            try {
+  		        $quote->getShippingAddress()->setFirstname($address['firstname']);
+  		        $quote->getShippingAddress()->setLastname($address['lastname']);
+  		        $quote->getShippingAddress()->setStreet($address['street']);
+  		        $quote->getShippingAddress()->setCity($address['city']);
+  		        $quote->getShippingAddress()->setTelephone($address['telephone']);
+  		        $quote->getShippingAddress()->setPostcode($address['postcode']);
+  		        $quote->getShippingAddress()->setCountryId($address['country_id']);
+              $shipping->save();
+            } catch (\Exception $e) {
+                
+            }
 	        }
 
             $tokenCustomerId = $this->simiObjectManager->create('Magento\Integration\Model\Oauth\Token')
