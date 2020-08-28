@@ -246,8 +246,10 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function getSearchProducts(&$collection, $params)
     {
+        //$searchCollection = $this->simiObjectManager
+        //    ->create('Magento\CatalogSearch\Model\ResourceModel\Fulltext\SearchCollection');
         $searchCollection = $this->simiObjectManager
-            ->create('Magento\CatalogSearch\Model\ResourceModel\Fulltext\SearchCollection');
+            ->create('Magento\Search\Model\SearchCollectionInterface'); // For magento 2.4
         $searchCollection->addSearchFilter($params['filter']['q']);
         $collection = $searchCollection;
         $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
