@@ -139,14 +139,14 @@
                     <comment>Applied when Customers leave Address field blank</comment>
                 </field>
                 <field id="country_id" translate="label" type="select" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Country</label>
+                    <label>Country  &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
                 <field id="country_id_default" translate="label" type="text" sortOrder="349" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Default Country Value</label>
+                    <label>Default Country Value  &#128241;</label>
                     <depends>
                         <field id="*/*/country_id" separator=",">2,3</field>
                         <field id="*/*/hideaddress_enable">1</field>
@@ -154,14 +154,14 @@
                     <comment>Applied when Customers leave Country field blank, use country ID, eg. US</comment>
                 </field>
                 <field id="region_id" translate="label" type="select" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>State/Province</label>
+                    <label>State/Province &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
                 <field id="region_id_default" translate="label" type="text" sortOrder="449" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Default State/Province Value</label>
+                    <label>Default State/Province Value &#128241;</label>
                     <depends>
                         <field id="*/*/region_id" separator=",">2,3</field>
                         <field id="*/*/hideaddress_enable">1</field>
@@ -221,28 +221,28 @@
                     </depends>
                 </field>
                 <field id="prefix" translate="label" type="select" sortOrder="899" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Prefix Name</label>
+                    <label>Prefix Name &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
                 <field id="suffix" translate="label" type="select" sortOrder="999" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Suffix Name</label>
+                    <label>Suffix Name &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
                 <field id="dob" translate="label" type="select" sortOrder="1099" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Date of Birth</label>
+                    <label>Date of Birth &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
                 <field id="gender" translate="label" type="select" sortOrder="1199" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Gender</label>
+                    <label>Gender &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
