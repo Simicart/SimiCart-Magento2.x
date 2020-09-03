@@ -214,7 +214,7 @@
                     <comment>Applied when Customers leave Telephone field blank</comment>
                 </field>
                 <field id="fax" translate="label" type="select" sortOrder="799" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Fax</label>
+                    <label>Fax &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
@@ -249,7 +249,7 @@
                     </depends>
                 </field>
                 <field id="taxvat" translate="label" type="select" sortOrder="1299" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Tax/VAT number</label>
+                    <label>Tax/VAT number &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
