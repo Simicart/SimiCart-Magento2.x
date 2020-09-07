@@ -22,7 +22,8 @@ class CustomerSessionInit
         $simiObserver = $objectManager->create('Simi\Simiconnector\Observer\CustomerSessionInit')->execute($this->mockupObserver);
         $simiSessId = $this->sidResolver->afterGetSid($objectManager->create('Magento\Framework\Session\SidResolverInterface'), null);
         if ($simiSessId) {
-        	$objectManager->create('Magento\Framework\Session\SessionManager')->setSessionId($simiSessId);
+        	//Caussing issue on php7.3, make sure you are using php lower than 7.3 before uncommenting this
+            //$objectManager->create('Magento\Framework\Session\SessionManager')->setSessionId($simiSessId);
         }
     }
 }
