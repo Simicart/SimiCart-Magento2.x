@@ -14,11 +14,11 @@
         <add id="Simi_Simiconnector::settings" title="General Settings" module="Simi_Simiconnector" sortOrder="40" parent="Simi_Simiconnector::simiconnector_settings" resource="Simi_Simiconnector::configuration" action="adminhtml/system_config/edit/section/simiconnector"/>
         
         <!-- notification -->
-        <add id="Simi_Simiconnector::notification" title="Native App Notifications" module="Simi_Simiconnector" sortOrder="199" parent="Simi_Simiconnector::simiconnector" resource="Simi_Simiconnector::notification"/>
+        <!-- <add id="Simi_Simiconnector::notification" title="Native App Notifications" module="Simi_Simiconnector" sortOrder="199" parent="Simi_Simiconnector::simiconnector" resource="Simi_Simiconnector::notification"/>
         <add id="Simi_Simiconnector::history" title="History" module="Simi_Simiconnector" sortOrder="30" parent="Simi_Simiconnector::notification" action="simiconnector/history/" resource="Simi_Simiconnector::manage"/>
         <add id="Simi_Simiconnector::device" title="View Devices" module="Simi_Simiconnector" sortOrder="20" parent="Simi_Simiconnector::notification" action="simiconnector/device/" resource="Simi_Simiconnector::manage"/>
         <add id="Simi_Simiconnector::notice" title="Manage Notifications" module="Simi_Simiconnector" sortOrder="10" parent="Simi_Simiconnector::notification" action="simiconnector/siminotification/" resource="Simi_Simiconnector::manage"/>
-        <add id="Simi_Simiconnector::noticesettings" title="Notification Settings" module="Simi_Simiconnector" sortOrder="99" parent="Simi_Simiconnector::notification" action="adminhtml/system_config/edit/section/simi_notifications" resource="Simi_Simiconnector::manage"/>
+        <add id="Simi_Simiconnector::noticesettings" title="Notification Settings" module="Simi_Simiconnector" sortOrder="99" parent="Simi_Simiconnector::notification" action="adminhtml/system_config/edit/section/simi_notifications" resource="Simi_Simiconnector::manage"/> -->
         
         
         <!-- theme -->
