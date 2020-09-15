@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
+    <template id="pwastudio_customer_resetpass_template" label="PWA-Studio | Reset Password Email Template" file="pwastudio_customer_resetpass_template.html" type="html" module="Simi_Simiconnector" area="frontend"/>
+</config>
