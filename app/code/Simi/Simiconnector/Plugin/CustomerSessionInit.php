@@ -22,8 +22,11 @@ class CustomerSessionInit
         $simiObserver = $objectManager->create('Simi\Simiconnector\Observer\CustomerSessionInit')->execute($this->mockupObserver);
         $simiSessId = $this->sidResolver->afterGetSid($objectManager->create('Magento\Framework\Session\SidResolverInterface'), null);
         if ($simiSessId) {
-        	//Caussing issue on php7.3, make sure you are using php lower than 7.3 before uncommenting this
-            //$objectManager->create('Magento\Framework\Session\SessionManager')->setSessionId($simiSessId);
+            // Error on 2.4: Warning: session_id(): Cannot change session id when session is active in vendor/magento/framework/Session/SessionManager.php on line 414
+        	try {
+                $objectManager->get('Magento\Framework\Session\SessionManager')->setSessionId($simiSessId);
+            } catch (\Exception $e) {
+            }
         }
     }
 }
