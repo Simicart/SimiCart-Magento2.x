@@ -110,34 +110,6 @@ class CustomerSessionInit implements ObserverInterface
 
             }
         }
-
-        //set login from bearer
-        try {
-            $httpAuthInfo = $_SERVER['HTTP_AUTHORIZATION'];
-            if ($httpAuthInfo) {
-                $bearerInfo = explode(' ', $httpAuthInfo);
-                $objectManager = $this->simiObjectManager;
-                $apiRequest = $this->simiObjectManager->get('\Magento\Framework\Webapi\Rest\Request');
-                if (isset($bearerInfo[0]) && $bearerInfo[0] == 'Bearer' && isset($bearerInfo[1])) {
-                    $bearer = $bearerInfo[1];
-                    $tokenModel = $objectManager->get('Magento\Integration\Model\Oauth\Token');
-                    $tokenModel->loadByToken($bearer);
-                    if ($tokenModel->getId()) {
-                        $customerId = $tokenModel->getCustomerId();
-                        $customer = $objectManager->get('Magento\Customer\Model\Customer')->load($customerId);
-                        if ($customer->getId()) {
-                            $customerSession = $this->simiObjectManager->get('Magento\Customer\Model\Session');
-                            if ($customer->getId() != $customerSession->getCustomerId()) {
-                                $customerSession->setCustomerAsLoggedIn($customer);
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (\Exception $e) {
-
-        }
-        //end login from bearer
     }
 
 }
