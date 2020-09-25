@@ -9,9 +9,9 @@
     </type>
     <preference for="Simi\Simiconnector\Api\SimiconnectorapiInterface" type="Simi\Simiconnector\Api\Simiconnectorapi"/>
     <!-- consider removing if it cause error on < 2.1.0 version of Magento -->
-    <type name="Magento\Framework\Session\SidResolverInterface">
+    <!-- <type name="Magento\Framework\Session\SidResolverInterface">
         <plugin name="simiconnector_sid_resolver_plugin" type="Simi\Simiconnector\Plugin\SidResolver" />
-    </type>
+    </type> -->
     <!-- override to add cart with old date type model magento instead of webapi model - uncomment it with simi pwa studio -->
     <preference for="Magento\Catalog\Model\Webapi\Product\Option\Type\Date" type="Simi\Simiconnector\Override\Model\Product\Option\Type\Date" />
     <!-- session init observer fix from magento 2.3.5 (customer_session_init event removed) -->
