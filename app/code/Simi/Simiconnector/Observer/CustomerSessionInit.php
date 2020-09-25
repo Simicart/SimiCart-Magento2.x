@@ -117,8 +117,6 @@ class CustomerSessionInit implements ObserverInterface
             $bearerInfo = explode(' ', $httpAuthInfo);
             $objectManager = $this->simiObjectManager;
             $apiRequest = $this->simiObjectManager->get('\Magento\Framework\Webapi\Rest\Request');
-            $router = $this->simiObjectManager->get('Magento\Webapi\Controller\Rest\Router');
-            $route = $router->match($apiRequest);
             if (isset($bearerInfo[0]) && $bearerInfo[0] == 'Bearer' && isset($bearerInfo[1])) {
                 $bearer = $bearerInfo[1];
                 $tokenModel = $objectManager->get('Magento\Integration\Model\Oauth\Token');
