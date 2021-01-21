@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
         <css src="jquery/fileUploader/css/jquery.fileupload-ui.css"/>
     </head>
@@ -9,8 +10,10 @@
             <block class="Simi\Simiconnector\Block\Adminhtml\Simiproductlabel\Edit" name="banner.edit"/>
         </referenceContainer>
         <referenceContainer name="left">
-            <block class="Simi\Simiconnector\Block\Adminhtml\Simiproductlabel\Edit\Tabs" name="simiproductlabel_edit_tabs">
-                <block class="Simi\Simiconnector\Block\Adminhtml\Simiproductlabel\Edit\Tab\Main" name="simiproductlabel_edit_tab_main"/>
+            <block class="Simi\Simiconnector\Block\Adminhtml\Simiproductlabel\Edit\Tabs"
+                   name="simiproductlabel_edit_tabs">
+                <block class="Simi\Simiconnector\Block\Adminhtml\Simiproductlabel\Edit\Tab\Main"
+                       name="simiproductlabel_edit_tab_main"/>
                 <action method="addTab">
                     <argument name="name" xsi:type="string">main_section</argument>
                     <argument name="block" xsi:type="string">simiproductlabel_edit_tab_main</argument>

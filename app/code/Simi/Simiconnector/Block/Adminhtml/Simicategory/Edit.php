@@ -25,8 +25,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         \Magento\Backend\Block\Widget\Context $context,
         \Magento\Framework\Registry $registry,
         array $data = []
-    ) {
-   
+    )
+    {
+
         $this->coreRegistry = $registry;
         parent::__construct($context, $data);
     }
@@ -39,7 +40,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
     public function _construct()
     {
 
-        $this->_objectId   = 'simicategory_id';
+        $this->_objectId = 'simicategory_id';
         $this->_blockGroup = 'Simi_Simiconnector';
         $this->_controller = 'adminhtml_simicategory';
 
@@ -50,14 +51,14 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
             $this->buttonList->add(
                 'saveandcontinue',
                 [
-                'label'          => __('Save and Continue Edit'),
-                'class'          => 'save',
-                'data_attribute' => [
-                    'mage-init' => [
-                        'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
-                    ],
-                ]
-                    ],
+                    'label' => __('Save and Continue Edit'),
+                    'class' => 'save',
+                    'data_attribute' => [
+                        'mage-init' => [
+                            'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
+                        ],
+                    ]
+                ],
                 -100
             );
         } else {
@@ -80,7 +81,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
     {
         if ($this->coreRegistry->registry('simicategory')->getId()) {
             return __("Edit Simicategory '%1'", $this
-                    ->escapeHtml($this->coreRegistry->registry('simicategory')->getId()));
+                ->escapeHtml($this->coreRegistry->registry('simicategory')->getId()));
         } else {
             return __('New Simicategory');
         }
@@ -106,7 +107,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
     public function _getSaveAndContinueUrl()
     {
         return $this
-                ->getUrl('simiconnector/*/save', ['_current' => true, 'back' => 'edit', 'active_tab' => '{{tab_id}}']);
+            ->getUrl('simiconnector/*/save', ['_current' => true, 'back' => 'edit', 'active_tab' => '{{tab_id}}']);
     }
 
     /**

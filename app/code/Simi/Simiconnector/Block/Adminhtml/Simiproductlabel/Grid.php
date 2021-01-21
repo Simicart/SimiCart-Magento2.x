@@ -50,13 +50,14 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Simi\Simiconnector\Helper\Website $websiteHelper,
         array $data = []
-    ) {
-   
-        $this->collectionFactory   = $collectionFactory;
-        $this->moduleManager        = $moduleManager;
-        $this->resource            = $resourceConnection;
+    )
+    {
+
+        $this->collectionFactory = $collectionFactory;
+        $this->moduleManager = $moduleManager;
+        $this->resource = $resourceConnection;
         $this->productlabelFactory = $simiproductlabelFactory;
-        $this->websiteHelper        = $websiteHelper;
+        $this->websiteHelper = $websiteHelper;
 
         parent::__construct($context, $backendHelper, $data);
     }
@@ -83,21 +84,21 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         $this->addColumn('label_id', [
             'header' => __('ID'),
-            'align'  => 'right',
-            'width'  => '50px',
-            'index'  => 'label_id',
+            'align' => 'right',
+            'width' => '50px',
+            'index' => 'label_id',
         ]);
 
         $this->addColumn('name', [
             'header' => __('Label Name'),
-            'align'  => 'left',
-            'index'  => 'name'
+            'align' => 'left',
+            'index' => 'name'
         ]);
 
         $this->addColumn('status', [
-            'type'    => 'options',
-            'header'  => __('Status'),
-            'index'   => 'status',
+            'type' => 'options',
+            'header' => __('Status'),
+            'index' => 'status',
             'options' => $this->productlabelFactory->create()->toOptionStatusHash(),
         ]);
 
@@ -113,7 +114,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/edit', [
-                    'label_id' => $row->getId()
+            'label_id' => $row->getId()
         ]);
     }
 
@@ -133,10 +134,10 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->getMassactionBlock()->addItem(
             'delete',
             [
-            'label'   => __('Delete'),
-            'url'     => $this->getUrl('*/*/massDelete'),
-            'confirm' => __('Are you sure?')
-                ]
+                'label' => __('Delete'),
+                'url' => $this->getUrl('*/*/massDelete'),
+                'confirm' => __('Are you sure?')
+            ]
         );
         return $this;
     }

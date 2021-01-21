@@ -5,8 +5,9 @@ namespace Simi\Simiconnector\Model\Api;
 class Urldicts extends Apiabstract
 {
     public $params;
-    
-    public function setBuilderQuery(){
+
+    public function setBuilderQuery()
+    {
         $data = $this->getData();
         if (isset($data['resourceid']) && $data['resourceid']) {
             $requestPath = $data['params']['url'];
@@ -31,8 +32,9 @@ class Urldicts extends Apiabstract
             $this->parseParams();
         }
     }
-    
-    public function parseParams() {
+
+    public function parseParams()
+    {
         $requestPaths = explode('?', $_SERVER['REQUEST_URI']);
         $this->params = array();
         foreach ($requestPaths as $key => $value) {
@@ -44,23 +46,24 @@ class Urldicts extends Apiabstract
         }
         unset($this->params['url']);
     }
-    
-    public function show() {
-        $result = ['urldict'=>[]];
+
+    public function show()
+    {
+        $result = ['urldict' => []];
         $result['urldict']['entity_type'] = $this->builderQuery->getEntityType();
         if ($this->builderQuery->getEntityType() == 'product')
             $result['urldict']['product_id'] = $this->builderQuery->getEntityId();
-        else if($this->builderQuery->getEntityType() == 'category')
+        else if ($this->builderQuery->getEntityType() == 'category')
             $result['urldict']['category_id'] = $this->builderQuery->getEntityId();
         $data = $this->getData();
-        if(isset($result['urldict']['product_id']) && $result['urldict']['product_id']) {
+        if (isset($result['urldict']['product_id']) && $result['urldict']['product_id']) {
             $apiModel = $this->simiObjectManager->get('Simi\Simiconnector\Model\Api\Products');
             $data['resourceid'] = $result['urldict']['product_id'];
             $apiModel->singularKey = 'product';
             $apiModel->setData($data);
             $apiModel->setBuilderQuery();
             $result['urldict']['simi_product_data'] = $apiModel->show();
-        } else if(isset($result['urldict']['category_id']) && $result['urldict']['category_id']) {
+        } else if (isset($result['urldict']['category_id']) && $result['urldict']['category_id']) {
             if (isset($data['params']['get_child_cat']) && $data['params']['get_child_cat']) {
                 $apiModel = $this->simiObjectManager->get('Simi\Simiconnector\Model\Api\Categories');
                 $result['urldict']['simi_catetory_name'] = $this
@@ -79,13 +82,13 @@ class Urldicts extends Apiabstract
             $productListModel = $this->simiObjectManager
                 ->get('Simi\Simiconnector\Model\Api\Products');
             $data['resourceid'] = null;
-            $data['params'][self::FILTER] = array('cat_id'=>$result['urldict']['category_id']);
-            $data['params']['image_width'] = isset($data['params']['image_width'])?
-                $data['params']['image_width']:180;
-            $data['params']['image_height'] = isset($data['params']['image_height'])?
-                $data['params']['image_height']:180;
+            $data['params'][self::FILTER] = array('cat_id' => $result['urldict']['category_id']);
+            $data['params']['image_width'] = isset($data['params']['image_width']) ?
+                $data['params']['image_width'] : 180;
+            $data['params']['image_height'] = isset($data['params']['image_height']) ?
+                $data['params']['image_height'] : 180;
             $data['params']['limit'] = 12;
-            
+
             // Apply filter
             $attributes = array();
             foreach ($this->simiObjectManager
@@ -94,17 +97,17 @@ class Urldicts extends Apiabstract
                 $attributes[] = $attribute->getAttributecode();
             }
             $data['params'][self::FILTER]['layer'] = array();
-            foreach ($this->params as $key=>$value) {
+            foreach ($this->params as $key => $value) {
                 if (in_array($key, $attributes) && $key !== 'email' && $key !== 'simi_hash')
                     $data['params'][self::FILTER]['layer'][$key] = $value;
             }
-            
+
             // Apply sort 
-            if(isset($data['params']['product_list_order']))
+            if (isset($data['params']['product_list_order']))
                 $data['params']['order'] = $data['params']['product_list_order'];
-            if(isset($data['params']['product_list_dir']))
+            if (isset($data['params']['product_list_dir']))
                 $data['params']['dir'] = $data['params']['product_list_dir'];
-            
+
             $productListModel->pluralKey = 'products';
             $productListModel->singularKey = 'product';
             $productListModel->setData($data);

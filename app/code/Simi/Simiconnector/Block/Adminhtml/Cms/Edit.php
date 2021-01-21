@@ -25,8 +25,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         \Magento\Backend\Block\Widget\Context $context,
         \Magento\Framework\Registry $registry,
         array $data = []
-    ) {
-   
+    )
+    {
+
         $this->coreRegistry = $registry;
         parent::__construct($context, $data);
     }
@@ -39,7 +40,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
     public function _construct()
     {
 
-        $this->_objectId   = 'cms_id';
+        $this->_objectId = 'cms_id';
         $this->_blockGroup = 'Simi_Simiconnector';
         $this->_controller = 'adminhtml_cms';
 
@@ -50,14 +51,14 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
             $this->buttonList->add(
                 'saveandcontinue',
                 [
-                'label'          => __('Save and Continue Edit'),
-                'class'          => 'save',
-                'data_attribute' => [
-                    'mage-init' => [
-                        'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
-                    ],
-                ]
-                    ],
+                    'label' => __('Save and Continue Edit'),
+                    'class' => 'save',
+                    'data_attribute' => [
+                        'mage-init' => [
+                            'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
+                        ],
+                    ]
+                ],
                 -100
             );
         } else {
@@ -106,9 +107,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
     {
         return $this->getUrl(
             'simiconnector/*/save',
-            ['_current'   => true,
-                    'back'       => 'edit',
-                    'active_tab' => '{{tab_id}}']
+            ['_current' => true,
+                'back' => 'edit',
+                'active_tab' => '{{tab_id}}']
         );
     }
 

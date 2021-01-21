@@ -27,7 +27,7 @@ class Categorytrees extends Apiabstract
 
     public function index()
     {
-        return ['categorytrees'=>$this->_result];
+        return ['categorytrees' => $this->_result];
     }
 
     public function show()
@@ -36,6 +36,7 @@ class Categorytrees extends Apiabstract
     }
 
     public $categoryArray;
+
     public function getChildCatArray($level = 0, &$optionArray = [], $parent_id = 0)
     {
         if (!$this->categoryArray) {
@@ -53,21 +54,21 @@ class Categorytrees extends Apiabstract
             $this->categoryArray = $categoryCollection->getData();
         }
         $beforeString = '';
-        for ($i=0; $i< $level; $i++) {
+        for ($i = 0; $i < $level; $i++) {
             $beforeString .= '  --  ';
         }
-        $level+=1;
+        $level += 1;
         foreach ($this->categoryArray as $category) {
             if (isset($category['level']) && ($category['level'] != $level)) {
                 continue;
             }
             if (($parent_id == 0) ||
-                (($parent_id!=0) && isset($category['parent_id']) &&  ($category['parent_id']== $parent_id))) {
+                (($parent_id != 0) && isset($category['parent_id']) && ($category['parent_id'] == $parent_id))) {
                 $categoryModel = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')->load($category['entity_id']);
                 $category = array_merge($category, $categoryModel->getData());
-                $category['url_path'] = isset($category['request_path'])?$category['request_path']:$category['url_path'];      
+                $category['url_path'] = isset($category['request_path']) ? $category['request_path'] : $category['url_path'];
                 if (strpos($category['url_path'], '.html') === false) {
-                    $category['url_path'] = $category['url_path'].'.html';
+                    $category['url_path'] = $category['url_path'] . '.html';
                 }
                 if ($image_url = $categoryModel->getImageUrl()) {
                     $category['image_url'] = $image_url;
@@ -82,7 +83,7 @@ class Categorytrees extends Apiabstract
                     $category['description'] = $this->simiObjectManager
                         ->get('Magento\Cms\Model\Template\FilterProvider')
                         ->getPageFilter()->filter($categoryModel->getData('description'));
-                
+
                 unset($category['all_children']);
                 unset($category['attribute_set_id']);
                 unset($category['available_sort_by']);

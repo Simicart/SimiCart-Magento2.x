@@ -22,20 +22,20 @@ class Save extends \Magento\Backend\App\Action
             $model->load($id);
         }
         if (isset($data['category_id'])) {
-            $cat                 = $simiObjectManager
-                    ->create('Magento\Catalog\Model\Category')->load($data['category_id']);
+            $cat = $simiObjectManager
+                ->create('Magento\Catalog\Model\Category')->load($data['category_id']);
             $data['simicategory_name'] = $cat->getName();
         }
 
-        $is_delete_simicategory        = isset($data['simicategory_filename']['delete']) ?
-        $data['simicategory_filename']['delete'] : false;
+        $is_delete_simicategory = isset($data['simicategory_filename']['delete']) ?
+            $data['simicategory_filename']['delete'] : false;
         $data['simicategory_filename'] = isset($data['simicategory_filename']['value']) ?
-        $data['simicategory_filename']['value'] : '';
+            $data['simicategory_filename']['value'] : '';
 
-        $is_delete_simicategory_tablet        = isset($data['simicategory_filename_tablet']['delete']) ?
-        $data['simicategory_filename_tablet']['delete'] : false;
+        $is_delete_simicategory_tablet = isset($data['simicategory_filename_tablet']['delete']) ?
+            $data['simicategory_filename_tablet']['delete'] : false;
         $data['simicategory_filename_tablet'] = isset($data['simicategory_filename_tablet']['value']) ?
-        $data['simicategory_filename_tablet']['value'] : '';
+            $data['simicategory_filename_tablet']['value'] : '';
 
         $model->addData($data);
 
@@ -80,16 +80,16 @@ class Save extends \Magento\Backend\App\Action
         $this->_getSession()->setFormData($data);
         $this->_redirect('*/*/edit', ['simicategory_id' => $this->getRequest()->getParam('simicategory_id')]);
     }
-    
+
     private function updateVisibility($simiObjectManager, $model, $data)
     {
         $simiconnectorhelper = $simiObjectManager->get('Simi\Simiconnector\Helper\Data');
         if ($data['storeview_id'] && is_array($data['storeview_id'])) {
-            $typeID            = $simiconnectorhelper->getVisibilityTypeId('homecategory');
+            $typeID = $simiconnectorhelper->getVisibilityTypeId('homecategory');
             $visibleStoreViews = $simiObjectManager
-                    ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
-                    ->addFieldToFilter('content_type', $typeID)
-                    ->addFieldToFilter('item_id', $model->getId());
+                ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+                ->addFieldToFilter('content_type', $typeID)
+                ->addFieldToFilter('item_id', $model->getId());
             foreach ($visibleStoreViews as $visibilityItem) {
                 $simiObjectManager
                     ->get('Simi\Simiconnector\Helper\Data')->deleteModel($visibilityItem);

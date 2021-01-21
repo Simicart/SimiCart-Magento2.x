@@ -28,10 +28,11 @@ class Edit extends \Magento\Backend\App\Action
         Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
         \Magento\Framework\Registry $registry
-    ) {
-    
+    )
+    {
+
         $this->resultPageFactory = $resultPageFactory;
-        $this->coreRegistry     = $registry;
+        $this->coreRegistry = $registry;
         parent::__construct($context);
     }
 
@@ -65,7 +66,7 @@ class Edit extends \Magento\Backend\App\Action
     public function execute()
     {
         // 1. Get ID and create model
-        $id    = $this->getRequest()->getParam('history_id');
+        $id = $this->getRequest()->getParam('history_id');
         $simiObjectManager = $this->_objectManager;
         $model = $simiObjectManager->create('Simi\Simiconnector\Model\History');
 
@@ -98,7 +99,7 @@ class Edit extends \Magento\Backend\App\Action
         );
         $resultPage->getConfig()->getTitle()->prepend(__('History'));
         $resultPage->getConfig()->getTitle()
-                ->prepend($model->getId() ? $model->getId() : __('New History'));
+            ->prepend($model->getId() ? $model->getId() : __('New History'));
         return $resultPage;
     }
 }

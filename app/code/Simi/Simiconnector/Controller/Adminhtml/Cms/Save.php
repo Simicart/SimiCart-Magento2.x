@@ -24,7 +24,7 @@ class Save extends \Magento\Backend\App\Action
                 $model->load($id);
             }
 
-            $is_delete_banner  = isset($data['cms_image']['delete']) ? $data['cms_image']['delete'] : false;
+            $is_delete_banner = isset($data['cms_image']['delete']) ? $data['cms_image']['delete'] : false;
             $data['cms_image'] = isset($data['cms_image']['value']) ? $data['cms_image']['value'] : '';
             $model->addData($data);
 
@@ -64,16 +64,16 @@ class Save extends \Magento\Backend\App\Action
         }
         $this->_redirect('*/*/');
     }
-    
+
     private function updateVisibility($simiObjectManager, $model, $data)
     {
         $simiconnectorhelper = $simiObjectManager->get('Simi\Simiconnector\Helper\Data');
         if ($data['storeview_id'] && is_array($data['storeview_id'])) {
-            $typeID            = $simiconnectorhelper->getVisibilityTypeId('cms');
+            $typeID = $simiconnectorhelper->getVisibilityTypeId('cms');
             $visibleStoreViews = $simiObjectManager
-                    ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
-                    ->addFieldToFilter('content_type', $typeID)
-                    ->addFieldToFilter('item_id', $model->getId());
+                ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+                ->addFieldToFilter('content_type', $typeID)
+                ->addFieldToFilter('item_id', $model->getId());
             foreach ($visibleStoreViews as $visibilityItem) {
                 $simiObjectManager
                     ->get('Simi\Simiconnector\Helper\Data')->deleteModel($visibilityItem);

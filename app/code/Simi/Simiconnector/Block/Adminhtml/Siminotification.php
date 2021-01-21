@@ -17,9 +17,9 @@ class Siminotification extends \Magento\Backend\Block\Widget\Grid\Container
      */
     public function _construct()
     {
-        $this->_controller     = 'adminhtml_siminotification';
-        $this->_blockGroup     = 'Simi_Simiconnector';
-        $this->_headerText     = __('Notification');
+        $this->_controller = 'adminhtml_siminotification';
+        $this->_blockGroup = 'Simi_Simiconnector';
+        $this->_headerText = __('Notification');
         $this->_addButtonLabel = __('Add New Notification');
         parent::_construct();
         if ($this->_isAllowedAction('Simi_Simiconnector::save')) {

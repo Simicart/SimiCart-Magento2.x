@@ -58,14 +58,15 @@ class Newcode extends Generic implements \Magento\Backend\Block\Widget\Tab\TabIn
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         array $data = []
-    ) {
-   
-        $this->simiObjectManager   = $simiObjectManager;
+    )
+    {
+
+        $this->simiObjectManager = $simiObjectManager;
         $this->simibarcodeFactory = $simibarcodeFactory;
-        $this->websiteHelper       = $websiteHelper;
-        $this->systemStore         = $systemStore;
-        $this->jsonEncoder         = $jsonEncoder;
-        $this->categoryFactory     = $categoryFactory;
+        $this->websiteHelper = $websiteHelper;
+        $this->systemStore = $systemStore;
+        $this->jsonEncoder = $jsonEncoder;
+        $this->categoryFactory = $categoryFactory;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
@@ -85,16 +86,16 @@ class Newcode extends Generic implements \Magento\Backend\Block\Widget\Tab\TabIn
             'product_ids',
             'text',
             [
-            'name'               => 'product_ids',
-            'label'              => __('Product ID(s)'),
-            'title'              => __('Choose products'),
-            'after_element_html' =>
-                '<a href="#" title="Show Product Grid" onclick="toogleProduct();return false;">'
-                . '<img id="show_product_grid" src="'
-                . $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png') . '" title="" /></a>'
-                . $this->getLayout()
-                ->createBlock('Simi\Simiconnector\Block\Adminhtml\Simibarcode\Edit\Tab\Productgrid')->toHtml()
-                ]
+                'name' => 'product_ids',
+                'label' => __('Product ID(s)'),
+                'title' => __('Choose products'),
+                'after_element_html' =>
+                    '<a href="#" title="Show Product Grid" onclick="toogleProduct();return false;">'
+                    . '<img id="show_product_grid" src="'
+                    . $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png') . '" title="" /></a>'
+                    . $this->getLayout()
+                        ->createBlock('Simi\Simiconnector\Block\Adminhtml\Simibarcode\Edit\Tab\Productgrid')->toHtml()
+            ]
         );
 
         $this->_eventManager->dispatch('adminhtml_simibarcode_edit_tab_main_prepare_form', ['form' => $form]);

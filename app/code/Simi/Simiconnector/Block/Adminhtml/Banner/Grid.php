@@ -49,13 +49,14 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Simi\Simiconnector\Helper\Website $websiteHelper,
         array $data = []
-    ) {
-   
+    )
+    {
+
         $this->collectionFactory = $collectionFactory;
-        $this->moduleManager      = $moduleManager;
-        $this->resource          = $resourceConnection;
-        $this->bannerFactory      = $bannerFactory;
-        $this->websiteHelper      = $websiteHelper;
+        $this->moduleManager = $moduleManager;
+        $this->resource = $resourceConnection;
+        $this->bannerFactory = $bannerFactory;
+        $this->websiteHelper = $websiteHelper;
         parent::__construct($context, $backendHelper, $data);
     }
 
@@ -93,54 +94,54 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         $this->addColumn('simi_banner_id', [
             'header' => __('ID'),
-            'index'  => 'banner_id',
+            'index' => 'banner_id',
         ]);
 
         $this->addColumn('banner_title', [
             'header' => __('Title'),
-            'index'  => 'banner_title',
+            'index' => 'banner_title',
         ]);
 
         $this->addColumn('type', [
-            'type'    => 'options',
-            'header'  => __('Direct viewers to'),
-            'index'   => 'type',
+            'type' => 'options',
+            'header' => __('Direct viewers to'),
+            'index' => 'type',
             'options' => $this->bannerFactory->create()->toOptionTypeHash(),
         ]);
 
         $this->addColumn('sort_order', [
             'header' => __('Sort Order'),
-            'index'  => 'sort_order',
+            'index' => 'sort_order',
         ]);
 
         $this->addColumn('status', [
-            'type'    => 'options',
-            'header'  => __('Status'),
-            'index'   => 'status',
+            'type' => 'options',
+            'header' => __('Status'),
+            'index' => 'status',
             'options' => $this->bannerFactory->create()->toOptionStatusHash(),
         ]);
 
         $this->addColumn(
             'action',
             [
-            'header'           => __('View'),
-            'type'             => 'action',
-            'getter'           => 'getId',
-            'actions'          => [
-                [
-                    'caption' => __('Edit'),
-                    'url'     => [
-                        'base'   => '*/*/edit',
-                        'params' => ['store' => $this->getRequest()->getParam('store')]
-                    ],
-                    'field'   => 'banner_id'
-                ]
-            ],
-            'sortable'         => false,
-            'filter'           => false,
-            'header_css_class' => 'col-action',
-            'column_css_class' => 'col-action',
-                ]
+                'header' => __('View'),
+                'type' => 'action',
+                'getter' => 'getId',
+                'actions' => [
+                    [
+                        'caption' => __('Edit'),
+                        'url' => [
+                            'base' => '*/*/edit',
+                            'params' => ['store' => $this->getRequest()->getParam('store')]
+                        ],
+                        'field' => 'banner_id'
+                    ]
+                ],
+                'sortable' => false,
+                'filter' => false,
+                'header_css_class' => 'col-action',
+                'column_css_class' => 'col-action',
+            ]
         );
 
         return parent::_prepareColumns();
@@ -155,7 +156,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/edit', [
-                    'banner_id' => $row->getId()
+            'banner_id' => $row->getId()
         ]);
     }
 

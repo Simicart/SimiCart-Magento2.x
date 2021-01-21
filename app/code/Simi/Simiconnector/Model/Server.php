@@ -10,7 +10,7 @@ class Server
 {
 
     public $helper;
-    public $data    = [];
+    public $data = [];
     public $method = 'callApi';
     public $eventManager;
     public $simiObjectManager;
@@ -21,14 +21,16 @@ class Server
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         \Magento\Framework\Registry $registry
-    ) {
+    )
+    {
         $this->simiObjectManager = $simiObjectManager;
-        $this->coreRegistry     = $registry;
+        $this->coreRegistry = $registry;
     }
 
     public function init(
         \Simi\Simiconnector\Controller\Rest\Action $controller
-    ) {
+    )
+    {
         $this->initialize($controller);
         return $this;
     }
@@ -63,7 +65,7 @@ class Server
     public function run()
     {
         $this->helper = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Data');
-        $data          = $this->data;
+        $data = $this->data;
         if (count($data) == 0) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid method.'), 4);
         }
@@ -72,7 +74,7 @@ class Server
             throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid method.'), 4);
         }
 
-        if(!$this->_getCheckoutSession()->getData('simiconnector_platform')) {
+        if (!$this->_getCheckoutSession()->getData('simiconnector_platform')) {
             $this->_getCheckoutSession()->setData('simiconnector_platform', 'native');
         }
 
@@ -110,27 +112,27 @@ class Server
      */
     public function initialize(\Simi\Simiconnector\Controller\Rest\Action $controller)
     {
-        $request_string   = $controller->getRequest()->getRequestString();
-        $action_string    = $controller->getRequest()->getActionName() . '/';
-        $cache            = explode($action_string, $request_string);
+        $request_string = $controller->getRequest()->getRequestString();
+        $action_string = $controller->getRequest()->getActionName() . '/';
+        $cache = explode($action_string, $request_string);
         $resources_string = $cache[1];
-        $resources        = explode('/', $resources_string);
-        $resource       = isset($resources[0]) ? $resources[0] : null;
+        $resources = explode('/', $resources_string);
+        $resource = isset($resources[0]) ? $resources[0] : null;
         if ($this->simiObjectManager
-            ->get('Simi\Simiconnector\Helper\Data')->countArray($newResources = explode('?', $resource)) > 0) {
+                ->get('Simi\Simiconnector\Helper\Data')->countArray($newResources = explode('?', $resource)) > 0) {
             $resource = $newResources[0];
         }
-        $resourceid     = isset($resources[1]) ? $resources[1] : null;
+        $resourceid = isset($resources[1]) ? $resources[1] : null;
         if ($this->simiObjectManager
-            ->get('Simi\Simiconnector\Helper\Data')
-            ->countArray($newResourceIds = explode('?', $resourceid)) > 0) {
+                ->get('Simi\Simiconnector\Helper\Data')
+                ->countArray($newResourceIds = explode('?', $resourceid)) > 0) {
             $resourceid = $newResourceIds[0];
         }
         $nestedresource = isset($resources[2]) ? $resources[2] : null;
-        $nestedid       = isset($resources[3]) ? $resources[3] : null;
+        $nestedid = isset($resources[3]) ? $resources[3] : null;
 
-        $module              = $controller->getRequest()->getModuleName();
-        $params              = $controller->getRequest()->getQuery();
+        $module = $controller->getRequest()->getModuleName();
+        $params = $controller->getRequest()->getQuery();
         /*
          *
          * Use the function below for lower than 2.2 version of Magento
@@ -144,11 +146,11 @@ class Server
          *
          *
         */
-        $contents            = $controller->getRequest()->getContent();
-        $contents_array      = [];
+        $contents = $controller->getRequest()->getContent();
+        $contents_array = [];
         if ($contents && ($contents != '')) {
             $contents_paser = urldecode($contents);
-            $contents       = json_decode($contents_paser);
+            $contents = json_decode($contents_paser);
             $contents_array = json_decode($contents_paser, true);
         }
 
@@ -161,16 +163,16 @@ class Server
             $is_method = 4;
         }
         $this->data = [
-            'resource'       => $resource,
-            'resourceid'     => $resourceid,
+            'resource' => $resource,
+            'resourceid' => $resourceid,
             'nestedresource' => $nestedresource,
-            'nestedid'       => $nestedid,
-            'params'         => $params,
-            'contents'       => $contents,
+            'nestedid' => $nestedid,
+            'params' => $params,
+            'contents' => $contents,
             'contents_array' => $contents_array,
-            'is_method'      => $is_method,
-            'module'         => $module,
-            'controller'     => $controller,
+            'is_method' => $is_method,
+            'module' => $module,
+            'controller' => $controller,
         ];
         $this->coreRegistry->register('simidata', $this->data);
         $this->eventManager->dispatch(

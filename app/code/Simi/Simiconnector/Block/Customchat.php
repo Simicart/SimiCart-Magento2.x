@@ -29,7 +29,8 @@ class Customchat extends \Magento\Framework\View\Element\Template
             $this->storeManager->getStore()->getCode());
     }
 
-    public function getHeadScript(){
+    public function getHeadScript()
+    {
         return $this->getStoreConfig('simiconnector/customchat/head_script');
     }
 

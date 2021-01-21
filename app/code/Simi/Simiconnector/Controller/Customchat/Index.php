@@ -9,10 +9,11 @@ class Index extends \Magento\Framework\App\Action\Action
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context
-    ) {
+    )
+    {
 
         parent::__construct($context);
-        $this->simiObjectManager  = $context->getObjectManager();
+        $this->simiObjectManager = $context->getObjectManager();
     }
 
     public function execute()

@@ -262,8 +262,9 @@ class Price extends \Simi\Simiconnector\Helper\Price
         &$product,
         &$_weeeTaxAttributes,
         &$_weeeHelper
-    ) {
-    
+    )
+    {
+
         $_taxHelper = $this->helper('Magento\Tax\Helper\Data');
         $priceV2['price_label'] = __('As low as');
         $priceV2['minimal_price'] = 1;
@@ -310,8 +311,9 @@ class Price extends \Simi\Simiconnector\Helper\Price
         &$_weeeHelper,
         $_maximalPriceTax,
         $_maximalPriceInclTax
-    ) {
-    
+    )
+    {
+
         $_taxHelper = $this->helper('Magento\Tax\Helper\Data');
         $priceV2['product_from_label'] = __('From');
         $priceV2['product_to_label'] = __('To');
@@ -361,8 +363,9 @@ class Price extends \Simi\Simiconnector\Helper\Price
         &$product,
         &$_weeeTaxAttributes,
         &$_weeeHelper
-    ) {
-    
+    )
+    {
+
         $_taxHelper = $this->helper('Magento\Tax\Helper\Data');
         //not show from and to with tax
         $priceV2['show_from_to_tax_price'] = 0;
@@ -410,8 +413,7 @@ class Price extends \Simi\Simiconnector\Helper\Price
             } else {
                 $amount = $_weeeTaxAttribute->getAmount();
             }
-            $wee .= $_weeeTaxAttribute->getName();
-            ;
+            $wee .= $_weeeTaxAttribute->getName();;
             $wee .= ": ";
             $wee .= $this->currency($amount, true, false);
             $wee .= " + ";

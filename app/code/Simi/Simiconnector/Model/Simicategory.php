@@ -36,9 +36,10 @@ class Simicategory extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\Simicategory $resource,
         \Simi\Simiconnector\Model\ResourceModel\Simicategory\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
-    ) {
+    )
+    {
         $this->simiObjectManager = $simiObjectManager;
-        $this->websiteHelper    = $websiteHelper;
+        $this->websiteHelper = $websiteHelper;
 
         parent::__construct(
             $context,
@@ -76,8 +77,8 @@ class Simicategory extends \Magento\Framework\Model\AbstractModel
     public function toOptionWebsiteHash()
     {
         $website_collection = $this->websiteHelper->getWebsiteCollection();
-        $list               = [];
-        $list[0]            = __('All');
+        $list = [];
+        $list[0] = __('All');
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countCollection($website_collection) > 0) {
             foreach ($website_collection as $website) {
                 $list[$website->getId()] = $website->getName();
@@ -88,15 +89,15 @@ class Simicategory extends \Magento\Framework\Model\AbstractModel
 
     public function delete()
     {
-        $typeID            = $this->simiObjectManager
-                ->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('homecategory');
+        $typeID = $this->simiObjectManager
+            ->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('homecategory');
         $visibleStoreViews = $this->simiObjectManager
-                ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
-                ->addFieldToFilter('content_type', $typeID)
-                ->addFieldToFilter('item_id', $this->getId());
+            ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+            ->addFieldToFilter('content_type', $typeID)
+            ->addFieldToFilter('item_id', $this->getId());
         foreach ($visibleStoreViews as $visibilityItem) {
             $this->simiObjectManager
-                            ->get('Simi\Simiconnector\Helper\Data')->deleteModel($visibilityItem);
+                ->get('Simi\Simiconnector\Helper\Data')->deleteModel($visibilityItem);
         }
         return parent::delete();
     }

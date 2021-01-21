@@ -9,13 +9,13 @@ namespace Simi\Simiconnector\Helper;
 class Siminotification extends \Simi\Simiconnector\Helper\Data
 {
     public $android_bad_device = [];
-    public $ios_bad_device =[];
+    public $ios_bad_device = [];
 
     public $size_android_sent = 0;
 
     public function sendNotice($data)
     {
-        $trans   = $this->send($data);
+        $trans = $this->send($data);
         // update notification history
         $history = $this->simiObjectManager->get('Simi\Simiconnector\Model\History');
         if (!$trans) {
@@ -32,11 +32,11 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
     public function send(&$data)
     {
         if (isset($data['category_id'])) {
-            $categoryId            = $data['category_id'];
-            $category              = $this->simiObjectManager
+            $categoryId = $data['category_id'];
+            $category = $this->simiObjectManager
                 ->get('\Magento\Catalog\Model\Category')->load($categoryId);
             $categoryChildrenCount = $category->getChildrenCount();
-            $categoryName          = $category->getName();
+            $categoryName = $category->getName();
             $data['category_name'] = $categoryName;
             if ($categoryChildrenCount > 0) {
                 $data['has_child'] = 1;
@@ -45,15 +45,15 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
             }
         }
         if (isset($data['product_id'])) {
-            $productId            = $data['product_id'];
-            $productName          = $this->simiObjectManager
+            $productId = $data['product_id'];
+            $productName = $this->simiObjectManager
                 ->create('Magento\Catalog\Model\Product')->load($productId)->getName();
             $data['product_name'] = $productName;
         }
         $this->checkIndex($data);
         $deviceArray = explode(',', str_replace(' ', '', $data['devices_pushed']));
 
-        $collectionDevice  = $this->simiObjectManager
+        $collectionDevice = $this->simiObjectManager
             ->get('Simi\Simiconnector\Model\Device')->getCollection()
             ->addFieldToFilter('device_id', ['in' => $deviceArray]);
         $collectionDevice2 = $this->simiObjectManager
@@ -71,8 +71,8 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
             default:
         }
 
-        if ((int) $data['device_id'] != 0) {
-            if ((int) $data['device_id'] == 2) {
+        if ((int)$data['device_id'] != 0) {
+            if ((int)$data['device_id'] == 2) {
                 //send android
                 $collectionDevice->addFieldToFilter('plaform_id', ['eq' => 3]);
                 return $this->sendAndroid($collectionDevice, $data);
@@ -85,7 +85,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
             //send all
             $collectionDevice->addFieldToFilter('plaform_id', ['neq' => 3]);
             $collectionDevice2->addFieldToFilter('plaform_id', ['eq' => 3]);
-            $resultIOS     = $this->sendIOS($collectionDevice, $data);
+            $resultIOS = $this->sendIOS($collectionDevice, $data);
             $resultAndroid = $this->sendAndroid($collectionDevice2, $data);
             if ($resultIOS || $resultAndroid) {
                 return true;
@@ -101,12 +101,12 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
         if ($total == 0) {
             return true;
         }
-        $ch          = $this->getDirPEMfile($data);
-        $dir         = $this->getDirPEMPassfile();
-        $message     = $data['notice_content'];
+        $ch = $this->getDirPEMfile($data);
+        $dir = $this->getDirPEMPassfile();
+        $message = $data['notice_content'];
         $imageHelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data');
         $dbData = [
-            'alert' => ['title'=>$data['notice_title'],'body'=>$message],
+            'alert' => ['title' => $data['notice_title'], 'body' => $message],
             'sound' => 'default',
             'badge' => 1,
             'title' => $data['notice_title'],
@@ -122,19 +122,19 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
             'height' => $data['height'],
             'width' => $data['width'],
             'show_popup' => $data['show_popup'],
-            'notice_id' => isset($data['notice_id'])?$data['notice_id']:'0', // frank customize click and rate click
-            'notice_history_id' => isset($data['notice_history_id'])?$data['notice_history_id']:'',// frank customize click and rate click
+            'notice_id' => isset($data['notice_id']) ? $data['notice_id'] : '0', // frank customize click and rate click
+            'notice_history_id' => isset($data['notice_history_id']) ? $data['notice_history_id'] : '',// frank customize click and rate click
             'mutable-content' => 1,// Max add for the small image of the notification.
         ];
         $body = $dbData;
         $body['aps'] = $dbData;
-        $payload     = json_encode($body);
+        $payload = json_encode($body);
         $totalDevice = count($collectionDevice);
 
-        $i           = 0;
-        $tokenArray  = [];
+        $i = 0;
+        $tokenArray = [];
         $sentsuccess = true;
-        $device_ids =[];
+        $device_ids = [];
 
         foreach ($collectionDevice as $item) {
             $device_ids[$item->getDeviceToken()] = $item->getId();
@@ -143,7 +143,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
                 if (!$result) {
                     $sentsuccess = false;
                 }
-                $i          = 0;
+                $i = 0;
                 $tokenArray = [];
             }
             if (strlen($item->getDeviceToken()) < 70) {
@@ -159,11 +159,11 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
         $this->simiObjectManager
             ->get('\Magento\Framework\Message\ManagerInterface')
             ->addSuccess(__('Message successfully delivered to %1 devices (IOS)', $totalDevice - count($this->ios_bad_device)));
-        if(count($this->ios_bad_device) > 0){
+        if (count($this->ios_bad_device) > 0) {
             $iosBadDevices = [];
             foreach ($this->ios_bad_device as $value) {
                 $iosBadDevices[] = $device_ids[$value];
-                $this->removeBadDevice($iosBadDevices,$data,true);
+                $this->removeBadDevice($iosBadDevices, $data, true);
             }
         }
         return true;
@@ -178,7 +178,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
 
             $ctx = $stream_context_create();
             $stream_context_set_option($ctx, 'ssl', 'local_cert', $ch);
-            $fp  = $stream_socket_client(
+            $fp = $stream_socket_client(
                 'ssl://gateway.push.apple.com:2195',
                 $err,
                 $errstr,
@@ -201,7 +201,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
         $fwrite = 'fwrite';
         $fclose = 'fclose';
         foreach ($tokenArray as $deviceToken) {
-            $msg    = $chr(0) . pack('n', 32) . pack('H*', $deviceToken) . pack('n', strlen($payload)) . $payload;
+            $msg = $chr(0) . pack('n', 32) . pack('H*', $deviceToken) . pack('n', strlen($payload)) . $payload;
             // Send it to the server
             $result = $fwrite($fp, $msg, strlen($msg));
             if (!$result) {
@@ -218,7 +218,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
         $total--;
         while (true) {
             $from_user = 0;
-            $check     = $total - 999;
+            $check = $total - 999;
             if ($check <= 0) {
                 //send to  (total+from_user) user from_user
                 $is = $this->sendTurnAnroid($collectionDevice, $from_user, $from_user + $total, $message);
@@ -249,15 +249,15 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
         $registrationIDs = [];
         $device_ids = [];
         for ($i = $from; $i <= $to; $i++) {
-            $item              = $collectionDevice[$i];
+            $item = $collectionDevice[$i];
             $device_ids [] = $item['device_id'];
             $registrationIDs[] = $item['device_token'];
         }
-        $url    = 'https://fcm.googleapis.com/fcm/send';
+        $url = 'https://fcm.googleapis.com/fcm/send';
         unset($message['devices_pushed']);
         $fields = [
             'registration_ids' => $registrationIDs,
-            'data'             => ["message" => $message],
+            'data' => ["message" => $message],
             'android' => array('priority' => 'high'),
             'priority' => 10
         ];
@@ -277,7 +277,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
             $curl_exec = 'curl_exec';
             $curl_close = 'curl_close';
 
-            $ch     = $curl_init();
+            $ch = $curl_init();
             $curl_setopt($ch, CURLOPT_URL, $url);
             $curl_setopt($ch, CURLOPT_POST, true);
             $curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
@@ -293,21 +293,21 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
             return false;
         }
 
-        $re = json_decode($result,true);
+        $re = json_decode($result, true);
 
         if ($re == null || $re['success'] == 0) {
             return false;
         }
         $this->size_android_sent = $this->size_android_sent + $re['success'];
-        if(isset($re['failure']) && $re['failure'] != 0){
+        if (isset($re['failure']) && $re['failure'] != 0) {
             $data_result = $re['results'];
-            for($i = 0;  $i < count($data_result); $i++){
+            for ($i = 0; $i < count($data_result); $i++) {
                 $item = $data_result[$i];
-                if(!isset($item['error'])){
+                if (!isset($item['error'])) {
                     continue;
                 }
-                $error =  $item['error'];
-                if($error == 'InvalidRegistration' || $error =='NotRegistered'){
+                $error = $item['error'];
+                if ($error == 'InvalidRegistration' || $error == 'NotRegistered') {
                     $this->android_bad_device[] = $device_ids[$i];
                 }
             }
@@ -320,7 +320,7 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
         if ($collectionDevice->getSize() == 0) {
             return true;
         }
-        $total   = count($collectionDevice);
+        $total = count($collectionDevice);
         $message = $data;
 
         $imageHelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data');
@@ -328,8 +328,8 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
 
         $this->repeatSendAnddroid($total, $collectionDevice->getData(), $message);
 
-        if(count($this->android_bad_device) > 0){
-            $this->removeBadDevice($this->android_bad_device,$data);
+        if (count($this->android_bad_device) > 0) {
+            $this->removeBadDevice($this->android_bad_device, $data);
         }
         return true;
     }
@@ -394,25 +394,26 @@ class Siminotification extends \Simi\Simiconnector\Helper\Data
         return $this->scopeConfig->getValue($nameConfig, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $storeid);
     }
 
-    public function removeBadDevice($bad_device_id,$data,$is_ios = false){
+    public function removeBadDevice($bad_device_id, $data, $is_ios = false)
+    {
         $notificationModel = $this->simiObjectManager->get('Simi\Simiconnector\Model\Siminotification')->load($data['notice_id']);
         $devices_pushed = explode(',', str_replace(' ', '', $notificationModel->getDevicesPushed()));
 
-        for($i = 0; $i < count($bad_device_id); $i++){
-            if(($key = array_search($bad_device_id[$i],$devices_pushed)) !== false) {
+        for ($i = 0; $i < count($bad_device_id); $i++) {
+            if (($key = array_search($bad_device_id[$i], $devices_pushed)) !== false) {
                 unset($devices_pushed[$key]);
             }
 
-            $model =$this->simiObjectManager->get('Simi\Simiconnector\Model\Device');
+            $model = $this->simiObjectManager->get('Simi\Simiconnector\Model\Device');
             $model->setId($bad_device_id[$i])->delete();
         }
         $new_devices_pushed = implode(',', $devices_pushed);
         $notificationModel->setDevicesPushed($new_devices_pushed)->save();
         $deviceType = 'Android';
-        if($is_ios){
+        if ($is_ios) {
             $deviceType = 'iOS';
         }
         $this->simiObjectManager->get('\Magento\Framework\Message\ManagerInterface')
-            ->addError(__('Deleted %1 bad devices (%2)', count($this->android_bad_device),$deviceType));
+            ->addError(__('Deleted %1 bad devices (%2)', count($this->android_bad_device), $deviceType));
     }
 }

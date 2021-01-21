@@ -17,9 +17,9 @@ class History extends \Magento\Backend\Block\Widget\Grid\Container
      */
     public function _construct()
     {
-        $this->_controller     = 'adminhtml_history';
-        $this->_blockGroup     = 'Simi_Simiconnector';
-        $this->_headerText     = __('History');
+        $this->_controller = 'adminhtml_history';
+        $this->_blockGroup = 'Simi_Simiconnector';
+        $this->_headerText = __('History');
         $this->_addButtonLabel = __('Add New History');
         parent::_construct();
         $this->buttonList->remove('add');

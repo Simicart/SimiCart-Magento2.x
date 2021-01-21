@@ -10,29 +10,29 @@ class Redirect extends \Magento\Framework\App\Action\Action
 
         $salt = $this->getRequest()->getParam('salt');
         if (!$token) {
-            $this->_redirect('checkout/cart', ['_secure'=>true]);
+            $this->_redirect('checkout/cart', ['_secure' => true]);
         }
 
         $token = base64_decode($token);
-        
+
         $secretKey = (String )$this->getStoreConfig('simiconnector/general/secret_key');
         $encodeMethod = 'md5';
         $secretKeyEncrypted = $encodeMethod($secretKey);
 
-        $key  = substr_replace($secretKeyEncrypted,$salt,strlen($salt),0);
+        $key = substr_replace($secretKeyEncrypted, $salt, strlen($salt), 0);
 
-        $paramsEncrypted =str_replace($key, "", $token);
+        $paramsEncrypted = str_replace($key, "", $token);
 
         $paramsJson = base64_decode($paramsEncrypted);
 
-        $params =json_decode($paramsJson, 1);
+        $params = json_decode($paramsJson, 1);
 
-        $email =false;
-        $password =false;
+        $email = false;
+        $password = false;
 
-        $quoteId =base64_decode($params['quote_id']);
-        $url =base64_decode($params['redirect_url']);
-        if(!$url) {
+        $quoteId = base64_decode($params['quote_id']);
+        $url = base64_decode($params['redirect_url']);
+        if (!$url) {
             $url = 'checkout/cart';
         }
 
@@ -56,12 +56,12 @@ class Redirect extends \Magento\Framework\App\Action\Action
             $customer = $this->_objectManager->create('\Magento\Customer\Model\Customer');
             $customer->website_id = $websiteId;
             $customer->setStore($store);
-            
+
             try {
                 $customer->loadByEmail($email);
                 if ($customer->authenticate($email, $password)) {
                     $session = $this->_objectManager->create('\Magento\Customer\Model\Session')
-                                ->setCustomerAsLoggedIn($customer);
+                        ->setCustomerAsLoggedIn($customer);
                 }
             } catch (\Exception $e) {
                 $this->_redirect($url, ['_secure' => true]);
@@ -78,7 +78,7 @@ class Redirect extends \Magento\Framework\App\Action\Action
     public function getStoreConfig($path)
     {
         return $this->_objectManager
-                ->get('\Magento\Framework\App\Config\ScopeConfigInterface')
-                ->getValue($path);
+            ->get('\Magento\Framework\App\Config\ScopeConfigInterface')
+            ->getValue($path);
     }
 }

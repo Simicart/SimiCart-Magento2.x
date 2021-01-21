@@ -37,11 +37,12 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Simi\Simiconnector\Model\BannerFactory $bannerFactory,
         \Magento\Framework\Registry $coreRegistry,
         array $data = []
-    ) {
-   
+    )
+    {
+
         $this->productFactory = $productFactory;
-        $this->bannerFactory   = $bannerFactory;
-        $this->coreRegistry   = $coreRegistry;
+        $this->bannerFactory = $bannerFactory;
+        $this->coreRegistry = $coreRegistry;
         parent::__construct($context, $backendHelper, $data);
     }
 
@@ -88,9 +89,9 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function _prepareCollection()
     {
         $collection = $this->productFactory->create()->getCollection()
-                ->addAttributeToSelect('entity_id')
-                ->addAttributeToSelect('name')
-                ->addAttributeToSelect('sku');
+            ->addAttributeToSelect('entity_id')
+            ->addAttributeToSelect('name')
+            ->addAttributeToSelect('sku');
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -104,43 +105,43 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
 
         $this->addColumn(
             'in_products',
-            ['type'             => 'radio',
-            'html_name'        => 'products_id',
-            'required'         => true,
-            'values'           => $this->_getSelectedProducts(),
-            'align'            => 'center',
-            'index'            => 'entity_id',
-            'header_css_class' => 'col-select',
-            'column_css_class' => 'col-select'
-                ]
+            ['type' => 'radio',
+                'html_name' => 'products_id',
+                'required' => true,
+                'values' => $this->_getSelectedProducts(),
+                'align' => 'center',
+                'index' => 'entity_id',
+                'header_css_class' => 'col-select',
+                'column_css_class' => 'col-select'
+            ]
         );
 
         $this->addColumn(
             'entity_id',
-            ['header'           => __('ID'),
-            'index'            => 'entity_id',
-            'width'            => '20px',
-            'header_css_class' => 'col-name',
-            'column_css_class' => 'col-name'
-                ]
+            ['header' => __('ID'),
+                'index' => 'entity_id',
+                'width' => '20px',
+                'header_css_class' => 'col-name',
+                'column_css_class' => 'col-name'
+            ]
         );
 
         $this->addColumn(
             'name',
-            ['header'           => __('Name'),
-            'index'            => 'name',
-            'header_css_class' => 'col-name',
-            'column_css_class' => 'col-name'
-                ]
+            ['header' => __('Name'),
+                'index' => 'name',
+                'header_css_class' => 'col-name',
+                'column_css_class' => 'col-name'
+            ]
         );
 
         $this->addColumn(
             'sku',
-            ['header'           => __('SKU'),
-            'index'            => 'sku',
-            'header_css_class' => 'col-sku',
-            'column_css_class' => 'col-sku'
-                ]
+            ['header' => __('SKU'),
+                'index' => 'sku',
+                'header_css_class' => 'col-sku',
+                'column_css_class' => 'col-sku'
+            ]
         );
 
         return parent::_prepareColumns();
@@ -189,7 +190,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
             $banner_id = 0;
         }
 
-        $banner   = $this->bannerFactory->create()->load($banner_id);
+        $banner = $this->bannerFactory->create()->load($banner_id);
         $products = [];
         if ($banner->getId()) {
             $products = [$banner->getProductId()];

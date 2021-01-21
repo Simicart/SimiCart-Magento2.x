@@ -28,10 +28,11 @@ class Edit extends \Magento\Backend\App\Action
         Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
         \Magento\Framework\Registry $registry
-    ) {
-    
+    )
+    {
+
         $this->resultPageFactory = $resultPageFactory;
-        $this->coreRegistry     = $registry;
+        $this->coreRegistry = $registry;
         parent::__construct($context);
     }
 
@@ -65,7 +66,7 @@ class Edit extends \Magento\Backend\App\Action
     public function execute()
     {
         // 1. Get ID and create model
-        $id    = $this->getRequest()->getParam('notice_id');
+        $id = $this->getRequest()->getParam('notice_id');
         $simiObjectManager = $this->_objectManager;
         $model = $simiObjectManager->create('Simi\Simiconnector\Model\Siminotification');
 
@@ -98,7 +99,7 @@ class Edit extends \Magento\Backend\App\Action
         );
         $resultPage->getConfig()->getTitle()->prepend(__('Notification'));
         $resultPage->getConfig()->getTitle()
-                ->prepend($model->getId() ? $model->getId() : __('New Notification'));
+            ->prepend($model->getId() ? $model->getId() : __('New Notification'));
         return $resultPage;
     }
 }

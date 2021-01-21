@@ -53,14 +53,15 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         array $data = []
-    ) {
-   
-        $this->simiObjectManager   = $simiObjectManager;
+    )
+    {
+
+        $this->simiObjectManager = $simiObjectManager;
         $this->productlistFactory = $productlistFactory;
-        $this->websiteHelper       = $websiteHelper;
-        $this->systemStore         = $systemStore;
-        $this->jsonEncoder         = $jsonEncoder;
-        $this->categoryFactory     = $categoryFactory;
+        $this->websiteHelper = $websiteHelper;
+        $this->systemStore = $systemStore;
+        $this->jsonEncoder = $jsonEncoder;
+        $this->categoryFactory = $categoryFactory;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
@@ -71,7 +72,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      */
     public function _prepareForm()
     {
-        
+
         $model = $this->_coreRegistry->registry('productlist');
 
         /*
@@ -91,17 +92,17 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Product List Information')]);
 
-        $data                = $model->getData();
+        $data = $model->getData();
         if ($model->getId()) {
             $fieldset->addField('productlist_id', 'hidden', ['name' => 'productlist_id']);
 
             $simiconnectorhelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data');
-            $typeID              = $simiconnectorhelper->getVisibilityTypeId('productlist');
-            $visibleStoreViews   = $this->simiObjectManager
-                    ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
-                    ->addFieldToFilter('content_type', $typeID)
-                    ->addFieldToFilter('item_id', $model->getId());
-            $storeIdArray        = [];
+            $typeID = $simiconnectorhelper->getVisibilityTypeId('productlist');
+            $visibleStoreViews = $this->simiObjectManager
+                ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+                ->addFieldToFilter('content_type', $typeID)
+                ->addFieldToFilter('item_id', $model->getId());
+            $storeIdArray = [];
 
             foreach ($visibleStoreViews as $visibilityItem) {
                 $storeIdArray[] = $visibilityItem->getData('store_view_id');
@@ -110,48 +111,48 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         }
 
         $storeResourceModel = $this->simiObjectManager
-                ->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
+            ->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
 
         $fieldset->addField('storeview_id', 'multiselect', [
-            'name'     => 'storeview_id[]',
-            'label'    => __('Store View'),
-            'title'    => __('Store View'),
+            'name' => 'storeview_id[]',
+            'label' => __('Store View'),
+            'title' => __('Store View'),
             'required' => true,
-            'values'   => $storeResourceModel->toOptionArray(),
+            'values' => $storeResourceModel->toOptionArray(),
         ]);
 
         $fieldset->addField(
             'list_title',
             'text',
             [
-            'name'     => 'list_title',
-            'label'    => __('Title'),
-            'title'    => __('Title'),
-            'required' => true,
-            'disabled' => $isElementDisabled
-                ]
+                'name' => 'list_title',
+                'label' => __('Title'),
+                'title' => __('Title'),
+                'required' => true,
+                'disabled' => $isElementDisabled
+            ]
         );
 
         $fieldset->addField(
             'list_image',
             'image',
             [
-            'name'     => 'list_image',
-            'label'    => __('Product List Image'),
-            'title'    => __('Product List Image'),
-            'disabled' => $isElementDisabled
-                ]
+                'name' => 'list_image',
+                'label' => __('Product List Image'),
+                'title' => __('Product List Image'),
+                'disabled' => $isElementDisabled
+            ]
         );
 
         $fieldset->addField(
             'list_image_tablet',
             'image',
             [
-            'name'     => 'list_image_tablet',
-            'label'    => __('Product List Tablet Image'),
-            'title'    => __('Product List Tablet Image'),
-            'disabled' => $isElementDisabled
-                ]
+                'name' => 'list_image_tablet',
+                'label' => __('Product List Tablet Image'),
+                'title' => __('Product List Tablet Image'),
+                'disabled' => $isElementDisabled
+            ]
         );
 
         if (!isset($data['sort_order'])) {
@@ -161,12 +162,12 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'sort_order',
             'text',
             [
-            'name'     => 'sort_order',
-            'label'    => __('Sort Order'),
-            'title'    => __('Sort Order'),
-            'class'    => 'validate-not-negative-number',
-            'disabled' => $isElementDisabled
-                ]
+                'name' => 'sort_order',
+                'label' => __('Sort Order'),
+                'title' => __('Sort Order'),
+                'class' => 'validate-not-negative-number',
+                'disabled' => $isElementDisabled
+            ]
         );
 
         if (!isset($data['list_type'])) {
@@ -177,51 +178,51 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'list_type',
             'select',
             [
-            'name'     => 'list_type',
-            'label'    => __('Product List Type'),
-            'title'    => __('Product List Type'),
-            'required' => false,
-            'disabled' => true,
-            'options'  => $this->simiObjectManager->get('Simi\Simiconnector\Helper\Productlist')->getListTypeId(),
-            'onchange' => 'changeType(this.value)',
-                ]
+                'name' => 'list_type',
+                'label' => __('Product List Type'),
+                'title' => __('Product List Type'),
+                'required' => false,
+                'disabled' => true,
+                'options' => $this->simiObjectManager->get('Simi\Simiconnector\Helper\Productlist')->getListTypeId(),
+                'onchange' => 'changeType(this.value)',
+            ]
         );
 
         $fieldset->addField('category_id', 'select', [
-            'name'     => 'category_id',
-            'label'    => __('Category'),
-            'title'    => __('Category'),
+            'name' => 'category_id',
+            'label' => __('Category'),
+            'title' => __('Category'),
             'required' => true,
-            'values'   => $this->simiObjectManager->get('Simi\Simiconnector\Helper\Catetree')->getChildCatArray(),
+            'values' => $this->simiObjectManager->get('Simi\Simiconnector\Helper\Catetree')->getChildCatArray(),
         ]);
 
         $fieldset->addField(
             'list_products',
             'text',
             [
-            'name'               => 'list_products',
-            'label'              => __('Product ID(s)'),
-            'title'              => __('Choose products'),
-            'after_element_html' => '<a href="#" title="Show Product Grid" onclick="toogleProduct();return false;">'
-                . '<img id="show_product_grid" src="'
-                . $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png') . '" title="" /></a>'
-                . $this->getLayout()
-                ->createBlock('Simi\Simiconnector\Block\Adminhtml\Productlist\Edit\Tab\Productgrid')
-                ->toHtml()
-                ]
+                'name' => 'list_products',
+                'label' => __('Product ID(s)'),
+                'title' => __('Choose products'),
+                'after_element_html' => '<a href="#" title="Show Product Grid" onclick="toogleProduct();return false;">'
+                    . '<img id="show_product_grid" src="'
+                    . $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png') . '" title="" /></a>'
+                    . $this->getLayout()
+                        ->createBlock('Simi\Simiconnector\Block\Adminhtml\Productlist\Edit\Tab\Productgrid')
+                        ->toHtml()
+            ]
         );
 
         $fieldset->addField(
             'list_status',
             'select',
             [
-            'name'     => 'list_status',
-            'label'    => __('Enable'),
-            'title'    => __('Enable'),
-            'required' => false,
-            'disabled' => $isElementDisabled,
-            'options'  => $this->productlistFactory->create()->toOptionStatusHash(),
-                ]
+                'name' => 'list_status',
+                'label' => __('Enable'),
+                'title' => __('Enable'),
+                'required' => false,
+                'disabled' => $isElementDisabled,
+                'options' => $this->productlistFactory->create()->toOptionStatusHash(),
+            ]
         );
 
         $this->_eventManager->dispatch('adminhtml_productlist_edit_tab_main_prepare_form', ['form' => $form]);

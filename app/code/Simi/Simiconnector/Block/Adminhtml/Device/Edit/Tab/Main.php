@@ -56,13 +56,14 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         array $data = []
-    ) {
-   
-        $this->deviceFactory  = $deviceFactory;
-        $this->bannerFactory   = $bannerFactory;
-        $this->websiteHelper   = $websiteHelper;
-        $this->systemStore     = $systemStore;
-        $this->jsonEncoder     = $jsonEncoder;
+    )
+    {
+
+        $this->deviceFactory = $deviceFactory;
+        $this->bannerFactory = $bannerFactory;
+        $this->websiteHelper = $websiteHelper;
+        $this->systemStore = $systemStore;
+        $this->jsonEncoder = $jsonEncoder;
         $this->categoryFactory = $categoryFactory;
         parent::__construct($context, $registry, $formFactory, $data);
     }
@@ -74,7 +75,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      */
     public function _prepareForm()
     {
-        
+
         $model = $this->_coreRegistry->registry('device');
 
         /*
@@ -98,99 +99,99 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'storeview_id',
             'select',
             [
-            'name'     => 'storeview_id',
-            'label'    => __('Store View'),
-            'title'    => __('Store View'),
-            'required' => false,
-            'disabled' => $isElementDisabled,
-            'options'  => $this->deviceFactory->create()->toOptionStoreviewHash(),
-                ]
+                'name' => 'storeview_id',
+                'label' => __('Store View'),
+                'title' => __('Store View'),
+                'required' => false,
+                'disabled' => $isElementDisabled,
+                'options' => $this->deviceFactory->create()->toOptionStoreviewHash(),
+            ]
         );
 
         $fieldset->addField(
             'plaform_id',
             'select',
             [
-            'name'     => 'plaform_id',
-            'label'    => __('Device Type'),
-            'title'    => __('Device Type'),
-            'required' => false,
-            'disabled' => $isElementDisabled,
-            'options'  => $this->deviceFactory->create()->toOptionDeviceHash(),
-                ]
+                'name' => 'plaform_id',
+                'label' => __('Device Type'),
+                'title' => __('Device Type'),
+                'required' => false,
+                'disabled' => $isElementDisabled,
+                'options' => $this->deviceFactory->create()->toOptionDeviceHash(),
+            ]
         );
 
         $fieldset->addField(
             'country',
             'label',
             [
-            'name'     => 'country',
-            'label'    => __('Country'),
-            'title'    => __('Country'),
-            'required' => false,
-            'disabled' => $isElementDisabled,
-                ]
+                'name' => 'country',
+                'label' => __('Country'),
+                'title' => __('Country'),
+                'required' => false,
+                'disabled' => $isElementDisabled,
+            ]
         );
 
         $fieldset->addField(
             'state',
             'label',
             [
-            'name'     => 'state',
-            'label'    => __('State/Province'),
-            'title'    => __('State/Province'),
-            'required' => false,
-            'disabled' => $isElementDisabled,
-                ]
+                'name' => 'state',
+                'label' => __('State/Province'),
+                'title' => __('State/Province'),
+                'required' => false,
+                'disabled' => $isElementDisabled,
+            ]
         );
 
         $fieldset->addField(
             'city',
             'label',
             [
-            'name'     => 'city',
-            'label'    => __('City'),
-            'title'    => __('City'),
-            'required' => false,
-            'disabled' => $isElementDisabled,
-                ]
+                'name' => 'city',
+                'label' => __('City'),
+                'title' => __('City'),
+                'required' => false,
+                'disabled' => $isElementDisabled,
+            ]
         );
 
         $fieldset->addField(
             'device_token',
             'label',
             [
-            'name'     => 'device_token',
-            'label'    => __('Device Token'),
-            'title'    => __('Device Token'),
-            'required' => false,
-            'disabled' => $isElementDisabled,
-                ]
+                'name' => 'device_token',
+                'label' => __('Device Token'),
+                'title' => __('Device Token'),
+                'required' => false,
+                'disabled' => $isElementDisabled,
+            ]
         );
 
         $fieldset->addField(
             'is_demo',
             'select',
             [
-            'name'     => 'is_demo',
-            'label'    => __('Is Demo'),
-            'title'    => __('Is Demo'),
-            'required' => false,
-            'disabled' => $isElementDisabled,
-            'options'  => $this->deviceFactory->create()->toOptionDemoHash(),
-                ]
+                'name' => 'is_demo',
+                'label' => __('Is Demo'),
+                'title' => __('Is Demo'),
+                'required' => false,
+                'disabled' => $isElementDisabled,
+                'options' => $this->deviceFactory->create()->toOptionDemoHash(),
+            ]
         );
 
         $fieldset->addField(
             'created_time',
             'label',
             [
-            'name'     => 'created_time',
-            'label'    => __('Created Date'),
-            'title'    => __('Created Date'),
-            'required' => false,
-            'disabled' => $isElementDisabled,
-                ]
+                'name' => 'created_time',
+                'label' => __('Created Date'),
+                'title' => __('Created Date'),
+                'required' => false,
+                'disabled' => $isElementDisabled,
+            ]
         );
 
         $this->_eventManager->dispatch('adminhtml_device_edit_tab_main_prepare_form', ['form' => $form]);

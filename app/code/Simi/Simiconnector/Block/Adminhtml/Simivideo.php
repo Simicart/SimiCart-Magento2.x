@@ -17,9 +17,9 @@ class Simivideo extends \Magento\Backend\Block\Widget\Grid\Container
      */
     public function _construct()
     {
-        $this->_controller     = 'adminhtml_simivideo';
-        $this->_blockGroup     = 'Simi_Simiconnector';
-        $this->_headerText     = __('Videos');
+        $this->_controller = 'adminhtml_simivideo';
+        $this->_blockGroup = 'Simi_Simiconnector';
+        $this->_headerText = __('Videos');
         $this->_addButtonLabel = __('Add New Video');
         parent::_construct();
         if ($this->_isAllowedAction('Simi_Simiconnector::save')) {

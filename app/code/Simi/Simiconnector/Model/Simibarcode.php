@@ -35,7 +35,8 @@ class Simibarcode extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\Simibarcode $resource,
         \Simi\Simiconnector\Model\ResourceModel\Simibarcode\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
-    ) {
+    )
+    {
         $this->websiteHelper = $websiteHelper;
 
         parent::__construct(
@@ -74,11 +75,11 @@ class Simibarcode extends \Magento\Framework\Model\AbstractModel
     public function toOptionBarcodeTypeHash()
     {
         $status = [
-            'c128a'  => __('c128a'),
+            'c128a' => __('c128a'),
             'c128b' => __('c128b'),
             'c128c' => __('c128c'),
-            'c39'   => __('c39'),
-            'i2of5'   => __('i2of5')
+            'c39' => __('c39'),
+            'i2of5' => __('i2of5')
         ];
         return $status;
     }

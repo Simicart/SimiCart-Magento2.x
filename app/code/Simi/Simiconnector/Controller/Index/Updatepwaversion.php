@@ -13,16 +13,17 @@ class Updatepwaversion extends \Magento\Framework\App\Action\Action
 
     public function __construct(
         \Magento\Framework\App\Action\Context $context
-    ) {
+    )
+    {
 
         parent::__construct($context);
-        $this->simiObjectManager  = $context->getObjectManager();
+        $this->simiObjectManager = $context->getObjectManager();
     }
 
 
     public function execute()
     {
-        $arr               = [];
+        $arr = [];
         // $newValue = time();
         // $this->simiObjectManager
         //     ->get('Magento\Framework\App\Config\Storage\WriterInterface')

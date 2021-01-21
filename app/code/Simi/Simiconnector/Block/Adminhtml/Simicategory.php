@@ -17,9 +17,9 @@ class Simicategory extends \Magento\Backend\Block\Widget\Grid\Container
      */
     public function _construct()
     {
-        $this->_controller     = 'adminhtml_simicategory';
-        $this->_blockGroup     = 'Simi_Simiconnector';
-        $this->_headerText     = __('Simicategory');
+        $this->_controller = 'adminhtml_simicategory';
+        $this->_blockGroup = 'Simi_Simiconnector';
+        $this->_headerText = __('Simicategory');
         $this->_addButtonLabel = __('Add New Simicategory');
         parent::_construct();
         if ($this->_isAllowedAction('Simi_Simiconnector::save')) {

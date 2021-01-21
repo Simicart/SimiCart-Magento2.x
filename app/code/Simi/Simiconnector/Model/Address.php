@@ -21,9 +21,10 @@ class Address extends \Magento\Framework\Model\AbstractModel
         array $data = [],
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null
-    ) {
+    )
+    {
         $this->simiObjectManager = $simiObjectManager;
-        $this->storeManager     = $this->simiObjectManager->get('Magento\Store\Model\StoreManagerInterface');
+        $this->storeManager = $this->simiObjectManager->get('Magento\Store\Model\StoreManagerInterface');
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
 
@@ -43,17 +44,17 @@ class Address extends \Magento\Framework\Model\AbstractModel
 
     public function saveAddress($data)
     {
-        $data          = $data['contents'];
-        $address       = $this->_helperAddress()->convertDataAddress($data);
+        $data = $data['contents'];
+        $address = $this->_helperAddress()->convertDataAddress($data);
         $address['id'] = isset($data->entity_id) == true ? $data->entity_id : null;
         return $this->saveAddressCustomer($address);
     }
 
     public function saveAddressCustomer($data)
     {
-        $errors    = false;
-        $customer  = $this->_getSession()->getCustomer();
-        $address   = $this->simiObjectManager->create('Magento\Customer\Model\Address');
+        $errors = false;
+        $customer = $this->_getSession()->getCustomer();
+        $address = $this->simiObjectManager->create('Magento\Customer\Model\Address');
         $addressId = $data['id'];
         $address->setData($data);
 
@@ -66,9 +67,9 @@ class Address extends \Magento\Framework\Model\AbstractModel
             $address->setId(null);
         }
 
-        $addressForm   = $this->simiObjectManager->get('Magento\Customer\Model\Form');
+        $addressForm = $this->simiObjectManager->get('Magento\Customer\Model\Form');
         $addressForm->setFormCode('customer_address_edit')
-                ->setEntity($address);
+            ->setEntity($address);
         $addressForm->compactData($data);
         $address->setCustomerId($customer->getId());
         $addressErrors = $address->validate();

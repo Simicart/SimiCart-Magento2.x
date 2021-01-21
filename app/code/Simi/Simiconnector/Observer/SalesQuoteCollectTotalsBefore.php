@@ -16,7 +16,8 @@ class SalesQuoteCollectTotalsBefore implements ObserverInterface
 
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $simiObjectManager
-    ) {
+    )
+    {
         $this->simiObjectManager = $simiObjectManager;
     }
 
@@ -26,7 +27,7 @@ class SalesQuoteCollectTotalsBefore implements ObserverInterface
         $coupon = $quote->getCouponCode();
         $isApp = strpos($this->simiObjectManager
             ->get('\Magento\Framework\Url')->getCurrentUrl(), 'simiconnector');
-        $pre_fix = (string) $this->simiObjectManager->create('Simi\Simiconnector\Helper\Data')
+        $pre_fix = (string)$this->simiObjectManager->create('Simi\Simiconnector\Helper\Data')
             ->getStoreConfig('simiconnector/general/app_dedicated_coupon');
         if ($pre_fix && ($pre_fix != '') && ($isApp === false) && $coupon) {
             if (strpos(strtolower($coupon), strtolower($pre_fix)) !== false) {

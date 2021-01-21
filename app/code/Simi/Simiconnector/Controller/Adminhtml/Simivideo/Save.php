@@ -25,7 +25,7 @@ class Save extends \Magento\Backend\App\Action
             }
             $model->addData($data);
 
-            $url              = $model->getData('video_url');
+            $url = $model->getData('video_url');
             $my_array_of_vars = [];
             $parse_str = 'parse_str';
             $parse_url = 'parse_url';
@@ -36,7 +36,7 @@ class Save extends \Magento\Backend\App\Action
                 $this->messageManager->addError(__('The url you used is not a Full and Valid Youtube video url'));
                 $model->setData('video_key', null);
             }
-            
+
             try {
                 $model->save();
                 $this->messageManager->addSuccess(__('The Data has been saved.'));

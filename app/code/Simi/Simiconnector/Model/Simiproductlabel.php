@@ -35,7 +35,8 @@ class Simiproductlabel extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\Simiproductlabel $resource,
         \Simi\Simiconnector\Model\ResourceModel\Simiproductlabel\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
-    ) {
+    )
+    {
         $this->websiteHelper = $websiteHelper;
 
         parent::__construct(

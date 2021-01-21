@@ -50,12 +50,13 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         \Magento\Framework\Json\EncoderInterface $jsonEncoder,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         array $data = []
-    ) {
-   
+    )
+    {
+
         $this->historyFactory = $historyFactory;
-        $this->websiteHelper   = $websiteHelper;
-        $this->systemStore     = $systemStore;
-        $this->jsonEncoder     = $jsonEncoder;
+        $this->websiteHelper = $websiteHelper;
+        $this->systemStore = $systemStore;
+        $this->jsonEncoder = $jsonEncoder;
         $this->categoryFactory = $categoryFactory;
         parent::__construct($context, $registry, $formFactory, $data);
     }
@@ -67,7 +68,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      */
     public function _prepareForm()
     {
-        
+
         $model = $this->_coreRegistry->registry('history');
 
         /*
@@ -95,13 +96,13 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'history_title',
             'select',
             [
-            'name'     => 'history_title',
-            'label'    => __('Website'),
-            'title'    => __('Website'),
-            'required' => true,
-            'disabled' => $isElementDisabled,
-            'options'  => $this->historyFactory->create()->toOptionWebsiteHash(),
-                ]
+                'name' => 'history_title',
+                'label' => __('Website'),
+                'title' => __('Website'),
+                'required' => true,
+                'disabled' => $isElementDisabled,
+                'options' => $this->historyFactory->create()->toOptionWebsiteHash(),
+            ]
         );
 
         $this->_eventManager->dispatch('adminhtml_history_edit_tab_main_prepare_form', ['form' => $form]);

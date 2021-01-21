@@ -19,10 +19,11 @@ class Edit extends \Magento\Backend\App\Action
         Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
         \Magento\Framework\Registry $registry
-    ) {
-    
+    )
+    {
+
         $this->resultPageFactory = $resultPageFactory;
-        $this->coreRegistry     = $registry;
+        $this->coreRegistry = $registry;
         parent::__construct($context);
     }
 
@@ -54,7 +55,7 @@ class Edit extends \Magento\Backend\App\Action
     public function execute()
     {
         // 1. Get ID and create model
-        $id    = $this->getRequest()->getParam('cms_id');
+        $id = $this->getRequest()->getParam('cms_id');
         $simiObjectManager = $this->_objectManager;
         $model = $simiObjectManager->create('Simi\Simiconnector\Model\Cms');
 
@@ -87,7 +88,7 @@ class Edit extends \Magento\Backend\App\Action
         );
         $resultPage->getConfig()->getTitle()->prepend(__('Cms'));
         $resultPage->getConfig()->getTitle()
-                ->prepend($model->getId() ? $model->getId() : __('New Cms'));
+            ->prepend($model->getId() ? $model->getId() : __('New Cms'));
         return $resultPage;
     }
 }

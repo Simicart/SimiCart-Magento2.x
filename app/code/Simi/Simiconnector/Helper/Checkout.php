@@ -19,8 +19,8 @@ class Checkout extends \Simi\Simiconnector\Helper\Data
         if (!$this->getStoreConfig('simiconnector/terms_conditions/enable_terms')) {
             return null;
         }
-        $data            = [];
-        $data['title']   = $this->getStoreConfig('simiconnector/terms_conditions/term_title');
+        $data = [];
+        $data['title'] = $this->getStoreConfig('simiconnector/terms_conditions/term_title');
         $data['content'] = $this->getStoreConfig('simiconnector/terms_conditions/term_html');
         return $data;
     }

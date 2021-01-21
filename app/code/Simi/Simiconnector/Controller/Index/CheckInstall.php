@@ -11,9 +11,9 @@ class CheckInstall extends \Magento\Framework\App\Action\Action
 {
     public function execute()
     {
-        $arr               = [];
+        $arr = [];
         $arr['is_install'] = "1";
-        $key               = $this->getRequest()->getParam('key');
+        $key = $this->getRequest()->getParam('key');
         if ($key == null || $key == '') {
             $arr["website_key"] = "0";
         } else {

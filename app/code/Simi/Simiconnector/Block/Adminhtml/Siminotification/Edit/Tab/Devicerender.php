@@ -17,8 +17,8 @@ class Devicerender extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\Ch
         $html .= 'onclick="selectDevice(this)"';
         //end
         $html .= 'class="simi-device-checkbox ' .
-                ($this->getColumn()->getInlineCss() ? $this->getColumn()->getInlineCss() : 'checkbox') .
-                ' admin__control-checkbox' . '"';
+            ($this->getColumn()->getInlineCss() ? $this->getColumn()->getInlineCss() : 'checkbox') .
+            ' admin__control-checkbox' . '"';
         $html .= $checked . $this->getDisabled() . '/>';
         $html .= '<label for="id_' . $this->escapeHtml($value) . '"></label>';
         $html .= '</label>';
@@ -37,7 +37,7 @@ class Devicerender extends \Magento\Backend\Block\Widget\Grid\Column\Renderer\Ch
         }
 
         $checked = '';
-        if ($filter  = $this->getColumn()->getFilter()) {
+        if ($filter = $this->getColumn()->getFilter()) {
             $checked = $filter->getValue() ? ' checked="checked"' : '';
         }
 

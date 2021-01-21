@@ -35,7 +35,8 @@ class Simivideo extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\Simivideo $resource,
         \Simi\Simiconnector\Model\ResourceModel\Simivideo\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
-    ) {
+    )
+    {
         $this->websiteHelper = $websiteHelper;
 
         parent::__construct(

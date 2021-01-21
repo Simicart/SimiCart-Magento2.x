@@ -28,13 +28,14 @@ class Getmockup extends \Magento\Backend\App\Action
         Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
         \Magento\Framework\Registry $registry
-    ) {
-    
+    )
+    {
+
         $this->resultPageFactory = $resultPageFactory;
-        $this->coreRegistry     = $registry;
+        $this->coreRegistry = $registry;
         parent::__construct($context);
     }
-    
+
     /**
      * Edit CMS page
      *
@@ -44,9 +45,9 @@ class Getmockup extends \Magento\Backend\App\Action
     {
         $simiObjectManager = $this->_objectManager;
         $storeviewid = $this->getRequest()->getParam('storeview_id');
-        $output      = $simiObjectManager
-                ->create('Simi\Simiconnector\Helper\Productlist')
-                ->getMatrixLayoutMockup($storeviewid, $this);
+        $output = $simiObjectManager
+            ->create('Simi\Simiconnector\Helper\Productlist')
+            ->getMatrixLayoutMockup($storeviewid, $this);
         return $this->getResponse()->setBody($output);
     }
 }

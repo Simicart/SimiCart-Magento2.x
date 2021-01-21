@@ -28,10 +28,11 @@ class Customer extends \Magento\Framework\Model\AbstractModel
         \Magento\Framework\Model\ResourceModel\AbstractResource $resource = null,
         \Magento\Framework\Data\Collection\AbstractDb $resourceCollection = null,
         array $data = []
-    ) {
+    )
+    {
 
         $this->simiObjectManager = $simiObjectManager;
-        $this->storeManager     = $this->simiObjectManager->get('Magento\Store\Model\StoreManagerInterface');
+        $this->storeManager = $this->simiObjectManager->get('Magento\Store\Model\StoreManagerInterface');
         parent::__construct($context, $registry, $resource, $resourceCollection, $data);
     }
 
@@ -70,7 +71,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel
 
     public function forgetPassword($data)
     {
-        $data  = $data['params'];
+        $data = $data['params'];
         $email = $data['email'];
         if ($email === null) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('No email was sent'), 4);
@@ -118,8 +119,8 @@ class Customer extends \Magento\Framework\Model\AbstractModel
 
     public function register($data)
     {
-        $data          = $data['contents'];
-        $message       = [];
+        $data = $data['contents'];
+        $message = [];
         $checkCustomer = $this->getCustomerByEmail($data->email);
         if ($checkCustomer->getId()) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Account is already exist'), 4);
@@ -139,8 +140,8 @@ class Customer extends \Magento\Framework\Model\AbstractModel
 
     public function updateProfile($data)
     {
-        $data     = $data['contents'];
-        $result   = [];
+        $data = $data['contents'];
+        $result = [];
 
         $customer = $this->simiObjectManager->create('Magento\Customer\Model\Customer');
         $customer->setWebsiteId($this->storeManager->getStore()->getWebsiteId());
@@ -148,25 +149,24 @@ class Customer extends \Magento\Framework\Model\AbstractModel
 
         $customerData = [
             'firstname' => $data->firstname,
-            'lastname'  => $data->lastname,
-            'email'     => $data->email,
+            'lastname' => $data->lastname,
+            'email' => $data->email,
         ];
 
-	    try {
-		    // Fix bug 'invalid state change requested' when change password.
-		    // The reason is quote has customer_id is null
-		    $cart = $this->simiObjectManager->get( 'Magento\Checkout\Model\Cart' );
-		    $cart->getQuote()->setData( 'customer_id', $customer->getId() );
-		    $cart->saveQuote();
-	    }
-	    catch ( \Exception $e ) {
-		    throw new \Exception( __( 'Set customer to quote error!' ), 4 );
-	    }
+        try {
+            // Fix bug 'invalid state change requested' when change password.
+            // The reason is quote has customer_id is null
+            $cart = $this->simiObjectManager->get('Magento\Checkout\Model\Cart');
+            $cart->getQuote()->setData('customer_id', $customer->getId());
+            $cart->saveQuote();
+        } catch (\Exception $e) {
+            throw new \Exception(__('Set customer to quote error!'), 4);
+        }
 
         if (isset($data->change_password) && $data->change_password == 1) {
-	        $this->validateOldPassword($data);
+            $this->validateOldPassword($data);
             $currPass = $data->old_password;
-            $newPass  = $data->new_password;
+            $newPass = $data->new_password;
             $confPass = $data->com_password;
             $customer->setChangePassword(1);
             if ($customer->authenticate($data->email, $currPass)) {
@@ -181,7 +181,7 @@ class Customer extends \Magento\Framework\Model\AbstractModel
             }
         }
         $this->setCustomerData($customer, $data);
-        $customerForm   = $this->simiObjectManager->get('Magento\Customer\Model\Form');
+        $customerForm = $this->simiObjectManager->get('Magento\Customer\Model\Form');
         $customerForm->setFormCode('customer_account_edit')
             ->setEntity($customer);
         $customerErrors = $customerForm->validateData($customer->getData());
@@ -199,13 +199,13 @@ class Customer extends \Magento\Framework\Model\AbstractModel
             throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid profile information'), 4);
         }
 
-	    if (isset($data->change_email) && $data->change_email == 1 && isset($data->new_email)) {
-		    $this->validateOldPassword($data);
-		    if (!filter_var($data->new_email, FILTER_VALIDATE_EMAIL)) {
-			    throw new \Exception(__('New email is not valid'), 4);
-		    }
-		    $customer->setEmail($data->new_email);
-	    }
+        if (isset($data->change_email) && $data->change_email == 1 && isset($data->new_email)) {
+            $this->validateOldPassword($data);
+            if (!filter_var($data->new_email, FILTER_VALIDATE_EMAIL)) {
+                throw new \Exception(__('New email is not valid'), 4);
+            }
+            $customer->setEmail($data->new_email);
+        }
 
         $customer->setConfirmation(null);
         $customer->save();
@@ -213,20 +213,21 @@ class Customer extends \Magento\Framework\Model\AbstractModel
         return $customer;
     }
 
-	private function validateOldPassword($data) {
-		if (isset($data->old_password)) {
-			$websiteId = $this->storeManager->getStore()->getWebsiteId();
-			$customerAuth  = $this->simiObjectManager->get('Magento\Customer\Model\Customer')
-			                                         ->setWebsiteId($websiteId);
-			try {
-				$customerAuth->authenticate($data->email, $data->old_password);
-			} catch (\Exception $e) {
-				throw new \Exception(__('Please check your current email and password'), 4);
-			}
-		} else {
-			throw new \Exception(__('Please fill your current password'), 4);
-		}
-	}
+    private function validateOldPassword($data)
+    {
+        if (isset($data->old_password)) {
+            $websiteId = $this->storeManager->getStore()->getWebsiteId();
+            $customerAuth = $this->simiObjectManager->get('Magento\Customer\Model\Customer')
+                ->setWebsiteId($websiteId);
+            try {
+                $customerAuth->authenticate($data->email, $data->old_password);
+            } catch (\Exception $e) {
+                throw new \Exception(__('Please check your current email and password'), 4);
+            }
+        } else {
+            throw new \Exception(__('Please fill your current password'), 4);
+        }
+    }
 
     private function setCustomerData($customer, $data)
     {
@@ -262,9 +263,9 @@ class Customer extends \Magento\Framework\Model\AbstractModel
 
     public function socialLogin($data)
     {
-        $data = (object) $data['params'];
+        $data = (object)$data['params'];
         if (!isset($data->password) || !$this->simiObjectManager
-            ->get('Simi\Simiconnector\Helper\Customer')->validateSimiPass($data->email, $data->password, 'social_login')) {
+                ->get('Simi\Simiconnector\Helper\Customer')->validateSimiPass($data->email, $data->password, 'social_login')) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Password is not Valid'), 4);
         }
         if (!$data->email) {

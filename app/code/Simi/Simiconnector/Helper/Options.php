@@ -26,19 +26,20 @@ class Options extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Catalog\Helper\Data $catalogData,
         \Magento\Framework\Pricing\PriceCurrencyInterface $priceCurrency,
         \Magento\Framework\Pricing\Helper\Data $pricingHelper
-    ) {
-   
-        $this->simiObjectManager    = $simiObjectManager;
-        $this->scopeConfig         = $this->simiObjectManager
-                ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
-        $this->filesystem           = $filesystem;
-        $this->httpFactory          = $httpFactory;
+    )
+    {
+
+        $this->simiObjectManager = $simiObjectManager;
+        $this->scopeConfig = $this->simiObjectManager
+            ->get('\Magento\Framework\App\Config\ScopeConfigInterface');
+        $this->filesystem = $filesystem;
+        $this->httpFactory = $httpFactory;
         $this->fileUploaderFactory = $fileUploaderFactory;
-        $this->storeManager        = $storeManager;
-        $this->_imageFactory        = $imageFactory;
-        $this->catalogHelper       = $catalogData;
-        $this->priceCurrency        = $priceCurrency;
-        $this->priceHelper          = $pricingHelper;
+        $this->storeManager = $storeManager;
+        $this->_imageFactory = $imageFactory;
+        $this->catalogHelper = $catalogData;
+        $this->priceCurrency = $priceCurrency;
+        $this->priceHelper = $pricingHelper;
         parent::__construct($context);
     }
 

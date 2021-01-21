@@ -25,7 +25,8 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         \Magento\Backend\Block\Widget\Context $context,
         \Magento\Framework\Registry $registry,
         array $data = []
-    ) {
+    )
+    {
         $this->coreRegistry = $registry;
         parent::__construct($context, $data);
     }
@@ -38,7 +39,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
     public function _construct()
     {
 
-        $this->_objectId   = 'history_id';
+        $this->_objectId = 'history_id';
         $this->_blockGroup = 'Simi_Simiconnector';
         $this->_controller = 'adminhtml_history';
 

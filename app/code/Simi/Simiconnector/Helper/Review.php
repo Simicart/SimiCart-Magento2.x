@@ -28,16 +28,16 @@ class Review extends \Simi\Simiconnector\Helper\Data
     public function getRatingStar($productId)
     {
         $reviews = $this->simiObjectManager->get('Magento\Review\Model\Review')
-                ->getResourceCollection()
-                ->addStoreFilter($this->storeManager->getStore()->getId())
-                ->addEntityFilter('product', $productId)
-                ->addStatusFilter(\Magento\Review\Model\Review::STATUS_APPROVED)
-                ->setDateOrder()
-                ->addRateVotes();
+            ->getResourceCollection()
+            ->addStoreFilter($this->storeManager->getStore()->getId())
+            ->addEntityFilter('product', $productId)
+            ->addStatusFilter(\Magento\Review\Model\Review::STATUS_APPROVED)
+            ->setDateOrder()
+            ->addRateVotes();
         /**
          * Getting numbers ratings/reviews
          */
-        $star    = [];
+        $star = [];
         $star[0] = 0;
         $star[1] = 0;
         $star[2] = 0;
@@ -52,15 +52,15 @@ class Review extends \Simi\Simiconnector\Helper\Data
                 foreach ($review->getRatingVotes() as $vote) {
                     $x = ($vote->getPercent() / 20);
                     if ($x == 1) {
-                        $star[0] ++;
+                        $star[0]++;
                     } elseif ($x == 2) {
-                        $star[1] ++;
+                        $star[1]++;
                     } elseif ($x == 3) {
-                        $star[2] ++;
+                        $star[2]++;
                     } elseif ($x == 4) {
-                        $star[3] ++;
+                        $star[3]++;
                     } elseif ($x == 5) {
-                        $star[4] ++;
+                        $star[4]++;
                     }
                 }
             }
@@ -73,12 +73,12 @@ class Review extends \Simi\Simiconnector\Helper\Data
     {
         $storeId = $this->storeManager->getStore()->getId();
         $reviews = $this->simiObjectManager->get('Magento\Review\Model\Review')
-                ->getResourceCollection()
-                ->addStoreFilter($storeId)
-                ->addEntityFilter('product', $productId)
-                ->addStatusFilter(\Magento\Review\Model\Review::STATUS_APPROVED)
-                ->setDateOrder()
-                ->addRateVotes();
+            ->getResourceCollection()
+            ->addStoreFilter($storeId)
+            ->addEntityFilter('product', $productId)
+            ->addStatusFilter(\Magento\Review\Model\Review::STATUS_APPROVED)
+            ->setDateOrder()
+            ->addRateVotes();
 
         return $reviews;
     }
@@ -90,39 +90,39 @@ class Review extends \Simi\Simiconnector\Helper\Data
 
     public function getReviewToAdd()
     {
-        $block    = $this->simiObjectManager->get('Magento\Review\Block\Form');
-        $info  = [];
+        $block = $this->simiObjectManager->get('Magento\Review\Block\Form');
+        $info = [];
         $rates = [];
         if ($block->getRatings() && $block->getRatings()->getSize()) {
             foreach ($block->getRatings() as $_rating) {
                 $_options = [];
                 foreach ($_rating->getOptions() as $_option) {
                     $_options[] = [
-                        'key'   => $_rating->getId(),
+                        'key' => $_rating->getId(),
                         'value' => $_option->getId(),
                     ];
                 }
                 $rates[] = [
-                    'rate_code'    => $block->escapeHtml($_rating->getRatingCode()),
+                    'rate_code' => $block->escapeHtml($_rating->getRatingCode()),
                     'rate_options' => $_options,
                 ];
             }
         }
-        $info[] = ['rates'       => $rates, 'form_review' => [
-            'key_1'    => 'nickname',
-            'key_2'    => 'title',
-            'key_3'    => 'detail',
+        $info[] = ['rates' => $rates, 'form_review' => [
+            'key_1' => 'nickname',
+            'key_2' => 'title',
+            'key_3' => 'detail',
             'form_key' => [
                 [
-                    'key'   => 'nickname',
+                    'key' => 'nickname',
                     'value' => 'Nickname'
                 ],
                 [
-                    'key'   => 'title',
+                    'key' => 'title',
                     'value' => 'Title'
                 ],
                 [
-                    'key'   => 'detail',
+                    'key' => 'detail',
                     'value' => 'Detail'
                 ],
             ]],
@@ -147,30 +147,30 @@ class Review extends \Simi\Simiconnector\Helper\Data
         if (($product = $this->_initProduct($data['product_id'])) && !empty($data)) {
             $rating = $data['ratings'];
             $review = $this->simiObjectManager->get('Magento\Review\Model\Review')->setData($data);
-            
+
             $validate = $review->validate();
             if ($validate === true) {
                 try {
                     $review->setEntityId($review->getEntityIdByCode(\Magento\Review\Model\Review::ENTITY_PRODUCT_CODE))
-                            ->setEntityPkValue($product->getId())
-                            ->setStatusId(\Magento\Review\Model\Review::STATUS_PENDING)
-                            ->setCustomerId($this->simiObjectManager
-                                    ->get('Magento\Customer\Model\Session')->getCustomerId())
-                            ->setStoreId($this->storeManager->getStore()->getId())
-                            ->setStores([$this->storeManager->getStore()->getId()])
-                            ->save();
+                        ->setEntityPkValue($product->getId())
+                        ->setStatusId(\Magento\Review\Model\Review::STATUS_PENDING)
+                        ->setCustomerId($this->simiObjectManager
+                            ->get('Magento\Customer\Model\Session')->getCustomerId())
+                        ->setStoreId($this->storeManager->getStore()->getId())
+                        ->setStores([$this->storeManager->getStore()->getId()])
+                        ->save();
                     foreach ($rating as $ratingId => $optionId) {
                         $this->simiObjectManager->get('Magento\Review\Model\Rating')
-                                ->setRatingId($ratingId)
-                                ->setReviewId($review->getId())
-                                ->setCustomerId($this->simiObjectManager
-                                        ->get('Magento\Customer\Model\Session')->getCustomerId())
-                                ->addOptionVote($optionId, $product->getId());
+                            ->setRatingId($ratingId)
+                            ->setReviewId($review->getId())
+                            ->setCustomerId($this->simiObjectManager
+                                ->get('Magento\Customer\Model\Session')->getCustomerId())
+                            ->addOptionVote($optionId, $product->getId());
                     }
 
                     $review->aggregate();
                     return [
-                        'review'  => $review,
+                        'review' => $review,
                         'message' => __('Your review has been accepted for moderation.')];
                 } catch (\Exception $e) {
                     throw new \Simi\Simiconnector\Helper\SimiException(__('Unable to post the review'), 4);
@@ -183,20 +183,21 @@ class Review extends \Simi\Simiconnector\Helper\Data
         }
     }
 
-    public function getProductReviews($productId, $getForm = true) {
-        $ratings      = $this->getRatingStar($productId);
+    public function getProductReviews($productId, $getForm = true)
+    {
+        $ratings = $this->getRatingStar($productId);
         $total_rating = $this->getTotalRate($ratings);
-        $avg          = $this->getAvgRate($ratings, $total_rating);
+        $avg = $this->getAvgRate($ratings, $total_rating);
         return [
-            'rate'             => $avg,
-            'reviews_count'    => $ratings[6],
-            'number'           => $ratings[5],
-            '5_star_number'    => $ratings[4],
-            '4_star_number'    => $ratings[3],
-            '3_star_number'    => $ratings[2],
-            '2_star_number'    => $ratings[1],
-            '1_star_number'    => $ratings[0],
-            'form_add_reviews' => $getForm?$this->getReviewToAdd():null,
+            'rate' => $avg,
+            'reviews_count' => $ratings[6],
+            'number' => $ratings[5],
+            '5_star_number' => $ratings[4],
+            '4_star_number' => $ratings[3],
+            '3_star_number' => $ratings[2],
+            '2_star_number' => $ratings[1],
+            '1_star_number' => $ratings[0],
+            'form_add_reviews' => $getForm ? $this->getReviewToAdd() : null,
         ];
     }
 }

@@ -24,7 +24,7 @@ class Save extends \Magento\Backend\App\Action
             }
 
             $is_delete_productlabel = isset($data['image']['delete']) ? $data['image']['delete'] : false;
-            $data['image']          = isset($data['image']['value']) ? $data['image']['value'] : '';
+            $data['image'] = isset($data['image']['value']) ? $data['image']['value'] : '';
 
             $model->addData($data);
             $model->setData('name', $data['label_name']);

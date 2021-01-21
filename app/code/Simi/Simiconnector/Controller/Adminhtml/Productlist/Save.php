@@ -6,7 +6,7 @@ use Magento\Backend\App\Action;
 
 class Save extends \Magento\Backend\App\Action
 {
-    
+
     /**
      * Save action
      *
@@ -21,15 +21,15 @@ class Save extends \Magento\Backend\App\Action
         if ($id) {
             $model->load($id);
         }
-        $data['list_type']    = isset($data['list_type']) ? $data['list_type'] : 6;
-        $data['category_id'] = isset($data['category_id'])?$data['category_id']:0;
+        $data['list_type'] = isset($data['list_type']) ? $data['list_type'] : 6;
+        $data['category_id'] = isset($data['category_id']) ? $data['category_id'] : 0;
 
         $is_delete_productlist = isset($data['list_image']['delete']) ? $data['list_image']['delete'] : false;
-        $data['list_image']    = isset($data['list_image']['value']) ? $data['list_image']['value'] : '';
-        $is_delete_productlist_tablet=isset($data['list_image_tablet']['delete'])?
-                $data['list_image_tablet']['delete'] : false;
+        $data['list_image'] = isset($data['list_image']['value']) ? $data['list_image']['value'] : '';
+        $is_delete_productlist_tablet = isset($data['list_image_tablet']['delete']) ?
+            $data['list_image_tablet']['delete'] : false;
         $data['list_image_tablet'] = isset($data['list_image_tablet']['value']) ?
-                $data['list_image_tablet']['value'] : '';
+            $data['list_image_tablet']['value'] : '';
 
         $model->addData($data);
 
@@ -76,16 +76,16 @@ class Save extends \Magento\Backend\App\Action
         $this->_getSession()->setFormData($data);
         $this->_redirect('*/*/edit', ['productlist_id' => $this->getRequest()->getParam('productlist_id')]);
     }
-    
+
     private function updateVisibility($simiObjectManager, $model, $data)
     {
         $simiconnectorhelper = $simiObjectManager->get('Simi\Simiconnector\Helper\Data');
         if ($data['storeview_id'] && is_array($data['storeview_id'])) {
-            $typeID            = $simiconnectorhelper->getVisibilityTypeId('productlist');
+            $typeID = $simiconnectorhelper->getVisibilityTypeId('productlist');
             $visibleStoreViews = $simiObjectManager
-                    ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
-                    ->addFieldToFilter('content_type', $typeID)
-                    ->addFieldToFilter('item_id', $model->getId());
+                ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+                ->addFieldToFilter('content_type', $typeID)
+                ->addFieldToFilter('item_id', $model->getId());
             foreach ($visibleStoreViews as $visibilityItem) {
                 $simiObjectManager
                     ->get('Simi\Simiconnector\Helper\Data')->deleteModel($visibilityItem);

@@ -39,11 +39,12 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\Registry $coreRegistry,
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         array $data = []
-    ) {
-        $this->simiObjectManager        = $simiObjectManager;
-        $this->productFactory          = $productFactory;
+    )
+    {
+        $this->simiObjectManager = $simiObjectManager;
+        $this->productFactory = $productFactory;
         $this->siminotificationFactory = $siminotificationFactory;
-        $this->coreRegistry            = $coreRegistry;
+        $this->coreRegistry = $coreRegistry;
         parent::__construct($context, $backendHelper, $data);
     }
 
@@ -90,9 +91,9 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function _prepareCollection()
     {
         $collection = $this->productFactory->create()->getCollection()
-                ->addAttributeToSelect('entity_id')
-                ->addAttributeToSelect('name')
-                ->addAttributeToSelect('sku');
+            ->addAttributeToSelect('entity_id')
+            ->addAttributeToSelect('name')
+            ->addAttributeToSelect('sku');
         $this->setCollection($collection);
         parent::_prepareCollection();
     }
@@ -106,46 +107,46 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->addColumn(
             'in_products',
             [
-            'type'             => 'radio',
-            'html_name'        => 'products_id',
-            'required'         => true,
-            'values'           => $this->_getSelectedProducts(),
-            'align'            => 'center',
-            'index'            => 'entity_id',
-            'header_css_class' => 'col-select',
-            'column_css_class' => 'col-select'
-                ]
+                'type' => 'radio',
+                'html_name' => 'products_id',
+                'required' => true,
+                'values' => $this->_getSelectedProducts(),
+                'align' => 'center',
+                'index' => 'entity_id',
+                'header_css_class' => 'col-select',
+                'column_css_class' => 'col-select'
+            ]
         );
 
         $this->addColumn(
             'entity_id',
             [
-            'header'           => __('ID'),
-            'index'            => 'entity_id',
-            'width'            => '20px',
-            'header_css_class' => 'col-name',
-            'column_css_class' => 'col-name'
-                ]
+                'header' => __('ID'),
+                'index' => 'entity_id',
+                'width' => '20px',
+                'header_css_class' => 'col-name',
+                'column_css_class' => 'col-name'
+            ]
         );
 
         $this->addColumn(
             'name',
             [
-            'header'           => __('Name'),
-            'index'            => 'name',
-            'header_css_class' => 'col-name',
-            'column_css_class' => 'col-name'
-                ]
+                'header' => __('Name'),
+                'index' => 'name',
+                'header_css_class' => 'col-name',
+                'column_css_class' => 'col-name'
+            ]
         );
 
         $this->addColumn(
             'sku',
             [
-            'header'           => __('SKU'),
-            'index'            => 'sku',
-            'header_css_class' => 'col-sku',
-            'column_css_class' => 'col-sku'
-                ]
+                'header' => __('SKU'),
+                'index' => 'sku',
+                'header_css_class' => 'col-sku',
+                'column_css_class' => 'col-sku'
+            ]
         );
 
         parent::_prepareColumns();
@@ -194,8 +195,8 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
             $notice_id = 0;
         }
         $siminotification = $this->simiObjectManager
-                ->get('Simi\Simiconnector\Model\Siminotification')->load($notice_id);
-        $products         = [];
+            ->get('Simi\Simiconnector\Model\Siminotification')->load($notice_id);
+        $products = [];
         if ($siminotification->getId()) {
             $products = [$siminotification->getProductId()];
         }

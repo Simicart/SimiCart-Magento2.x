@@ -62,15 +62,16 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         array $data = []
-    ) {
-   
+    )
+    {
+
         $this->simiObjectManager = $simiObjectManager;
-        $this->cmsFactory       = $cmsFactory;
-        $this->websiteHelper     = $websiteHelper;
-        $this->systemStore       = $systemStore;
-        $this->jsonEncoder       = $jsonEncoder;
-        $this->categoryFactory   = $categoryFactory;
-        $this->wysiwygConfig    = $wysiwygConfig;
+        $this->cmsFactory = $cmsFactory;
+        $this->websiteHelper = $websiteHelper;
+        $this->systemStore = $systemStore;
+        $this->jsonEncoder = $jsonEncoder;
+        $this->categoryFactory = $categoryFactory;
+        $this->wysiwygConfig = $wysiwygConfig;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
@@ -98,19 +99,19 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $form->setHtmlIdPrefix('');
         $htmlIdPrefix = $form->getHtmlIdPrefix();
 
-        $fieldset            = $form->addFieldset('base_fieldset', ['legend' => __('Cms Information')]);
+        $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Cms Information')]);
 
         $data = $model->getData();
         if ($model->getId()) {
             $fieldset->addField('cms_id', 'hidden', ['name' => 'cms_id']);
 
             $simiconnectorhelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data');
-            $typeID              = $simiconnectorhelper->getVisibilityTypeId('cms');
-            $visibleStoreViews   = $this->simiObjectManager
-                    ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
-                    ->addFieldToFilter('content_type', $typeID)
-                    ->addFieldToFilter('item_id', $model->getId());
-            $storeIdArray        = [];
+            $typeID = $simiconnectorhelper->getVisibilityTypeId('cms');
+            $visibleStoreViews = $this->simiObjectManager
+                ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+                ->addFieldToFilter('content_type', $typeID)
+                ->addFieldToFilter('item_id', $model->getId());
+            $storeIdArray = [];
 
             foreach ($visibleStoreViews as $visibilityItem) {
                 $storeIdArray[] = $visibilityItem->getData('store_view_id');
@@ -119,42 +120,42 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         }
 
         $storeResourceModel = $this->simiObjectManager
-                ->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
+            ->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
 
         $fieldset->addField(
             'storeview_id',
             'multiselect',
             [
-            'name'     => 'storeview_id[]',
-            'label'    => __('Store View'),
-            'title'    => __('Store View'),
-            'required' => true,
-            'values'   => $storeResourceModel->toOptionArray(),
-                ]
+                'name' => 'storeview_id[]',
+                'label' => __('Store View'),
+                'title' => __('Store View'),
+                'required' => true,
+                'values' => $storeResourceModel->toOptionArray(),
+            ]
         );
 
         $fieldset->addField(
             'cms_title',
             'text',
-            ['name'     => 'cms_title',
-            'label'    => __('Title'),
-            'title'    => __('Title'),
-            'required' => true,
-            'disabled' => $isElementDisabled]
+            ['name' => 'cms_title',
+                'label' => __('Title'),
+                'title' => __('Title'),
+                'required' => true,
+                'disabled' => $isElementDisabled]
         );
 
         $fieldset->addField(
             'cms_content',
             'editor',
             [
-            'name'     => 'cms_content',
-            'label'    => __('Content'),
-            'title'    => __('Content'),
-            'required' => true,
-            'style'    => 'height: 500px',
-            'disabled' => $isElementDisabled,
-            'config'   => $this->wysiwygConfig->getConfig()
-                ]
+                'name' => 'cms_content',
+                'label' => __('Content'),
+                'title' => __('Content'),
+                'required' => true,
+                'style' => 'height: 500px',
+                'disabled' => $isElementDisabled,
+                'config' => $this->wysiwygConfig->getConfig()
+            ]
         );
 
         if (!isset($data['sort_order'])) {
@@ -164,63 +165,63 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'sort_order',
             'text',
             [
-            'name'     => 'sort_order',
-            'label'    => __('Sort Order'),
-            'title'    => __('Sort Order'),
-            'class'    => 'validate-not-negative-number',
-            'disabled' => $isElementDisabled
-                ]
+                'name' => 'sort_order',
+                'label' => __('Sort Order'),
+                'title' => __('Sort Order'),
+                'class' => 'validate-not-negative-number',
+                'disabled' => $isElementDisabled
+            ]
         );
 
         $fieldset->addField(
             'cms_status',
             'select',
             [
-            'name'     => 'cms_status',
-            'label'    => __('Status'),
-            'title'    => __('Status'),
-            'required' => false,
-            'disabled' => $isElementDisabled,
-            'options'  => $this->cmsFactory->create()->toOptionStatusHash(),
-                ]
+                'name' => 'cms_status',
+                'label' => __('Status'),
+                'title' => __('Status'),
+                'required' => false,
+                'disabled' => $isElementDisabled,
+                'options' => $this->cmsFactory->create()->toOptionStatusHash(),
+            ]
         );
 
         $fieldset->addField(
             'type',
             'select',
             [
-            'name'     => 'type',
-            'label'    => __('Show Block On'),
-            'title'    => __('Show Block On'),
-            'required' => false,
-            'disabled' => $isElementDisabled,
-            'options'  => [
-                '0' => __('Nowhere'),
-                '1' => __('Left Menu'),
-                '2' => __('Category In-app'),
-            ],
-            'onchange' => 'toogleType()'
-                ]
+                'name' => 'type',
+                'label' => __('Show Block On'),
+                'title' => __('Show Block On'),
+                'required' => false,
+                'disabled' => $isElementDisabled,
+                'options' => [
+                    '0' => __('Nowhere'),
+                    '1' => __('Left Menu'),
+                    '2' => __('Category In-app'),
+                ],
+                'onchange' => 'toogleType()'
+            ]
         );
 
         $fieldset->addField('category_id', 'select', [
-            'name'     => 'category_id',
-            'label'    => __('Category'),
-            'title'    => __('Category'),
+            'name' => 'category_id',
+            'label' => __('Category'),
+            'title' => __('Category'),
             'required' => true,
-            'values'   => $this->simiObjectManager->get('Simi\Simiconnector\Helper\Catetree')->getChildCatArray(),
+            'values' => $this->simiObjectManager->get('Simi\Simiconnector\Helper\Catetree')->getChildCatArray(),
         ]);
 
         $fieldset->addField(
             'cms_image',
             'image',
             [
-            'name'     => 'cms_image',
-            'label'    => __('Image (width:64px, height:64px)'),
-            'title'    => __('Image (width:64px, height:64px)'),
-            'required' => false,
-            'disabled' => $isElementDisabled
-                ]
+                'name' => 'cms_image',
+                'label' => __('Image (width:64px, height:64px)'),
+                'title' => __('Image (width:64px, height:64px)'),
+                'required' => false,
+                'disabled' => $isElementDisabled
+            ]
         );
 
         $webappfieldset = $form->addFieldset('webapp_fieldset', ['legend' => __('PWA Configuration')]);
@@ -228,34 +229,34 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         $webappfieldset->addField(
             'cms_url',
             'text',
-            ['name'     => 'cms_url',
-                'label'    => __('Url'),
-                'title'    => __('Url')]
+            ['name' => 'cms_url',
+                'label' => __('Url'),
+                'title' => __('Url')]
         );
-        
+
         $webappfieldset->addField(
             'cms_meta_title',
             'text',
-            ['name'     => 'cms_meta_title',
-                'label'    => __('Meta Title'),
-                'title'    => __('Meta Title')]
+            ['name' => 'cms_meta_title',
+                'label' => __('Meta Title'),
+                'title' => __('Meta Title')]
         );
 
         $webappfieldset->addField(
             'cms_meta_desc',
             'text',
-            ['name'     => 'cms_meta_desc',
-                'label'    => __('Meta Description'),
-                'title'    => __('Meta Description')]
+            ['name' => 'cms_meta_desc',
+                'label' => __('Meta Description'),
+                'title' => __('Meta Description')]
         );
 
         $webappfieldset->addField(
             'cms_script',
             'editor',
             [
-                'name'     => 'cms_script',
-                'label'    => __('Script'),
-                'title'    => __('Script')
+                'name' => 'cms_script',
+                'label' => __('Script'),
+                'title' => __('Script')
             ]
         );
 

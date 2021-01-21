@@ -18,7 +18,7 @@ class Sociallogins extends Apiabstract
         $customer = $socialCustomerModel->getCustomer($params);
         $customerHelper->loginByCustomer($customer);
         $this->builderQuery = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
-        if(!$this->builderQuery->getId()){
+        if (!$this->builderQuery->getId()) {
             throw new \Exception(__('Login Failed'), 4);
         }
     }

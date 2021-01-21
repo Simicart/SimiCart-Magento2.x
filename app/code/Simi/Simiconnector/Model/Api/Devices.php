@@ -17,8 +17,8 @@ class Devices extends Apiabstract
 
     public function store()
     {
-        $data               = $this->getData();
-        $device             = $this->simiObjectManager->get('Simi\Simiconnector\Model\Device');
+        $data = $this->getData();
+        $device = $this->simiObjectManager->get('Simi\Simiconnector\Model\Device');
         $device->saveDevice($data);
         $this->builderQuery = $device;
         return $this->show();

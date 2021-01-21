@@ -36,9 +36,10 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\Siminotification $resource,
         \Simi\Simiconnector\Model\ResourceModel\Siminotification\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
-    ) {
+    )
+    {
         $this->simiObjectManager = $simiObjectManager;
-        $this->websiteHelper    = $websiteHelper;
+        $this->websiteHelper = $websiteHelper;
 
         parent::__construct(
             $context,
@@ -64,7 +65,7 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
     public function toOptionStoreviewHash()
     {
         $storeViewCollection = $this->simiObjectManager->get('\Magento\Store\Model\Store')->getCollection();
-        $list                = [];
+        $list = [];
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($storeViewCollection) > 0) {
             foreach ($storeViewCollection as $storeView) {
                 $list[$storeView->getId()] = $storeView->getName();
@@ -79,8 +80,8 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
     public function toOptionWebsiteHash()
     {
         $website_collection = $this->websiteHelper->getWebsiteCollection();
-        $list               = [];
-        $list[0]            = __('All');
+        $list = [];
+        $list[0] = __('All');
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($website_collection) > 0) {
             foreach ($website_collection as $website) {
                 $list[$website->getId()] = $website->getName();
@@ -95,8 +96,8 @@ class Siminotification extends \Magento\Framework\Model\AbstractModel
     public function toOptionCountryHash()
     {
         $country_collection = $this->websiteHelper->getCountryCollection();
-        $list               = [];
-        $list[]             = __('All Countries');
+        $list = [];
+        $list[] = __('All Countries');
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($country_collection) > 0) {
             foreach ($country_collection as $country) {
                 $list[$country->getId()] = $country->getName();

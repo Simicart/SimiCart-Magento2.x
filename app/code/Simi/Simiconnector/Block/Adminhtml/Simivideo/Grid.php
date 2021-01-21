@@ -50,13 +50,14 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Simi\Simiconnector\Helper\Website $websiteHelper,
         array $data = []
-    ) {
-   
+    )
+    {
+
         $this->collectionFactory = $collectionFactory;
-        $this->moduleManager      = $moduleManager;
-        $this->resource          = $resourceConnection;
-        $this->videoFactory      = $simivideoFactory;
-        $this->websiteHelper      = $websiteHelper;
+        $this->moduleManager = $moduleManager;
+        $this->resource = $resourceConnection;
+        $this->videoFactory = $simivideoFactory;
+        $this->websiteHelper = $websiteHelper;
 
         parent::__construct($context, $backendHelper, $data);
     }
@@ -83,27 +84,27 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         $this->addColumn('video_id', [
             'header' => __('ID'),
-            'align'  => 'right',
-            'width'  => '50px',
-            'index'  => 'video_id',
+            'align' => 'right',
+            'width' => '50px',
+            'index' => 'video_id',
         ]);
 
         $this->addColumn('video_title', [
             'header' => __('Title'),
-            'align'  => 'left',
-            'index'  => 'video_title'
+            'align' => 'left',
+            'index' => 'video_title'
         ]);
 
         $this->addColumn('video_url', [
             'header' => __('Video Key'),
-            'align'  => 'left',
-            'index'  => 'video_url'
+            'align' => 'left',
+            'index' => 'video_url'
         ]);
 
         $this->addColumn('status', [
-            'type'    => 'options',
-            'header'  => __('Status'),
-            'index'   => 'status',
+            'type' => 'options',
+            'header' => __('Status'),
+            'index' => 'status',
             'options' => $this->videoFactory->create()->toOptionStatusHash(),
         ]);
 
@@ -119,7 +120,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/edit', [
-                    'video_id' => $row->getId()
+            'video_id' => $row->getId()
         ]);
     }
 
@@ -139,10 +140,10 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->getMassactionBlock()->addItem(
             'delete',
             [
-            'label'   => __('Delete'),
-            'url'     => $this->getUrl('*/*/massDelete'),
-            'confirm' => __('Are you sure?')
-                ]
+                'label' => __('Delete'),
+                'url' => $this->getUrl('*/*/massDelete'),
+                'confirm' => __('Are you sure?')
+            ]
         );
         return $this;
     }

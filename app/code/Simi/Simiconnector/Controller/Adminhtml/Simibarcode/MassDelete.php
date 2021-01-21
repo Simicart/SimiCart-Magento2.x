@@ -20,18 +20,19 @@ class MassDelete extends \Magento\Backend\App\Action
     public function __construct(
         Context $context,
         Filter $filterObject
-    ) {
-   
+    )
+    {
+
         $this->simiObjectManager = $context->getObjectManager();
-        $this->filter            = $filterObject;
+        $this->filter = $filterObject;
         parent::__construct($context);
     }
 
     public function execute()
     {
-        $barcodeIds     = $this->getRequest()->getParam('massaction');
-        $collection     = $this->simiObjectManager->get('Simi\Simiconnector\Model\Simibarcode')
-                        ->getCollection()->addFieldToFilter('barcode_id', ['in', $barcodeIds]);
+        $barcodeIds = $this->getRequest()->getParam('massaction');
+        $collection = $this->simiObjectManager->get('Simi\Simiconnector\Model\Simibarcode')
+            ->getCollection()->addFieldToFilter('barcode_id', ['in', $barcodeIds]);
         $barcodeDeleted = 0;
         foreach ($collection->getItems() as $barcode) {
             $this->deleteCode($barcode);
@@ -43,6 +44,7 @@ class MassDelete extends \Magento\Backend\App\Action
 
         return $this->resultFactory->create(ResultFactory::TYPE_REDIRECT)->setPath('*/*/index');
     }
+
     private function deleteCode($codeModel)
     {
         $codeModel->delete();

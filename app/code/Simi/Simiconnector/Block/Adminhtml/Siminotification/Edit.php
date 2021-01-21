@@ -25,8 +25,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         \Magento\Backend\Block\Widget\Context $context,
         \Magento\Framework\Registry $registry,
         array $data = []
-    ) {
-   
+    )
+    {
+
         $this->coreRegistry = $registry;
         parent::__construct($context, $data);
     }
@@ -39,7 +40,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
     public function _construct()
     {
 
-        $this->_objectId   = 'notice_id';
+        $this->_objectId = 'notice_id';
         $this->_blockGroup = 'Simi_Simiconnector';
         $this->_controller = 'adminhtml_siminotification';
 
@@ -50,14 +51,14 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
             $this->buttonList->add(
                 'saveandcontinue',
                 [
-                'label'          => __('Save and Continue Edit'),
-                'class'          => 'save',
-                'data_attribute' => [
-                    'mage-init' => [
-                        'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
-                    ],
-                ]
-                    ],
+                    'label' => __('Save and Continue Edit'),
+                    'class' => 'save',
+                    'data_attribute' => [
+                        'mage-init' => [
+                            'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
+                        ],
+                    ]
+                ],
                 -100
             );
         } else {
@@ -121,7 +122,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
     public function _prepareLayout()
     {
         $arrow_down_img = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png');
-        $arrow_up_img   = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_up.png');
+        $arrow_up_img = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_up.png');
 
         $deviceJsUpdateFunction = '
                     /*
@@ -195,7 +196,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
                         var cate = $("deviceGrid");
                         if($("deviceGrid").style.display == "none" || (check ==1) || (check == 2)){
                             var url = "'
-                . $this->getUrl('simiconnector/*/devicegrid') . '?storeview_id="+$("storeview_selected").value;
+            . $this->getUrl('simiconnector/*/devicegrid') . '?storeview_id="+$("storeview_selected").value;
                     if(check == 1){
                                 $("devices_pushed").value = $("devices_all_ids").value;
                             }else if(check == 2){

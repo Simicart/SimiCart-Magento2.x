@@ -55,19 +55,19 @@ class Total extends Data
          */
         if (isset($total['tax'])) {
             $data['tax'] = $total['tax']->getValue();
-            $taxSumarry  = [];
+            $taxSumarry = [];
             foreach ($total['tax']->getFullInfo() as $info) {
                 if (isset($info['hidden']) && $info['hidden']) {
                     continue;
                 }
                 $amount = $info['amount'];
-                $rates  = $info['rates'];
+                $rates = $info['rates'];
                 foreach ($rates as $rate) {
                     $title = $rate['title'];
                     if (!($rate['percent'] === null)) {
-                        $title.= ' (' . $rate['percent'] . '%)';
+                        $title .= ' (' . $rate['percent'] . '%)';
                     }
-                    $taxSumarry[] = ['title'  => $title,
+                    $taxSumarry[] = ['title' => $title,
                         'amount' => $amount,
                     ];
                     /*
@@ -96,26 +96,26 @@ class Total extends Data
 
         $coupon = '';
         if ($this->_getQuote()->getCouponCode()) {
-            $coupon              = $this->_getQuote()->getCouponCode();
+            $coupon = $this->_getQuote()->getCouponCode();
             $data['coupon_code'] = $coupon;
         }
 
         $this->data = $data;
         $this->simiObjectManager
-                ->get('\Magento\Framework\Event\ManagerInterface')
-                ->dispatch(
-                    'simi_simiconnector_helper_total_settotal_after',
-                    ['object' => $this, 'data' => $this->data]
-                );
+            ->get('\Magento\Framework\Event\ManagerInterface')
+            ->dispatch(
+                'simi_simiconnector_helper_total_settotal_after',
+                ['object' => $this, 'data' => $this->data]
+            );
 
-        if (isset($total['cash_on_delivery_fee'])) {           
+        if (isset($total['cash_on_delivery_fee'])) {
             $codFee = $total['cash_on_delivery_fee']->getValue();
             $this->addCustomRow(__('Cash on Delivery fee'), 4, $codFee);
         }
 
-        $data       = $this->data;
+        $data = $this->data;
     }
-    
+
     private function setSubtotal($total, &$data)
     {
         if ($this->displayTypeSubOrder() == 3) {
@@ -141,7 +141,7 @@ class Total extends Data
 
     public function showTotalOrder($order)
     {
-        $data                      = [];
+        $data = [];
         $data['subtotal_excl_tax'] = $order->getSubtotal();
         $data['subtotal_incl_tax'] = $order->getSubtotalInclTax();
         if ($data['subtotal_incl_tax'] == null) {
@@ -149,16 +149,16 @@ class Total extends Data
         }
         $data['shipping_hand_excl_tax'] = $order->getShippingAmount();
         $data['shipping_hand_incl_tax'] = $order->getShippingInclTax();
-        $data['tax']                    = $order->getTaxAmount();
-        $data['discount']               = abs($order->getDiscountAmount());
-        $data['grand_total_excl_tax']   = $order->getGrandTotal() - $data['tax'];
-        $data['grand_total_incl_tax']   = $order->getGrandTotal();
+        $data['tax'] = $order->getTaxAmount();
+        $data['discount'] = abs($order->getDiscountAmount());
+        $data['grand_total_excl_tax'] = $order->getGrandTotal() - $data['tax'];
+        $data['grand_total_incl_tax'] = $order->getGrandTotal();
 
         if ($this->simiObjectManager->get('Magento\Directory\Model\Currency')
                 ->load($order->getData('order_currency_code'))->getCurrencySymbol() != null) {
             $data['currency_symbol'] = $this->simiObjectManager
-                    ->get('Magento\Directory\Model\Currency')->load($order->getData('order_currency_code'))
-                    ->getCurrencySymbol();
+                ->get('Magento\Directory\Model\Currency')->load($order->getData('order_currency_code'))
+                ->getCurrencySymbol();
         } else {
             $data['currency_symbol'] = $order->getOrderCurrency()->getCurrencyCode();
         }
@@ -184,14 +184,14 @@ class Total extends Data
     public function displayBothTaxSub()
     {
         return $this->simiObjectManager->get('Magento\Tax\Model\Tax')
-                ->displayCartSubtotalBoth($this->storeManager->getStore());
+            ->displayCartSubtotalBoth($this->storeManager->getStore());
     }
 
     public function includeTaxGrand($total)
     {
         if ($total->getAddress()->getGrandTotal()) {
             return $this->simiObjectManager->get('Magento\Tax\Model\Tax')
-                    ->displayCartTaxWithGrandTotal($this->storeManager->getStore());
+                ->displayCartTaxWithGrandTotal($this->storeManager->getStore());
         }
         return false;
     }
@@ -209,13 +209,13 @@ class Total extends Data
     public function displayBothTaxShipping()
     {
         return $this->simiObjectManager->get('Magento\Tax\Model\Tax')
-                ->displayCartShippingBoth($this->storeManager->getStore());
+            ->displayCartShippingBoth($this->storeManager->getStore());
     }
 
     public function displayIncludeTaxShipping()
     {
         return $this->simiObjectManager->get('Magento\Tax\Model\Tax')
-                ->displayCartShippingInclTax($this->storeManager->getStore());
+            ->displayCartShippingInclTax($this->storeManager->getStore());
     }
 
     public function getShippingIncludeTax($total)

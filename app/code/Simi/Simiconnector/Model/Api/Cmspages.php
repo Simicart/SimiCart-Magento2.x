@@ -18,10 +18,10 @@ class Cmspages extends Apiabstract
             $this->builderQuery = $this->simiObjectManager
                 ->get('Simi\Simiconnector\Model\Cms')->load($data['resourceid']);
         } else {
-            $typeID             = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')
+            $typeID = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')
                 ->getVisibilityTypeId('cms');
-            $visibilityTable    = $this->resource->getTableName('simiconnector_visibility');
-            $cmsCollection      = $this->simiObjectManager->get('Simi\Simiconnector\Model\Cms')
+            $visibilityTable = $this->resource->getTableName('simiconnector_visibility');
+            $cmsCollection = $this->simiObjectManager->get('Simi\Simiconnector\Model\Cms')
                 ->getCollection()->addFieldToFilter('type', '1')
                 ->addFieldToFilter('cms_status', '1')
                 ->applyAPICollectionFilter($visibilityTable, $typeID, $this->storeManager

@@ -17,7 +17,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
      * @var \Magento\Catalog\Model\ProductFactory
      */
     public $productFactory;
-    public $simiObjectManager       = null;
+    public $simiObjectManager = null;
     public $simibarcodeFactory = null;
 
     /**
@@ -35,12 +35,13 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\Registry $coreRegistry,
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         array $data = []
-    ) {
-   
-        $this->simiObjectManager       = $simiObjectManager;
-        $this->productFactory     = $productFactory;
+    )
+    {
+
+        $this->simiObjectManager = $simiObjectManager;
+        $this->productFactory = $productFactory;
         $this->simibarcodeFactory = $simibarcodeFactory;
-        $this->coreRegistry       = $coreRegistry;
+        $this->coreRegistry = $coreRegistry;
         parent::__construct($context, $backendHelper, $data);
     }
 
@@ -87,9 +88,9 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function _prepareCollection()
     {
         $collection = $this->productFactory->create()->getCollection()
-        ->addAttributeToSelect('entity_id')
-        ->addAttributeToSelect('name')
-        ->addAttributeToSelect('sku');
+            ->addAttributeToSelect('entity_id')
+            ->addAttributeToSelect('name')
+            ->addAttributeToSelect('sku');
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -104,59 +105,59 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->addColumn(
             'in_products',
             [
-            'type'             => 'checkbox',
-            'html_name'        => 'products_id',
-            'required'         => true,
-            'values'           => $this->_getSelectedProducts(),
-            'align'            => 'center',
-            'index'            => 'entity_id',
-            'header_css_class' => 'col-select',
-            'column_css_class' => 'col-select',
-            'renderer'         => '\Simi\Simiconnector\Block\Adminhtml\Simibarcode\Edit\Tab\Productrender',
+                'type' => 'checkbox',
+                'html_name' => 'products_id',
+                'required' => true,
+                'values' => $this->_getSelectedProducts(),
+                'align' => 'center',
+                'index' => 'entity_id',
+                'header_css_class' => 'col-select',
+                'column_css_class' => 'col-select',
+                'renderer' => '\Simi\Simiconnector\Block\Adminhtml\Simibarcode\Edit\Tab\Productrender',
             ]
         );
 
         $this->addColumn(
             'entity_id',
             [
-            'header'           => __('ID'),
-            'index'            => 'entity_id',
-            'width'            => '20px',
-            'header_css_class' => 'col-name',
-            'column_css_class' => 'col-name'
+                'header' => __('ID'),
+                'index' => 'entity_id',
+                'width' => '20px',
+                'header_css_class' => 'col-name',
+                'column_css_class' => 'col-name'
             ]
         );
 
         $this->addColumn(
             'name',
             [
-            'header'           => __('Name'),
-            'index'            => 'name',
-            'header_css_class' => 'col-name',
-            'column_css_class' => 'col-name'
+                'header' => __('Name'),
+                'index' => 'name',
+                'header_css_class' => 'col-name',
+                'column_css_class' => 'col-name'
             ]
         );
 
         $this->addColumn(
             'type_id',
             [
-            'header'           => __('Type'),
-            'type'             => 'options',
-            'index'            => 'type_id',
-            'options'          => $this->simiObjectManager
-                ->get('\Magento\Catalog\Model\Product\Type')->getOptionArray(),
-            'header_css_class' => 'col-type',
-            'column_css_class' => 'col-type'
+                'header' => __('Type'),
+                'type' => 'options',
+                'index' => 'type_id',
+                'options' => $this->simiObjectManager
+                    ->get('\Magento\Catalog\Model\Product\Type')->getOptionArray(),
+                'header_css_class' => 'col-type',
+                'column_css_class' => 'col-type'
             ]
         );
 
         $this->addColumn(
             'sku',
             [
-            'header'           => __('SKU'),
-            'index'            => 'sku',
-            'header_css_class' => 'col-sku',
-            'column_css_class' => 'col-sku'
+                'header' => __('SKU'),
+                'index' => 'sku',
+                'header_css_class' => 'col-sku',
+                'column_css_class' => 'col-sku'
             ]
         );
 
@@ -206,7 +207,7 @@ class Productgrid extends \Magento\Backend\Block\Widget\Grid\Extended
             $barcode_id = 0;
         }
 
-        $barcode  = $this->simibarcodeFactory->create()->load($barcode_id);
+        $barcode = $this->simibarcodeFactory->create()->load($barcode_id);
         $products = [];
         if ($barcode->getId()) {
             $products = explode(',', str_replace(' ', '', $barcode->getData('product_ids')));

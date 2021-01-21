@@ -23,10 +23,10 @@ class Save extends \Magento\Backend\App\Action
         }
 
         $is_delete_siminotification = isset($data['image_url']['delete']) ? $data['image_url']['delete'] : false;
-        $data['image_url']          = isset($data['image_url']['value']) ? $data['image_url']['value'] : '';
-        $data['created_time']       = time();
-        $data['device_id']          = $data['device_type'];
-        $data['storeview_id']       = $data['storeview_selected'];
+        $data['image_url'] = isset($data['image_url']['value']) ? $data['image_url']['value'] : '';
+        $data['created_time'] = time();
+        $data['device_id'] = $data['device_type'];
+        $data['storeview_id'] = $data['storeview_selected'];
         $model->addData($data);
 
         try {
@@ -48,18 +48,19 @@ class Save extends \Magento\Backend\App\Action
                 return;
             } else {
                 $data['siminotification_type'] = 0;
-                $data['notice_type']           = 0;
-                $data['notice_id']             = $model->getId();
+                $data['notice_type'] = 0;
+                $data['notice_id'] = $model->getId();
                 if ($model->getImageUrl()) {
                     try {
                         $img_full_url = $imageHelper->getBaseUrl(false) . $model->getImageUrl();
-                        $list              = getimagesize($img_full_url);
-                        $data['width']     = $list[0];
-                        $data['height']    = $list[1];
-                    } catch (\Exception $e) {}
+                        $list = getimagesize($img_full_url);
+                        $data['width'] = $list[0];
+                        $data['height'] = $list[1];
+                    } catch (\Exception $e) {
+                    }
                 }
                 $resultSend = $simiObjectManager
-                        ->get('Simi\Simiconnector\Helper\Siminotification')->sendNotice($data);
+                    ->get('Simi\Simiconnector\Helper\Siminotification')->sendNotice($data);
             }
             $this->_redirect('*/*/');
             return;

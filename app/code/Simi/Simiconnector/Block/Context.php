@@ -103,13 +103,14 @@ class Context extends \Magento\Framework\View\Element\Template\Context
         \Simi\Simiconnector\Model\Config $config,
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         \Magento\Framework\UrlFactory $urlFactory
-    ) {
-   
-        $this->devToolHelper    = $devToolHelper;
-        $this->registry          = $registry;
-        $this->config           = $config;
+    )
+    {
+
+        $this->devToolHelper = $devToolHelper;
+        $this->registry = $registry;
+        $this->config = $config;
         $this->simiObjectManager = $simiObjectManager;
-        $this->urlFactory       = $urlFactory;
+        $this->urlFactory = $urlFactory;
         parent::__construct(
             $request,
             $layout,

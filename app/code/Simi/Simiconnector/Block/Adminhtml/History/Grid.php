@@ -50,13 +50,14 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Simi\Simiconnector\Helper\Website $websiteHelper,
         array $data = []
-    ) {
-   
+    )
+    {
+
         $this->collectionFactory = $collectionFactory;
-        $this->moduleManager      = $moduleManager;
-        $this->resource          = $resourceConnection;
-        $this->historyFactory    = $historyFactory;
-        $this->websiteHelper      = $websiteHelper;
+        $this->moduleManager = $moduleManager;
+        $this->resource = $resourceConnection;
+        $this->historyFactory = $historyFactory;
+        $this->websiteHelper = $websiteHelper;
         parent::__construct($context, $backendHelper, $data);
     }
 
@@ -83,7 +84,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         $collection = $this->collectionFactory->create();
 
         $this->setCollection($collection);
-        
+
         return parent::_prepareCollection();
     }
 
@@ -96,60 +97,60 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         $this->addColumn('history_id', [
             'header' => __('ID'),
-            'index'  => 'history_id',
+            'index' => 'history_id',
         ]);
 
         $this->addColumn('notice_title', [
             'header' => __('Title'),
-            'index'  => 'notice_title',
+            'index' => 'notice_title',
         ]);
 
         $this->addColumn('notice_content', [
             'header' => __('Message'),
-            'index'  => 'notice_content',
+            'index' => 'notice_content',
         ]);
 
         $this->addColumn('device_id', [
-            'type'    => 'options',
-            'header'  => __('Device'),
-            'index'   => 'device_id',
+            'type' => 'options',
+            'header' => __('Device'),
+            'index' => 'device_id',
             'options' => $this->historyFactory->create()->toOptionDeviceHash(),
         ]);
 
         $this->addColumn('created_time', [
-            'type'   => 'datetime',
+            'type' => 'datetime',
             'header' => __('Sent Date'),
-            'index'  => 'created_time',
+            'index' => 'created_time',
         ]);
 
         $this->addColumn('status', [
-            'type'    => 'options',
-            'header'  => __('Status'),
-            'index'   => 'status',
+            'type' => 'options',
+            'header' => __('Status'),
+            'index' => 'status',
             'options' => $this->historyFactory->create()->toOptionStatusHash(),
         ]);
 
         $this->addColumn(
             'action',
             [
-            'header'           => __('View'),
-            'type'             => 'action',
-            'getter'           => 'getId',
-            'actions'          => [
-                [
-                    'caption' => __('Edit'),
-                    'url'     => [
-                        'base'   => '*/*/edit',
-                        'params' => ['store' => $this->getRequest()->getParam('store')]
-                    ],
-                    'field'   => 'history_id'
-                ]
-            ],
-            'sortable'         => false,
-            'filter'           => false,
-            'header_css_class' => 'col-action',
-            'column_css_class' => 'col-action',
-                ]
+                'header' => __('View'),
+                'type' => 'action',
+                'getter' => 'getId',
+                'actions' => [
+                    [
+                        'caption' => __('Edit'),
+                        'url' => [
+                            'base' => '*/*/edit',
+                            'params' => ['store' => $this->getRequest()->getParam('store')]
+                        ],
+                        'field' => 'history_id'
+                    ]
+                ],
+                'sortable' => false,
+                'filter' => false,
+                'header_css_class' => 'col-action',
+                'column_css_class' => 'col-action',
+            ]
         );
 
         return parent::_prepareColumns();
@@ -164,7 +165,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/edit', [
-                    'history_id' => $row->getId()
+            'history_id' => $row->getId()
         ]);
     }
 

@@ -1,49 +1,62 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
     <system>
         <tab id="simi" translate="label" sortOrder="1000">
             <label>Simiconnector</label>
         </tab>
-        <section id="simiconnector" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+        <section id="simiconnector" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1"
+                 showInStore="1">
             <class>separator-top</class>
             <label>General Settings</label>
             <tab>simi</tab>
             <resource>Simi_Simi::config_simi</resource>
-            <group id="generalconfigheader" translate="label" type="text" sortOrder="1" showInWebsite="1" showInStore="0"
+            <group id="generalconfigheader" translate="label" type="text" sortOrder="1" showInWebsite="1"
+                   showInStore="0"
                    showInDefault="1">
                 <frontend_model>Simi\Simiconnector\Block\Adminhtml\Config\Generalconfigheader</frontend_model>
             </group>
-            <group id="general" translate="label" type="text" sortOrder="49" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="general" translate="label" type="text" sortOrder="49" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>General Configuration</label>
-                <field id="enable" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="enable" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="secret_key" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="secret_key" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Secret Key &#128241;</label>
                     <comment>Your secret key (get from your Building Dashboard)</comment>
                 </field>
-                <field id="token_key" translate="label" type="text" sortOrder="249" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="token_key" translate="label" type="text" sortOrder="249" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Token Key &#128241;</label>
                     <comment>Your token key (get from your Building Dashboard)</comment>
                 </field>
-                <field id="base_url" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="base_url" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Base URL</label>
-                    <comment>eg. http://simicart.com/, leave it blank if you want to use default value from Building Dashboard</comment>
+                    <comment>eg. http://simicart.com/, leave it blank if you want to use default value from Building
+                        Dashboard
+                    </comment>
                 </field>
                 <field id="pwa_studio_url" translate="label" type="text" sortOrder="329" showInDefault="1">
                     <label>PWA Studio URL</label>
                     <comment>URL of pwa-studio site</comment>
                 </field>
-                <field id="pwa_studio_client_ver_number" translate="label" type="text" sortOrder="349" showInDefault="1">
+                <field id="pwa_studio_client_ver_number" translate="label" type="text" sortOrder="349"
+                       showInDefault="1">
                     <label>PWA Studio Client version number</label>
                     <comment>Use for pwa client using Pwa-studio. example value: 4.3.1 or 1563345513232</comment>
                 </field>
-                <field id="is_show_price_zero" translate="label" type="select" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_show_price_zero" translate="label" type="select" sortOrder="399" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Show option price if it's $0.00? &#128241;</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="is_show_all_product" translate="label" type="select" sortOrder="499" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_show_all_product" translate="label" type="select" sortOrder="499" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Show "All Products" link in Category?</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
@@ -53,84 +66,104 @@
                     <comment>Please enter its CMS ID SimiCart Simiconnector/CMS</comment>
                 </field>
                 -->
-                <field id="is_show_sample_data" translate="label" type="select" sortOrder="699" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_show_sample_data" translate="label" type="select" sortOrder="699" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Update order review when select payment method &#128241;</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="show_product_type" translate="label" type="select" sortOrder="799" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="show_product_type" translate="label" type="select" sortOrder="799" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>View products default &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\ViewType</source_model>
                 </field>
-                <field id="is_rtl" translate="label" type="select" sortOrder="899" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_rtl" translate="label" type="select" sortOrder="899" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Use RTL language</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <can_be_empty>1</can_be_empty>
                 </field>
-                <field id="filter_categories_by_include_in_menu" translate="label" type="select" sortOrder="949" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="filter_categories_by_include_in_menu" translate="label" type="select" sortOrder="949"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Filter categories by 'Include in Menu' values &#128241;</label>
                     <comment>Category would be shown if only its 'Include in Menu' value is 'Yes'</comment>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="categories_in_app" translate="label" type="text" sortOrder="999" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="categories_in_app" translate="label" type="text" sortOrder="999" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Hidden categories on app &#128241;</label>
                     <comment>Category IDs (separated by comma). Eg. 2, 4, 15</comment>
                 </field>
-                <field id="is_show_home_title" translate="label" type="select" sortOrder="1099" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_show_home_title" translate="label" type="select" sortOrder="1099" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Show Title For Banners, Categories and Product Lists on Home Screen</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="image_aspect_ratio" translate="label" type="select" sortOrder="1149" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="image_aspect_ratio" translate="label" type="select" sortOrder="1149" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Banner Aspect Ratio &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Aspectratio</source_model>
                 </field>
-                <field id="app_dedicated_coupon" translate="label" type="text" sortOrder="1199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="app_dedicated_coupon" translate="label" type="text" sortOrder="1199" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Mobile App Dedicated Coupon &#128241;</label>
                 </field>
-                <field id="open_url_in_app" translate="label" type="select" sortOrder="1299" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="open_url_in_app" translate="label" type="select" sortOrder="1299" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Open url in app &#128241;</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="show_discount_label_in_product" translate="label" type="select" sortOrder="1399" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="show_discount_label_in_product" translate="label" type="select" sortOrder="1399"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Show discount label in product</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
-            <group id="currency" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="currency" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Currency Display Configuration</label>
-                <field id="thousand_separator" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="thousand_separator" translate="label" type="text" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Thousand Separator</label>
                 </field>
-                <field id="decimal_separator" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="decimal_separator" translate="label" type="text" sortOrder="99" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Decimal Separator</label>
                 </field>
-                <field id="min_number_of_decimals" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="min_number_of_decimals" translate="label" type="text" sortOrder="199" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Minimum Number of Decimals</label>
                 </field>
-                <field id="max_number_of_decimals" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="max_number_of_decimals" translate="label" type="text" sortOrder="299" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Maximum Number of Decimals</label>
                 </field>
             </group>
-            <group id="hideaddress" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="hideaddress" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Checkout Information Management</label>
-                <field id="hideaddress_enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="hideaddress_enable" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="company" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="company" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Company</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
-                <field id="street" translate="label" type="select" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="street" translate="label" type="select" sortOrder="199" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Address</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
-                <field id="street_default" translate="label" type="text" sortOrder="249" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="street_default" translate="label" type="text" sortOrder="249" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Default Address Value</label>
                     <depends>
                         <field id="*/*/street" separator=",">2,3</field>
@@ -138,44 +171,52 @@
                     </depends>
                     <comment>Applied when Customers leave Address field blank</comment>
                 </field>
-                <field id="country_id" translate="label" type="select" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Country  &#128241;</label>
+                <field id="country_id" translate="label" type="select" sortOrder="299" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Country &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
-                <field id="country_id_default" translate="label" type="text" sortOrder="349" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Default Country Value  &#128241;</label>
+                <field id="country_id_default" translate="label" type="text" sortOrder="349" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
+                    <label>Default Country Value &#128241;</label>
                     <depends>
                         <field id="*/*/country_id" separator=",">2,3</field>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                     <comment>Applied when Customers leave Country field blank, use country ID, eg. US</comment>
                 </field>
-                <field id="region_id" translate="label" type="select" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="region_id" translate="label" type="select" sortOrder="399" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>State/Province &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
-                <field id="region_id_default" translate="label" type="text" sortOrder="449" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="region_id_default" translate="label" type="text" sortOrder="449" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Default State/Province Value &#128241;</label>
                     <depends>
                         <field id="*/*/region_id" separator=",">2,3</field>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
-                    <comment>Applied when Customers leave State/Province field blank, use region_id if State/Province is a option field. Eg. 1 for Alabama</comment>
+                    <comment>Applied when Customers leave State/Province field blank, use region_id if State/Province is
+                        a option field. Eg. 1 for Alabama
+                    </comment>
                 </field>
-                <field id="city" translate="label" type="select" sortOrder="499" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="city" translate="label" type="select" sortOrder="499" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>City</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
-                <field id="city_default" translate="label" type="text" sortOrder="549" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="city_default" translate="label" type="text" sortOrder="549" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Default City Value</label>
                     <depends>
                         <field id="*/*/city" separator=",">2,3</field>
@@ -183,14 +224,16 @@
                     </depends>
                     <comment>Applied when Customers leave City field blank</comment>
                 </field>
-                <field id="zipcode" translate="label" type="select" sortOrder="599" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="zipcode" translate="label" type="select" sortOrder="599" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Zip/Postal Code</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
-                <field id="zipcode_default" translate="label" type="text" sortOrder="649" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="zipcode_default" translate="label" type="text" sortOrder="649" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Default Zip/Postal Code Value</label>
                     <depends>
                         <field id="*/*/zipcode" separator=",">2,3</field>
@@ -198,14 +241,16 @@
                     </depends>
                     <comment>Applied when Customers leave Zip/Postal Code field blank</comment>
                 </field>
-                <field id="telephone" translate="label" type="select" sortOrder="699" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="telephone" translate="label" type="select" sortOrder="699" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Telephone</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
-                <field id="telephone_default" translate="label" type="text" sortOrder="749" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="telephone_default" translate="label" type="text" sortOrder="749" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Default Telephone Value</label>
                     <depends>
                         <field id="*/*/telephone" separator=",">2,3</field>
@@ -213,42 +258,48 @@
                     </depends>
                     <comment>Applied when Customers leave Telephone field blank</comment>
                 </field>
-                <field id="fax" translate="label" type="select" sortOrder="799" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="fax" translate="label" type="select" sortOrder="799" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Fax &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
-                <field id="prefix" translate="label" type="select" sortOrder="899" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="prefix" translate="label" type="select" sortOrder="899" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Prefix Name &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
-                <field id="suffix" translate="label" type="select" sortOrder="999" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="suffix" translate="label" type="select" sortOrder="999" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Suffix Name &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
-                <field id="dob" translate="label" type="select" sortOrder="1099" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="dob" translate="label" type="select" sortOrder="1099" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Date of Birth &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
-                <field id="gender" translate="label" type="select" sortOrder="1199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="gender" translate="label" type="select" sortOrder="1199" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Gender &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
                         <field id="*/*/hideaddress_enable">1</field>
                     </depends>
                 </field>
-                <field id="taxvat" translate="label" type="select" sortOrder="1299" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="taxvat" translate="label" type="select" sortOrder="1299" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Tax/VAT number &#128241;</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Addressrequiretype</source_model>
                     <depends>
@@ -256,249 +307,309 @@
                     </depends>
                 </field>
             </group>
-            <group id="terms_conditions" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="terms_conditions" translate="label" type="text" sortOrder="299" showInDefault="1"
+                   showInWebsite="1" showInStore="1">
                 <label>Terms and Conditions &#128241;</label>
-                <field id="enable_terms" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="enable_terms" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Show Terms and Conditions</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="term_title" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="term_title" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Terms and Conditions Title</label>
                     <depends>
                         <field id="*/*/enable_terms">1</field>
                     </depends>
                 </field>
-                <field id="term_html" translate="label" type="textarea" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="term_html" translate="label" type="textarea" sortOrder="199" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Terms and Conditions Content (HTML)</label>
                     <depends>
                         <field id="*/*/enable_terms">1</field>
                     </depends>
                 </field>
             </group>
-            <group id="instant_contact" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="instant_contact" translate="label" type="text" sortOrder="399" showInDefault="1"
+                   showInWebsite="1" showInStore="1">
                 <label>Instant Contact Configuration &#128241;</label>
-                <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="email" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="email" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Email</label>
                     <comment>Used to send email. Seperate emails with comma.</comment>
                     <depends>
                         <field id="*/*/enable">1</field>
                     </depends>
                 </field>
-                <field id="phone" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="phone" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Phone Number</label>
                     <comment>Used to call. Seperate phone numbers with comma</comment>
                     <depends>
                         <field id="*/*/enable">1</field>
                     </depends>
                 </field>
-                <field id="message" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="message" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Message Number</label>
                     <comment>Used to send message. Seperate phone numbers with comma</comment>
                     <depends>
                         <field id="*/*/enable">1</field>
                     </depends>
                 </field>
-                <field id="website" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="website" translate="label" type="text" sortOrder="399" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Website Url</label>
-                    <comment>Please enter the URL with http or https. For example: http://yourwebsite.com or https://yourwebsite.com</comment>
+                    <comment>Please enter the URL with http or https. For example: http://yourwebsite.com or
+                        https://yourwebsite.com
+                    </comment>
                     <depends>
                         <field id="*/*/enable">1</field>
                     </depends>
                 </field>
-                <field id="style" translate="label" type="select" sortOrder="499" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="style" translate="label" type="select" sortOrder="499" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Style</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\ViewType</source_model>
                     <depends>
                         <field id="*/*/enable">1</field>
                     </depends>
                 </field>
-                <field id="icon_color" translate="label" type="text" sortOrder="599" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="icon_color" translate="label" type="text" sortOrder="599" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Text Color</label>
-                    <comment>Select the color of contact icons displayed in Contact page of your app. Eg. 0F0FFF</comment>
+                    <comment>Select the color of contact icons displayed in Contact page of your app. Eg. 0F0FFF
+                    </comment>
                     <depends>
                         <field id="*/*/enable">1</field>
                     </depends>
                 </field>
             </group>
-            <group id="barcode" translate="label" type="text" sortOrder="499" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="barcode" translate="label" type="text" sortOrder="499" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Barcode Configuration &#128241;</label>
-                <field id="pattern" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="pattern" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Barcode pattern</label>
-                    <comment><![CDATA[Enter the pattern you want to generate barcodes. For Example:<br/><strong>[A.8] : 8 alpha<br/>[N.4] : 4 numeric<br/>[AN.6] : 6 alphanumeric<br/>BAR[A.4][AN.6] : BARADFA12NF0O</strong>]]></comment>
+                    <comment>
+                        <![CDATA[Enter the pattern you want to generate barcodes. For Example:<br/><strong>[A.8] : 8 alpha<br/>[N.4] : 4 numeric<br/>[AN.6] : 6 alphanumeric<br/>BAR[A.4][AN.6] : BARADFA12NF0O</strong>]]></comment>
                 </field>
-                <field id="qrcode_pattern" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="qrcode_pattern" translate="label" type="text" sortOrder="99" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>QR code pattern</label>
-                    <comment><![CDATA[Enter the pattern you want to generate QR codes. For Example:<br/><strong>[A.8] : 8 alpha<br/>[N.4] : 4 numeric<br/>[AN.6] : 6 alphanumeric<br/>QR[A.4][AN.6] : QRADFA12NF0O</strong>]]></comment>
+                    <comment>
+                        <![CDATA[Enter the pattern you want to generate QR codes. For Example:<br/><strong>[A.8] : 8 alpha<br/>[N.4] : 4 numeric<br/>[AN.6] : 6 alphanumeric<br/>QR[A.4][AN.6] : QRADFA12NF0O</strong>]]></comment>
                 </field>
             </group>
-            <group id="productlabel" translate="label" type="text" sortOrder="599" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="productlabel" translate="label" type="text" sortOrder="599" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Product Label Configuration &#128241;</label>
-                <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
-            <group id="wishlist" translate="label" type="text" sortOrder="699" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="wishlist" translate="label" type="text" sortOrder="699" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Wishlist Configuration &#128241;</label>
-                <field id="sharing_message" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="sharing_message" translate="label" type="text" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Message For Sharing Wishlist</label>
-                    <comment>The message is used when customers share their wishlist on Facebook, Twitter, Emails... It appears before Wishlist URL.</comment>
+                    <comment>The message is used when customers share their wishlist on Facebook, Twitter, Emails... It
+                        appears before Wishlist URL.
+                    </comment>
                 </field>
-                <field id="product_sharing_message" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="product_sharing_message" translate="label" type="text" sortOrder="99" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Message For Sharing Product</label>
-                    <comment>The message is used when customers share a product in their wishlist on Facebook, Twitter, Emails... It appears before the product URL.</comment>
+                    <comment>The message is used when customers share a product in their wishlist on Facebook, Twitter,
+                        Emails... It appears before the product URL.
+                    </comment>
                 </field>
             </group>
-            <group id="mixpanel" translate="label" type="text" sortOrder="899" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="mixpanel" translate="label" type="text" sortOrder="899" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Mixpanel Configuration &#128241;</label>
-                <field id="token" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="token" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Mixpanel Token</label>
                     <comment>Leave this field blank to disable Mixpanel on Application</comment>
                 </field>
             </group>
-            <group id="config_price" translate="label" type="text" sortOrder="1099" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="config_price" translate="label" type="text" sortOrder="1099" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Price Configuration &#128241;</label>
-                <field id="price_one_row" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="price_one_row" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Show price in a row</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="is_show_price_for_guest" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_show_price_for_guest" translate="label" type="select" sortOrder="99" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Show price for guest</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
-            <group id="methods_support" translate="label" type="text" sortOrder="1199" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="methods_support" translate="label" type="text" sortOrder="1199" showInDefault="1"
+                   showInWebsite="1" showInStore="1">
                 <label>Supported Methods &#128241;</label>
-                <field id="delete" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="delete" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Support DELETE method</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="put" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="put" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Support PUT method</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
-            <group id="customchat" translate="label" type="text" sortOrder="1299" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="customchat" translate="label" type="text" sortOrder="1299" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Live chat Configuration &#128241;</label>
-                <field id="enable" translate="label" type="select" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="enable" translate="label" type="select" sortOrder="9" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Enable</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="head_script" translate="label" type="textarea" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="head_script" translate="label" type="textarea" sortOrder="99" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Head Script</label>
                     <depends>
                         <field id="*/*/enable">1</field>
                     </depends>
                 </field>
-                <field id="body_script" translate="label" type="textarea" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="body_script" translate="label" type="textarea" sortOrder="199" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Body Script</label>
                     <depends>
                         <field id="*/*/enable">1</field>
                     </depends>
                 </field>
             </group>
-            <group id="checkout_config" translate="label" type="text" sortOrder="1999" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="checkout_config" translate="label" type="text" sortOrder="1999" showInDefault="1"
+                   showInWebsite="1" showInStore="1">
                 <label>Checkout webview configurations &#128241;</label>
-                <field id="enable_checkout_webview" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="enable_checkout_webview" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Checkout page using webview</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>If "Yes" app will redirect to checkout page mobile site</comment>
                 </field>
-                <field id="checkout_page_url" translate="label" type="text" sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="checkout_page_url" translate="label" type="text" sortOrder="2" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Checkout page Url</label>
                     <comment>Path of checkout page url</comment>
                     <depends>
                         <field id="*/*/enable_checkout_webview">1</field>
                     </depends>
                 </field>
-                <field id="url_success" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="url_success" translate="label" type="text" sortOrder="3" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Url success</label>
                     <comment>Path of success page</comment>
                     <depends>
                         <field id="*/*/enable_checkout_webview">1</field>
                     </depends>
                 </field>
-                <field id="url_failed" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="url_failed" translate="label" type="text" sortOrder="4" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Url failed</label>
                     <comment>Path of failed page</comment>
                     <depends>
-                       <field id="*/*/enable_checkout_webview">1</field>
+                        <field id="*/*/enable_checkout_webview">1</field>
                     </depends>
                 </field>
             </group>
         </section>
-        <section id="simi_notifications" translate="label" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+        <section id="simi_notifications" translate="label" sortOrder="140" showInDefault="1" showInWebsite="1"
+                 showInStore="1">
             <class>separator-top</class>
             <label>Native App Notification Configuration</label>
             <tab>simi</tab>
             <resource>Simi_Simi::config_simi</resource>
-            <group id="notification" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="notification" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Notification Settings</label>
-                <field id="upload_pem_file" translate="label" type="file" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="upload_pem_file" translate="label" type="file" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Upload Apple PEM file</label>
                     <comment>Certificate (PEM) for Apple Device Notification Sending</comment>
                     <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>
                     <upload_dir config="system/filesystem/media">simi/simiconnector/pem/manual</upload_dir>
                 </field>
-                <field id="upload_pem_file_test" translate="label" type="file" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="upload_pem_file_test" translate="label" type="file" sortOrder="99" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Upload Apple Demo PEM file</label>
                     <comment>Certificate (PEM) for Demo Apple Device Notification Sending</comment>
                     <backend_model>Magento\Config\Model\Config\Backend\File</backend_model>
                     <upload_dir config="system/filesystem/media">simi/simiconnector/pem</upload_dir>
                 </field>
-                <field id="android_app_key" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="android_app_key" translate="label" type="text" sortOrder="199" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Android App Key</label>
                     <comment>App Key for Android Notification Sending</comment>
                 </field>
-                <field id="android_secret_key" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="android_secret_key" translate="label" type="text" sortOrder="299" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Android Secret Key</label>
                     <comment>Secret Key for Android Notification Sending</comment>
                 </field>
             </group>
-            <group id="notice_price" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="notice_price" translate="label" type="text" sortOrder="99" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Send Notification when Price Updated</label>
-                <field id="noti_price_enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="noti_price_enable" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Send notification to all users when price of product is changed</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="noti_price_showpopup" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="noti_price_showpopup" translate="label" type="select" sortOrder="99" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Show Popup</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <depends>
                         <field id="*/*/noti_price_enable">1</field>
                     </depends>
                 </field>
-                <field id="noti_price_title" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="noti_price_title" translate="label" type="text" sortOrder="199" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Title</label>
                     <depends>
                         <field id="*/*/noti_price_enable">1</field>
                     </depends>
                 </field>
-                <field id="noti_price_message" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="noti_price_message" translate="label" type="text" sortOrder="299" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Message</label>
                     <depends>
                         <field id="*/*/noti_price_enable">1</field>
                     </depends>
                 </field>
-                <field id="noti_price_type" translate="label" type="select" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="noti_price_type" translate="label" type="select" sortOrder="399" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Direct Viewers to</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\NoticeType</source_model>
                     <depends>
                         <field id="*/*/noti_price_enable">1</field>
                     </depends>
                 </field>
-                <field id="noti_price_category_id" translate="label" type="text" sortOrder="499" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="noti_price_category_id" translate="label" type="text" sortOrder="499" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Category ID</label>
                     <depends>
                         <field id="*/*/noti_price_enable">1</field>
                         <field id="*/*/noti_price_type">2</field>
                     </depends>
                 </field>
-                <field id="noti_price_url" translate="label" type="text" sortOrder="499" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="noti_price_url" translate="label" type="text" sortOrder="499" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>URL</label>
                     <depends>
                         <field id="*/*/noti_price_enable">1</field>
@@ -506,7 +617,8 @@
                     </depends>
                     <comment>Ex: https://simicart.com</comment>
                 </field>
-                <field id="noti_price_platform" translate="label" type="select" sortOrder="599" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="noti_price_platform" translate="label" type="select" sortOrder="599" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Device</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Platform</source_model>
                     <depends>
@@ -515,46 +627,54 @@
                     <comment>Ex: https://simicart.com</comment>
                 </field>
             </group>
-            <group id="noti_new_product" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="noti_new_product" translate="label" type="text" sortOrder="199" showInDefault="1"
+                   showInWebsite="1" showInStore="1">
                 <label>Send Notification when there's a new product</label>
-                <field id="new_product_enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="new_product_enable" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Send notification to all users when there's a new product</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="new_product_showpopup" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="new_product_showpopup" translate="label" type="select" sortOrder="99" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Show Popup</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <depends>
                         <field id="*/*/new_product_enable">1</field>
                     </depends>
                 </field>
-                <field id="new_product_title" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="new_product_title" translate="label" type="text" sortOrder="199" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Title</label>
                     <depends>
                         <field id="*/*/new_product_enable">1</field>
                     </depends>
                 </field>
-                <field id="new_product_message" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="new_product_message" translate="label" type="text" sortOrder="299" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Message</label>
                     <depends>
                         <field id="*/*/new_product_enable">1</field>
                     </depends>
                 </field>
-                <field id="new_product_type" translate="label" type="select" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="new_product_type" translate="label" type="select" sortOrder="399" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Direct Viewers to</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\NoticeType</source_model>
                     <depends>
                         <field id="*/*/new_product_enable">1</field>
                     </depends>
                 </field>
-                <field id="new_product_category_id" translate="label" type="text" sortOrder="499" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="new_product_category_id" translate="label" type="text" sortOrder="499" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Category ID</label>
                     <depends>
                         <field id="*/*/new_product_enable">1</field>
                         <field id="*/*/new_product_type">2</field>
                     </depends>
                 </field>
-                <field id="new_product_url" translate="label" type="text" sortOrder="499" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="new_product_url" translate="label" type="text" sortOrder="499" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>URL</label>
                     <depends>
                         <field id="*/*/new_product_enable">1</field>
@@ -562,7 +682,8 @@
                     </depends>
                     <comment>Ex: https://simicart.com</comment>
                 </field>
-                <field id="new_product_platform" translate="label" type="select" sortOrder="599" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="new_product_platform" translate="label" type="select" sortOrder="599" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Device</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Platform</source_model>
                     <depends>
@@ -571,46 +692,54 @@
                     <comment>Ex: https://simicart.com</comment>
                 </field>
             </group>
-            <group id="noti_purchase" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="noti_purchase" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Send Notification after customer purchase</label>
-                <field id="noti_purchase_enable" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="noti_purchase_enable" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Send notification to a customer when he/she finish purchasing</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
-                <field id="noti_purchase_title" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="noti_purchase_title" translate="label" type="text" sortOrder="199" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Title</label>
                     <depends>
                         <field id="*/*/noti_purchase_enable">1</field>
                     </depends>
                 </field>
-                <field id="noti_purchase_message" translate="label" type="text" sortOrder="299" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="noti_purchase_message" translate="label" type="text" sortOrder="299" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Message</label>
                     <depends>
                         <field id="*/*/noti_purchase_enable">1</field>
                     </depends>
                 </field>
-                <field id="noti_purchase_type" translate="label" type="select" sortOrder="399" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="noti_purchase_type" translate="label" type="select" sortOrder="399" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Direct Viewers to</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\NoticeType</source_model>
                     <depends>
                         <field id="*/*/noti_purchase_enable">1</field>
                     </depends>
                 </field>
-                <field id="noti_purchase_category_id" translate="label" type="text" sortOrder="499" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="noti_purchase_category_id" translate="label" type="text" sortOrder="499" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Category ID</label>
                     <depends>
                         <field id="*/*/noti_purchase_enable">1</field>
                         <field id="*/*/noti_purchase_type">2</field>
                     </depends>
                 </field>
-                <field id="noti_purchase_product_id" translate="label" type="text" sortOrder="599" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="noti_purchase_product_id" translate="label" type="text" sortOrder="599" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Product ID</label>
                     <depends>
                         <field id="*/*/noti_purchase_enable">1</field>
                         <field id="*/*/noti_purchase_type">1</field>
                     </depends>
                 </field>
-                <field id="noti_purchase_url" translate="label" type="text" sortOrder="699" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="noti_purchase_url" translate="label" type="text" sortOrder="699" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>URL</label>
                     <depends>
                         <field id="*/*/noti_purchase_enable">1</field>
@@ -620,28 +749,37 @@
                 </field>
             </group>
         </section>
-        <section id="siminiaconfig" translate="label" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
+        <section id="siminiaconfig" translate="label" sortOrder="150" showInDefault="1" showInWebsite="1"
+                 showInStore="1">
             <class>separator-top</class>
             <label>SimiCart PWA-Studio</label>
             <tab>simi</tab>
             <resource>Simi_Simi::config_simi</resource>
-            <group id="braintree" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="braintree" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Braintree Configuration</label>
-                <field id="braintree_token" translate="label" type="text" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="braintree_token" translate="label" type="text" sortOrder="199" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Checkout Braintree Token</label>
-                    <comment>You can find this value in Braintree's Control Panel under Settings > API Keys > Tokenization Keys</comment>
+                    <comment>You can find this value in Braintree's Control Panel under Settings > API Keys >
+                        Tokenization Keys
+                    </comment>
                 </field>
             </group>
-            <group id="compareconfig" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="compareconfig" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Compare Products Configuration</label>
-                <field id="show_size_in_compare" translate="label" type="select" sortOrder="199" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="show_size_in_compare" translate="label" type="select" sortOrder="199" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Show 'Size' in Compare products</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <comment>Let api graphql return app_options in simiExtraField on listing products.
-                        It allows to show size row on compare modal.</comment>
+                        It allows to show size row on compare modal.
+                    </comment>
                 </field>
             </group>
-            <group id="contactus" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="contactus" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Contact Page Configuration</label>
                 <field id="email" translate="label" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>EMAIL</label>
@@ -661,36 +799,45 @@
                     <backend_model>Simi\Simiconnector\Config\Backend\SimiConfig</backend_model>
                     <comment>List telephone number receive SMS at contact page</comment>
                 </field>
-                <field id="website" translate="label" sortOrder="29" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="website" translate="label" sortOrder="29" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>WEBSITE</label>
                     <frontend_model>Simi\Simiconnector\Block\Adminhtml\Form\Field\Website</frontend_model>
                     <backend_model>Simi\Simiconnector\Config\Backend\SimiConfig</backend_model>
                     <comment>List links at contact page.</comment>
                 </field>
             </group>
-            <group id="footer_link" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="footer_link" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Footer Link (ecommerce by Simicart)</label>
-                <field id="ft_title1" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="ft_title1" translate="label" type="text" sortOrder="1" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Title 1</label>
                 </field>
-                <field id="ft_title2" translate="label" type="text" sortOrder="9" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="ft_title2" translate="label" type="text" sortOrder="9" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Title 2</label>
                 </field>
-                <field id="ft_link" translate="label" type="text" sortOrder="19" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="ft_link" translate="label" type="text" sortOrder="19" showInDefault="1" showInWebsite="1"
+                       showInStore="1">
                     <label>Link</label>
                     <comment>Must contain https:// or http://</comment>
                 </field>
             </group>
-            <group id="storeview_api" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="storeview_api" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Store View API</label>
-                <field id="add_home_api_to_storeview_api" translate="label" type="select" sortOrder="99" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="add_home_api_to_storeview_api" translate="label" type="select" sortOrder="99"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Add Home API to Store View API</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
             </group>
-            <group id="color_options" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+            <group id="color_options" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1"
+                   showInStore="1">
                 <label>Product color options</label>
-                <field id="is_color_type_text" translate="label" type="select" sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+                <field id="is_color_type_text" translate="label" type="select" sortOrder="1" showInDefault="1"
+                       showInWebsite="1" showInStore="1">
                     <label>Display Type</label>
                     <source_model>Simi\Simiconnector\Model\Config\Source\Pwaswatchdisplaytype</source_model>
                 </field>

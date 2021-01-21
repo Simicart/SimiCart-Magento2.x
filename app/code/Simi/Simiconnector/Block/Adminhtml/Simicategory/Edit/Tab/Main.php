@@ -53,14 +53,15 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         array $data = []
-    ) {
-   
-        $this->simiObjectManager    = $simiObjectManager;
+    )
+    {
+
+        $this->simiObjectManager = $simiObjectManager;
         $this->simicategoryFactory = $simicategoryFactory;
-        $this->websiteHelper        = $websiteHelper;
-        $this->systemStore          = $systemStore;
-        $this->jsonEncoder          = $jsonEncoder;
-        $this->categoryFactory      = $categoryFactory;
+        $this->websiteHelper = $websiteHelper;
+        $this->systemStore = $systemStore;
+        $this->jsonEncoder = $jsonEncoder;
+        $this->categoryFactory = $categoryFactory;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
@@ -71,7 +72,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      */
     public function _prepareForm()
     {
-        
+
         $model = $this->_coreRegistry->registry('simicategory');
 
         /*
@@ -91,16 +92,16 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
 
         $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Simicategory Information')]);
 
-        $data                = $model->getData();
+        $data = $model->getData();
         if ($model->getId()) {
             $fieldset->addField('simicategory_id', 'hidden', ['name' => 'simicategory_id']);
             $simiconnectorhelper = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data');
-            $typeID              = $simiconnectorhelper->getVisibilityTypeId('homecategory');
-            $visibleStoreViews   = $this->simiObjectManager
-                    ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
-                    ->addFieldToFilter('content_type', $typeID)
-                    ->addFieldToFilter('item_id', $model->getId());
-            $storeIdArray        = [];
+            $typeID = $simiconnectorhelper->getVisibilityTypeId('homecategory');
+            $visibleStoreViews = $this->simiObjectManager
+                ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+                ->addFieldToFilter('content_type', $typeID)
+                ->addFieldToFilter('item_id', $model->getId());
+            $storeIdArray = [];
 
             foreach ($visibleStoreViews as $visibilityItem) {
                 $storeIdArray[] = $visibilityItem->getData('store_view_id');
@@ -109,44 +110,44 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         }
 
         $storeResourceModel = $this->simiObjectManager
-                ->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
+            ->get('Simi\Simiconnector\Model\ResourceModel\Storeviewmultiselect');
 
         $fieldset->addField('storeview_id', 'multiselect', [
-            'name'     => 'storeview_id[]',
-            'label'    => __('Store View'),
-            'title'    => __('Store View'),
+            'name' => 'storeview_id[]',
+            'label' => __('Store View'),
+            'title' => __('Store View'),
             'required' => true,
-            'values'   => $storeResourceModel->toOptionArray(),
+            'values' => $storeResourceModel->toOptionArray(),
         ]);
 
         $fieldset->addField(
             'simicategory_filename',
             'image',
             [
-            'name'     => 'simicategory_filename',
-            'label'    => __('Image (width:220px, height:220px)'),
-            'title'    => __('Image (width:220px, height:220px)'),
-            'disabled' => $isElementDisabled
-                ]
+                'name' => 'simicategory_filename',
+                'label' => __('Image (width:220px, height:220px)'),
+                'title' => __('Image (width:220px, height:220px)'),
+                'disabled' => $isElementDisabled
+            ]
         );
 
         $fieldset->addField(
             'simicategory_filename_tablet',
             'image',
             [
-            'name'     => 'simicategory_filename_tablet',
-            'label'    => __('Tablet Image (width:220px, height:220px)'),
-            'title'    => __('Tablet Image (width:220px, height:220px)'),
-            'disabled' => $isElementDisabled
-                ]
+                'name' => 'simicategory_filename_tablet',
+                'label' => __('Tablet Image (width:220px, height:220px)'),
+                'title' => __('Tablet Image (width:220px, height:220px)'),
+                'disabled' => $isElementDisabled
+            ]
         );
 
         $fieldset->addField('category_id', 'select', [
-            'name'     => 'category_id',
-            'label'    => __('Category'),
-            'title'    => __('Category'),
+            'name' => 'category_id',
+            'label' => __('Category'),
+            'title' => __('Category'),
             'required' => true,
-            'values'   => $this->simiObjectManager->get('Simi\Simiconnector\Helper\Catetree')->getChildCatArray(),
+            'values' => $this->simiObjectManager->get('Simi\Simiconnector\Helper\Catetree')->getChildCatArray(),
         ]);
 
         if (!isset($data['sort_order'])) {
@@ -156,25 +157,25 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'sort_order',
             'text',
             [
-            'name'     => 'sort_order',
-            'label'    => __('Sort Order'),
-            'title'    => __('Sort Order'),
-            'class'    => 'validate-not-negative-number',
-            'disabled' => $isElementDisabled
-                ]
+                'name' => 'sort_order',
+                'label' => __('Sort Order'),
+                'title' => __('Sort Order'),
+                'class' => 'validate-not-negative-number',
+                'disabled' => $isElementDisabled
+            ]
         );
 
         $fieldset->addField(
             'status',
             'select',
             [
-            'name'     => 'status',
-            'label'    => __('Status'),
-            'title'    => __('Status'),
-            'required' => false,
-            'disabled' => $isElementDisabled,
-            'options'  => $this->simicategoryFactory->create()->toOptionStatusHash(),
-                ]
+                'name' => 'status',
+                'label' => __('Status'),
+                'title' => __('Status'),
+                'required' => false,
+                'disabled' => $isElementDisabled,
+                'options' => $this->simicategoryFactory->create()->toOptionStatusHash(),
+            ]
         );
 
         $this->_eventManager->dispatch('adminhtml_simicategory_edit_tab_main_prepare_form', ['form' => $form]);

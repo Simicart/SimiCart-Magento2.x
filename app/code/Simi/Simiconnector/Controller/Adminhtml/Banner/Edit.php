@@ -19,12 +19,14 @@ class Edit extends \Magento\Backend\App\Action
         Action\Context $context,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory,
         \Magento\Framework\Registry $registry
-    ) {
-    
+    )
+    {
+
         $this->resultPageFactory = $resultPageFactory;
-        $this->coreRegistry     = $registry;
+        $this->coreRegistry = $registry;
         parent::__construct($context);
     }
+
     /**
      * Init actions
      *
@@ -55,7 +57,7 @@ class Edit extends \Magento\Backend\App\Action
     public function execute()
     {
         // 1. Get ID and create model
-        $id    = $this->getRequest()->getParam('banner_id');
+        $id = $this->getRequest()->getParam('banner_id');
         $simiobjectManager = $this->_objectManager;
         $model = $simiobjectManager->create('Simi\Simiconnector\Model\Banner');
 
@@ -88,7 +90,7 @@ class Edit extends \Magento\Backend\App\Action
         );
         $resultPage->getConfig()->getTitle()->prepend(__('Banner'));
         $resultPage->getConfig()->getTitle()
-                ->prepend($model->getId() ? $model->getId() : __('New Banner'));
+            ->prepend($model->getId() ? $model->getId() : __('New Banner'));
         return $resultPage;
     }
 }

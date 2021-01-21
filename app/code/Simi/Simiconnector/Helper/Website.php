@@ -39,11 +39,12 @@ class Website extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Store\Model\ResourceModel\Website\CollectionFactory $websiteFactory,
         \Magento\Store\Model\WebsiteRepositoryFactory $websiteRepositoryFactory,
         \Magento\Directory\Model\ResourceModel\Country\CollectionFactory $countryCollectionFactory
-    ) {
-   
-        $this->simiObjectManager  = $simiObjectManager;
-        $this->request                  = $this->simiObjectManager->get('\Magento\Framework\App\Request\Http');
-        $this->websiteFactory           = $websiteFactory;
+    )
+    {
+
+        $this->simiObjectManager = $simiObjectManager;
+        $this->request = $this->simiObjectManager->get('\Magento\Framework\App\Request\Http');
+        $this->websiteFactory = $websiteFactory;
         $this->websiteRepositoryFactory = $websiteRepositoryFactory;
         $this->countryCollectionFactory = $countryCollectionFactory;
         parent::__construct($context);

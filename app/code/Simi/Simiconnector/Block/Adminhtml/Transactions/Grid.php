@@ -31,12 +31,13 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Magento\Sales\Model\ResourceModel\Order\Status\CollectionFactory $orderStatusCollection,
         array $data = []
-    ) {
-        $this->simiObjectManager    = $simiObjectManager;
+    )
+    {
+        $this->simiObjectManager = $simiObjectManager;
         $this->collectionFactory = $collectionFactory;
-        $this->moduleManager      = $moduleManager;
-        $this->resource          = $resourceConnection;
-        $this->orderStatus       = $orderStatusCollection;
+        $this->moduleManager = $moduleManager;
+        $this->resource = $resourceConnection;
+        $this->orderStatus = $orderStatusCollection;
         parent::__construct($context, $backendHelper, $data);
     }
 
@@ -60,8 +61,8 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function _prepareCollection()
     {
-        $collection      = $this->simiObjectManager->create('Simi\Simiconnector\Model\Appreport')
-                ->getCollection()->getGridCollection($this->simiObjectManager);
+        $collection = $this->simiObjectManager->create('Simi\Simiconnector\Model\Appreport')
+            ->getCollection()->getGridCollection($this->simiObjectManager);
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -75,58 +76,58 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         $this->addColumn('real_order_id', [
             'header' => __('ID'),
-            'index'  => 'increment_id',
+            'index' => 'increment_id',
         ]);
 
         $this->addColumn('platform', [
-            'type'    => 'options',
+            'type' => 'options',
             'header' => __('Platform'),
-            'index'  => 'platform',
+            'index' => 'platform',
             'options' => [
                 '0' => __('Native App'),
                 '1' => __('PWA')
             ]
         ]);
-        
+
 
         $this->addColumn('store_id', [
-            'type'   => 'store',
+            'type' => 'store',
             'header' => __('Purchase Point'),
-            'index'  => 'store_id',
+            'index' => 'store_id',
         ]);
 
         $this->addColumn('created_at', [
-            'type'   => 'datetime',
+            'type' => 'datetime',
             'header' => __('Purchase Date'),
-            'index'  => 'created_at',
+            'index' => 'created_at',
         ]);
 
         $this->addColumn('billing_name', [
             'header' => __('Bill-to Name'),
-            'index'  => 'billing_name',
+            'index' => 'billing_name',
         ]);
 
         $this->addColumn('shipping_name', [
             'header' => __('Ship-to Name'),
-            'index'  => 'shipping_name',
+            'index' => 'shipping_name',
         ]);
 
         $this->addColumn('base_grand_total', [
-            'type'   => 'currency',
+            'type' => 'currency',
             'header' => __('Grand Total (Base)'),
-            'index'  => 'base_grand_total',
+            'index' => 'base_grand_total',
         ]);
 
         $this->addColumn('grand_total', [
-            'type'   => 'currency',
+            'type' => 'currency',
             'header' => __('Grand Total (Purchased)'),
-            'index'  => 'grand_total',
+            'index' => 'grand_total',
         ]);
 
         $this->addColumn('status', [
-            'type'    => 'options',
-            'header'  => __('Status'),
-            'index'   => 'status',
+            'type' => 'options',
+            'header' => __('Status'),
+            'index' => 'status',
             'options' => $this->orderStatus->create()->toOptionHash(),
         ]);
 
@@ -142,7 +143,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getRowUrl($row)
     {
         return $this->getUrl('sales/order/view', [
-                    'order_id' => $row->getOrderId()
+            'order_id' => $row->getOrderId()
         ]);
     }
 

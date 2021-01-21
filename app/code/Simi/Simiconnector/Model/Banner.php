@@ -37,9 +37,10 @@ class Banner extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\Banner\Collection $resourceCollection,
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         \Simi\Simiconnector\Helper\Website $websiteHelper
-    ) {
+    )
+    {
         $this->simiObjectManager = $simiObjectManager;
-        $this->websiteHelper    = $websiteHelper;
+        $this->websiteHelper = $websiteHelper;
 
         parent::__construct(
             $context,
@@ -91,8 +92,8 @@ class Banner extends \Magento\Framework\Model\AbstractModel
     public function toOptionWebsiteHash()
     {
         $website_collection = $this->websiteHelper->getWebsiteCollection();
-        $list               = [];
-        $list[0]            = __('All');
+        $list = [];
+        $list[0] = __('All');
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($website_collection) > 0) {
             foreach ($website_collection as $website) {
                 $list[$website->getId()] = $website->getName();
@@ -103,14 +104,14 @@ class Banner extends \Magento\Framework\Model\AbstractModel
 
     public function delete()
     {
-        $typeID            = $this->simiObjectManager
-                ->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('banner');
+        $typeID = $this->simiObjectManager
+            ->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('banner');
         $visibleStoreViews = $this->simiObjectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
-                ->addFieldToFilter('content_type', $typeID)
-                ->addFieldToFilter('item_id', $this->getId());
+            ->addFieldToFilter('content_type', $typeID)
+            ->addFieldToFilter('item_id', $this->getId());
         foreach ($visibleStoreViews as $visibilityItem) {
             $this->simiObjectManager
-                            ->get('Simi\Simiconnector\Helper\Data')->deleteModel($visibilityItem);
+                ->get('Simi\Simiconnector\Helper\Data')->deleteModel($visibilityItem);
         }
         return parent::delete();
     }

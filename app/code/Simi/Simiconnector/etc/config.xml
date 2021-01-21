@@ -5,10 +5,11 @@
  * See COPYING.txt for license details.
  */
 -->
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../Store/etc/config.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../../Store/etc/config.xsd">
     <default>
         <simiconnector>
-            <general>                                               
+            <general>
                 <enable>1</enable>
                 <is_show_price_zero>0</is_show_price_zero>
                 <is_show_all_product>1</is_show_all_product>
@@ -23,19 +24,19 @@
                 <filter_categories_by_include_in_menu>1</filter_categories_by_include_in_menu>
                 <show_discount_label_in_product>1</show_discount_label_in_product>
             </general>
-            <currency>                                           
+            <currency>
                 <thousand_separator>,</thousand_separator>
                 <decimal_separator>.</decimal_separator>
                 <min_number_of_decimals>0</min_number_of_decimals>
-                <max_number_of_decimals>2</max_number_of_decimals>			
-            </currency> 
+                <max_number_of_decimals>2</max_number_of_decimals>
+            </currency>
             <notification>
                 <android_app_key></android_app_key>
                 <android_secret_key></android_secret_key>
                 <noti_price_enable>0</noti_price_enable>
                 <new_product_enable>0</new_product_enable>
                 <noti_purchase_enable>0</noti_purchase_enable>
-            </notification> 
+            </notification>
             <hideaddress>
                 <hideaddress_enable>0</hideaddress_enable>
                 <firstname>2</firstname>
@@ -54,10 +55,10 @@
                 <dob>2</dob>
                 <gender>2</gender>
                 <taxvat>2</taxvat>
-            </hideaddress>  
+            </hideaddress>
             <terms_conditions>
                 <enable_terms>0</enable_terms>
-            </terms_conditions>  
+            </terms_conditions>
             <instant_contact>
                 <enable>0</enable>
                 <email>sales@simicart.com</email>
@@ -67,11 +68,11 @@
             </instant_contact>
             <barcode>
                 <pattern>BAR[A.4][AN.6]</pattern>
-                <qrcode_pattern>QR[A.4][AN.6]</qrcode_pattern>                
-            </barcode> 
+                <qrcode_pattern>QR[A.4][AN.6]</qrcode_pattern>
+            </barcode>
             <productlabel>
                 <enable>0</enable>
-            </productlabel> 
+            </productlabel>
             <config_price>
                 <price_one_row>0</price_one_row>
                 <is_show_price_for_guest>1</is_show_price_for_guest>
@@ -80,7 +81,7 @@
                 <put>1</put>
                 <delete>1</delete>
             </methods_support>
-        </simiconnector>  
+        </simiconnector>
         <simi_notifications>
             <notification>
                 <android_app_key></android_app_key>
@@ -88,7 +89,7 @@
             </notification>
             <notice_price>
                 <noti_price_enable>0</noti_price_enable>
-            </notice_price> 
+            </notice_price>
             <noti_new_product>
                 <new_product_enable>0</new_product_enable>
             </noti_new_product>
@@ -101,7 +102,7 @@
                 <show_size_in_compare>0</show_size_in_compare>
             </compareconfig>
             <footer_link>
-                <ft_title1>eCommerce by </ft_title1>
+                <ft_title1>eCommerce by</ft_title1>
                 <ft_title2>Simicart</ft_title2>
                 <ft_link>https://www.simicart.com/pwa.html/</ft_link>
             </footer_link>

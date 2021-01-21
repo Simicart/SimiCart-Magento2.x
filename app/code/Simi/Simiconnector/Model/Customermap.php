@@ -29,7 +29,8 @@ class Customermap extends AbstractModel
         Registry $registry,
         CustomermapRM $resource,
         Collection $resourceCollection
-    ) {
+    )
+    {
 
 
         $this->simiObjectManager = $simiObjectManager;
@@ -102,8 +103,8 @@ class Customermap extends AbstractModel
 
         //so sanh pass
         if ($createPassFromEmail == 'Simi123a@' . $encodeMethod($this->simiObjectManager
-            ->get('Magento\Framework\App\Config\ScopeConfigInterface')
-            ->getValue('simiconnector/general/secret_key') . $email)) {
+                    ->get('Magento\Framework\App\Config\ScopeConfigInterface')
+                    ->getValue('simiconnector/general/secret_key') . $email)) {
             return true;
         } else {
             return false;

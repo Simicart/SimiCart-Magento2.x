@@ -38,10 +38,11 @@ class Cms extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\Cms\Collection $resourceCollection,
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         \Simi\Simiconnector\Helper\Website $websiteHelper
-    ) {
+    )
+    {
         $this->simiObjectManager = $simiObjectManager;
-        $this->tableresource    = $tableresource;
-        $this->websiteHelper    = $websiteHelper;
+        $this->tableresource = $tableresource;
+        $this->websiteHelper = $websiteHelper;
 
         parent::__construct(
             $context,
@@ -79,8 +80,8 @@ class Cms extends \Magento\Framework\Model\AbstractModel
     public function toOptionWebsiteHash()
     {
         $website_collection = $this->websiteHelper->getWebsiteCollection();
-        $list               = [];
-        $list[0]            = __('All');
+        $list = [];
+        $list[0] = __('All');
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($website_collection) > 0) {
             foreach ($website_collection as $website) {
                 $list[$website->getId()] = $website->getName();
@@ -96,18 +97,18 @@ class Cms extends \Magento\Framework\Model\AbstractModel
     public function getCategoryCMSPages()
     {
         $simiObjectManager = $this->simiObjectManager;
-        $storeManager      = $simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
-        $typeID            = $simiObjectManager
+        $storeManager = $simiObjectManager->get('\Magento\Store\Model\StoreManagerInterface');
+        $typeID = $simiObjectManager
             ->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('cms');
-        $visibilityTable   = $this->tableresource->getTableName('simiconnector_visibility');
-        $cmsCollection     = $simiObjectManager
+        $visibilityTable = $this->tableresource->getTableName('simiconnector_visibility');
+        $cmsCollection = $simiObjectManager
             ->get('Simi\Simiconnector\Model\Cms')->getCollection()
             ->addFieldToFilter('type', '2')
             ->setOrder('sort_order', 'ASC')
             ->getCategoryCMSPages($visibilityTable, $typeID, $storeManager
                 ->getStore()->getId());
 
-        $cmsArray          = [];
+        $cmsArray = [];
         foreach ($cmsCollection as $cms) {
             $result = $cms->toArray();
             $result['cms_content'] = $this->simiObjectManager
@@ -120,14 +121,14 @@ class Cms extends \Magento\Framework\Model\AbstractModel
 
     public function delete()
     {
-        $typeID            = $this->simiObjectManager
-                ->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('cms');
+        $typeID = $this->simiObjectManager
+            ->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('cms');
         $visibleStoreViews = $this->simiObjectManager->create('Simi\Simiconnector\Model\Visibility')->getCollection()
-                ->addFieldToFilter('content_type', $typeID)
-                ->addFieldToFilter('item_id', $this->getId());
+            ->addFieldToFilter('content_type', $typeID)
+            ->addFieldToFilter('item_id', $this->getId());
         foreach ($visibleStoreViews as $visibilityItem) {
             $this->simiObjectManager
-                            ->get('Simi\Simiconnector\Helper\Data')->deleteModel($visibilityItem);
+                ->get('Simi\Simiconnector\Helper\Data')->deleteModel($visibilityItem);
         }
         return parent::delete();
     }

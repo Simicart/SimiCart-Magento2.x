@@ -38,7 +38,8 @@ class History extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\History\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper,
         \Magento\Framework\ObjectManagerInterface $simiObjectManager
-    ) {
+    )
+    {
         $this->websiteHelper = $websiteHelper;
         $this->simiObjectManager = $simiObjectManager;
         parent::__construct(
@@ -104,8 +105,8 @@ class History extends \Magento\Framework\Model\AbstractModel
     public function toOptionWebsiteHash()
     {
         $website_collection = $this->websiteHelper->getWebsiteCollection();
-        $list               = [];
-        $list[0]            = __('All');
+        $list = [];
+        $list[0] = __('All');
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($website_collection) > 0) {
             foreach ($website_collection as $website) {
                 $list[$website->getId()] = $website->getName();

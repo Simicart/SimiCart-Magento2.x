@@ -56,14 +56,15 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         array $data = []
-    ) {
-   
-        $this->simiObjectManager   = $simiObjectManager;
+    )
+    {
+
+        $this->simiObjectManager = $simiObjectManager;
         $this->simibarcodeFactory = $simibarcodeFactory;
-        $this->websiteHelper       = $websiteHelper;
-        $this->systemStore         = $systemStore;
-        $this->jsonEncoder         = $jsonEncoder;
-        $this->categoryFactory     = $categoryFactory;
+        $this->websiteHelper = $websiteHelper;
+        $this->systemStore = $systemStore;
+        $this->jsonEncoder = $jsonEncoder;
+        $this->categoryFactory = $categoryFactory;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
@@ -74,21 +75,21 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      */
     public function _prepareForm()
     {
-        
+
         $model = $this->_coreRegistry->registry('simibarcode');
-        $data  = $model->toArray();
+        $data = $model->toArray();
 
         /** @var \Magento\Framework\Data\Form $form */
         $form = $this->_formFactory->create();
 
         $form->setHtmlIdPrefix('');
 
-        $fieldset  = $form->addFieldset('base_fieldset', ['legend' => __('Code Information')]);
-        $width     = $height    = 200;
-        $sampleQR  = '<img src="http://chart.googleapis.com/chart?chs=' .
-                $width . 'x' . $height . '&cht=qr&chl=' . $data['qrcode'] . '" />';
+        $fieldset = $form->addFieldset('base_fieldset', ['legend' => __('Code Information')]);
+        $width = $height = 200;
+        $sampleQR = '<img src="http://chart.googleapis.com/chart?chs=' .
+            $width . 'x' . $height . '&cht=qr&chl=' . $data['qrcode'] . '" />';
         $sampleBar = '<img id="simi-barcode-present" '
-                . 'src="http://barcodes4.me/barcode/c128a/'.$data['barcode'].'.jpg" />';
+            . 'src="http://barcodes4.me/barcode/c128a/' . $data['barcode'] . '.jpg" />';
         $data = $model->getData();
         if ($model->getId()) {
             $fieldset->addField('barcode_id', 'hidden', ['name' => 'barcode_id']);
@@ -98,84 +99,84 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'barcode',
             'text',
             [
-            'name'     => 'barcode',
-            'label'    => __('Barcode'),
-            'title'    => __('Barcode'),
-            'required' => false
-                ]
+                'name' => 'barcode',
+                'label' => __('Barcode'),
+                'title' => __('Barcode'),
+                'required' => false
+            ]
         );
 
         $fieldset->addField(
             'barcode_type',
             'select',
             [
-            'name'               => 'barcode_type',
-            'label'              => __(''),
-            'title'              => __(''),
-            'required'           => false,
-            'options'            => $this->simibarcodeFactory->create()->toOptionBarcodeTypeHash(),
-            'onclick'            => 'updateBarcodeValue()',
-            'onchange'           => 'updateBarcodePresent()',
-            'after_element_html' => $sampleBar
-                ]
+                'name' => 'barcode_type',
+                'label' => __(''),
+                'title' => __(''),
+                'required' => false,
+                'options' => $this->simibarcodeFactory->create()->toOptionBarcodeTypeHash(),
+                'onclick' => 'updateBarcodeValue()',
+                'onchange' => 'updateBarcodePresent()',
+                'after_element_html' => $sampleBar
+            ]
         );
 
         $fieldset->addField(
             'qrcode',
             'text',
             [
-            'name'               => 'qrcode',
-            'label'              => __('QR code'),
-            'title'              => __('QR code'),
-            'bold'               => true,
-            'required'           => false,
-            'after_element_html' => $sampleQR
-                ]
+                'name' => 'qrcode',
+                'label' => __('QR code'),
+                'title' => __('QR code'),
+                'bold' => true,
+                'required' => false,
+                'after_element_html' => $sampleQR
+            ]
         );
 
         $fieldset->addField(
             'product_name',
             'label',
             [
-            'name'     => 'product_name',
-            'label'    => __('QR code'),
-            'title'    => __('QR code'),
-            'required' => false,
-                ]
+                'name' => 'product_name',
+                'label' => __('QR code'),
+                'title' => __('QR code'),
+                'required' => false,
+            ]
         );
 
         $fieldset->addField(
             'product_sku',
             'label',
             [
-            'name'     => 'product_sku',
-            'label'    => __('Product Sku'),
-            'title'    => __('Product Sku'),
-            'required' => false,
-                ]
+                'name' => 'product_sku',
+                'label' => __('Product Sku'),
+                'title' => __('Product Sku'),
+                'required' => false,
+            ]
         );
 
         $fieldset->addField(
             'created_date',
             'label',
             [
-            'name'     => 'created_date',
-            'label'    => __('Created Date'),
-            'title'    => __('Created Date'),
-            'required' => false,
-                ]
+                'name' => 'created_date',
+                'label' => __('Created Date'),
+                'title' => __('Created Date'),
+                'required' => false,
+            ]
         );
 
         $fieldset->addField(
             'status',
             'select',
             [
-            'name'     => 'status',
-            'label'    => __('Status'),
-            'title'    => __('Status'),
-            'required' => false,
-            'options'  => $this->simibarcodeFactory->create()->toOptionStatusHash(),
-                ]
+                'name' => 'status',
+                'label' => __('Status'),
+                'title' => __('Status'),
+                'required' => false,
+                'options' => $this->simibarcodeFactory->create()->toOptionStatusHash(),
+            ]
         );
 
         $this->_eventManager->dispatch('adminhtml_simibarcode_edit_tab_main_prepare_form', ['form' => $form]);

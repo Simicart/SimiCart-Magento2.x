@@ -12,7 +12,8 @@ class SalesOrderSaveAfter implements ObserverInterface
 
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $simiObjectManager
-    ) {
+    )
+    {
         $this->simiObjectManager = $simiObjectManager;
     }
 
@@ -31,10 +32,10 @@ class SalesOrderSaveAfter implements ObserverInterface
                     ->getCollection()
                     ->addFieldToFilter('order_id', $orderId)
                     ->getFirstItem();
-                if($orderId && (!$existedTransaction || !$existedTransaction->getId())) {
+                if ($orderId && (!$existedTransaction || !$existedTransaction->getId())) {
                     $newTransaction = $this->simiObjectManager->create('Simi\Simiconnector\Model\Appreport');
                     $newTransaction->setOrderId($orderId);
-                    $platform = ($platform == 'pwa')?'1':'0';
+                    $platform = ($platform == 'pwa') ? '1' : '0';
                     $newTransaction->setPlatform($platform);
                     $newTransaction->save();
                 }

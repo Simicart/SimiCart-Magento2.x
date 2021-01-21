@@ -9,10 +9,10 @@ namespace Simi\Simiconnector\Model\Api;
 class Products extends Apiabstract
 {
 
-    public $layer             = [];
+    public $layer = [];
     public $allow_filter_core = false;
     public $helperProduct;
-    public $sortOrders        = [];
+    public $sortOrders = [];
     public $detail_info;
     public $is_search = 0;
 
@@ -28,8 +28,8 @@ class Products extends Apiabstract
     public function setBuilderQuery()
     {
 
-        $data                 = $this->getData();
-        $parameters           = $data['params'];
+        $data = $this->getData();
+        $parameters = $data['params'];
         $this->helperProduct = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Products');
         $this->helperProduct->setData($data);
 
@@ -69,13 +69,13 @@ class Products extends Apiabstract
     public function getList($info, $all_ids, $total, $page_size, $from)
     {
         return [
-            'all_ids'             => $all_ids,
+            'all_ids' => $all_ids,
             $this->getPluralKey() => $info,
-            'total'               => $total,
-            'page_size'           => $page_size,
-            'from'                => $from,
-            'layers'              => $this->layer,
-            'orders'              => $this->sortOrders,
+            'total' => $total,
+            'page_size' => $page_size,
+            'from' => $from,
+            'layers' => $this->layer,
+            'orders' => $this->sortOrders,
         ];
     }
 
@@ -88,7 +88,7 @@ class Products extends Apiabstract
         if (!$this->FILTER_RESULT) {
             return;
         }
-        $data       = $this->data;
+        $data = $this->data;
         $parameters = $data['params'];
         if ($this->allow_filter_core) {
             $query = $this->builderQuery;
@@ -109,9 +109,9 @@ class Products extends Apiabstract
         $collection = $this->builderQuery;
         if (!$this->is_search)
             $this->filter();
-        $data       = $this->getData();
+        $data = $this->getData();
         $parameters = $data['params'];
-        $page       = 1;
+        $page = 1;
         if (isset($parameters[self::PAGE]) && $parameters[self::PAGE]) {
             $page = $parameters[self::PAGE];
         }
@@ -128,8 +128,8 @@ class Products extends Apiabstract
         $collection->setPageSize($offset + $limit);
 
         $all_ids = [];
-        $info    = [];
-        $total   = $collection->getSize();
+        $info = [];
+        $total = $collection->getSize();
 
         if ($offset > $total) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Invalid method.'), 4);
@@ -140,11 +140,11 @@ class Products extends Apiabstract
             $fields = explode(',', $parameters['fields']);
         }
 
-        $check_limit  = 0;
+        $check_limit = 0;
         $check_offset = 0;
 
-        $image_width = isset($parameters['image_width'])?$parameters['image_width']:null;
-        $image_height = isset($parameters['image_height'])?$parameters['image_height']:null;
+        $image_width = isset($parameters['image_width']) ? $parameters['image_width'] : null;
+        $image_height = isset($parameters['image_height']) ? $parameters['image_height'] : null;
 
         foreach ($collection as $entity) {
             if (++$check_offset <= $offset) {
@@ -158,7 +158,7 @@ class Products extends Apiabstract
             }
             $info_detail = $entity->toArray($fields);
 
-            $images       = [];
+            $images = [];
             if (!$entity->getData('media_gallery'))
                 $entity = $this->simiObjectManager
                     ->create('Magento\Catalog\Model\Product')->load($entity->getId());
@@ -166,7 +166,7 @@ class Products extends Apiabstract
             foreach ($media_gallery['images'] as $image) {
                 if ($image['disabled'] == 0) {
                     $images[] = [
-                        'url'      => $this->helperProduct
+                        'url' => $this->helperProduct
                             ->getImageProduct($entity, $image['file'], $image_width, $image_height),
                         'position' => $image['position'],
                     ];
@@ -174,29 +174,29 @@ class Products extends Apiabstract
                 }
             }
             if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($images) == 0) {
-                $images[]     = [
-                    'url'      => $this->helperProduct
+                $images[] = [
+                    'url' => $this->helperProduct
                         ->getImageProduct($entity, null, $image_width, $image_height),
                     'position' => 1,
                 ];
             }
 
-            $ratings      = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Review')
+            $ratings = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Review')
                 ->getRatingStar($entity->getId());
             $total_rating = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Review')
                 ->getTotalRate($ratings);
-            $avg          = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Review')
+            $avg = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Review')
                 ->getAvgRate($ratings, $total_rating);
 
-            $info_detail['images']        = $images;
-            $info_detail['app_prices']    = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Price')
+            $info_detail['images'] = $images;
+            $info_detail['app_prices'] = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Price')
                 ->formatPriceFromProduct($entity);
-            $info_detail['app_reviews']      = $this->simiObjectManager
+            $info_detail['app_reviews'] = $this->simiObjectManager
                 ->get('\Simi\Simiconnector\Helper\Review')
                 ->getProductReviews($entity->getId(), false);
             $info_detail['product_label'] = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Simiproductlabel')
                 ->getProductLabel($entity);
-            $info[]                       = $info_detail;
+            $info[] = $info_detail;
 
             $all_ids[] = $entity->getId();
         }
@@ -209,23 +209,23 @@ class Products extends Apiabstract
      */
     public function show()
     {
-        $entity     = $this->builderQuery;
-        $data       = $this->getData();
+        $entity = $this->builderQuery;
+        $data = $this->getData();
         $parameters = $data['params'];
-        $fields     = [];
+        $fields = [];
         if (isset($parameters['fields']) && $parameters['fields']) {
             $fields = explode(',', $parameters['fields']);
         }
-        $info          = $entity->toArray($fields);
+        $info = $entity->toArray($fields);
         $media_gallery = $entity->getMediaGallery();
-        $images        = [];
-        $image_width = isset($parameters['image_width'])?$parameters['image_width']:null;
-        $image_height = isset($parameters['image_height'])?$parameters['image_height']:null;
+        $images = [];
+        $image_width = isset($parameters['image_width']) ? $parameters['image_width'] : null;
+        $image_height = isset($parameters['image_height']) ? $parameters['image_height'] : null;
 
         foreach ($media_gallery['images'] as $image) {
             if ($image['disabled'] == 0) {
                 $images[] = [
-                    'url'      => $this->helperProduct
+                    'url' => $this->helperProduct
                         ->getImageProduct($entity, $image['file'], $image_width, $image_height),
                     'position' => $image['position'],
                 ];
@@ -233,7 +233,7 @@ class Products extends Apiabstract
         }
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($images) == 0) {
             $images[] = [
-                'url'      => $this->helperProduct
+                'url' => $this->helperProduct
                     ->getImageProduct($entity, null, $image_width, $image_height),
                 'position' => 1,
             ];
@@ -244,37 +244,37 @@ class Products extends Apiabstract
             $registry->register('product', $entity);
             $registry->register('current_product', $entity);
         }
-        $layout      = $this->simiObjectManager->get('Magento\Framework\View\LayoutInterface');
-        $block_att   = $layout->createBlock('Magento\Catalog\Block\Product\View\Attributes');
+        $layout = $this->simiObjectManager->get('Magento\Framework\View\LayoutInterface');
+        $block_att = $layout->createBlock('Magento\Catalog\Block\Product\View\Attributes');
         $_additional = $block_att->getAdditionalData();
 
-        $ratings      = $this->simiObjectManager
+        $ratings = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Review')->getRatingStar($entity->getId());
         $total_rating = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Review')->getTotalRate($ratings);
-        $avg          = $this->simiObjectManager
+        $avg = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Review')->getAvgRate($ratings, $total_rating);
 
-        $info['additional']       = $_additional;
-        $info['images']           = $images;
-        $info['app_tier_prices'] =$this->simiObjectManager
+        $info['additional'] = $_additional;
+        $info['images'] = $images;
+        $info['app_tier_prices'] = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Price')->getProductTierPricesLabel($entity);
-        $info['app_prices']       = $this->simiObjectManager
+        $info['app_prices'] = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Price')->formatPriceFromProduct($entity, true);
-        $info['app_options']      = $this->simiObjectManager
+        $info['app_options'] = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Options')->getOptions($entity);
         $info['wishlist_item_id'] = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Wishlist')->getWishlistItemId($entity);
-        $info['product_label']    = $this->simiObjectManager
+        $info['product_label'] = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Simiproductlabel')->getProductLabel($entity);
-        $info['app_reviews']      = $this->simiObjectManager
+        $info['app_reviews'] = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Review')
             ->getProductReviews($entity->getId());
-        $info['product_label']    = $this->simiObjectManager
+        $info['product_label'] = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Simiproductlabel')->getProductLabel($entity);
-        $info['product_video']    = $this->simiObjectManager
+        $info['product_video'] = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Simivideo')->getProductVideo($entity);
-        $this->detail_info        = $this->getDetail($info);
+        $this->detail_info = $this->getDetail($info);
         $this->eventManager->dispatch(
             'simi_simiconnector_model_api_products_show_after',
             ['object' => $this, 'data' => $this->detail_info]
@@ -285,28 +285,28 @@ class Products extends Apiabstract
     public function setFilterByCategoryId($cat_id)
     {
         $this->helperProduct->setCategoryProducts($cat_id);
-        $this->layer       = $this->helperProduct
+        $this->layer = $this->helperProduct
             ->getLayerNavigator($this->helperProduct->getBuilderQuery());
         $this->builderQuery = $this->helperProduct->getBuilderQuery();
-        $this->sortOrders  = $this->helperProduct->getStoreQrders();
+        $this->sortOrders = $this->helperProduct->getStoreQrders();
     }
 
     public function setFilterByQuery()
     {
         $this->helperProduct->setLayers(1);
-        $this->layer       = $this->helperProduct
+        $this->layer = $this->helperProduct
             ->getLayerNavigator($this->helperProduct->getBuilderQuery());
         $this->builderQuery = $this->helperProduct->getBuilderQuery();
-        $this->sortOrders  = $this->helperProduct->getStoreQrders();
+        $this->sortOrders = $this->helperProduct->getStoreQrders();
     }
 
     public function setFilterByRelated()
     {
         $this->helperProduct->setLayers(0);
-        $this->layer       = $this->helperProduct
+        $this->layer = $this->helperProduct
             ->getLayerNavigator($this->helperProduct->getBuilderQuery());
         $this->builderQuery = $this->helperProduct->getBuilderQuery();
-        $this->sortOrders  = $this->helperProduct->getStoreQrders();
+        $this->sortOrders = $this->helperProduct->getStoreQrders();
     }
 
     public function setFilterByHomeList()
@@ -318,7 +318,7 @@ class Products extends Apiabstract
 
     public function loadProductWithId($id)
     {
-        $categoryModel    = $this->simiObjectManager
+        $categoryModel = $this->simiObjectManager
             ->create('Magento\Catalog\Model\Product')->load($id);
         return $categoryModel;
     }

@@ -25,7 +25,7 @@ class Addresses extends Apiabstract
         if ($data['resourceid']) {
             if ($data['resourceid'] != 'geocoding') {
                 $auth = false;
-                $customer     = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
+                $customer = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
                 foreach ($customer->getAddresses() as $address) {
                     if ($address->getId() == $data['resourceid'])
                         $auth = true;
@@ -39,9 +39,9 @@ class Addresses extends Apiabstract
             if (!$this->simiObjectManager->get('Magento\Customer\Model\Session')->isLoggedIn()) {
                 throw new \Simi\Simiconnector\Helper\SimiException(__('You have not logged in'), 4);
             } else {
-                $customer     = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
+                $customer = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
                 $addressArray = [];
-                $billing      = $customer->getPrimaryBillingAddress();
+                $billing = $customer->getPrimaryBillingAddress();
                 if ($billing) {
                     $addressArray[] = $billing->getId();
                 }
@@ -53,8 +53,8 @@ class Addresses extends Apiabstract
                     $addressArray[] = $index;
                 }
                 $this->builderQuery = $this->simiObjectManager
-                        ->create('Magento\Customer\Model\Address')->getCollection()
-                        ->addFieldToFilter('entity_id', ['in' => $addressArray]);
+                    ->create('Magento\Customer\Model\Address')->getCollection()
+                    ->addFieldToFilter('entity_id', ['in' => $addressArray]);
             }
         }
     }
@@ -65,8 +65,8 @@ class Addresses extends Apiabstract
 
     public function store()
     {
-        $data               = $this->getData();
-        $address            = $this->simiObjectManager->get('Simi\Simiconnector\Model\Address')->saveAddress($data);
+        $data = $this->getData();
+        $address = $this->simiObjectManager->get('Simi\Simiconnector\Model\Address')->saveAddress($data);
         $this->builderQuery = $address;
         return $this->show();
     }
@@ -77,8 +77,8 @@ class Addresses extends Apiabstract
 
     public function update()
     {
-        $data               = $this->getData();
-        $address            = $this->simiObjectManager->get('Simi\Simiconnector\Model\Address')->saveAddress($data);
+        $data = $this->getData();
+        $address = $this->simiObjectManager->get('Simi\Simiconnector\Model\Address')->saveAddress($data);
         $this->builderQuery = $address;
         return $this->show();
     }
@@ -92,7 +92,7 @@ class Addresses extends Apiabstract
         $data = $this->getData();
         if ($data['resourceid']) {
             $this->builderQuery = $this->simiObjectManager
-                    ->create('Magento\Customer\Model\Address')->load($data['resourceid']);
+                ->create('Magento\Customer\Model\Address')->load($data['resourceid']);
             $this->builderQuery->delete();
             return $this->show();
         }
@@ -105,28 +105,28 @@ class Addresses extends Apiabstract
 
     public function index()
     {
-        $result    = parent::index();
-        $customer  = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
+        $result = parent::index();
+        $customer = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
         $addresses = $result['addresses'];
         foreach ($addresses as $index => $address) {
             $addressModel = $this->loadAddressWithId($address['entity_id']);
             $addresses[$index] = array_merge($address, $this->simiObjectManager
-                    ->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($addressModel, $customer));
+                ->get('Simi\Simiconnector\Helper\Address')->getAddressDetail($addressModel, $customer));
         }
         $result['addresses'] = $addresses;
         return $result;
     }
-    
+
     public function loadAddressWithId($id)
     {
-        $addressModel    = $this->getAddressModel()->load($id);
+        $addressModel = $this->getAddressModel()->load($id);
         return $addressModel;
     }
-    
+
     public function getAddressModel()
     {
         return $this->simiObjectManager
-                    ->get('Magento\Customer\Model\Address');
+            ->get('Magento\Customer\Model\Address');
     }
 
     /*
@@ -138,13 +138,13 @@ class Addresses extends Apiabstract
         $data = $this->getData();
         if ($data['resourceid']) {
             if ($data['resourceid'] == 'geocoding') {
-                $result        = [];
+                $result = [];
                 $addressDetail = [];
-                $longitude     = $data['params']['longitude'];
-                $latitude      = $data['params']['latitude'];
-                $dataresult    = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
-                        ->getLocationInfo($latitude, $longitude);
-                $address   = '';
+                $longitude = $data['params']['longitude'];
+                $latitude = $data['params']['latitude'];
+                $dataresult = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Address')
+                    ->getLocationInfo($latitude, $longitude);
+                $address = '';
                 if (!$dataresult || !isset($dataresult['geocoding']) || !$dataresult['geocoding'])
                     throw new \Simi\Simiconnector\Helper\SimiException(__('Cannot get address for the given location'), 6);
                 $addressDetail = $dataresult;
@@ -178,7 +178,7 @@ class Addresses extends Apiabstract
                     }
                 }
                 */
-                $addressDetail['region']    = $addressDetail['state'];
+                $addressDetail['region'] = $addressDetail['state'];
                 $addressDetail['region_id'] = $addressDetail['state'];
                 $addressDetail['country_name'] = $addressDetail['country'];
                 $addressDetail['country_id'] = $addressDetail['country'];

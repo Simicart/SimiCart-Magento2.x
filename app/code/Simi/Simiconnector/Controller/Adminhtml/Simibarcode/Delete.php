@@ -12,7 +12,7 @@ class Delete extends \Magento\Backend\App\Action
     public function execute()
     {
         // check if we know what should be deleted
-        $id             = $this->getRequest()->getParam('barcode_id');
+        $id = $this->getRequest()->getParam('barcode_id');
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($id) {
@@ -40,6 +40,7 @@ class Delete extends \Magento\Backend\App\Action
         // go to grid
         return $resultRedirect->setPath('*/*/');
     }
+
     private function deleteCode($codeModel)
     {
         $codeModel->delete();

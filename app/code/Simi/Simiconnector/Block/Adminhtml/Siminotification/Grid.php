@@ -50,13 +50,14 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Simi\Simiconnector\Helper\Website $websiteHelper,
         array $data = []
-    ) {
-   
-        $this->collectionFactory       = $collectionFactory;
-        $this->moduleManager            = $moduleManager;
-        $this->resource                = $resourceConnection;
+    )
+    {
+
+        $this->collectionFactory = $collectionFactory;
+        $this->moduleManager = $moduleManager;
+        $this->resource = $resourceConnection;
         $this->siminotificationFactory = $siminotificationFactory;
-        $this->websiteHelper            = $websiteHelper;
+        $this->websiteHelper = $websiteHelper;
         parent::__construct($context, $backendHelper, $data);
     }
 
@@ -96,60 +97,60 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         $this->addColumn('notice_id', [
             'header' => __('ID'),
-            'index'  => 'notice_id',
+            'index' => 'notice_id',
         ]);
 
         $this->addColumn('notice_title', [
             'header' => __('Title'),
-            'index'  => 'notice_title',
+            'index' => 'notice_title',
         ]);
 
         $this->addColumn('notice_content', [
             'header' => __('Message'),
-            'index'  => 'notice_content',
+            'index' => 'notice_content',
         ]);
 
         $this->addColumn('storeview_id', [
-            'type'    => 'options',
-            'header'  => __('Storeview'),
-            'index'   => 'storeview_id',
+            'type' => 'options',
+            'header' => __('Storeview'),
+            'index' => 'storeview_id',
             'options' => $this->siminotificationFactory->create()->toOptionStoreviewHash(),
         ]);
 
         $this->addColumn('device_id', [
-            'type'    => 'options',
-            'header'  => __('Device'),
-            'index'   => 'device_id',
+            'type' => 'options',
+            'header' => __('Device'),
+            'index' => 'device_id',
             'options' => $this->siminotificationFactory->create()->toOptionDeviceHash(),
         ]);
 
         $this->addColumn('created_time', [
-            'type'   => 'datetime',
+            'type' => 'datetime',
             'header' => __('Created Date'),
-            'index'  => 'created_time',
+            'index' => 'created_time',
         ]);
 
         $this->addColumn(
             'action',
             [
-            'header'           => __('View'),
-            'type'             => 'action',
-            'getter'           => 'getId',
-            'actions'          => [
-                [
-                    'caption' => __('Edit'),
-                    'url'     => [
-                        'base'   => '*/*/edit',
-                        'params' => ['store' => $this->getRequest()->getParam('store')]
-                    ],
-                    'field'   => 'notice_id'
-                ]
-            ],
-            'sortable'         => false,
-            'filter'           => false,
-            'header_css_class' => 'col-action',
-            'column_css_class' => 'col-action',
-                ]
+                'header' => __('View'),
+                'type' => 'action',
+                'getter' => 'getId',
+                'actions' => [
+                    [
+                        'caption' => __('Edit'),
+                        'url' => [
+                            'base' => '*/*/edit',
+                            'params' => ['store' => $this->getRequest()->getParam('store')]
+                        ],
+                        'field' => 'notice_id'
+                    ]
+                ],
+                'sortable' => false,
+                'filter' => false,
+                'header_css_class' => 'col-action',
+                'column_css_class' => 'col-action',
+            ]
         );
 
         return parent::_prepareColumns();
@@ -164,7 +165,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/edit', [
-                    'notice_id' => $row->getId()
+            'notice_id' => $row->getId()
         ]);
     }
 

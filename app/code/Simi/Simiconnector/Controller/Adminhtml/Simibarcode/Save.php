@@ -18,7 +18,7 @@ class Save extends \Magento\Backend\App\Action
         if ($data) {
             $simiObjectManager = $this->_objectManager;
             $model = $simiObjectManager->create('Simi\Simiconnector\Model\Simibarcode');
-            $id    = $this->getRequest()->getParam('barcode_id');
+            $id = $this->getRequest()->getParam('barcode_id');
             if ($id) {
                 $model->load($id);
             }
@@ -26,7 +26,7 @@ class Save extends \Magento\Backend\App\Action
             try {
                 if ($model->getId()) {
                     $model->addData($data);
-                    
+
                     try {
                         $model->save();
                         $this->messageManager->addSuccess(__('The Data has been saved.'));
@@ -62,8 +62,8 @@ class Save extends \Magento\Backend\App\Action
 
     private function createNewCode($simiObjectManager, $data)
     {
-        $sqlNews      = [];
-        $sqlOlds      = '';
+        $sqlNews = [];
+        $sqlOlds = '';
         $countSqlOlds = 0;
 
         $tablename = 'simiconnector/simibarcode';
@@ -71,8 +71,8 @@ class Save extends \Magento\Backend\App\Action
         $results = $simiObjectManager->get('Simi\Simiconnector\Helper\Simibarcode')->getAllColumOfTable();
 
         $columns = [];
-        $string  = '';
-        $type    = '';
+        $string = '';
+        $type = '';
 
         foreach ($results as $result) {
             $fields = explode('_', $result);
@@ -91,17 +91,17 @@ class Save extends \Magento\Backend\App\Action
                 }
             }
             $columns[] = [$type => $string];
-            $string    = '';
-            $type      = '';
+            $string = '';
+            $type = '';
         }
 
         $this->generateSqlQuery($sqlNews, $data, $simiObjectManager, $columns);
         if (!empty($sqlNews)) {
-            $resource        = $simiObjectManager->create('Magento\Framework\App\ResourceConnection');
-            $resourceModel   = $simiObjectManager
-                    ->create('Simi\Simiconnector\Model\ResourceModel\Simibarcode');
+            $resource = $simiObjectManager->create('Magento\Framework\App\ResourceConnection');
+            $resourceModel = $simiObjectManager
+                ->create('Simi\Simiconnector\Model\ResourceModel\Simibarcode');
             $writeConnection = $resourceModel->getConnection();
-            $tablename       = $resource->getTableName($resourceModel::TABLE_NAME);
+            $tablename = $resource->getTableName($resourceModel::TABLE_NAME);
 
             $writeConnection->insertMultiple($tablename, $sqlNews);
         }
@@ -117,48 +117,49 @@ class Save extends \Magento\Backend\App\Action
 
         $this->_redirect('*/*');
     }
-    
+
     private function generateSqlQuery(&$sqlNews, $data, $simiObjectManager, $columns)
     {
         if (isset($data['product_ids'])) {
-            $products         = [];
+            $products = [];
             $productsExplodes = explode(',', str_replace(' ', '', $data['product_ids']));
 
             if ($simiObjectManager
-                    ->get('Simi\Simiconnector\Helper\Data')->countArray($productsExplodes)) {
+                ->get('Simi\Simiconnector\Helper\Data')->countArray($productsExplodes)) {
                 $productIds = '';
-                $count      = 0;
-                $j          = 0;
-                $barcode    = [];
-                $qrcode     = [];
+                $count = 0;
+                $j = 0;
+                $barcode = [];
+                $qrcode = [];
                 foreach ($productsExplodes as $pId) {
-                    $codeArr            = [];
+                    $codeArr = [];
                     //auto generate barcode
                     $codeArr['barcode'] = $this->checkDupplicate($barcode);
-                    $barcode[]          = $codeArr['barcode'];
+                    $barcode[] = $codeArr['barcode'];
                     //auto generate QRcode
-                    $codeArr['qrcode']  = $this->checkDupplicateQrcode($qrcode);
-                    $qrcode[]           = $codeArr['qrcode'];
+                    $codeArr['qrcode'] = $this->checkDupplicateQrcode($qrcode);
+                    $qrcode[] = $codeArr['qrcode'];
 
                     $sqlNews[$j] = [
-                        'barcode'        => $codeArr['barcode'],
-                        'qrcode'         => $codeArr['qrcode'],
+                        'barcode' => $codeArr['barcode'],
+                        'qrcode' => $codeArr['qrcode'],
                         'barcode_status' => 1,
                     ];
                     foreach ($columns as $id => $column) {
                         $this->addOtherData($sqlNews, $simiObjectManager, $column, $j, $codeArr, $pId);
                     }
                     $sqlNews[$j]['created_date'] = $simiObjectManager
-                            ->get('\Magento\Framework\Stdlib\DateTime\DateTimeFactory')
-                            ->create()->gmtDate();
+                        ->get('\Magento\Framework\Stdlib\DateTime\DateTimeFactory')
+                        ->create()->gmtDate();
                     $j++;
                 }
             }
         }
     }
+
     private function addOtherData(&$sqlNews, $simiObjectManager, $column, $j, $codeArr, $pId)
     {
-        $i          = 0;
+        $i = 0;
         $columnName = '';
 
         foreach ($column as $_id => $key) {
@@ -174,8 +175,8 @@ class Save extends \Magento\Backend\App\Action
 
         if ($_id != 'custom') {
             $return = $simiObjectManager
-                    ->get('Simi\Simiconnector\Helper\Simibarcode')
-                    ->getValueForBarcode($_id, $key, $pId);
+                ->get('Simi\Simiconnector\Helper\Simibarcode')
+                ->getValueForBarcode($_id, $key, $pId);
             if (is_array($return)) {
                 foreach ($return as $_columns) {
                     foreach ($_columns as $_column => $value) {
@@ -195,6 +196,7 @@ class Save extends \Magento\Backend\App\Action
             }
         }
     }
+
     /**
      * check barcode dupplicate
      */
@@ -202,8 +204,8 @@ class Save extends \Magento\Backend\App\Action
     {
         $simiObjectManager = $this->_objectManager;
         $code = $simiObjectManager->get('Simi\Simiconnector\Helper\Simibarcode')
-                ->generateCode($simiObjectManager->get('Simi\Simiconnector\Helper\Simibarcode')
-                        ->getBarcodeConfig('pattern'));
+            ->generateCode($simiObjectManager->get('Simi\Simiconnector\Helper\Simibarcode')
+                ->getBarcodeConfig('pattern'));
         if (in_array($code, $barcode)) {
             $code = $this->checkDupplicate($barcode);
         }
@@ -217,8 +219,8 @@ class Save extends \Magento\Backend\App\Action
     {
         $simiObjectManager = $this->_objectManager;
         $code = $simiObjectManager->get('Simi\Simiconnector\Helper\Simibarcode')
-                ->generateCode($simiObjectManager->get('Simi\Simiconnector\Helper\Simibarcode')
-                        ->getBarcodeConfig('qrcode_pattern'));
+            ->generateCode($simiObjectManager->get('Simi\Simiconnector\Helper\Simibarcode')
+                ->getBarcodeConfig('qrcode_pattern'));
         if (in_array($code, $qrcode)) {
             $code = $this->checkDupplicate($qrcode);
         }

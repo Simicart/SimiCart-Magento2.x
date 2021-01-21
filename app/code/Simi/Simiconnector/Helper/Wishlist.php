@@ -15,7 +15,7 @@ class Wishlist extends Data
         $customer = $this->simiObjectManager->create('Magento\Customer\Model\Session')->getCustomer();
         if ($customer->getId() && ($customer->getId() != '')) {
             $wishlist = $this->simiObjectManager->get('Magento\Wishlist\Model\Wishlist')
-                    ->loadByCustomerId($customer->getId(), true);
+                ->loadByCustomerId($customer->getId(), true);
             foreach ($wishlist->getItemCollection() as $item) {
                 $wishlistItemId = $item->getId();
                 $wishlistItemProductId = $item->getProduct()->getId();
@@ -24,9 +24,9 @@ class Wishlist extends Data
                 } else {
                     $parentProducts = $this->simiObjectManager->create('Magento\ConfigurableProduct\Model\ResourceModel\Product\Type\Configurable')
                         ->getParentIdsByChild($product->getId());
-                    if($parentProducts && isset($parentProducts[0])){
+                    if ($parentProducts && isset($parentProducts[0])) {
                         $parentProduct = $parentProducts[0];
-                        if($parentProduct->getId() && $parentProduct->getId() == $wishlistItemProductId){ 
+                        if ($parentProduct->getId() && $parentProduct->getId() == $wishlistItemProductId) {
                             return $wishlistItemId;
                         }
                     }
@@ -43,7 +43,7 @@ class Wishlist extends Data
     public function checkIfSelectedAllRequiredOptions($item)
     {
         $selected = false;
-        $product  = $item->getProduct();
+        $product = $item->getProduct();
         if ($product->getTypeId() == 'simple') {
             $selected = true;
         }
@@ -53,13 +53,13 @@ class Wishlist extends Data
     public function getOptionsSelectedFromItem($item, $product)
     {
         $options = [];
-        $helper  = $this->simiObjectManager->get('Magento\Catalog\Helper\Product\Configuration');
+        $helper = $this->simiObjectManager->get('Magento\Catalog\Helper\Product\Configuration');
         if ($product->getTypeId() == "simple") {
             $options = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Checkout')
-                    ->convertOptionsCart($helper->getCustomOptions($item));
+                ->convertOptionsCart($helper->getCustomOptions($item));
         } elseif ($product->getTypeId() == "configurable") {
             $options = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Checkout')
-                    ->convertOptionsCart($helper->getOptions($item));
+                ->convertOptionsCart($helper->getOptions($item));
         }
         return $options;
     }

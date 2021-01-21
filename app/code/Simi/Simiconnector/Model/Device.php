@@ -36,10 +36,11 @@ class Device extends \Magento\Framework\Model\AbstractModel
         \Simi\Simiconnector\Model\ResourceModel\Device $resource,
         \Simi\Simiconnector\Model\ResourceModel\Device\Collection $resourceCollection,
         \Simi\Simiconnector\Helper\Website $websiteHelper
-    ) {
-   
+    )
+    {
+
         $this->simiObjectManager = $simiObjectManager;
-        $this->websiteHelper    = $websiteHelper;
+        $this->websiteHelper = $websiteHelper;
 
         parent::__construct(
             $context,
@@ -65,8 +66,8 @@ class Device extends \Magento\Framework\Model\AbstractModel
     public function toOptionStoreviewHash()
     {
         $storeViewCollection = $this->simiObjectManager->get('\Magento\Store\Model\Store')->getCollection();
-        $list                = [];
-        $list[0]             = __('All');
+        $list = [];
+        $list[0] = __('All');
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($storeViewCollection) > 0) {
             foreach ($storeViewCollection as $storeView) {
                 $list[$storeView->getId()] = $storeView->getName();
@@ -81,7 +82,7 @@ class Device extends \Magento\Framework\Model\AbstractModel
     public function toOptionCountryHash()
     {
         $country_collection = $this->websiteHelper->getCountryCollection();
-        $list               = [];
+        $list = [];
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($country_collection) > 0) {
             foreach ($country_collection as $country) {
                 $list[$country->getId()] = $country->getName();
@@ -132,14 +133,14 @@ class Device extends \Magento\Framework\Model\AbstractModel
         } else {
             $device_id = $this->detectMobile();
         }
-        
+
         if (isset($deviceData->latitude) && isset($deviceData->longitude)) {
             $this->setData('latitude', $deviceData->latitude);
             $this->setData('longitude', $deviceData->longitude);
-            $latitude  = $deviceData->latitude;
+            $latitude = $deviceData->latitude;
             $longitude = $deviceData->longitude;
             $addresses = $this->simiObjectManager
-                    ->get('Simi\Simiconnector\Helper\Address')->getLocationInfo($latitude, $longitude);
+                ->get('Simi\Simiconnector\Helper\Address')->getLocationInfo($latitude, $longitude);
             if ($addresses) {
                 $this->setData($addresses);
             }
@@ -147,9 +148,9 @@ class Device extends \Magento\Framework\Model\AbstractModel
         $this->setData('device_token', $deviceData->device_token);
         $this->setData('plaform_id', $device_id);
         $this->setData('storeview_id', $this->simiObjectManager
-                ->get('Magento\Store\Model\StoreManagerInterface')->getStore()->getId());
+            ->get('Magento\Store\Model\StoreManagerInterface')->getStore()->getId());
         $this->setData('created_time', $this->simiObjectManager
-                ->get('\Magento\Framework\Stdlib\DateTime\DateTimeFactory')->create()->gmtDate());
+            ->get('\Magento\Framework\Stdlib\DateTime\DateTimeFactory')->create()->gmtDate());
         if (isset($deviceData->user_email)) {
             $this->setData('user_email', $deviceData->user_email);
         }
@@ -157,7 +158,7 @@ class Device extends \Magento\Framework\Model\AbstractModel
             $this->setData('app_id', $deviceData->app_id);
         }
         $obj = $this->simiObjectManager->get('Magento\Framework\HTTP\PhpEnvironment\RemoteAddress');
-        $ip =  $obj->getRemoteAddress();
+        $ip = $obj->getRemoteAddress();
         $this->setData('device_ip', $ip);
         /*
          Incase customer want to get User Agent
@@ -176,7 +177,7 @@ class Device extends \Magento\Framework\Model\AbstractModel
         }
 
         $existed_device = $this->getCollection()
-                ->getItemByColumnValue('device_token', $deviceData->device_token);
+            ->getItemByColumnValue('device_token', $deviceData->device_token);
         if ($existed_device && $existed_device->getId()) {
             $this->setId($existed_device->getId());
         }

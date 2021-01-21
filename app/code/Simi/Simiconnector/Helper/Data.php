@@ -133,8 +133,9 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         \Magento\Framework\App\Helper\Context $context,
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         DirectoryList $directoryList
-    ) {
-    
+    )
+    {
+
         $this->simiObjectManager = $simiObjectManager;
         $this->scopeConfig = $this->simiObjectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface');
         $this->filesystem = $this->simiObjectManager->get('\Magento\Framework\Filesystem');
@@ -288,8 +289,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     {
         if ($addMediaPath == true) {
             return $this->storeManager->getStore()->getBaseUrl(
-                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
-            ) . '/' . self::MEDIA_PATH;
+                    \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+                ) . '/' . self::MEDIA_PATH;
         } else {
             return $this->storeManager->getStore()->getBaseUrl(
                 \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
@@ -387,19 +388,20 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
         return true;
     }
 
-    public function getRealIp() {
+    public function getRealIp()
+    {
         $ipaddress = '';
         if (getenv('HTTP_CLIENT_IP'))
             $ipaddress = getenv('HTTP_CLIENT_IP');
-        else if(getenv('HTTP_X_FORWARDED_FOR'))
+        else if (getenv('HTTP_X_FORWARDED_FOR'))
             $ipaddress = getenv('HTTP_X_FORWARDED_FOR');
-        else if(getenv('HTTP_X_FORWARDED'))
+        else if (getenv('HTTP_X_FORWARDED'))
             $ipaddress = getenv('HTTP_X_FORWARDED');
-        else if(getenv('HTTP_FORWARDED_FOR'))
+        else if (getenv('HTTP_FORWARDED_FOR'))
             $ipaddress = getenv('HTTP_FORWARDED_FOR');
-        else if(getenv('HTTP_FORWARDED'))
+        else if (getenv('HTTP_FORWARDED'))
             $ipaddress = getenv('HTTP_FORWARDED');
-        else if(getenv('REMOTE_ADDR'))
+        else if (getenv('REMOTE_ADDR'))
             $ipaddress = getenv('REMOTE_ADDR');
         else
             $ipaddress = 'UNKNOWN';
@@ -413,7 +415,8 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
      * @param array[string] $versions the request key for file
      * @return bool
      */
-    public function isVersion($versions) {
+    public function isVersion($versions)
+    {
         try {
             $productMetadata = $this->simiObjectManager->get('Magento\Framework\App\ProductMetadataInterface');
             if ($productMetadata && $magentoVersion = $productMetadata->getVersion()) {
@@ -422,8 +425,7 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
                         return true;
                 }
             }
-        }
-        catch (\Exception $e) {
+        } catch (\Exception $e) {
         }
         return false;
     }
@@ -431,9 +433,10 @@ class Data extends \Magento\Framework\App\Helper\AbstractHelper
     /*
      * Set quote model to sessions
      */
-    public function setQuoteToSession($quoteModel) {
+    public function setQuoteToSession($quoteModel)
+    {
         $appState = $this->simiObjectManager->get('\Magento\Framework\App\State');
-            if($appState->getAreaCode() == 'adminhtml') return;//not allowed admin area
+        if ($appState->getAreaCode() == 'adminhtml') return;//not allowed admin area
         $quoteId = $quoteModel->getId();
         try {
             $cart = $this->simiObjectManager->get('Magento\Checkout\Model\Cart');

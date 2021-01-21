@@ -19,12 +19,12 @@ class Customers extends Apiabstract
             switch ($data['resourceid']) {
                 case 'forgetpassword':
                     $this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')->forgetPassword($data);
-                    $email                 = $data['params']['email'];
-                    $this->builderQuery    = $this->simiObjectManager
+                    $email = $data['params']['email'];
+                    $this->builderQuery = $this->simiObjectManager
                         ->create('Magento\Customer\Model\Session')->getCustomer();
                     $this->RETURN_MESSAGE = $message = __(
                         'If there is an account associated with %1 you will '
-                            . 'receive an email with a link to reset your password.',
+                        . 'receive an email with a link to reset your password.',
                         $email
                     );
                     break;
@@ -49,12 +49,12 @@ class Customers extends Apiabstract
                     $this->simiObjectManager
                         ->get('Magento\Customer\Model\Session')
                         ->setRpToken(null);
-                    $this->builderQuery    = $this->simiObjectManager
+                    $this->builderQuery = $this->simiObjectManager
                         ->get('Magento\Customer\Model\Session')->getCustomer();
                     $this->RETURN_MESSAGE = $message = __('You updated your password.');
                     break;
                 case 'profile':
-                    $this->builderQuery    = $this->simiObjectManager
+                    $this->builderQuery = $this->simiObjectManager
                         ->get('Magento\Customer\Model\Session')->getCustomer();
                     $this->builderQuery->setData('wishlist_count', $this->getWishlistCount());
                     break;
@@ -73,18 +73,18 @@ class Customers extends Apiabstract
                     $this->builderQuery->setData('wishlist_count', $this->getWishlistCount());
                     break;
                 case 'logout':
-                    $lastCustomerId     = $this->simiObjectManager->get('Magento\Customer\Model\Session')
+                    $lastCustomerId = $this->simiObjectManager->get('Magento\Customer\Model\Session')
                         ->getCustomer()->getId();
                     if ($this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')->logout()) {
                         $this->builderQuery = $this->simiObjectManager
                             ->get('Magento\Customer\Model\Customer')->load($lastCustomerId);
 
-	                    //fix bug logout not clear old quote
-	                    $cart  = $this->simiObjectManager->get( 'Magento\Checkout\Model\Cart' );
-	                    $quote = $this->simiObjectManager->create( 'Magento\Quote\Model\Quote' );
-	                    $cart->setQuote( $quote );
-	                    $newCustomer = $this->simiObjectManager->create( 'Magento\Customer\Model\Customer' );
-	                    $this->simiObjectManager->get( 'Magento\Customer\Model\Session' )->setCustomer( $newCustomer );
+                        //fix bug logout not clear old quote
+                        $cart = $this->simiObjectManager->get('Magento\Checkout\Model\Cart');
+                        $quote = $this->simiObjectManager->create('Magento\Quote\Model\Quote');
+                        $cart->setQuote($quote);
+                        $newCustomer = $this->simiObjectManager->create('Magento\Customer\Model\Customer');
+                        $this->simiObjectManager->get('Magento\Customer\Model\Session')->setCustomer($newCustomer);
                     } else {
                         throw new \Simi\Simiconnector\Helper\SimiException(__('Logout Failed'), 4);
                     }
@@ -98,7 +98,7 @@ class Customers extends Apiabstract
                     break;
             }
         } else {
-            $currentCustomerId  = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getId();
+            $currentCustomerId = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getId();
             $this->builderQuery = $this->simiObjectManager->get('Magento\Customer\Model\Customer')->getCollection()
                 ->addFieldToFilter('entity_id', $currentCustomerId);
         }
@@ -110,9 +110,9 @@ class Customers extends Apiabstract
 
     public function store()
     {
-        $data                  = $this->getData();
-        $customer              = $this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')->register($data);
-        $this->builderQuery    = $customer;
+        $data = $this->getData();
+        $customer = $this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')->register($data);
+        $this->builderQuery = $customer;
         $this->RETURN_MESSAGE = __("Thank you for registering with "
             . $this->storeManager->getStore()->getName() . " store");
         return $this->show();
@@ -124,10 +124,10 @@ class Customers extends Apiabstract
 
     public function update()
     {
-        $data                  = $this->getData();
-        $customer              = $this->simiObjectManager
+        $data = $this->getData();
+        $customer = $this->simiObjectManager
             ->get('Simi\Simiconnector\Model\Customer')->updateProfile($data);
-        $this->builderQuery    = $customer;
+        $this->builderQuery = $customer;
         $this->RETURN_MESSAGE = __('The account information has been saved.');
         return $this->show();
     }
@@ -139,7 +139,7 @@ class Customers extends Apiabstract
     public function getDetail($info)
     {
         $data = $this->getData();
-        $resultArray            = parent::getDetail($info);
+        $resultArray = parent::getDetail($info);
         if ($this->RETURN_MESSAGE)
             $resultArray['message'] = [$this->RETURN_MESSAGE];
 
@@ -147,7 +147,7 @@ class Customers extends Apiabstract
             if (
                 $this->simiObjectManager->get('\Magento\Newsletter\Model\Subscriber') &&
                 $this->simiObjectManager->get('\Magento\Newsletter\Model\Subscriber')
-                ->loadByEmail($resultArray['customer']['email'])->isSubscribed()
+                    ->loadByEmail($resultArray['customer']['email'])->isSubscribed()
             ) {
                 $resultArray['customer']['news_letter'] = '1';
             } else {
@@ -180,7 +180,7 @@ class Customers extends Apiabstract
     {
         $customer = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getCustomer();
         if ($customer && $customer->getId()) {
-            return (int) $this->simiObjectManager
+            return (int)$this->simiObjectManager
                 ->get('Magento\Wishlist\Model\Wishlist')->loadByCustomerId($customer->getId(), true)
                 ->getItemCollection()->getSize();
         }
@@ -194,7 +194,7 @@ class Customers extends Apiabstract
      */
     public function createPassword($newpw, $resetPasswordToken)
     {
-        $newPassword = (string) $newpw;
+        $newPassword = (string)$newpw;
         if (iconv_strlen($newPassword) <= 0) {
             throw new \Simi\Simiconnector\Helper\SimiException(__('Please enter a new password.'));
         }

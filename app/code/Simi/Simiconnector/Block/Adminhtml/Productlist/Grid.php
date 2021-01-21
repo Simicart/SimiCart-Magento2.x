@@ -50,13 +50,14 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Simi\Simiconnector\Helper\Website $websiteHelper,
         array $data = []
-    ) {
-   
-        $this->collectionFactory  = $collectionFactory;
-        $this->moduleManager       = $moduleManager;
-        $this->resource           = $resourceConnection;
+    )
+    {
+
+        $this->collectionFactory = $collectionFactory;
+        $this->moduleManager = $moduleManager;
+        $this->resource = $resourceConnection;
         $this->productlistFactory = $productlistFactory;
-        $this->websiteHelper       = $websiteHelper;
+        $this->websiteHelper = $websiteHelper;
         parent::__construct($context, $backendHelper, $data);
     }
 
@@ -80,7 +81,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function _prepareCollection()
     {
-        $webId      = $this->getWebsiteIdFromUrl();
+        $webId = $this->getWebsiteIdFromUrl();
         $collection = $this->collectionFactory->create();
 
         $this->setCollection($collection);
@@ -97,47 +98,47 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         $this->addColumn('simi_productlist_id', [
             'header' => __('ID'),
-            'index'  => 'productlist_id',
+            'index' => 'productlist_id',
         ]);
 
         $this->addColumn('list_title', [
             'header' => __('List Title'),
-            'index'  => 'list_title',
+            'index' => 'list_title',
         ]);
 
         $this->addColumn('sort_order', [
             'header' => __('Sort Order'),
-            'index'  => 'sort_order',
+            'index' => 'sort_order',
         ]);
 
         $this->addColumn('list_status', [
-            'type'    => 'options',
-            'header'  => __('Status'),
-            'index'   => 'list_status',
+            'type' => 'options',
+            'header' => __('Status'),
+            'index' => 'list_status',
             'options' => $this->productlistFactory->create()->toOptionStatusHash(),
         ]);
 
         $this->addColumn(
             'action',
             [
-            'header'           => __('View'),
-            'type'             => 'action',
-            'getter'           => 'getId',
-            'actions'          => [
-                [
-                    'caption' => __('Edit'),
-                    'url'     => [
-                        'base'   => '*/*/edit',
-                        'params' => ['store' => $this->getRequest()->getParam('store')]
-                    ],
-                    'field'   => 'productlist_id'
-                ]
-            ],
-            'sortable'         => false,
-            'filter'           => false,
-            'header_css_class' => 'col-action',
-            'column_css_class' => 'col-action',
-                ]
+                'header' => __('View'),
+                'type' => 'action',
+                'getter' => 'getId',
+                'actions' => [
+                    [
+                        'caption' => __('Edit'),
+                        'url' => [
+                            'base' => '*/*/edit',
+                            'params' => ['store' => $this->getRequest()->getParam('store')]
+                        ],
+                        'field' => 'productlist_id'
+                    ]
+                ],
+                'sortable' => false,
+                'filter' => false,
+                'header_css_class' => 'col-action',
+                'column_css_class' => 'col-action',
+            ]
         );
 
         return parent::_prepareColumns();
@@ -152,7 +153,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/edit', [
-                    'productlist_id' => $row->getId()
+            'productlist_id' => $row->getId()
         ]);
     }
 

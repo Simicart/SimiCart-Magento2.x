@@ -32,8 +32,8 @@ class Productlist extends Data
     public function getProductCollection($listModel)
     {
         $collection = $this->simiObjectManager
-                ->create('Simi\Simiconnector\Model\ResourceModel\Productlist\ProductlistCollection')
-                ->getProductCollection($listModel, $this->simiObjectManager);
+            ->create('Simi\Simiconnector\Model\ResourceModel\Productlist\ProductlistCollection')
+            ->getProductCollection($listModel, $this->simiObjectManager);
         return $collection;
     }
 
@@ -43,7 +43,7 @@ class Productlist extends Data
 
     public function getMatrixRowOptions()
     {
-        $rows       = [];
+        $rows = [];
         $highestRow = 0;
         foreach ($this->simiObjectManager->get('Simi\Simiconnector\Model\Simicategory')->getCollection() as $simicat) {
             $currentIndex = $simicat->getData('matrix_row');
@@ -56,7 +56,7 @@ class Productlist extends Data
             $rows[$currentIndex][] = $simicat->getData('simicategory_name');
         }
         foreach ($this->simiObjectManager
-                ->get('Simi\Simiconnector\Model\Productlist')->getCollection() as $productlist) {
+                     ->get('Simi\Simiconnector\Model\Productlist')->getCollection() as $productlist) {
             $currentIndex = $productlist->getData('matrix_row');
             if (!isset($rows[$currentIndex])) {
                 $rows[$currentIndex] = [];
@@ -76,65 +76,65 @@ class Productlist extends Data
 
     public function getMatrixLayoutMockup($storeviewid, $controller)
     {
-        $rows            = [];
-        $typeID          = $this->simiObjectManager
-                ->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('homecategory');
+        $rows = [];
+        $typeID = $this->simiObjectManager
+            ->get('Simi\Simiconnector\Helper\Data')->getVisibilityTypeId('homecategory');
         $visibilityTable = $this->resource->getTableName('simiconnector_visibility');
 
         $simicategoryCollection = $this->simiObjectManager
-                ->get('Simi\Simiconnector\Model\Simicategory')
-                ->getCollection()->setOrder('sort_order', 'desc')->addFieldToFilter('status', '1')
-                ->applyAPICollectionFilter($visibilityTable, $typeID, $storeviewid);
-        
-        $this->builderQuery     = $simicategoryCollection;
+            ->get('Simi\Simiconnector\Model\Simicategory')
+            ->getCollection()->setOrder('sort_order', 'desc')->addFieldToFilter('status', '1')
+            ->applyAPICollectionFilter($visibilityTable, $typeID, $storeviewid);
+
+        $this->builderQuery = $simicategoryCollection;
         foreach ($simicategoryCollection as $simicat) {
             if (!isset($rows[$simicat->getData('matrix_row')])) {
-                $rows[(int) $simicat->getData('matrix_row')] = [];
+                $rows[(int)$simicat->getData('matrix_row')] = [];
             }
 
             $editUrl = $controller->getUrl('*/simicategory/edit', ['simicategory_id' => $simicat->getId()]);
-            $title   = '<a href="' . $editUrl
-                    . '" style="background-color:rgba(255,255,255,0.7); text-decoration:none; '
-                    . 'text-transform: uppercase; color: black">' . $simicat->getData('simicategory_name') . '</a>';
+            $title = '<a href="' . $editUrl
+                . '" style="background-color:rgba(255,255,255,0.7); text-decoration:none; '
+                . 'text-transform: uppercase; color: black">' . $simicat->getData('simicategory_name') . '</a>';
 
-            $rows[(int) $simicat->getData('matrix_row')][] = [
-                'id'                           => $simicat->getId(),
-                'image'                        => $simicat->getData('simicategory_filename'),
-                'image_tablet'                 => $simicat->getData('simicategory_filename_tablet'),
-                'matrix_width_percent'         => $simicat->getData('matrix_width_percent'),
-                'matrix_height_percent'        => $simicat->getData('matrix_height_percent'),
-                'matrix_width_percent_tablet'  => $simicat->getData('matrix_width_percent_tablet'),
+            $rows[(int)$simicat->getData('matrix_row')][] = [
+                'id' => $simicat->getId(),
+                'image' => $simicat->getData('simicategory_filename'),
+                'image_tablet' => $simicat->getData('simicategory_filename_tablet'),
+                'matrix_width_percent' => $simicat->getData('matrix_width_percent'),
+                'matrix_height_percent' => $simicat->getData('matrix_height_percent'),
+                'matrix_width_percent_tablet' => $simicat->getData('matrix_width_percent_tablet'),
                 'matrix_height_percent_tablet' => $simicat->getData('matrix_height_percent_tablet'),
-                'title'                        => $title,
-                'sort_order'                   => $simicat->getData('sort_order')
+                'title' => $title,
+                'sort_order' => $simicat->getData('sort_order')
             ];
         }
 
-        $listtypeID     = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')
-                ->getVisibilityTypeId('productlist');
+        $listtypeID = $this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')
+            ->getVisibilityTypeId('productlist');
         $listCollection = $this->simiObjectManager->get('Simi\Simiconnector\Model\Productlist')
-                ->getCollection()->setOrder('sort_order', 'desc')->addFieldToFilter('list_status', '1')
-                ->applyAPICollectionFilter($visibilityTable, $listtypeID, $storeviewid);
+            ->getCollection()->setOrder('sort_order', 'desc')->addFieldToFilter('list_status', '1')
+            ->applyAPICollectionFilter($visibilityTable, $listtypeID, $storeviewid);
 
         foreach ($listCollection as $productlist) {
             if (!isset($rows[$productlist->getData('matrix_row')])) {
-                $rows[(int) $productlist->getData('matrix_row')] = [];
+                $rows[(int)$productlist->getData('matrix_row')] = [];
             }
 
             $editUrl = $controller->getUrl('*/*/edit', ['productlist_id' => $productlist->getId()]);
             $title = '<a href="' . $editUrl . '" style="background-color:rgba(255,255,255,0.7); '
-                    . 'text-decoration:none; text-transform: uppercase; color: black">'
-                    . $productlist->getData('list_title') . '  </a>';
-            $rows[(int) $productlist->getData('matrix_row')][] = [
-                'id'                           => $productlist->getId(),
-                'image'                        => $productlist->getData('list_image'),
-                'image_tablet'                 => $productlist->getData('list_image_tablet'),
-                'matrix_width_percent'         => $productlist->getData('matrix_width_percent'),
-                'matrix_height_percent'        => $productlist->getData('matrix_height_percent'),
-                'matrix_width_percent_tablet'  => $productlist->getData('matrix_width_percent_tablet'),
+                . 'text-decoration:none; text-transform: uppercase; color: black">'
+                . $productlist->getData('list_title') . '  </a>';
+            $rows[(int)$productlist->getData('matrix_row')][] = [
+                'id' => $productlist->getId(),
+                'image' => $productlist->getData('list_image'),
+                'image_tablet' => $productlist->getData('list_image_tablet'),
+                'matrix_width_percent' => $productlist->getData('matrix_width_percent'),
+                'matrix_height_percent' => $productlist->getData('matrix_height_percent'),
+                'matrix_width_percent_tablet' => $productlist->getData('matrix_width_percent_tablet'),
                 'matrix_height_percent_tablet' => $productlist->getData('matrix_height_percent_tablet'),
-                'title'                        => $title,
-                'sort_order'                   => $productlist->getData('sort_order')
+                'title' => $title,
+                'sort_order' => $productlist->getData('sort_order')
             ];
         }
         ksort($rows);
@@ -146,48 +146,48 @@ class Productlist extends Data
         }
 
         $html = '</br> <b> Matrix Theme Mockup Preview: </b></br>(Save Item to update your Changes)</br></br>';
-        $html.= 'Phone Screen Mockup Preview: </br>';
-        $html.= $this->drawMatrixMockupTable(170, 320, false, $rows, $storeviewid);
-        $html.= '</br>Tablet Screen Mockup Preview: </br>';
-        $html.= $this->drawMatrixMockupTable(178, 512, true, $rows, $storeviewid) . '</table>';
+        $html .= 'Phone Screen Mockup Preview: </br>';
+        $html .= $this->drawMatrixMockupTable(170, 320, false, $rows, $storeviewid);
+        $html .= '</br>Tablet Screen Mockup Preview: </br>';
+        $html .= $this->drawMatrixMockupTable(178, 512, true, $rows, $storeviewid) . '</table>';
         return $html;
     }
 
     public function drawMatrixMockupTable($bannerHeight, $bannerWidth, $is_tablet, $rows, $storeviewid)
     {
         if (!$is_tablet) {
-            $margin       = 8;
+            $margin = 8;
             $screenHeight = 568;
-            $topmargin    = 30;
+            $topmargin = 30;
             $bottommargin = 70;
         } else {
-            $margin       = 25;
+            $margin = 25;
             $screenHeight = 384;
-            $topmargin    = 10;
+            $topmargin = 10;
             $bottommargin = 50;
         }
         //phone shape
         $html = '<div style="background-color:black; width:' . ($bannerWidth + $margin * 2)
-                . 'px; height:' . ($screenHeight + $topmargin + $bottommargin) . 'px; border-radius: 30px;"><br>';
+            . 'px; height:' . ($screenHeight + $topmargin + $bottommargin) . 'px; border-radius: 30px;"><br>';
         //screen
-        $html.= '<div style="background-color:white; width:' . $bannerWidth
-                . 'px;margin :' . $margin . 'px; height:' . $screenHeight . 'px ;margin-top: '
-                . $topmargin . 'px ; overflow-y:scroll; overflow-x:hidden;">';
+        $html .= '<div style="background-color:white; width:' . $bannerWidth
+            . 'px;margin :' . $margin . 'px; height:' . $screenHeight . 'px ;margin-top: '
+            . $topmargin . 'px ; overflow-y:scroll; overflow-x:hidden;">';
         //logo - navigationbar
         $html .= '<span style="color:white ; font-size: 18px; line-height: 35px; margin: 0 0 24px;"> '
-                . '<div> <div style= "background-color:#FF6347; width:' . $bannerWidth . '; height:'
-                . ($bannerHeight / 6)
-                . 'px ; text-align:center; '
-                . 'background-image:url(https://www.simicart.com/skin/frontend/default/simicart2.0/images/menu.jpg); '
-                . 'background-repeat:no-repeat;background-size: ' . ($bannerHeight / 6) . 'px '
-                . ($bannerHeight / 6) . 'px; " ><b>APPLICATION LOGO</b></div></div>';
+            . '<div> <div style= "background-color:#FF6347; width:' . $bannerWidth . '; height:'
+            . ($bannerHeight / 6)
+            . 'px ; text-align:center; '
+            . 'background-image:url(https://www.simicart.com/skin/frontend/default/simicart2.0/images/menu.jpg); '
+            . 'background-repeat:no-repeat;background-size: ' . ($bannerHeight / 6) . 'px '
+            . ($bannerHeight / 6) . 'px; " ><b>APPLICATION LOGO</b></div></div>';
         //banner
         $html .= '<div style="background-color:#cccccc; height:'
-                . $bannerHeight . 'px; width:' . $bannerWidth . 'px;"><br><br><b>BANNER AREA</b></div>';
+            . $bannerHeight . 'px; width:' . $bannerWidth . 'px;"><br><br><b>BANNER AREA</b></div>';
         //categories and product lists
         foreach ($rows as $row) {
             $totalWidth = 0;
-            $cells      = '';
+            $cells = '';
             foreach ($row as $rowItem) {
                 if ($is_tablet) {
                     if ($rowItem['image_tablet'] != null) {
@@ -202,7 +202,7 @@ class Productlist extends Data
                 }
                 $rowItem['image'] = $this->getImageUrl($rowItem['image'], $storeviewid);
 
-                $rowWidth  = $rowItem['matrix_width_percent'] * $bannerWidth / 100;
+                $rowWidth = $rowItem['matrix_width_percent'] * $bannerWidth / 100;
                 $rowHeight = $rowItem['matrix_height_percent'] * $bannerWidth / 100;
                 $totalWidth += $rowWidth;
 
@@ -215,11 +215,11 @@ class Productlist extends Data
             } else {
                 $style = 'overflow: hidden;';
             }
-            $html.= '<div style="' . $style . 'width: ' . $bannerWidth . 'px"> <div style="width:'
-                    . $totalWidth . 'px; height:' . $rowHeight . 'px">' . $cells;
-            $html.= '</div></div>';
+            $html .= '<div style="' . $style . 'width: ' . $bannerWidth . 'px"> <div style="width:'
+                . $totalWidth . 'px; height:' . $rowHeight . 'px">' . $cells;
+            $html .= '</div></div>';
         }
-        $html.='</span></div></div>';
+        $html .= '</span></div></div>';
         return $html;
     }
 
@@ -234,7 +234,7 @@ class Productlist extends Data
             }
         }
         foreach ($this->simiObjectManager->get('Simi\Simiconnector\Model\Productlist')
-                ->getCollection() as $productlist) {
+                     ->getCollection() as $productlist) {
             $currentIndex = $productlist->getData('matrix_row');
             if (!isset($rows[$currentIndex])) {
                 $rows[$currentIndex] = ['phone' => $productlist->getData('matrix_height_percent'),
@@ -263,7 +263,7 @@ class Productlist extends Data
     public function getImageUrl($media_path, $storeviewid)
     {
         return $this->simiObjectManager->get('\Magento\Store\Model\Store')->load($storeviewid)->getBaseUrl(
-            \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
-        ) . $media_path;
+                \Magento\Framework\UrlInterface::URL_TYPE_MEDIA
+            ) . $media_path;
     }
 }

@@ -46,7 +46,7 @@ class Simiproductlabel extends \Simi\Simiconnector\Helper\Data
         }
 
         foreach ($this->simiObjectManager->get('Simi\Simiconnector\Model\Simiproductlabel')
-                ->getCollection()->setOrder('priority', 'DESC') as $productLabel) {
+                     ->getCollection()->setOrder('priority', 'DESC') as $productLabel) {
             if ($productLabel->getData('status') != 1) {
                 continue;
             }
@@ -56,14 +56,14 @@ class Simiproductlabel extends \Simi\Simiconnector\Helper\Data
             foreach (explode(',', str_replace(' ', '', $productLabel->getData('product_ids'))) as $productId) {
                 if ($product->getId() == $productId) {
                     return [
-                        'name'        => $productLabel->getData('name'),
-                        'label_id'    => $productLabel->getData('label_id'),
+                        'name' => $productLabel->getData('name'),
+                        'label_id' => $productLabel->getData('label_id'),
                         'description' => $productLabel->getData('description'),
-                        'text'        => $productLabel->getData('text'),
-                        'image'       => $this->storeManager->getStore()
-                            ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA)
+                        'text' => $productLabel->getData('text'),
+                        'image' => $this->storeManager->getStore()
+                                ->getBaseUrl(\Magento\Framework\UrlInterface::URL_TYPE_MEDIA)
                             . $productLabel->getData('image'),
-                        'position'    => $productLabel->getData('position'),
+                        'position' => $productLabel->getData('position'),
                     ];
                 }
             }

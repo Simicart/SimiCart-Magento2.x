@@ -23,7 +23,7 @@ class InstallSchema implements InstallSchemaInterface
     {
         $this->installSql($setup, $context);
     }
-    
+
     public function installSql(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
         $installer = $context;
@@ -1241,12 +1241,12 @@ class InstallSchema implements InstallSchemaInterface
         // end create table simiconnector Taskbar
         $installer->endSetup();
     }
-    
+
     public function checkTableExist($installer, $table_key_name, $table_name)
     {
         if ($installer->getConnection()->isTableExists($table_key_name) == true) {
             $installer->getConnection()
-                    ->dropTable($installer->getConnection()->getTableName($table_name));
+                ->dropTable($installer->getConnection()->getTableName($table_name));
         }
     }
 }

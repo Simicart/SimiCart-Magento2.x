@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="admin-2columns-left"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <head>
         <css src="jquery/fileUploader/css/jquery.fileupload-ui.css"/>
         <css src="Simi_Simiconnector::css/main.css"/>
@@ -11,8 +12,10 @@
         </referenceContainer>
         <referenceContainer name="left">
             <block class="Simi\Simiconnector\Block\Adminhtml\Simicategory\Edit\Tabs" name="simicategory_edit_tabs">
-                <block class="Simi\Simiconnector\Block\Adminhtml\Simicategory\Edit\Tab\Main" name="simicategory_edit_tab_main"/>
-                <block class="Simi\Simiconnector\Block\Adminhtml\Simicategory\Edit\Tab\Matrix" name="simicategory_edit_tab_matrix"/>
+                <block class="Simi\Simiconnector\Block\Adminhtml\Simicategory\Edit\Tab\Main"
+                       name="simicategory_edit_tab_main"/>
+                <block class="Simi\Simiconnector\Block\Adminhtml\Simicategory\Edit\Tab\Matrix"
+                       name="simicategory_edit_tab_matrix"/>
                 <action method="addTab">
                     <argument name="name" xsi:type="string">main_section</argument>
                     <argument name="block" xsi:type="string">simicategory_edit_tab_main</argument>

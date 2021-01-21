@@ -17,9 +17,9 @@ class Banner extends \Magento\Backend\Block\Widget\Grid\Container
      */
     public function _construct()
     {
-        $this->_controller     = 'adminhtml_banner';
-        $this->_blockGroup     = 'Simi_Simiconnector';
-        $this->_headerText     = __('Banner');
+        $this->_controller = 'adminhtml_banner';
+        $this->_blockGroup = 'Simi_Simiconnector';
+        $this->_headerText = __('Banner');
         $this->_addButtonLabel = __('Add New Banner');
         parent::_construct();
         if ($this->_isAllowedAction('Simi_Simiconnector::save')) {

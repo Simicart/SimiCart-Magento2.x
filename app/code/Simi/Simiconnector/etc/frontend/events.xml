@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/Event/etc/events.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/Event/etc/events.xsd">
     <event name="sales_order_save_after">
         <observer name="simi_connector_sales_sales_order_save_after"
-                  instance="Simi\Simiconnector\Observer\SalesOrderSaveAfter" />
+                  instance="Simi\Simiconnector\Observer\SalesOrderSaveAfter"/>
     </event>
     <event name="sales_quote_collect_totals_before">
         <observer name="simi_connector_sales_quote_collect_totals_before"
-                  instance="Simi\Simiconnector\Observer\SalesQuoteCollectTotalsBefore" />
+                  instance="Simi\Simiconnector\Observer\SalesQuoteCollectTotalsBefore"/>
     </event>
     <event name="model_load_before">
         <observer name="simi_simiconnector_model_load_before"
-                  instance="Simi\Simiconnector\Observer\ModelLoadBefore" />
+                  instance="Simi\Simiconnector\Observer\ModelLoadBefore"/>
     </event>
 </config>

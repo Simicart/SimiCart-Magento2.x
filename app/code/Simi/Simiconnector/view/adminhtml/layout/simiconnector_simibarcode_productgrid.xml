@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
     <update handle="formkey"/>
     <container name="root" label="Root">
-        <block class="Simi\Simiconnector\Block\Adminhtml\Simibarcode\Edit\Tab\Productgrid" name="simiconnector.simibarcode.edit.tab.productgrid"/>
+        <block class="Simi\Simiconnector\Block\Adminhtml\Simibarcode\Edit\Tab\Productgrid"
+               name="simiconnector.simibarcode.edit.tab.productgrid"/>
         <block class="Magento\Backend\Block\Widget\Grid\Serializer" name="productgrid_grid_serializer">
             <arguments>
                 <argument name="input_names" xsi:type="string">position</argument>

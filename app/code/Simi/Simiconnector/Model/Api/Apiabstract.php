@@ -136,7 +136,8 @@ abstract class Apiabstract
      * get Return Message
      * @return message (array or string)
      */
-    public function getMessage() {
+    public function getMessage()
+    {
         return $this->message;
     }
 
@@ -144,7 +145,8 @@ abstract class Apiabstract
      * Set Return Message
      * @return message (array or string)
      */
-    public function setMessage($messsage) {
+    public function setMessage($messsage)
+    {
         $this->message = $messsage;
         return $this;
     }
@@ -207,13 +209,18 @@ abstract class Apiabstract
     }
 
     //Limit - dir - order
-    public function getDefaultLimit() {
+    public function getDefaultLimit()
+    {
         return self::DEFAULT_LIMIT;
     }
-    public function getDefaultDir() {
+
+    public function getDefaultDir()
+    {
         return self::DEFAULT_DIR;
     }
-    public function getDefaultOrder() {
+
+    public function getDefaultOrder()
+    {
         return $this->DEFAULT_ORDER;
     }
 
@@ -255,7 +262,7 @@ abstract class Apiabstract
         $result = [];
         if ($data['is_method'] == 1) {
             if (isset($data['resourceid']) && $data['resourceid'] != '') {
-                $result =  $this->show($data['resourceid']);
+                $result = $this->show($data['resourceid']);
             } else {
                 $result = $this->index();
             }
@@ -367,7 +374,7 @@ abstract class Apiabstract
 
     public function getStoreConfig($path)
     {
-        return $this->scopeConfig->getValue($path,\Magento\Store\Model\ScopeInterface::SCOPE_STORE,$this->storeManager->getStore()->getCode());
+        return $this->scopeConfig->getValue($path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeManager->getStore()->getCode());
     }
 
     /**

@@ -17,9 +17,9 @@ class Cms extends \Magento\Backend\Block\Widget\Grid\Container
      */
     public function _construct()
     {
-        $this->_controller     = 'adminhtml_cms';
-        $this->_blockGroup     = 'Simi_Simiconnector';
-        $this->_headerText     = __('CMS');
+        $this->_controller = 'adminhtml_cms';
+        $this->_blockGroup = 'Simi_Simiconnector';
+        $this->_headerText = __('CMS');
         $this->_addButtonLabel = __('Add New Cms');
         parent::_construct();
         if ($this->_isAllowedAction('Simi_Simiconnector::save')) {

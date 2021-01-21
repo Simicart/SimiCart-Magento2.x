@@ -11,11 +11,11 @@ class Bundle extends \Simi\Simiconnector\Helper\Options
 
     public function getOptions($product)
     {
-        $layout                    = $this->simiObjectManager->get('Magento\Framework\View\LayoutInterface');
-        $block                     = $layout->createBlock('Magento\Bundle\Block\Catalog\Product\View\Type\Bundle');
+        $layout = $this->simiObjectManager->get('Magento\Framework\View\LayoutInterface');
+        $block = $layout->createBlock('Magento\Bundle\Block\Catalog\Product\View\Type\Bundle');
         $block->setProduct($product);
-        $options                   = [];
-        $bundle_options      = json_decode($block->getJsonConfig(), true);
+        $options = [];
+        $bundle_options = json_decode($block->getJsonConfig(), true);
         if (isset($bundle_options['options'])) {
             foreach ($bundle_options['options'] as $index => $bundle_option) {
                 $optionModel = $this->simiObjectManager->get('Magento\Bundle\Model\Option')->load($index);

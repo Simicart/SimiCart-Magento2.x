@@ -25,8 +25,9 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
         \Magento\Backend\Block\Widget\Context $context,
         \Magento\Framework\Registry $registry,
         array $data = []
-    ) {
-   
+    )
+    {
+
         $this->coreRegistry = $registry;
         parent::__construct($context, $data);
     }
@@ -38,7 +39,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
      */
     public function _construct()
     {
-        $this->_objectId   = 'video_id';
+        $this->_objectId = 'video_id';
         $this->_blockGroup = 'Simi_Simiconnector';
         $this->_controller = 'adminhtml_simivideo';
 
@@ -49,14 +50,14 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
             $this->buttonList->add(
                 'saveandcontinue',
                 [
-                'label'          => __('Save and Continue Edit'),
-                'class'          => 'save',
-                'data_attribute' => [
-                    'mage-init' => [
-                        'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
-                    ],
-                ]
-                    ],
+                    'label' => __('Save and Continue Edit'),
+                    'class' => 'save',
+                    'data_attribute' => [
+                        'mage-init' => [
+                            'button' => ['event' => 'saveAndContinueEdit', 'target' => '#edit_form'],
+                        ],
+                    ]
+                ],
                 -100
             );
         } else {
@@ -115,7 +116,7 @@ class Edit extends \Magento\Backend\Block\Widget\Form\Container
     public function _prepareLayout()
     {
         $arrow_down_img = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png');
-        $arrow_up_img   = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_up.png');
+        $arrow_up_img = $this->getViewFileUrl('Simi_Simiconnector::images/arrow_up.png');
 
         $productJsUpdateFunction = '
                     function selectProduct(e) {

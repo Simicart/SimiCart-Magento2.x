@@ -32,11 +32,11 @@ class Instantcontact extends \Simi\Simiconnector\Helper\Data
     public function getContacts()
     {
         $data = [
-            'email'       => $this->_getEmails(),
-            'phone'       => $this->_getPhoneNumbers(),
-            'message'     => $this->_getMessageNumbers(),
-            'website'     => $this->getConfig("website"),
-            'style'       => $this->getConfig("style"),
+            'email' => $this->_getEmails(),
+            'phone' => $this->_getPhoneNumbers(),
+            'message' => $this->_getMessageNumbers(),
+            'website' => $this->getConfig("website"),
+            'style' => $this->getConfig("style"),
             'activecolor' => $this->getConfig("icon_color")
         ];
 

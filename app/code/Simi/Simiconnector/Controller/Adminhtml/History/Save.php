@@ -23,7 +23,7 @@ class Save extends \Magento\Backend\App\Action
                 $model->load($id);
             }
 
-            $is_delete_history    = isset($data['history_name']['delete']) ? $data['history_name']['delete'] : false;
+            $is_delete_history = isset($data['history_name']['delete']) ? $data['history_name']['delete'] : false;
             $data['history_name'] = isset($data['history_name']['value']) ? $data['history_name']['value'] : '';
             $model->addData($data);
 

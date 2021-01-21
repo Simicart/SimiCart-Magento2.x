@@ -19,30 +19,31 @@ class Action extends \Magento\Framework\App\Action\Action
         \Magento\Framework\App\Cache\StateInterface $cacheState,
         \Magento\Framework\App\Cache\Frontend\Pool $cacheFrontendPool,
         \Magento\Framework\View\Result\PageFactory $resultPageFactory
-    ) {
-   
+    )
+    {
+
         parent::__construct($context);
-        $this->simiObjectManager  = $context->getObjectManager();
-        $this->cacheTypeList     = $cacheTypeList;
-        $this->cacheState        = $cacheState;
+        $this->simiObjectManager = $context->getObjectManager();
+        $this->cacheTypeList = $cacheTypeList;
+        $this->cacheState = $cacheState;
         $this->cacheFrontendPool = $cacheFrontendPool;
-        $this->resultPageFactory  = $resultPageFactory;
+        $this->resultPageFactory = $resultPageFactory;
         // Read Magento\Framework\App\Request\CsrfValidator for reason
         if ($this->getRequest() && $this->getRequest()->isPost()) {
             try {
                 $formKey = $this->simiObjectManager->get('\Magento\Framework\Data\Form\FormKey')->getFormKey();
                 $this->getRequest()->setParam('form_key', $formKey);
             } catch (\Exception $e) {
-                
+
             }
         }
     }
 
     private function preDispatch()
     {
-        $enable = (int) $this->simiObjectManager
-                ->get('\Magento\Framework\App\Config\ScopeConfigInterface')
-                ->getValue('simiconnector/general/enable');
+        $enable = (int)$this->simiObjectManager
+            ->get('\Magento\Framework\App\Config\ScopeConfigInterface')
+            ->getValue('simiconnector/general/enable');
         /*
          * 
          * 
@@ -89,6 +90,7 @@ class Action extends \Magento\Framework\App\Action\Action
                 }
                 return $head;
             }
+
             $head = getallheaders1();
         } else {
             $head = $getAllHeaderFunction();
@@ -96,9 +98,9 @@ class Action extends \Magento\Framework\App\Action\Action
         // token is key
         $encodeMethod = 'md5';
         $keySecret = $encodeMethod($this->simiObjectManager
-                ->get('\Magento\Framework\App\Config\ScopeConfigInterface')
-                ->getValue('simiconnector/general/secret_key'));
-        $token     = "";
+            ->get('\Magento\Framework\App\Config\ScopeConfigInterface')
+            ->getValue('simiconnector/general/secret_key'));
+        $token = "";
         foreach ($head as $k => $h) {
             if ($k == "Authorization" || $k == "TOKEN" || $k == "Token") {
                 $token = $h;

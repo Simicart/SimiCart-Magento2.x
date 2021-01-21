@@ -56,14 +56,15 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         \Magento\Framework\ObjectManagerInterface $simiObjectManager,
         \Magento\Catalog\Model\CategoryFactory $categoryFactory,
         array $data = []
-    ) {
-   
-        $this->simiObjectManager        = $simiObjectManager;
+    )
+    {
+
+        $this->simiObjectManager = $simiObjectManager;
         $this->simiproductlabelFactory = $simiproductlabelFactory;
-        $this->websiteHelper            = $websiteHelper;
-        $this->systemStore              = $systemStore;
-        $this->jsonEncoder              = $jsonEncoder;
-        $this->categoryFactory          = $categoryFactory;
+        $this->websiteHelper = $websiteHelper;
+        $this->systemStore = $systemStore;
+        $this->jsonEncoder = $jsonEncoder;
+        $this->categoryFactory = $categoryFactory;
         parent::__construct($context, $registry, $formFactory, $data);
     }
 
@@ -74,7 +75,7 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
      */
     public function _prepareForm()
     {
-        
+
         $model = $this->_coreRegistry->registry('simiproductlabel');
 
         /** @var \Magento\Framework\Data\Form $form */
@@ -97,15 +98,15 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'status',
             'select',
             [
-            'name'     => 'status',
-            'label'    => __('Status'),
-            'title'    => __('Status'),
-            'required' => false,
-            'options'  => $this->simiproductlabelFactory->create()->toOptionStatusHash(),
-                ]
+                'name' => 'status',
+                'label' => __('Status'),
+                'title' => __('Status'),
+                'required' => false,
+                'options' => $this->simiproductlabelFactory->create()->toOptionStatusHash(),
+            ]
         );
 
-        $stores     = $this->simiObjectManager->get('\Magento\Store\Model\Store')->getCollection();
+        $stores = $this->simiObjectManager->get('\Magento\Store\Model\Store')->getCollection();
         $list_store = [];
         foreach ($stores as $store) {
             $list_store[] = [
@@ -115,16 +116,16 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
         }
 
         $fieldset->addField('storeview_id', 'select', [
-            'label'  => __('Store View'),
-            'title'  => __('Store View'),
-            'name'   => 'storeview_id',
+            'label' => __('Store View'),
+            'title' => __('Store View'),
+            'name' => 'storeview_id',
             'values' => $list_store
         ]);
 
         $fieldset->addField('name', 'text', [
-            'name'     => 'label_name',
-            'label'    => __('Label Name'),
-            'title'    => __('Label Name'),
+            'name' => 'label_name',
+            'label' => __('Label Name'),
+            'title' => __('Label Name'),
             'required' => true
         ]);
 
@@ -132,17 +133,17 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'description',
             'textarea',
             [
-            'name'     => 'description',
-            'label'    => __('Description'),
-            'title'    => __('Description'),
-            'required' => true
-                ]
+                'name' => 'description',
+                'label' => __('Description'),
+                'title' => __('Description'),
+                'required' => true
+            ]
         );
 
         $fieldset->addField('image', 'image', [
-            'name'     => 'image',
-            'label'    => __('Image (width:340px, height:340px)'),
-            'title'    => __('Image (width:340px, height:340px)'),
+            'name' => 'image',
+            'label' => __('Image (width:340px, height:340px)'),
+            'title' => __('Image (width:340px, height:340px)'),
             'required' => false
         ]);
 
@@ -150,31 +151,31 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'position',
             'select',
             [
-            'name'     => 'position',
-            'label'    => __('Position'),
-            'title'    => __('Position'),
-            'required' => false,
-            'options'  => $this->simiObjectManager->get('Simi\Simiconnector\Helper\Simiproductlabel')->getPositionId(),
-                ]
+                'name' => 'position',
+                'label' => __('Position'),
+                'title' => __('Position'),
+                'required' => false,
+                'options' => $this->simiObjectManager->get('Simi\Simiconnector\Helper\Simiproductlabel')->getPositionId(),
+            ]
         );
 
         $fieldset->addField('priority', 'text', [
-            'name'  => 'priority',
+            'name' => 'priority',
             'class' => 'validate-number',
             'label' => __('Priority'),
             'title' => __('Priority'),
-            'note'  => __('The higher the value, the higher the priority.'),
+            'note' => __('The higher the value, the higher the priority.'),
         ]);
 
         $fieldset->addField(
             'text',
             'textarea',
             [
-            'name'     => 'text',
-            'label'    => __('Text'),
-            'title'    => __('Text'),
-            'required' => false
-                ]
+                'name' => 'text',
+                'label' => __('Text'),
+                'title' => __('Text'),
+                'required' => false
+            ]
         );
 
         if (!isset($data['is_auto_fill']) || ($data['is_auto_fill'] == null)) {
@@ -185,16 +186,16 @@ class Main extends \Magento\Backend\Block\Widget\Form\Generic implements \Magent
             'product_ids',
             'text',
             [
-            'name'               => 'product_ids',
-            'label'              => __('Product ID(s)'),
-            'title'              => __('Choose products'),
-            'after_element_html' => '<a href="#" title="Show Product Grid" onclick="toogleProduct();return false;">'
-                . '<img id="show_product_grid" src="'
-                . $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png')
-                . '" title="" /></a>'
-                . $this->getLayout()
-                ->createBlock('Simi\Simiconnector\Block\Adminhtml\Simiproductlabel\Edit\Tab\Productgrid')->toHtml()
-                ]
+                'name' => 'product_ids',
+                'label' => __('Product ID(s)'),
+                'title' => __('Choose products'),
+                'after_element_html' => '<a href="#" title="Show Product Grid" onclick="toogleProduct();return false;">'
+                    . '<img id="show_product_grid" src="'
+                    . $this->getViewFileUrl('Simi_Simiconnector::images/arrow_down.png')
+                    . '" title="" /></a>'
+                    . $this->getLayout()
+                        ->createBlock('Simi\Simiconnector\Block\Adminhtml\Simiproductlabel\Edit\Tab\Productgrid')->toHtml()
+            ]
         );
 
         $this->_eventManager->dispatch('adminhtml_simiproductlabel_edit_tab_main_prepare_form', ['form' => $form]);

@@ -39,7 +39,7 @@ class Simibarcode extends \Simi\Simiconnector\Helper\Data
     {
         $barcode = preg_replace_callback('#\[([AN]{1,2})\.([0-9]+)\]#', [$this, 'convertExpression'], $string);
         $checkBarcodeExist = $this->simiObjectManager
-                ->create('Simi\Simiconnector\Model\Simibarcode')->load($barcode, 'barcode');
+            ->create('Simi\Simiconnector\Model\Simibarcode')->load($barcode, 'barcode');
         if ($checkBarcodeExist->getId()) {
             $barcode = $this->generateCode($string);
         }
@@ -66,8 +66,8 @@ class Simibarcode extends \Simi\Simiconnector\Helper\Data
      */
     public function getAllColumOfTable()
     {
-        return ['barcode_id','barcode',
-            'qrcode','barcode_status','product_entity_id','product_name','product_sku','created_date'];
+        return ['barcode_id', 'barcode',
+            'qrcode', 'barcode_status', 'product_entity_id', 'product_name', 'product_sku', 'created_date'];
     }
 
     /**
@@ -93,12 +93,12 @@ class Simibarcode extends \Simi\Simiconnector\Helper\Data
     {
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($data)) {
             $this->simiObjectManager
-                    ->create('Magento\Backend\Model\Session')->setData('null_barcode_product_import', 0);
+                ->create('Magento\Backend\Model\Session')->setData('null_barcode_product_import', 0);
         } else {
             $this->simiObjectManager
-                    ->create('Magento\Backend\Model\Session')->setData('null_barcode_product_import', 1);
+                ->create('Magento\Backend\Model\Session')->setData('null_barcode_product_import', 1);
             $this->simiObjectManager
-                    ->create('Magento\Backend\Model\Session')->setData('barcode_product_import', null);
+                ->create('Magento\Backend\Model\Session')->setData('barcode_product_import', null);
         }
     }
 

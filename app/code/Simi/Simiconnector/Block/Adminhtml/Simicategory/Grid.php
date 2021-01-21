@@ -50,13 +50,14 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Simi\Simiconnector\Helper\Website $websiteHelper,
         array $data = []
-    ) {
-   
-        $this->collectionFactory   = $collectionFactory;
-        $this->moduleManager        = $moduleManager;
-        $this->resource            = $resourceConnection;
+    )
+    {
+
+        $this->collectionFactory = $collectionFactory;
+        $this->moduleManager = $moduleManager;
+        $this->resource = $resourceConnection;
         $this->simicategoryFactory = $simicategoryFactory;
-        $this->websiteHelper        = $websiteHelper;
+        $this->websiteHelper = $websiteHelper;
         parent::__construct($context, $backendHelper, $data);
     }
 
@@ -94,47 +95,47 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         $this->addColumn('simi_simicategory_id', [
             'header' => __('ID'),
-            'index'  => 'simicategory_id',
+            'index' => 'simicategory_id',
         ]);
 
         $this->addColumn('simicategory_name', [
             'header' => __('Category Name'),
-            'index'  => 'simicategory_name',
+            'index' => 'simicategory_name',
         ]);
 
         $this->addColumn('sort_order', [
             'header' => __('Sort Order'),
-            'index'  => 'sort_order',
+            'index' => 'sort_order',
         ]);
 
         $this->addColumn('status', [
-            'type'    => 'options',
-            'header'  => __('Status'),
-            'index'   => 'status',
+            'type' => 'options',
+            'header' => __('Status'),
+            'index' => 'status',
             'options' => $this->simicategoryFactory->create()->toOptionStatusHash(),
         ]);
 
         $this->addColumn(
             'action',
             [
-            'header'           => __('View'),
-            'type'             => 'action',
-            'getter'           => 'getId',
-            'actions'          => [
-                [
-                    'caption' => __('Edit'),
-                    'url'     => [
-                        'base'   => '*/*/edit',
-                        'params' => ['store' => $this->getRequest()->getParam('store')]
-                    ],
-                    'field'   => 'simicategory_id'
-                ]
-            ],
-            'sortable'         => false,
-            'filter'           => false,
-            'header_css_class' => 'col-action',
-            'column_css_class' => 'col-action',
-                ]
+                'header' => __('View'),
+                'type' => 'action',
+                'getter' => 'getId',
+                'actions' => [
+                    [
+                        'caption' => __('Edit'),
+                        'url' => [
+                            'base' => '*/*/edit',
+                            'params' => ['store' => $this->getRequest()->getParam('store')]
+                        ],
+                        'field' => 'simicategory_id'
+                    ]
+                ],
+                'sortable' => false,
+                'filter' => false,
+                'header_css_class' => 'col-action',
+                'column_css_class' => 'col-action',
+            ]
         );
 
         return parent::_prepareColumns();
@@ -149,7 +150,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/edit', [
-                    'simicategory_id' => $row->getId()
+            'simicategory_id' => $row->getId()
         ]);
     }
 

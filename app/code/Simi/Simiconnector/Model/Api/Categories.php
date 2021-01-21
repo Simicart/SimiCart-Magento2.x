@@ -10,10 +10,13 @@ class Categories extends Apiabstract
 {
     public $visible_array;
 
-    public function getDefaultDir() {
+    public function getDefaultDir()
+    {
         return 'asc';
     }
-    public function getDefaultOrder() {
+
+    public function getDefaultOrder()
+    {
         return 'position';
     }
 
@@ -30,7 +33,7 @@ class Categories extends Apiabstract
         $category = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')->load($data['resourceid']);
         if (is_array($category->getChildrenCategories())) {
             $childArray = $category->getChildrenCategories();
-            $idArray    = [];
+            $idArray = [];
             foreach ($childArray as $childArrayItem) {
                 if (!$childArrayItem->getData('parent_id') ||
                     $childArrayItem->getData('parent_id') == $data['resourceid'])
@@ -38,7 +41,7 @@ class Categories extends Apiabstract
             }
             $this->builderQuery = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')
                 ->getCollection()->addAttributeToSelect('*')->addFieldToFilter('entity_id', ['in' => $idArray]);
-                
+
             if ($this->visible_array) {
                 $this->builderQuery->addFieldToFilter('entity_id', ['nin' => $this->visible_array]);
             }
@@ -65,7 +68,7 @@ class Categories extends Apiabstract
             if (isset($catData['request_path'])) {
                 $catData['url_path'] = $catData['request_path'];
                 if (strpos($catData['url_path'], '.html') === false) {
-                    $catData['url_path'] = $catData['url_path'].'.html';
+                    $catData['url_path'] = $catData['url_path'] . '.html';
                 }
             }
             if ($image_url = $categoryModel->getImageUrl()) {

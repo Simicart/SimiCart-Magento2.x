@@ -17,9 +17,9 @@ class Transactions extends \Magento\Backend\Block\Widget\Grid\Container
      */
     public function _construct()
     {
-        $this->_controller     = 'adminhtml_transactions';
-        $this->_blockGroup     = 'Simi_Simiconnector';
-        $this->_headerText     = __('App Transactions');
+        $this->_controller = 'adminhtml_transactions';
+        $this->_blockGroup = 'Simi_Simiconnector';
+        $this->_headerText = __('App Transactions');
         $this->_addButtonLabel = __('Add New App Transactions');
         parent::_construct();
         $this->buttonList->remove('add');

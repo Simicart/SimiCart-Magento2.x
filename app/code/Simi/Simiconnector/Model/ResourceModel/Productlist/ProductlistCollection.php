@@ -18,7 +18,7 @@ class ProductlistCollection extends \Magento\Framework\Model\ResourceModel\Db\Co
     {
         $this->_init('Simi\Simiconnector\Model\Productlist', 'Simi\Simiconnector\Model\ResourceModel\Productlist');
     }
-    
+
     public function getProductCollection($listModel, $simiObjectManager)
     {
         return $this->getProductCollectionByType(
@@ -48,10 +48,10 @@ class ProductlistCollection extends \Magento\Framework\Model\ResourceModel\Db\Co
                 break;
             //Best seller
             case 2:
-                $orderItemTable   = $simiObjectManager->create('\Magento\Framework\App\ResourceConnection')
+                $orderItemTable = $simiObjectManager->create('\Magento\Framework\App\ResourceConnection')
                     ->getTableName('sales_order_item');
-                $collection       = $simiObjectManager->create('Magento\Catalog\Model\Product')->getCollection();
-                $select           = $collection->getSelect()
+                $collection = $simiObjectManager->create('Magento\Catalog\Model\Product')->getCollection();
+                $select = $collection->getSelect()
                     ->join(
                         ['order_item' => $orderItemTable],
                         'order_item.product_id = entity_id',
@@ -73,9 +73,9 @@ class ProductlistCollection extends \Magento\Framework\Model\ResourceModel\Db\Co
             case 3:
                 $productViewTable = $simiObjectManager->create('\Magento\Framework\App\ResourceConnection')
                     ->getTableName('report_viewed_product_aggregated_yearly');
-                $collection       = $simiObjectManager
+                $collection = $simiObjectManager
                     ->create('Magento\Catalog\Model\Product')->getCollection();
-                $select           = $collection->getSelect()
+                $select = $collection->getSelect()
                     ->join(
                         ['product_viewed' => $productViewTable],
                         'product_viewed.product_id = entity_id',

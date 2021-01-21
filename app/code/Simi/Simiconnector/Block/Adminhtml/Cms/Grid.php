@@ -50,13 +50,14 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Simi\Simiconnector\Helper\Website $websiteHelper,
         array $data = []
-    ) {
-   
+    )
+    {
+
         $this->collectionFactory = $collectionFactory;
-        $this->moduleManager      = $moduleManager;
-        $this->resource          = $resourceConnection;
-        $this->cmsFactory        = $cmsFactory;
-        $this->websiteHelper      = $websiteHelper;
+        $this->moduleManager = $moduleManager;
+        $this->resource = $resourceConnection;
+        $this->cmsFactory = $cmsFactory;
+        $this->websiteHelper = $websiteHelper;
         parent::__construct($context, $backendHelper, $data);
     }
 
@@ -80,7 +81,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
      */
     public function _prepareCollection()
     {
-        $webId      = $this->getWebsiteIdFromUrl();
+        $webId = $this->getWebsiteIdFromUrl();
         $collection = $this->collectionFactory->create();
 
         $this->setCollection($collection);
@@ -97,47 +98,47 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         $this->addColumn('simi_cms_id', [
             'header' => __('ID'),
-            'index'  => 'cms_id',
+            'index' => 'cms_id',
         ]);
 
         $this->addColumn('cms_title', [
             'header' => __('Title'),
-            'index'  => 'cms_title',
+            'index' => 'cms_title',
         ]);
 
         $this->addColumn('sort_order', [
             'header' => __('Sort Order'),
-            'index'  => 'sort_order',
+            'index' => 'sort_order',
         ]);
 
         $this->addColumn('cms_status', [
-            'type'    => 'options',
-            'header'  => __('Status'),
-            'index'   => 'cms_status',
+            'type' => 'options',
+            'header' => __('Status'),
+            'index' => 'cms_status',
             'options' => $this->cmsFactory->create()->toOptionStatusHash(),
         ]);
 
         $this->addColumn(
             'action',
             [
-            'header'           => __('View'),
-            'type'             => 'action',
-            'getter'           => 'getId',
-            'actions'          => [
-                [
-                    'caption' => __('Edit'),
-                    'url'     => [
-                        'base'   => '*/*/edit',
-                        'params' => ['store' => $this->getRequest()->getParam('store')]
-                    ],
-                    'field'   => 'cms_id'
-                ]
-            ],
-            'sortable'         => false,
-            'filter'           => false,
-            'header_css_class' => 'col-action',
-            'column_css_class' => 'col-action',
-                ]
+                'header' => __('View'),
+                'type' => 'action',
+                'getter' => 'getId',
+                'actions' => [
+                    [
+                        'caption' => __('Edit'),
+                        'url' => [
+                            'base' => '*/*/edit',
+                            'params' => ['store' => $this->getRequest()->getParam('store')]
+                        ],
+                        'field' => 'cms_id'
+                    ]
+                ],
+                'sortable' => false,
+                'filter' => false,
+                'header_css_class' => 'col-action',
+                'column_css_class' => 'col-action',
+            ]
         );
 
         return parent::_prepareColumns();
@@ -152,7 +153,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/edit', [
-                    'cms_id' => $row->getId()
+            'cms_id' => $row->getId()
         ]);
     }
 

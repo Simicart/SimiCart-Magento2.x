@@ -24,7 +24,7 @@ class Save extends \Magento\Backend\App\Action
                 $model->load($id);
             }
 
-            $is_delete_device    = isset($data['device_name']['delete']) ? $data['device_name']['delete'] : false;
+            $is_delete_device = isset($data['device_name']['delete']) ? $data['device_name']['delete'] : false;
             $data['device_name'] = isset($data['device_name']['value']) ? $data['device_name']['value'] : '';
             $model->addData($data);
 

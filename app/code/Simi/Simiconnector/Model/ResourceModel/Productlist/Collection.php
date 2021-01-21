@@ -18,7 +18,7 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
     {
         $this->_init('Simi\Simiconnector\Model\Productlist', 'Simi\Simiconnector\Model\ResourceModel\Productlist');
     }
-    
+
     public function applyAPICollectionFilter($visibilityTable, $typeID, $storeId)
     {
         $this->getSelect()

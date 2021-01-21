@@ -33,8 +33,8 @@ class BaseBlock extends \Magento\Framework\View\Element\Template
     public function __construct(\Simi\Simiconnector\Block\Context $context)
     {
         $this->devToolHelper = $context->getSimiconnectorHelper();
-        $this->config        = $context->getConfig();
-        $this->urlApp        = $context->getUrlFactory()->create();
+        $this->config = $context->getConfig();
+        $this->urlApp = $context->getUrlFactory()->create();
         parent::__construct($context);
     }
 

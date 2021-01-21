@@ -17,9 +17,9 @@ class Simiproductlabel extends \Magento\Backend\Block\Widget\Grid\Container
      */
     public function _construct()
     {
-        $this->_controller     = 'adminhtml_simiproductlabel';
-        $this->_blockGroup     = 'Simi_Simiconnector';
-        $this->_headerText     = __('Product Labels');
+        $this->_controller = 'adminhtml_simiproductlabel';
+        $this->_blockGroup = 'Simi_Simiconnector';
+        $this->_headerText = __('Product Labels');
         $this->_addButtonLabel = __('Add New Product Label');
         parent::_construct();
         if ($this->_isAllowedAction('Simi_Simiconnector::save')) {

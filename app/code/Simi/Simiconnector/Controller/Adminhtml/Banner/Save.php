@@ -22,14 +22,14 @@ class Save extends \Magento\Backend\App\Action
         if ($id) {
             $model->load($id);
         }
-        $data['category_id'] = isset($data['category_id'])?$data['category_id']:0;
+        $data['category_id'] = isset($data['category_id']) ? $data['category_id'] : 0;
 
-        $is_delete_banner    = isset($data['banner_name']['delete']) ? $data['banner_name']['delete'] : false;
+        $is_delete_banner = isset($data['banner_name']['delete']) ? $data['banner_name']['delete'] : false;
         $data['banner_name'] = isset($data['banner_name']['value']) ? $data['banner_name']['value'] : '';
         $is_delete_banner_tablet = isset($data['banner_name_tablet']['delete']) ?
-                $data['banner_name_tablet']['delete'] : false;
+            $data['banner_name_tablet']['delete'] : false;
         $data['banner_name_tablet'] = isset($data['banner_name_tablet']['value']) ?
-                $data['banner_name_tablet']['value'] : '';
+            $data['banner_name_tablet']['value'] : '';
         $model->addData($data);
 
         try {
@@ -72,16 +72,16 @@ class Save extends \Magento\Backend\App\Action
         $this->_getSession()->setFormData($data);
         $this->_redirect('*/*/edit', ['banner_id' => $this->getRequest()->getParam('banner_id')]);
     }
-    
+
     private function updateVisibility($simiObjectManager, $model, $data)
     {
         $simiconnectorhelper = $simiObjectManager->get('Simi\Simiconnector\Helper\Data');
         if ($data['storeview_id'] && is_array($data['storeview_id'])) {
-            $typeID            = $simiconnectorhelper->getVisibilityTypeId('banner');
+            $typeID = $simiconnectorhelper->getVisibilityTypeId('banner');
             $visibleStoreViews = $simiObjectManager
-                    ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
-                    ->addFieldToFilter('content_type', $typeID)
-                    ->addFieldToFilter('item_id', $model->getId());
+                ->create('Simi\Simiconnector\Model\Visibility')->getCollection()
+                ->addFieldToFilter('content_type', $typeID)
+                ->addFieldToFilter('item_id', $model->getId());
             $visibleStoreViews->walk('delete');
             foreach ($visibleStoreViews as $visibilityItem) {
                 $simiObjectManager

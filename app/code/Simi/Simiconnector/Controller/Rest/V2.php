@@ -19,22 +19,22 @@ class V2 extends Action
         ob_start();
         try {
             $result = $this->_getServer()
-                            ->init($this)->run();
+                ->init($this)->run();
             $this->_printData($result);
         } catch (\Exception $e) {
             $results = [];
-            $result  = [];
+            $result = [];
             if (is_array($e->getMessage())) {
                 $messages = $e->getMessage();
                 foreach ($messages as $message) {
                     $result[] = [
-                        'code'    => $e->getCode(),
+                        'code' => $e->getCode(),
                         'message' => $message,
                     ];
                 }
             } else {
                 $result[] = [
-                    'code'    => $e->getCode(),
+                    'code' => $e->getCode(),
                     'message' => $e->getMessage(),
                 ];
             }
@@ -43,10 +43,10 @@ class V2 extends Action
         }
         ob_end_flush();
     }
-    
+
     private function _getServer()
     {
-        $serverModel               = $this->simiObjectManager->get('Simi\Simiconnector\Model\Server');
+        $serverModel = $this->simiObjectManager->get('Simi\Simiconnector\Model\Server');
         $serverModel->eventManager = $this->_eventManager;
         return $serverModel;
     }
@@ -57,14 +57,14 @@ class V2 extends Action
             $this->getResponse()->setHeader('Content-Type', 'application/json');
             $this->setData($result);
             $this->_eventManager
-                    ->dispatch('SimiconnectorRest', ['object' => $this, 'data' => $result]);
+                ->dispatch('SimiconnectorRest', ['object' => $this, 'data' => $result]);
             $this->data = $this->getData();
             return $this->getResponse()->setBody(json_encode($this->data));
         } catch (\Exception $e) {
             return;
         }
     }
-    
+
     private function getData()
     {
         return $this->data;

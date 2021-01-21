@@ -50,13 +50,14 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         \Magento\Framework\App\ResourceConnection $resourceConnection,
         \Simi\Simiconnector\Helper\Website $websiteHelper,
         array $data = []
-    ) {
-   
+    )
+    {
+
         $this->collectionFactory = $collectionFactory;
-        $this->moduleManager      = $moduleManager;
-        $this->resource          = $resourceConnection;
-        $this->barcodeFactory    = $simibarcodeFactory;
-        $this->websiteHelper      = $websiteHelper;
+        $this->moduleManager = $moduleManager;
+        $this->resource = $resourceConnection;
+        $this->barcodeFactory = $simibarcodeFactory;
+        $this->websiteHelper = $websiteHelper;
 
         parent::__construct($context, $backendHelper, $data);
     }
@@ -83,64 +84,64 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     {
         $this->addColumn('barcode_id', [
             'header' => __('ID'),
-            'align'  => 'right',
-            'width'  => '50px',
-            'index'  => 'barcode_id',
+            'align' => 'right',
+            'width' => '50px',
+            'index' => 'barcode_id',
         ]);
 
         $this->addColumn('barcode', [
             'header' => __('Barcode'),
-            'align'  => 'left',
-            'index'  => 'barcode'
+            'align' => 'left',
+            'index' => 'barcode'
         ]);
 
         $this->addColumn('qrcode', [
             'header' => __('QRcode'),
-            'align'  => 'left',
-            'index'  => 'qrcode'
+            'align' => 'left',
+            'index' => 'qrcode'
         ]);
 
         $this->addColumn('product_sku', [
             'header' => __('Product SKU'),
-            'align'  => 'left',
-            'index'  => 'product_sku'
+            'align' => 'left',
+            'index' => 'product_sku'
         ]);
 
         $this->addColumn('created_date', [
             'header' => __('Created Date'),
-            'align'  => 'left',
-            'type'   => 'datetime',
-            'index'  => 'created_date'
+            'align' => 'left',
+            'type' => 'datetime',
+            'index' => 'created_date'
         ]);
 
         $this->addColumn('barcode_status', [
-            'type'    => 'options',
-            'header'  => __('Status'),
-            'index'   => 'barcode_status',
+            'type' => 'options',
+            'header' => __('Status'),
+            'index' => 'barcode_status',
             'options' => $this->barcodeFactory->create()->toOptionStatusHash(),
         ]);
 
         $this->addColumn(
             'action',
             [
-            'header'           => __('View'),
-            'type'             => 'action',
-            'getter'           => 'getId',
-            'actions'          => [
-                [
-                    'caption' => __('Edit'),
-                    'url'     => [
-                        'base'   => '*/*/edit',
-                        'params' => ['store' => $this->getRequest()->getParam('store')]
-                    ],
-                    'field'   => 'barcode_id'
-                ]
-            ],
-            'sortable'         => false,
-            'filter'           => false,
-            'header_css_class' => 'col-action',
-            'column_css_class' => 'col-action',
-                ]
+                'header' => __('View'),
+                'type' => 'action',
+                'getter' => 'getId',
+                'actions' => [
+                    [
+                        'caption' => __('Edit'),
+                        'url' => [
+                            'base' => '*/*/edit',
+                            'params' => ['store' => $this->getRequest()->getParam('store')]
+                        ],
+                        'field' => 'barcode_id'
+                    ]
+                ],
+                'sortable' => false,
+                'filter' => false,
+                'header_css_class' => 'col-action',
+                'column_css_class' => 'col-action',
+            ]
         );
 
         return parent::_prepareColumns();
@@ -155,7 +156,7 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/edit', [
-                    'barcode_id' => $row->getId()
+            'barcode_id' => $row->getId()
         ]);
     }
 
@@ -175,10 +176,10 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
         $this->getMassactionBlock()->addItem(
             'delete',
             [
-            'label'   => __('Delete'),
-            'url'     => $this->getUrl('*/*/massDelete'),
-            'confirm' => __('Are you sure?')
-                ]
+                'label' => __('Delete'),
+                'url' => $this->getUrl('*/*/massDelete'),
+                'confirm' => __('Are you sure?')
+            ]
         );
         return $this;
     }

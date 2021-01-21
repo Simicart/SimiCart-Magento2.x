@@ -20,21 +20,22 @@ class MassDelete extends \Magento\Backend\App\Action
     public function __construct(
         Context $context,
         Filter $filterObject
-    ) {
+    )
+    {
         $this->simiObjectManager = $context->getObjectManager();
-        $this->filter            = $filterObject;
+        $this->filter = $filterObject;
         parent::__construct($context);
     }
 
     public function execute()
     {
-        $productlabelIds     = $this->getRequest()->getParam('massaction');
-        $collection          = $this->simiObjectManager->get('Simi\Simiconnector\Model\Simiproductlabel')
-                        ->getCollection()->addFieldToFilter('label_id', ['in', $productlabelIds]);
+        $productlabelIds = $this->getRequest()->getParam('massaction');
+        $collection = $this->simiObjectManager->get('Simi\Simiconnector\Model\Simiproductlabel')
+            ->getCollection()->addFieldToFilter('label_id', ['in', $productlabelIds]);
         $productlabelDeleted = 0;
         foreach ($collection->getItems() as $productlabel) {
             $this->simiObjectManager
-                            ->get('Simi\Simiconnector\Helper\Data')->deleteModel($productlabel);
+                ->get('Simi\Simiconnector\Helper\Data')->deleteModel($productlabel);
             $productlabelDeleted++;
         }
         $this->messageManager->addSuccess(

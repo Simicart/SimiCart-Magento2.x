@@ -27,10 +27,10 @@ class Configurable extends \Simi\Simiconnector\Helper\Options
     public function getOptions($product)
     {
         $layout = $this->simiObjectManager->get('Magento\Framework\View\LayoutInterface');
-        $block  = $layout->createBlock('Magento\ConfigurableProduct\Block\Product\View\Type\Configurable');
+        $block = $layout->createBlock('Magento\ConfigurableProduct\Block\Product\View\Type\Configurable');
         $block->setProduct($product);
-        $options                         = [];
-        $configurable_options            = json_decode($block->getJsonConfig(), 1);
+        $options = [];
+        $configurable_options = json_decode($block->getJsonConfig(), 1);
 
         if (isset($configurable_options['attributes'])) {
             foreach ($configurable_options['attributes'] as $attribute_code => $attribute_details) {
@@ -43,8 +43,8 @@ class Configurable extends \Simi\Simiconnector\Helper\Options
                             count($option_data['products']) != 0
                         ) {
                             $isColorValueTypeText = $this->simiObjectManager->get('Magento\Framework\App\Config\ScopeConfigInterface')
-                            ->getValue('siminiaconfig/color_options/is_color_type_text');
-                            if($attribute_details['code'] === 'color') {
+                                ->getValue('siminiaconfig/color_options/is_color_type_text');
+                            if ($attribute_details['code'] === 'color') {
                                 $option_data['option_value'] = $this->getValueSwatch($option_data['id']);
                                 $option_data['pwa_use_type_text'] = $isColorValueTypeText;
                             }
@@ -61,20 +61,21 @@ class Configurable extends \Simi\Simiconnector\Helper\Options
 
         if (!($product->getOptions() === null) && $this->simiObjectManager
                 ->get('Simi\Simiconnector\Helper\Data')->countArray($product->getOptions())) {
-            $custom_options            = $this
-                    ->helper('Simi\Simiconnector\Helper\Options\Simple')->getOptions($product);
+            $custom_options = $this
+                ->helper('Simi\Simiconnector\Helper\Options\Simple')->getOptions($product);
             $options['custom_options'] = $custom_options['custom_options'];
         }
         return $options;
     }
 
-    private function getValueSwatch($id) {
+    private function getValueSwatch($id)
+    {
         $swatchHelper = $this->simiObjectManager->get('Magento\Swatches\Helper\Data');
         $value = $swatchHelper->getSwatchesByOptionsId([$id]);
         if (!isset($value[$id]['value']))
             return;
-        if(strpos($value[$id]['value'], '#') === false) {
-            $value[$id]['value'] = $this->simiObjectManager->get('Magento\Swatches\Helper\Media')->getSwatchMediaUrl().$value[$id]['value'];
+        if (strpos($value[$id]['value'], '#') === false) {
+            $value[$id]['value'] = $this->simiObjectManager->get('Magento\Swatches\Helper\Media')->getSwatchMediaUrl() . $value[$id]['value'];
         }
         return $value[$id]['value'];
     }

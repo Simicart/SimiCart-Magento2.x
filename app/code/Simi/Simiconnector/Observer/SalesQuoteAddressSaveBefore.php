@@ -16,7 +16,8 @@ class SalesQuoteAddressSaveBefore implements ObserverInterface
 
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $simiObjectManager
-    ) {
+    )
+    {
         $this->simiObjectManager = $simiObjectManager;
     }
 
@@ -28,7 +29,7 @@ class SalesQuoteAddressSaveBefore implements ObserverInterface
     public function _getQuote()
     {
         $cart = $this->_getCart();
-        if(!$cart)
+        if (!$cart)
             return;
         return $cart->getQuote();
     }

@@ -13,7 +13,7 @@ class Delete extends \Magento\Backend\App\Action
     public function execute()
     {
         // check if we know what should be deleted
-        $id             = $this->getRequest()->getParam('device_id');
+        $id = $this->getRequest()->getParam('device_id');
         /** @var \Magento\Backend\Model\View\Result\Redirect $resultRedirect */
         $resultRedirect = $this->resultRedirectFactory->create();
         if ($id) {
