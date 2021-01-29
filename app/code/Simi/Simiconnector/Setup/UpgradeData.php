@@ -32,7 +32,11 @@ class UpgradeData implements UpgradeDataInterface
         \Magento\Framework\App\State $state)
     {
         $this->configFactory = $configFactory;
-        $state->setAreaCode('adminhtml');
+        try {
+        	$state->setAreaCode('adminhtml');
+        } catch (\Exception $e) {
+
+        }
         $this->_pageFactory = $pageFactory;
     }
 
@@ -264,42 +268,7 @@ class UpgradeData implements UpgradeDataInterface
         }
 
         if (version_compare($context->getVersion(), '1.0.16') < 0) {
-            $index = time();
-            $configData = [
-                'section' => 'siminiaconfig',
-                'website' => null,
-                'store' => null,
-                'groups' => [
-                    'contactus' => [
-                        'fields' => [
-                            'email' => [
-                                'value' => array(
-                                    $index . '_0' => array("contact_email" => "support@simicart.com"),
-                                ),
-                            ],
-                            'hotline' => [
-                                'value' => array(
-                                    $index . '_0' => array("contact_hotline" => "+84 24 6651 7968"),
-                                ),
-                            ],
-                            'sms' => [
-                                'value' => array(
-                                    $index . '_0' => array("contact_sms" => "+84 24 6651 7968"),
-                                ),
-                            ],
-                            'website' => [
-                                'value' => array(
-                                    $index . '_0' => array("contact_website" => "https://www.simicart.com/pwa.html/"),
-                                ),
-                            ],
-                        ],
-                    ],
-                ],
-            ];
-
-            /** @var \Magento\Config\Model\Config $configModel */
-            $configModel = $this->configFactory->create(['data' => $configData]);
-            $configModel->save();
+           
         }
 
         $setup->endSetup();
