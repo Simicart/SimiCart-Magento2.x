@@ -260,10 +260,10 @@ class Address extends Data
         $is_register_mode = false;
         if (isset($billingAddress->customer_password) && $billingAddress->customer_password) {
             $is_register_mode = true;
-            $this->_getOnepage()->saveCheckoutMethod('register');
             $passwordHash     = $this->simiObjectManager
                     ->get('Magento\Customer\Model\Customer')->hashPassword($billingAddress->customer_password);
             $this->_getQuote()->setPasswordHash($passwordHash);
+            $this->_getOnepage()->saveCheckoutMethod('register');            
         } elseif ($this->simiObjectManager->get('Magento\Customer\Model\Session')->isLoggedIn()) {
             $this->_getOnepage()->saveCheckoutMethod('customer');
         } else {
