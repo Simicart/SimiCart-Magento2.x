@@ -57,13 +57,20 @@ class Categorytrees extends Apiabstract
             $beforeString .= '  --  ';
         }
         $level+=1;
+        $cacheIds = [];
         foreach ($this->categoryArray as $category) {
             if (isset($category['level']) && ($category['level'] != $level)) {
                 continue;
             }
             if (($parent_id == 0) ||
                 (($parent_id!=0) && isset($category['parent_id']) &&  ($category['parent_id']== $parent_id))) {
-                $categoryModel = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')->load($category['entity_id']);
+                $categoryModel = $this->simiObjectManager->create('\Magento\Catalog\Model\Category')->load($category['entity_id']);                
+                foreach ($categoryModel->getIdentities() as $tag) {
+               // $tag = str_replace("cat_p_", "p", $tag);
+                    if(!in_array($tag, $cacheIds)){
+                        $cacheIds[] = $tag;
+                    }                
+                }
                 $category = array_merge($category, $categoryModel->getData());
                 $category['url_path'] = isset($category['request_path'])?$category['request_path']:$category['url_path'];      
                 if (strpos($category['url_path'], '.html') === false) {
@@ -111,6 +118,7 @@ class Categorytrees extends Apiabstract
                 $optionArray[] = $category;
             }
         }
+        header("X-Magento-Tags: ".implode(",",$cacheIds));
         return $optionArray;
     }
 }

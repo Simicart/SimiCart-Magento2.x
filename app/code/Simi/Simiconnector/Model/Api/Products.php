@@ -146,6 +146,8 @@ class Products extends Apiabstract
         $image_width = isset($parameters['image_width'])?$parameters['image_width']:null;
         $image_height = isset($parameters['image_height'])?$parameters['image_height']:null;
 
+        $cacheIds = [];
+        
         foreach ($collection as $entity) {
             if (++$check_offset <= $offset) {
                 continue;
@@ -157,7 +159,12 @@ class Products extends Apiabstract
                 $entity = $this->loadProductWithId($entity->getId());
             }
             $info_detail = $entity->toArray($fields);
-
+            foreach ($entity->getIdentities() as $tag) {
+               // $tag = str_replace("cat_p_", "p", $tag);
+                if(!in_array($tag, $cacheIds)){
+                    $cacheIds[] = $tag;
+                }                
+            }
             $images       = [];
             if (!$entity->getData('media_gallery'))
                 $entity = $this->simiObjectManager
@@ -200,6 +207,7 @@ class Products extends Apiabstract
 
             $all_ids[] = $entity->getId();
         }
+        header("X-Magento-Tags: ".implode(",",$cacheIds));
         return $this->getList($info, $all_ids, $total, $limit, $offset);
     }
 
@@ -275,6 +283,14 @@ class Products extends Apiabstract
         $info['product_video']    = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Simivideo')->getProductVideo($entity);
         $this->detail_info        = $this->getDetail($info);
+        $cacheIds = [];
+        foreach ($entity->getIdentities() as $tag) {
+           // $tag = str_replace("cat_p_", "p", $tag);
+            if(!in_array($tag, $cacheIds)){
+                $cacheIds[] = $tag;
+            }                
+        }
+        header("X-Magento-Tags: ".implode(",",$cacheIds));
         $this->eventManager->dispatch(
             'simi_simiconnector_model_api_products_show_after',
             ['object' => $this, 'data' => $this->detail_info]
