@@ -51,10 +51,48 @@ class V2 extends Action
         return $serverModel;
     }
 
+    private function _noCache(){
+        $data = $this->_getServer()->getData();
+        switch ($data['resource']) {
+            case 'orders':              
+            case 'customers':                
+            case 'addresses':
+            case 'storeviews':
+            case 'quoteitems':
+            case 'sociallogins':
+                # code...
+                break;
+            default:
+                # code...
+                return false;
+                break;
+        }
+        return true;
+    }
     private function _printData($result)
     {
+        $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+        $customerSession = $objectManager->get('Magento\Customer\Model\Session');        
         try {
             $this->getResponse()->setHeader('Content-Type', 'application/json');
+            $data = $this->_getServer()->getData();
+            if((isset($data['resource']) && $this->_noCache()) 
+                || (isset($_GET['email']) && $_GET['email'])
+                || $customerSession->isLoggedIn()){    
+                $this->getResponse()->setNoCacheHeaders();
+            }else{           
+                if(isset($data['resource']) && ($data['resource'] != 'products' || $data['resource'] != 'categories'
+                    || $data['resource'] != 'categorytrees')){
+                    header("X-Magento-Tags: cms_b");
+                    if($data['resource'] == 'homes'){
+                        header("X-Magento-Tags: cms_b,cms_b_homes");
+                        if(isset($data['resourceid']) && $data['resourceid'] == 'lite'){
+                            header("X-Magento-Tags: cms_b,cms_b_homelite");
+                        }
+                    }
+                }                                
+                $this->getResponse()->setPublicHeaders($objectManager->get('\Magento\Framework\App\Config\ScopeConfigInterface')->getValue('system/full_page_cache/ttl'));
+            }            
             $this->setData($result);
             $this->_eventManager
                 ->dispatch('SimiconnectorRest', ['object' => $this, 'data' => $result]);

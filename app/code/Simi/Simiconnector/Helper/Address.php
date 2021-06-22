@@ -167,7 +167,7 @@ class Address extends Data
         if ($this->getStoreConfig('simiconnector/hideaddress/hideaddress_enable')) {
             $this->applyDefaultValue($data);
         }
-        foreach ((array)$data as $index => $info) {
+        foreach ((array) $data as $index => $info) {
             $address[$index] = $info;
         }
         if (isset($data->street)) {
@@ -175,7 +175,7 @@ class Address extends Data
         }
         return $address;
     }
-
+    
     public function applyDefaultValue(&$data)
     {
         if (!isset($data->country_id) && !isset($data->country_name) || empty($data->country_id)) {
@@ -260,10 +260,10 @@ class Address extends Data
         $is_register_mode = false;
         if (isset($billingAddress->customer_password) && $billingAddress->customer_password) {
             $is_register_mode = true;
-            $this->_getOnepage()->saveCheckoutMethod('register');
-            $passwordHash = $this->simiObjectManager
-                ->get('Magento\Customer\Model\Customer')->hashPassword($billingAddress->customer_password);
+            $passwordHash     = $this->simiObjectManager
+                    ->get('Magento\Customer\Model\Customer')->hashPassword($billingAddress->customer_password);
             $this->_getQuote()->setPasswordHash($passwordHash);
+            $this->_getOnepage()->saveCheckoutMethod('register');            
         } elseif ($this->simiObjectManager->get('Magento\Customer\Model\Session')->isLoggedIn()) {
             $this->_getOnepage()->saveCheckoutMethod('customer');
         } else {

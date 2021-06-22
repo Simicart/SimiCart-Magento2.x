@@ -146,6 +146,8 @@ class Products extends Apiabstract
         $image_width = isset($parameters['image_width']) ? $parameters['image_width'] : null;
         $image_height = isset($parameters['image_height']) ? $parameters['image_height'] : null;
 
+        $cacheIds = [];
+        
         foreach ($collection as $entity) {
             if (++$check_offset <= $offset) {
                 continue;
@@ -157,8 +159,13 @@ class Products extends Apiabstract
                 $entity = $this->loadProductWithId($entity->getId());
             }
             $info_detail = $entity->toArray($fields);
-
-            $images = [];
+            foreach ($entity->getIdentities() as $tag) {
+               // $tag = str_replace("cat_p_", "p", $tag);
+                if(!in_array($tag, $cacheIds)){
+                    $cacheIds[] = $tag;
+                }                
+            }
+            $images       = [];
             if (!$entity->getData('media_gallery'))
                 $entity = $this->simiObjectManager
                     ->create('Magento\Catalog\Model\Product')->load($entity->getId());
@@ -174,32 +181,33 @@ class Products extends Apiabstract
                 }
             }
             if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($images) == 0) {
-                $images[] = [
-                    'url' => $this->helperProduct
+                $images[]     = [
+                    'url'      => $this->helperProduct
                         ->getImageProduct($entity, null, $image_width, $image_height),
                     'position' => 1,
                 ];
             }
 
-            $ratings = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Review')
+            $ratings      = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Review')
                 ->getRatingStar($entity->getId());
             $total_rating = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Review')
                 ->getTotalRate($ratings);
-            $avg = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Review')
+            $avg          = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Review')
                 ->getAvgRate($ratings, $total_rating);
 
-            $info_detail['images'] = $images;
-            $info_detail['app_prices'] = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Price')
+            $info_detail['images']        = $images;
+            $info_detail['app_prices']    = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Price')
                 ->formatPriceFromProduct($entity);
-            $info_detail['app_reviews'] = $this->simiObjectManager
+            $info_detail['app_reviews']      = $this->simiObjectManager
                 ->get('\Simi\Simiconnector\Helper\Review')
                 ->getProductReviews($entity->getId(), false);
             $info_detail['product_label'] = $this->simiObjectManager->get('\Simi\Simiconnector\Helper\Simiproductlabel')
                 ->getProductLabel($entity);
-            $info[] = $info_detail;
+            $info[]                       = $info_detail;
 
             $all_ids[] = $entity->getId();
         }
+        header("X-Magento-Tags: ".implode(",",$cacheIds));
         return $this->getList($info, $all_ids, $total, $limit, $offset);
     }
 
@@ -209,23 +217,23 @@ class Products extends Apiabstract
      */
     public function show()
     {
-        $entity = $this->builderQuery;
-        $data = $this->getData();
+        $entity     = $this->builderQuery;
+        $data       = $this->getData();
         $parameters = $data['params'];
-        $fields = [];
+        $fields     = [];
         if (isset($parameters['fields']) && $parameters['fields']) {
             $fields = explode(',', $parameters['fields']);
         }
-        $info = $entity->toArray($fields);
+        $info          = $entity->toArray($fields);
         $media_gallery = $entity->getMediaGallery();
-        $images = [];
-        $image_width = isset($parameters['image_width']) ? $parameters['image_width'] : null;
-        $image_height = isset($parameters['image_height']) ? $parameters['image_height'] : null;
+        $images        = [];
+        $image_width = isset($parameters['image_width'])?$parameters['image_width']:null;
+        $image_height = isset($parameters['image_height'])?$parameters['image_height']:null;
 
         foreach ($media_gallery['images'] as $image) {
             if ($image['disabled'] == 0) {
                 $images[] = [
-                    'url' => $this->helperProduct
+                    'url'      => $this->helperProduct
                         ->getImageProduct($entity, $image['file'], $image_width, $image_height),
                     'position' => $image['position'],
                 ];
@@ -233,7 +241,7 @@ class Products extends Apiabstract
         }
         if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($images) == 0) {
             $images[] = [
-                'url' => $this->helperProduct
+                'url'      => $this->helperProduct
                     ->getImageProduct($entity, null, $image_width, $image_height),
                 'position' => 1,
             ];
@@ -244,37 +252,45 @@ class Products extends Apiabstract
             $registry->register('product', $entity);
             $registry->register('current_product', $entity);
         }
-        $layout = $this->simiObjectManager->get('Magento\Framework\View\LayoutInterface');
-        $block_att = $layout->createBlock('Magento\Catalog\Block\Product\View\Attributes');
+        $layout      = $this->simiObjectManager->get('Magento\Framework\View\LayoutInterface');
+        $block_att   = $layout->createBlock('Magento\Catalog\Block\Product\View\Attributes');
         $_additional = $block_att->getAdditionalData();
 
-        $ratings = $this->simiObjectManager
+        $ratings      = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Review')->getRatingStar($entity->getId());
         $total_rating = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Review')->getTotalRate($ratings);
-        $avg = $this->simiObjectManager
+        $avg          = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Review')->getAvgRate($ratings, $total_rating);
 
-        $info['additional'] = $_additional;
-        $info['images'] = $images;
-        $info['app_tier_prices'] = $this->simiObjectManager
+        $info['additional']       = $_additional;
+        $info['images']           = $images;
+        $info['app_tier_prices'] =$this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Price')->getProductTierPricesLabel($entity);
-        $info['app_prices'] = $this->simiObjectManager
+        $info['app_prices']       = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Price')->formatPriceFromProduct($entity, true);
-        $info['app_options'] = $this->simiObjectManager
+        $info['app_options']      = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Options')->getOptions($entity);
         $info['wishlist_item_id'] = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Wishlist')->getWishlistItemId($entity);
-        $info['product_label'] = $this->simiObjectManager
+        $info['product_label']    = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Simiproductlabel')->getProductLabel($entity);
-        $info['app_reviews'] = $this->simiObjectManager
+        $info['app_reviews']      = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Review')
             ->getProductReviews($entity->getId());
-        $info['product_label'] = $this->simiObjectManager
+        $info['product_label']    = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Simiproductlabel')->getProductLabel($entity);
-        $info['product_video'] = $this->simiObjectManager
+        $info['product_video']    = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Simivideo')->getProductVideo($entity);
-        $this->detail_info = $this->getDetail($info);
+        $this->detail_info        = $this->getDetail($info);
+        $cacheIds = [];
+        foreach ($entity->getIdentities() as $tag) {
+           // $tag = str_replace("cat_p_", "p", $tag);
+            if(!in_array($tag, $cacheIds)){
+                $cacheIds[] = $tag;
+            }                
+        }
+        header("X-Magento-Tags: ".implode(",",$cacheIds));
         $this->eventManager->dispatch(
             'simi_simiconnector_model_api_products_show_after',
             ['object' => $this, 'data' => $this->detail_info]

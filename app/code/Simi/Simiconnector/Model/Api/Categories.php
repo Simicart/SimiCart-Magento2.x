@@ -60,10 +60,17 @@ class Categories extends Apiabstract
     public function index()
     {
         $result = parent::index();
+        $cacheIds = [];
         foreach ($result['categories'] as $index => $catData) {
             $categoryModel = $this->simiObjectManager
                 ->create('\Magento\Catalog\Model\Category')
-                ->load($catData['entity_id']);
+                ->load($catData['entity_id']);        
+            foreach ($categoryModel->getIdentities() as $tag) {
+               // $tag = str_replace("cat_p_", "p", $tag);
+                if(!in_array($tag, $cacheIds)){
+                    $cacheIds[] = $tag;
+                }                
+            }
             $catData = array_merge($catData, $categoryModel->getData());
             if (isset($catData['request_path'])) {
                 $catData['url_path'] = $catData['request_path'];
@@ -99,6 +106,7 @@ class Categories extends Apiabstract
             }
             $result['categories'][$index] = $catData;
         }
+        header("X-Magento-Tags: ".implode(",",$cacheIds));
         return $result;
     }
 
