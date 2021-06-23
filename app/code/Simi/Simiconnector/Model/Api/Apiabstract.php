@@ -161,7 +161,10 @@ abstract class Apiabstract
         $collection = $this->builderQuery;
         $this->filter();
         $data = $this->getData();
-        $parameters = $data['params'];
+        $parameters = null;
+        if (isset($data['params'])) {
+            $parameters = $data['params'];
+        }        
         $page = 1;
         if (isset($parameters[self::PAGE]) && $parameters[self::PAGE]) {
             $page = $parameters[self::PAGE];
@@ -312,7 +315,10 @@ abstract class Apiabstract
             return;
         }
         $data = $this->data;
-        $parameters = $data['params'];
+        $parameters = null;
+        if (isset($data['params'])) {
+            $parameters = $data['params'];
+        }
         $query = $this->builderQuery;
         $this->_whereFilter($query, $parameters);
         $this->_order($parameters);
@@ -391,7 +397,10 @@ abstract class Apiabstract
     public function modifyFields($content)
     {
         $data = $this->getData();
-        $parameters = $data['params'];
+        $parameters = null;
+        if (isset($data['params'])) {
+            $parameters = $data['params'];
+        }
         if (isset($parameters['fields']) && $parameters['fields']) {
             $fields = explode(',', $parameters['fields']);
             $modify = [];
