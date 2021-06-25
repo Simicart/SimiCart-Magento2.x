@@ -136,8 +136,7 @@ abstract class Apiabstract
      * get Return Message
      * @return message (array or string)
      */
-    public function getMessage()
-    {
+    public function getMessage() {
         return $this->message;
     }
 
@@ -145,8 +144,7 @@ abstract class Apiabstract
      * Set Return Message
      * @return message (array or string)
      */
-    public function setMessage($messsage)
-    {
+    public function setMessage($messsage) {
         $this->message = $messsage;
         return $this;
     }
@@ -161,7 +159,10 @@ abstract class Apiabstract
         $collection = $this->builderQuery;
         $this->filter();
         $data = $this->getData();
-        $parameters = $data['params'];
+        $parameters = null;
+        if (isset($data['params'])) {
+            $parameters = $data['params'];
+        }        
         $page = 1;
         if (isset($parameters[self::PAGE]) && $parameters[self::PAGE]) {
             $page = $parameters[self::PAGE];
@@ -209,18 +210,13 @@ abstract class Apiabstract
     }
 
     //Limit - dir - order
-    public function getDefaultLimit()
-    {
+    public function getDefaultLimit() {
         return self::DEFAULT_LIMIT;
     }
-
-    public function getDefaultDir()
-    {
+    public function getDefaultDir() {
         return self::DEFAULT_DIR;
     }
-
-    public function getDefaultOrder()
-    {
+    public function getDefaultOrder() {
         return $this->DEFAULT_ORDER;
     }
 
@@ -262,7 +258,7 @@ abstract class Apiabstract
         $result = [];
         if ($data['is_method'] == 1) {
             if (isset($data['resourceid']) && $data['resourceid'] != '') {
-                $result = $this->show($data['resourceid']);
+                $result =  $this->show($data['resourceid']);
             } else {
                 $result = $this->index();
             }
@@ -312,7 +308,10 @@ abstract class Apiabstract
             return;
         }
         $data = $this->data;
-        $parameters = $data['params'];
+        $parameters = null;
+        if (isset($data['params'])) {
+            $parameters = $data['params'];
+        }
         $query = $this->builderQuery;
         $this->_whereFilter($query, $parameters);
         $this->_order($parameters);
@@ -374,7 +373,7 @@ abstract class Apiabstract
 
     public function getStoreConfig($path)
     {
-        return $this->scopeConfig->getValue($path, \Magento\Store\Model\ScopeInterface::SCOPE_STORE, $this->storeManager->getStore()->getCode());
+        return $this->scopeConfig->getValue($path,\Magento\Store\Model\ScopeInterface::SCOPE_STORE,$this->storeManager->getStore()->getCode());
     }
 
     /**
@@ -391,7 +390,10 @@ abstract class Apiabstract
     public function modifyFields($content)
     {
         $data = $this->getData();
-        $parameters = $data['params'];
+        $parameters = null;
+        if (isset($data['params'])) {
+            $parameters = $data['params'];
+        }
         if (isset($parameters['fields']) && $parameters['fields']) {
             $fields = explode(',', $parameters['fields']);
             $modify = [];
