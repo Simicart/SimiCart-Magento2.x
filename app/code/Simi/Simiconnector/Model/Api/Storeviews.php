@@ -381,9 +381,9 @@ class Storeviews extends Apiabstract
             if ($cache) {
                 array_unshift($list, $cache);
             }
-            $this->simiObjectManager
-                ->get('Magento\Framework\App\CacheInterface')
-                ->save(json_encode($list), $cacheId);
+            // $this->simiObjectManager
+            //     ->get('Magento\Framework\App\CacheInterface')
+            //     ->save(json_encode($list), $cacheId);
             return $list;
         }
     }
