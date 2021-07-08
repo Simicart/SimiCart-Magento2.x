@@ -20,7 +20,50 @@ class Customer extends Data
     }
 
     public function renewCustomerSession($data)
-    {
+    {        
+        $storeManager = $this->simiObjectManager
+                ->get('Magento\Store\Model\StoreManagerInterface');
+        if (isset($data['params']['storeid']) && $data['params']['storeid']) {
+            $simiStoreId = $data['params']['storeid'];
+            if((int)$storeManager->getStore()->getId() != (int)$simiStoreId){
+                $storeRepository = $this->simiObjectManager->get('\Magento\Store\Api\StoreRepositoryInterface');
+                $storeCookieManager = $this->simiObjectManager->get('\Magento\Store\Api\StoreCookieManagerInterface');
+                $httpContext = $this->simiObjectManager->get('Magento\Framework\App\Http\Context');
+
+                try {            
+                    $storeCode = $this->simiObjectManager
+                        ->get('Magento\Store\Model\StoreManagerInterface')->getStore($simiStoreId)->getCode();
+
+                    $store = $storeRepository->getActiveStoreByCode($storeCode);
+                    $defaultStoreView = $storeManager->getDefaultStoreView();
+                    if ($defaultStoreView->getId() == $store->getId()) {
+                        $storeCookieManager->deleteStoreCookie($store);
+                    } else {
+                        $storeCookieManager->setStoreCookie($store);
+                    }
+                    $storeManager->setCurrentStore(
+                        $simiObjectManager->get('Magento\Store\Model\StoreManagerInterface')->getStore($simiStoreId)
+                    );
+
+                    $storeKey = \Magento\Store\Model\StoreManagerInterface::CONTEXT_STORE;
+                    $httpContext = $this->simiObjectManager->get('Magento\Framework\App\Http\Context');
+                    $httpContext->setValue($storeKey, $storeCode, $storeManager->getDefaultStoreView()->getCode());
+                } catch (\Exception $e) {
+
+                }
+            }            
+        }
+
+        if (isset($data['params']['currencyid']) && $data['params']['currencyid']) {                  
+            $simiCurrency = $data['params']['currencyid'];
+            if($simiCurrency != $storeManager->getStore()->getCurrentCurrencyCode()){
+                try {
+                    $storeManager->getStore()->setCurrentCurrencyCode($simiCurrency);
+                } catch (\Exception $e) {            
+
+                }            
+            }
+        }
         if (isset($data['params']['quote_id']) && $data['params']['quote_id']) {
             $quoteId = $data['params']['quote_id'];
             $quoteIdMask = $this->simiObjectManager->get('Magento\Quote\Model\QuoteIdMask');
@@ -38,17 +81,17 @@ class Customer extends Data
             }
         }
         if (($data['resource'] == 'customers')
-            && (($data['resourceid'] == 'login') || ($data['resourceid'] == 'sociallogin'))) {
+                && (($data['resourceid'] == 'login') || ($data['resourceid'] == 'sociallogin'))) {
             return;
         }
         if (isset($data['params']['email']) && isset($data['params']['simi_hash'])) {
             $data['params']['password'] = $data['params']['simi_hash'];
         } else if (isset($data['contents_array']['email'])) {
             if (isset($data['contents_array']['password'])) {
-                $data['params']['email'] = $data['contents_array']['email'];
+                $data['params']['email']    = $data['contents_array']['email'];
                 $data['params']['password'] = $data['contents_array']['password'];
             } else if (isset($data['contents_array']['simi_hash'])) {
-                $data['params']['email'] = $data['contents_array']['email'];
+                $data['params']['email']    = $data['contents_array']['email'];
                 $data['params']['password'] = $data['contents_array']['simi_hash'];
             }
         }
@@ -71,8 +114,8 @@ class Customer extends Data
     public function loginByEmailAndPass($username, $password)
     {
         $websiteId = $this->storeManager->getStore()->getWebsiteId();
-        $customer = $this->simiObjectManager->get('Magento\Customer\Model\Customer')
-            ->setWebsiteId($websiteId);
+        $customer  = $this->simiObjectManager->get('Magento\Customer\Model\Customer')
+                ->setWebsiteId($websiteId);
         if ($this->validateSimiPass($username, $password)) {
             $customer = $this->getCustomerByEmail($username);
             if ($customer->getId()) {
@@ -89,8 +132,8 @@ class Customer extends Data
     public function getCustomerByEmail($email)
     {
         return $this->simiObjectManager->get('Magento\Customer\Model\Customer')
-            ->setWebsiteId($this->storeManager->getStore()->getWebsiteId())
-            ->loadByEmail($email);
+                        ->setWebsiteId($this->storeManager->getStore()->getWebsiteId())
+                        ->loadByEmail($email);
     }
 
     public function loginByCustomer($customer)
@@ -153,23 +196,22 @@ class Customer extends Data
         }
         $encodeMethod = 'md5';
         if ($from && $from == 'social_login') {
-            if ($password == 'Simi123a@' . $encodeMethod($this->simiObjectManager
-                        ->get('Magento\Framework\App\Config\ScopeConfigInterface')
-                        ->getValue('simiconnector/general/secret_key') . $username)) {
+            if ($password == 'Simi123a@'.$encodeMethod($this->simiObjectManager
+                    ->get('Magento\Framework\App\Config\ScopeConfigInterface')
+                                ->getValue('simiconnector/general/secret_key') . $username)) {
                 return true;
             }
         }
         if ($password == $encodeMethod($this->simiObjectManager
-                    ->get('Magento\Framework\App\Config\ScopeConfigInterface')
-                    ->getValue('simiconnector/general/secret_key') . $username)) {
+                ->get('Magento\Framework\App\Config\ScopeConfigInterface')
+                                ->getValue('simiconnector/general/secret_key') . $username)) {
             return true;
         }
         return false;
     }
 
 
-    public function getToken($data)
-    {
+    public function getToken($data) {
         $customerSession = $this->_getSession();
         if ($customerSession->isLoggedIn()) {
             $customerId = $this->_getSession()->getCustomer()->getId();
@@ -187,8 +229,8 @@ class Customer extends Data
                 if (!$tokenModel->getId() || $createNewToken) {
                     $encodeMethod = 'md5';
                     $newToken = 'tk_'
-                        . $encodeMethod(rand(pow(10, 9), pow(10, 10)))
-                        . $encodeMethod(microtime());
+                    . $encodeMethod(rand(pow(10, 9), pow(10, 10)))
+                    . $encodeMethod(microtime());
                     $tokenModel->setData('token', $newToken);
                     $tokenModel->setData('customer_id', $customerId);
                     $tokenModel->setData('created_time', time());
