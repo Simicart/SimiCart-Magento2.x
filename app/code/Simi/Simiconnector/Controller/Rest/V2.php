@@ -57,7 +57,7 @@ class V2 extends Action
             case 'orders':              
             case 'customers':                
             case 'addresses':
-            case 'storeviews':
+            // case 'storeviews':
             case 'quoteitems':
             case 'sociallogins':
                 # code...
@@ -81,8 +81,8 @@ class V2 extends Action
                 || $customerSession->isLoggedIn()){    
                 $this->getResponse()->setNoCacheHeaders();
             }else{           
-                if(isset($data['resource']) && ($data['resource'] != 'products' || $data['resource'] != 'categories'
-                    || $data['resource'] != 'categorytrees')){
+                if(isset($data['resource']) && ($data['resource'] != 'products' && $data['resource'] != 'categories'
+                    && $data['resource'] != 'categorytrees')){
                     header("X-Magento-Tags: cms_b");
                     if($data['resource'] == 'homes'){
                         header("X-Magento-Tags: cms_b,cms_b_homes");
