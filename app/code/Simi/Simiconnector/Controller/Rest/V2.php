@@ -77,8 +77,8 @@ class V2 extends Action
             $this->getResponse()->setHeader('Content-Type', 'application/json');
             $data = $this->_getServer()->getData();
             if((isset($data['resource']) && $this->_noCache()) 
-                || (isset($_GET['email']) && $_GET['email'])
-                || $customerSession->isLoggedIn()){    
+                || ($this->getRequest()->getParam('email'))
+                || $customerSession->isLoggedIn()){
                 $this->getResponse()->setNoCacheHeaders();
             }else{           
                 if(isset($data['resource']) && ($data['resource'] != 'products' && $data['resource'] != 'categories'
