@@ -84,6 +84,7 @@ class Customer extends Data
                 && (($data['resourceid'] == 'login') || ($data['resourceid'] == 'sociallogin'))) {
             return;
         }
+        
         if (isset($data['params']['email']) && isset($data['params']['simi_hash'])) {
             $data['params']['password'] = $data['params']['simi_hash'];
         } else if (isset($data['contents_array']['email'])) {
@@ -97,13 +98,30 @@ class Customer extends Data
         }
 
         if (!isset($data['params']['email']) || !isset($data['params']['password'])) {
+
+             //update quote                         
+             $session = $this->simiObjectManager->get('Magento\Checkout\Model\Session');                     
+            if($session->getQuote()->getData('customer_is_guest') == 1 && $session->getQuote()->getData('customer_id') != 0){                  
+                $session->getQuote()->setData('is_active', 0)->save();
+                throw new \Simi\Simiconnector\Helper\SimiException(__("The quote is inactive. Please clear your cart"));
+            }   
             return;
         }
 
         if (($this->_getSession()->isLoggedIn()) &&
             ($this->_getSession()->getCustomer()->getEmail() == $data['params']['email'])) {
+            //update quote 
+            try{
+                $session = $this->simiObjectManager->get('Magento\Checkout\Model\Session');        
+                if($session->getQuote()->getData('customer_is_guest') == 1 && $session->getQuote()->getData('customer_id') != 0){
+                    $session->getQuote()->setData('customer_is_guest', 0)->save();
+                }            
+            }catch (Exception $e){
+
+            }
             return;
         }
+        
         try {
             $this->loginByEmailAndPass($data['params']['email'], $data['params']['password']);
         } catch (\Exception $e) {
