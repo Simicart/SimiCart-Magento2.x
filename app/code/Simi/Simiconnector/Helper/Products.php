@@ -183,9 +183,10 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         //search
         if (isset($params['filter']['q'])) {
             $this->getSearchProducts($collection, $params);
+            $collection->setVisibility($this->productVisibility->getVisibleInSearchIds());
         } else {
             $collection->addAttributeToFilter('status', ['in' => $this->productStatus->getVisibleStatusIds()]);
-            $collection->setVisibility($this->productVisibility->getVisibleInSiteIds());
+            $collection->setVisibility($this->productVisibility->getVisibleInCatalogIds()); // fix bug visibility
         }
 
 
