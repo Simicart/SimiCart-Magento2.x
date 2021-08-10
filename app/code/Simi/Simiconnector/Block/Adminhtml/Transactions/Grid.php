@@ -118,10 +118,17 @@ class Grid extends \Magento\Backend\Block\Widget\Grid\Extended
             'index' => 'base_grand_total',
         ]);
 
+        // $this->addColumn('grand_total', [
+        //     'type' => 'currency',
+        //     'header' => __('Grand Total (Purchased)'),
+        //     'index' => 'grand_total',
+        // ]);
         $this->addColumn('grand_total', [
-            'type' => 'currency',
+            'type'   => 'currency',
             'header' => __('Grand Total (Purchased)'),
-            'index' => 'grand_total',
+            'index'  => 'grand_total',
+            'currency' => 'order_currency_code',
+            'rate' => 1,
         ]);
 
         $this->addColumn('status', [
