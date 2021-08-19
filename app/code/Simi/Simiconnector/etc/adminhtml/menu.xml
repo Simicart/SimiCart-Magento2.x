@@ -40,7 +40,7 @@
         <add id="Simi_Simiconnector::productlist" title="Product Lists" module="Simi_Simiconnector" sortOrder="30"
              parent="Simi_Simiconnector::themes" action="simiconnector/productlist/"
              resource="Simi_Simiconnector::manage"/>
-        <add id="Simi_Simiconnector::cms" title="Cms Pages" module="Simi_Simiconnector" sortOrder="40"
+        <add id="Simi_Simiconnector::cms" title="Cms Pages [Native App Only]" module="Simi_Simiconnector" sortOrder="40"
              parent="Simi_Simiconnector::themes" action="simiconnector/cms/" resource="Simi_Simiconnector::manage"/>
 
         <!-- payment -->
