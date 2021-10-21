@@ -15,6 +15,7 @@ class Products extends Apiabstract
     public $sortOrders = [];
     public $detail_info;
     public $is_search = 0;
+    private $cache_cate = null;
 
     /*
      * incase the collection doens't containt the full information product
@@ -40,6 +41,7 @@ class Products extends Apiabstract
                 $filter = $parameters[self::FILTER];
                 if (isset($filter['cat_id'])) {
                     $this->setFilterByCategoryId($filter['cat_id']);
+                    $this->cache_cate = $filter['cat_id'];
                 } elseif (isset($filter['q'])) {
                     $this->is_search = 1;
                     $this->setFilterByQuery();
@@ -49,10 +51,12 @@ class Products extends Apiabstract
                     $this->setFilterBySpot($filter['spot_product']);
                 } else {
                     $this->setFilterByCategoryId($this->storeManager->getStore()->getRootCategoryId());
+                    $this->cache_cate = $this->storeManager->getStore()->getRootCategoryId();
                 }
             } else {
                 //all products
                 $this->setFilterByCategoryId($this->storeManager->getStore()->getRootCategoryId());
+                $this->cache_cate = $this->storeManager->getStore()->getRootCategoryId();
             }
         }
     }
@@ -207,7 +211,13 @@ class Products extends Apiabstract
 
             $all_ids[] = $entity->getId();
         }
-        header("X-Magento-Tags: ".implode(",",$cacheIds));
+        //header("X-Magento-Tags: ".implode(",",$cacheIds));
+        $cacheIds = implode(",",$cacheIds);
+        if($this->cache_cate){
+            //cp_ and c_ for fastly 
+            $cacheIds .= ",cat_c_p_".$this->cache_cate.",cat_c_".$this->cache_cate;
+        }
+        header("X-Magento-Tags: ".$cacheIds);
         return $this->getList($info, $all_ids, $total, $limit, $offset);
     }
 
