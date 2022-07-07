@@ -58,6 +58,33 @@ class Customers extends Apiabstract
                         ->get('Magento\Customer\Model\Session')->getCustomer();
                     $this->builderQuery->setData('wishlist_count', $this->getWishlistCount());
                     break;
+                case 'deactivate':
+                    $customerId = $this->simiObjectManager->get('Magento\Customer\Model\Session')->getId();
+                    $this->builderQuery = $this->simiObjectManager
+                        ->get('Magento\Customer\Model\Customer')->load($customerId);
+                    // Lock
+                    $customerRegistry = $this->simiObjectManager->get('\Magento\Customer\Model\CustomerRegistry');
+                    $customerSecure = $customerRegistry->retrieveSecureData($customerId);
+                    $dateTime = new \DateTimeImmutable();
+                    $customerSecure->setFailuresNum(10)
+                        ->setFirstFailure($dateTime->modify('-5 minutes')
+                            ->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT))
+                        ->setLockExpires($dateTime->modify('+5 years')
+                            ->format(\Magento\Framework\Stdlib\DateTime::DATETIME_PHP_FORMAT));
+                    $this->simiObjectManager->get('\Magento\Customer\Model\CustomerAuthUpdate')
+                        ->saveAuth($customerId);
+                        
+                    $this->RETURN_MESSAGE = __('The request has been successfully submitted.');
+                    // Then logout
+                    if ($this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')->logout()) {
+                        //fix bug logout not clear old quote
+                        $cart = $this->simiObjectManager->get('Magento\Checkout\Model\Cart');
+                        $quote = $this->simiObjectManager->create('Magento\Quote\Model\Quote');
+                        $cart->setQuote($quote);
+                        $newCustomer = $this->simiObjectManager->create('Magento\Customer\Model\Customer');
+                        $this->simiObjectManager->get('Magento\Customer\Model\Session')->setCustomer($newCustomer);
+                    }
+                    break;
                 case 'login':
                     if ($this->simiObjectManager->get('Simi\Simiconnector\Model\Customer')->login($data)) {
                         $this->builderQuery = $this->simiObjectManager

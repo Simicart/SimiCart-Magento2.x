@@ -134,6 +134,19 @@ class Customer extends Data
         $websiteId = $this->storeManager->getStore()->getWebsiteId();
         $customer  = $this->simiObjectManager->get('Magento\Customer\Model\Customer')
                 ->setWebsiteId($websiteId);
+
+        //check is locked first
+        $findCustomer = $this->simiObjectManager->create('Magento\Customer\Model\Customer')
+            ->getCollection()->addAttributeToFilter('email', $username)
+            ->getFirstItem();
+        if ($findCustomer->getId()) {
+            $isLocked = $this->simiObjectManager->get('Magento\Customer\Model\Authentication')
+                ->isLocked($findCustomer->getId());
+            if ($isLocked){
+                return false;
+            }
+        }
+        
         if ($this->validateSimiPass($username, $password)) {
             $customer = $this->getCustomerByEmail($username);
             if ($customer->getId()) {
