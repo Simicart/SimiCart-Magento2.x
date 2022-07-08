@@ -273,9 +273,12 @@ class Products extends Apiabstract
         $avg          = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Review')->getAvgRate($ratings, $total_rating);
 
+        $fitlerCMS = $this->simiObjectManager->get('\Magento\Cms\Model\Template\FilterProvider')
+            ->getPageFilter()->filter($entity->getDescription());            
+        $info['description']       = $fitlerCMS;
         $info['additional']       = $_additional;
         $info['images']           = $images;
-        $info['app_tier_prices'] =$this->simiObjectManager
+        $info['app_tier_prices'] = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Price')->getProductTierPricesLabel($entity);
         $info['app_prices']       = $this->simiObjectManager
             ->get('\Simi\Simiconnector\Helper\Price')->formatPriceFromProduct($entity, true);
