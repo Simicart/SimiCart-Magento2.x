@@ -1,0 +1,242 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="simiconnector_simicategory" resource="default" engine="innodb" comment="Category">
+        <column xsi:type="int" name="simicategory_id" nullable="false" identity="true" comment="Cate Id"/>
+        <column xsi:type="varchar" length="254" name="simicategory_name" nullable="false" comment="Cat Name" default=""/>
+        <column xsi:type="varchar" length="254" name="simicategory_filename" nullable="true" comment="File Name"/>
+        <column xsi:type="varchar" length="254" name="simicategory_filename_tablet" nullable="true" comment="File Name Tablet"/>
+        <column xsi:type="int" name="category_id" nullable="true" comment="Category Id"/>
+        <column xsi:type="int" name="status" nullable="true" comment="Status"/>
+        <column xsi:type="int" name="website_id" nullable="true" comment="Website Id"/>
+        <column xsi:type="varchar" length="254" name="storeview_id" nullable="true" comment="Storeview Id"/>
+        <column xsi:type="int" name="sort_order" nullable="true" comment="Sort Order"/>
+        <column xsi:type="varchar" length="254" name="matrix_width_percent" nullable="true" comment="Width Percent"/>
+        <column xsi:type="varchar" length="254" name="matrix_height_percent" nullable="true" comment="Height Percent"/>
+        <column xsi:type="varchar" length="254" name="matrix_width_percent_tablet" nullable="true" comment="Width Percent tablet"/>
+        <column xsi:type="varchar" length="254" name="matrix_height_percent_tablet" nullable="true" comment="Height Percent tablet"/>
+        <column xsi:type="varchar" length="254" name="matrix_row" nullable="true" comment="Rownum"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="simicategory_id"/>
+        </constraint>
+    </table>
+    <table name="simiconnector_banner" resource="default" engine="innodb" comment="Banner">
+        <column xsi:type="int" name="banner_id" nullable="false" identity="true" comment="Banner Id"/>
+        <column xsi:type="varchar" length="254" name="banner_name" nullable="true" comment="Banner Name" default=""/>
+        <column xsi:type="varchar" length="254" name="banner_url" nullable="false" comment="Banner Url" default=""/>
+        <column xsi:type="varchar" length="254" name="banner_name_tablet" nullable="true" comment="Banner Name Tablet"/>
+        <column xsi:type="varchar" length="254" name="banner_title" nullable="true" comment="Banner Title"/>
+        <column xsi:type="int" name="status" nullable="true" comment="Status"/>
+        <column xsi:type="int" name="website_id" nullable="true" comment="Website Id"/>
+        <column xsi:type="int" name="type" nullable="true" comment="Type"/>
+        <column xsi:type="int" name="category_id" nullable="true" comment="Category Id"/>
+        <column xsi:type="int" name="product_id" nullable="true" comment="Product Id"/>
+        <column xsi:type="int" name="sort_order" nullable="true" comment="Sort Order"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="banner_id"/>
+        </constraint>
+    </table>
+    <table name="simiconnector_cms" resource="default" engine="innodb" comment="CMS">
+        <column xsi:type="int" name="cms_id" nullable="false" identity="true" comment="CMS Id"/>
+        <column xsi:type="varchar" length="254" name="cms_title" nullable="true" comment="CMS Title"/>
+        <column xsi:type="varchar" length="254" name="cms_image" nullable="true" comment="CMS image"/>
+        <column xsi:type="longtext" name="cms_content" nullable="true" comment="CMS Content"/>
+        <column xsi:type="int" name="cms_status" nullable="true" comment="CMS Status"/>
+        <column xsi:type="int" name="website_id" nullable="true" comment="Website Id"/>
+        <column xsi:type="int" name="type" nullable="true" comment="CMS type"/>
+        <column xsi:type="int" name="category_id" nullable="true" comment="Category Id"/>
+        <column xsi:type="int" name="sort_order" nullable="true" comment="Sort Order"/>
+        <column xsi:type="varchar" length="254" name="cms_script" nullable="true" comment="CMS Script"/>
+        <column xsi:type="varchar" length="254" name="cms_url" nullable="true" comment="CMS URL"/>
+        <column xsi:type="varchar" length="254" name="cms_meta_title" nullable="true" comment="CMS Meta title"/>
+        <column xsi:type="varchar" length="254" name="cms_meta_desc" nullable="true" comment="Cms Meta DescriptionÏ"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="cms_id"/>
+        </constraint>
+    </table>
+    <table name="simiconnector_product_list" resource="default" engine="innodb" comment="Product List">
+        <column xsi:type="int" name="productlist_id" nullable="false" identity="true" comment="Product List Id"/>
+        <column xsi:type="varchar" length="254" name="list_title" nullable="true" comment="List Title"/>
+        <column xsi:type="varchar" length="254" name="list_image" nullable="true" comment="List image"/>
+        <column xsi:type="varchar" length="254" name="list_image_tablet" nullable="true" comment="List image tablet"/>
+        <column xsi:type="int" name="list_type" nullable="true" comment="List type"/>
+        <column xsi:type="longtext" name="list_products" nullable="true" comment="List Products"/>
+        <column xsi:type="int" name="list_status" nullable="true" comment="List Status"/>
+        <column xsi:type="int" name="sort_order" nullable="true" comment="Sort Order"/>
+        <column xsi:type="int" name="category_id" nullable="true" comment="Category Id"/>
+        <column xsi:type="varchar" length="254" name="matrix_width_percent" nullable="true" comment="Width Percent"/>
+        <column xsi:type="varchar" length="254" name="matrix_height_percent" nullable="true" comment="Height Percent"/>
+        <column xsi:type="varchar" length="254" name="matrix_width_percent_tablet" nullable="true" comment="Width Percent tablet"/>
+        <column xsi:type="varchar" length="254" name="matrix_height_percent_tablet" nullable="true" comment="Height Percent tablet"/>
+        <column xsi:type="varchar" length="254" name="matrix_row" nullable="true" comment="Rownum"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="productlist_id"/>
+        </constraint>
+    </table>
+    <table name="simiconnector_visibility" resource="default" engine="innodb" comment="Visibility Table">
+        <column xsi:type="int" name="entity_id" nullable="false" identity="true" comment="Entity Id"/>
+        <column xsi:type="int" name="content_type" nullable="true" comment="Content Type"/>
+        <column xsi:type="int" name="item_id" nullable="true" comment="Item Id"/>
+        <column xsi:type="varchar" length="254" name="storeview_id" nullable="true" comment="Storeview Id"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+    </table>
+    <table name="simiconnector_device" resource="default" engine="innodb" comment="Devices">
+        <column xsi:type="int" name="device_id" nullable="false" identity="true" comment="Device Id"/>
+        <column xsi:type="varchar" length="254" name="device_token" nullable="true" comment="Device Token"/>
+        <column xsi:type="int" name="plaform_id" nullable="true" comment="Platform Id"/>
+        <column xsi:type="int" name="storeview_id" nullable="true" comment="Storeview Id"/>
+        <column xsi:type="varchar" length="254" name="latitude" nullable="true" comment="latitude"/>
+        <column xsi:type="varchar" length="254" name="longitude" nullable="true" comment="longitude"/>
+        <column xsi:type="varchar" length="254" name="address" nullable="true" comment="Address"/>
+        <column xsi:type="varchar" length="254" name="city" nullable="true" comment="City"/>
+        <column xsi:type="varchar" length="254" name="country" nullable="true" comment="Country"/>
+        <column xsi:type="varchar" length="254" name="zipcode" nullable="true" comment="Zipcode"/>
+        <column xsi:type="varchar" length="254" name="state" nullable="true" comment="State"/>
+        <column xsi:type="timestamp" name="created_time" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <column xsi:type="tinyint" name="is_demo" nullable="true" comment="Is Demo" />
+        <column xsi:type="varchar" length="254" name="user_email" nullable="true" comment="User Email"/>
+        <column xsi:type="varchar" length="254" name="app_id" nullable="true" comment="App Id"/>
+        <column xsi:type="varchar" length="254" name="build_version" nullable="true" comment="Build Version"/>
+        <column xsi:type="varchar" length="254" name="device_ip" nullable="true" comment="Device IP"/>
+        <column xsi:type="varchar" length="254" name="device_user_agent" nullable="true" comment="User Agent"/>
+        <column xsi:type="int" name="unseen_count" nullable="true" comment="Unseen Count"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="device_id"/>
+        </constraint>
+    </table>
+    <table name="simiconnector_notice" resource="default" engine="innodb" comment="Notice">
+        <column xsi:type="int" name="notice_id" nullable="false" identity="true" comment="Notice Id"/>
+        <column xsi:type="varchar" length="254" name="notice_title" nullable="true" comment="Notice Title"/>
+        <column xsi:type="varchar" length="254" name="notice_url" nullable="true" comment="Notice URL"/>
+        <column xsi:type="longtext" name="notice_content" nullable="true" comment="Notice Content"/>
+        <column xsi:type="tinyint" name="notice_sanbox" nullable="true" comment="Notice Sandbox" />
+        <column xsi:type="int" name="storeview_id" nullable="true" comment="Storeview Id"/>
+        <column xsi:type="int" name="device_id" nullable="true" comment="Device Id"/>
+        <column xsi:type="tinyint" name="type" nullable="true" comment="Type" />
+        <column xsi:type="int" name="category_id" nullable="true" comment="Category Id"/>
+        <column xsi:type="int" name="product_id" nullable="true" comment="Product Id"/>
+        <column xsi:type="varchar" length="254" name="image_url" nullable="true" comment="image_url"/>
+        <column xsi:type="varchar" length="254" name="location" nullable="true" comment="location"/>
+        <column xsi:type="varchar" length="254" name="distance" nullable="true" comment="distance"/>
+        <column xsi:type="varchar" length="254" name="address" nullable="true" comment="address"/>
+        <column xsi:type="varchar" length="254" name="city" nullable="true" comment="city"/>
+        <column xsi:type="varchar" length="254" name="country" nullable="true" comment="Country"/>
+        <column xsi:type="varchar" length="254" name="state" nullable="true" comment="State"/>
+        <column xsi:type="varchar" length="254" name="zipcode" nullable="true" comment="Zipcode"/>
+        <column xsi:type="tinyint" name="show_popup" nullable="true" comment="Show popup" />
+        <column xsi:type="longtext" name="devices_pushed" nullable="true" comment="Devices Pushed"/>
+        <column xsi:type="timestamp" name="created_time" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="notice_id"/>
+        </constraint>
+    </table>
+    <table name="simiconnector_notice_history" resource="default" engine="innodb" comment="Notice History">
+        <column xsi:type="int" name="history_id" nullable="false" identity="true" comment="History Id"/>
+        <column xsi:type="varchar" length="254" name="notice_title" nullable="true" comment="Notice Title"/>
+        <column xsi:type="varchar" length="254" name="notice_url" nullable="true" comment="Notice URL"/>
+        <column xsi:type="longtext" name="notice_content" nullable="true" comment="Notice Content"/>
+        <column xsi:type="tinyint" name="notice_sanbox" nullable="true" comment="Notice Sandbox" />
+        <column xsi:type="int" name="storeview_id" nullable="true" comment="Storeview Id"/>
+        <column xsi:type="int" name="device_id" nullable="true" comment="Device Id"/>
+        <column xsi:type="tinyint" name="type" nullable="true" comment="Type" />
+        <column xsi:type="int" name="category_id" nullable="true" comment="Category Id"/>
+        <column xsi:type="int" name="product_id" nullable="true" comment="Product Id"/>
+        <column xsi:type="varchar" length="254" name="image_url" nullable="true" comment="image_url"/>
+        <column xsi:type="varchar" length="254" name="location" nullable="true" comment="location"/>
+        <column xsi:type="varchar" length="254" name="distance" nullable="true" comment="distance"/>
+        <column xsi:type="varchar" length="254" name="address" nullable="true" comment="address"/>
+        <column xsi:type="varchar" length="254" name="city" nullable="true" comment="city"/>
+        <column xsi:type="varchar" length="254" name="country" nullable="true" comment="Country"/>
+        <column xsi:type="varchar" length="254" name="state" nullable="true" comment="State"/>
+        <column xsi:type="varchar" length="254" name="zipcode" nullable="true" comment="Zipcode"/>
+        <column xsi:type="tinyint" name="show_popup" nullable="true" comment="Show popup" />
+        <column xsi:type="tinyint" name="notice_type" nullable="true" comment="Notice Type" />
+        <column xsi:type="tinyint" name="status" nullable="true" comment="Status" />
+        <column xsi:type="longtext" name="devices_pushed" nullable="true" comment="Devices Pushed"/>
+        <column xsi:type="int" name="notice_id" nullable="true" comment="Notice Id"/>
+        <column xsi:type="timestamp" name="created_time" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="history_id"/>
+        </constraint>
+    </table>
+    <table name="simiconnector_simibarcode" resource="default" engine="innodb" comment="Barcode">
+        <column xsi:type="int" name="barcode_id" nullable="false" identity="true" comment="Barcode Id"/>
+        <column xsi:type="varchar" length="254" name="barcode" nullable="true" comment="Barcode"/>
+        <column xsi:type="varchar" length="254" name="qrcode" nullable="true" comment="QR Code"/>
+        <column xsi:type="tinyint" name="barcode_status" nullable="true" comment="Status" />
+        <column xsi:type="int" name="product_entity_id" nullable="true" comment="Product Id"/>
+        <column xsi:type="varchar" length="254" name="product_name" nullable="true" comment="Product Name"/>
+        <column xsi:type="varchar" length="254" name="product_sku" nullable="true" comment="Product SKU"/>
+        <column xsi:type="timestamp" name="created_date" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="barcode_id"/>
+        </constraint>
+    </table>
+    <table name="simiconnector_videos" resource="default" engine="innodb" comment="Video">
+        <column xsi:type="int" name="video_id" nullable="false" identity="true" comment="Video Id"/>
+        <column xsi:type="varchar" length="254" name="video_url" nullable="true" comment="Video URL"/>
+        <column xsi:type="varchar" length="254" name="video_key" nullable="true" comment="Video Key"/>
+        <column xsi:type="varchar" length="254" name="video_title" nullable="true" comment="Video Title"/>
+        <column xsi:type="longtext" name="product_ids" nullable="true" comment="Product Ids"/>
+        <column xsi:type="int" name="storeview_id" nullable="true" comment="Storeview Id"/>
+        <column xsi:type="tinyint" name="status" nullable="true" comment="Status" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="video_id"/>
+        </constraint>
+    </table>
+    <table name="simiconnector_transactions" resource="default" engine="innodb" comment="Transactions">
+        <column xsi:type="int" name="transaction_id" nullable="false" identity="true" comment="Transaction Id"/>
+        <column xsi:type="int" name="order_id" nullable="true" comment="Order Id"/>
+        <column xsi:type="int" name="platform" nullable="false" default="0" comment="Order made from"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="transaction_id"/>
+        </constraint>
+    </table>
+    <table name="simiconnector_productlabels" resource="default" engine="innodb" comment="Product Label">
+        <column xsi:type="int" name="label_id" nullable="false" identity="true" comment="Label Id"/>
+        <column xsi:type="int" name="storeview_id" nullable="true" comment="Storeview Id"/>
+        <column xsi:type="varchar" length="254" name="name" nullable="true" comment="Name"/>
+        <column xsi:type="longtext" name="description" nullable="true" comment="Description"/>
+        <column xsi:type="tinyint" name="status" nullable="true" comment="Status" />
+        <column xsi:type="longtext" name="product_ids" nullable="true" comment="Product Ids"/>
+        <column xsi:type="timestamp" name="from_date" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="From Date"/>
+        <column xsi:type="timestamp" name="to_date" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="To Date"/>
+        <column xsi:type="int" name="priority" nullable="true" comment="Priority"/>
+        <column xsi:type="longtext" name="conditions_serialized" nullable="true" comment="Condition"/>
+        <column xsi:type="varchar" length="254" name="text" nullable="true" comment="Text"/>
+        <column xsi:type="varchar" length="254" name="image" nullable="true" comment="Image"/>
+        <column xsi:type="int" name="position" nullable="true" comment="position"/>
+        <column xsi:type="int" name="display" nullable="true" comment="display"/>
+        <column xsi:type="varchar" length="254" name="category_text" nullable="true" comment="Category Text"/>
+        <column xsi:type="varchar" length="254" name="category_image" nullable="true" comment="Category Image"/>
+        <column xsi:type="int" name="category_position" nullable="true" comment="category_position"/>
+        <column xsi:type="int" name="category_display" nullable="true" comment="category_display"/>
+        <column xsi:type="int" name="is_auto_fill" nullable="true" comment="is_auto_fill"/>
+        <column xsi:type="timestamp" name="created_time" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created Time"/>
+        <column xsi:type="timestamp" name="update_time" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated Time"/>
+        <column xsi:type="varchar" length="254" name="condition_selected" nullable="true" comment="condition selected"/>
+        <column xsi:type="int" name="threshold" nullable="true" comment="threshold"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="label_id"/>
+        </constraint>
+    </table>
+    <table name="simipwa_social_customer_mapping" resource="default" engine="innodb" comment="Customer Mapping">
+        <column xsi:type="int" name="id" nullable="false" identity="true" comment="Mapping Id"/>
+        <column xsi:type="int" name="customer_id" nullable="true" comment="Customer Id"/>
+        <column xsi:type="varchar" length="254" name="social_user_id" nullable="true" comment="Social User Id"/>
+        <column xsi:type="varchar" length="254" name="provider_id" nullable="true" comment="Provider Id"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
+    <table name="simiconnector_customer_token" resource="default" engine="innodb" comment="Customer Token">
+        <column xsi:type="int" name="id" nullable="false" identity="true" comment="Token Id"/>
+        <column xsi:type="int" name="customer_id" nullable="true" comment="Customer Id"/>
+        <column xsi:type="varchar" length="254" name="token" nullable="true" comment="Token"/>
+        <column xsi:type="timestamp" name="created_time" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created Time"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
+</schema>

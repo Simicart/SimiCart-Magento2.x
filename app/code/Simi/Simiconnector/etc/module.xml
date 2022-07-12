@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="../../../../../lib/internal/Magento/Framework/Module/etc/module.xsd">
-    <module name="Simi_Simiconnector" setup_version="1.0.18" schema_version="1.0.0">
+    <module name="Simi_Simiconnector" setup_version="1.0.19" schema_version="1.0.0">
     </module>
 </config>
