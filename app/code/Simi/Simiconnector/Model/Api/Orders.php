@@ -8,10 +8,11 @@ namespace Simi\Simiconnector\Model\Api;
 
 class Orders extends Apiabstract
 {
+    public const METHOD_GUEST = 'guest';
 
     public $DEFAULT_ORDER = 'entity_id';
     public $RETURN_MESSAGE;
-    public $QUOTE_INITED = false;
+    public $QUOTE_INITED  = false;
     public $detail_onepage;
     public $place_order;
     public $order_placed_info;
@@ -188,14 +189,16 @@ class Orders extends Apiabstract
             foreach ($addressDataArray as $index => $dataAddressItem) {
                 $customer->setData($index, $dataAddressItem);
             }
-            $this->_getQuote()->setCustomer($customer);
+            $this->_getQuote()->setEmail($customer->getEmail());
+            $this->_getQuote()->setCustomerEmail($customer->getEmail());
+            $this->_getQuote()->setCustomer($customer)->save();
         }
         /*
          * Place Order
          */
-        $this->simiObjectManager->create('Magento\Quote\Api\CartManagementInterface')
-            ->placeOrder($this->_getQuote()->getId());
-        $order = ['invoice_number' => $this->_getCheckoutSession()->getLastRealOrderId(),
+        $this->placeOrder($this->_getQuote());
+        $order = [
+            'invoice_number' => $this->_getCheckoutSession()->getLastRealOrderId(),
             'payment_method' => $this->_getOnepage()->getQuote()->getPayment()->getMethodInstance()->getCode()
         ];
         try {
@@ -480,5 +483,46 @@ class Orders extends Apiabstract
             }
         }
         return $list;
+    }
+
+
+    public function placeOrder($quote)
+    {
+        $quote->collectTotals();
+
+        if ($quote->getCheckoutMethod() === self::METHOD_GUEST) {
+            $quote->setCustomerId(null);
+            $quote->setCustomerEmail($quote->getBillingAddress()->getEmail());
+            if ($quote->getCustomerFirstname() === null && $quote->getCustomerLastname() === null) {
+                $quote->setCustomerFirstname($quote->getBillingAddress()->getFirstname());
+                $quote->setCustomerLastname($quote->getBillingAddress()->getLastname());
+                if ($quote->getBillingAddress()->getMiddlename() === null) {
+                    $quote->setCustomerMiddlename($quote->getBillingAddress()->getMiddlename());
+                }
+            }
+            $quote->setCustomerIsGuest(true);
+            $groupId = $quote->getCustomer()->getGroupId() ?: GroupInterface::NOT_LOGGED_IN_ID;
+            $quote->setCustomerGroupId($groupId);
+        }
+
+
+        $this->eventManager->dispatch('checkout_submit_before', ['quote' => $quote]);
+
+        $order = $this->simiObjectManager->create('Magento\Quote\Api\CartManagementInterface')->submit($quote);
+
+        if (null == $order) {
+            throw new LocalizedException(
+                __('A server error stopped your order from being placed. Please try to place your order again.')
+            );
+        }
+
+        $this->_getCheckoutSession()->setLastQuoteId($quote->getId());
+        $this->_getCheckoutSession()->setLastSuccessQuoteId($quote->getId());
+        $this->_getCheckoutSession()->setLastOrderId($order->getId());
+        $this->_getCheckoutSession()->setLastRealOrderId($order->getIncrementId());
+        $this->_getCheckoutSession()->setLastOrderStatus($order->getStatus());
+
+        $this->eventManager->dispatch('checkout_submit_all_after', ['order' => $order, 'quote' => $quote]);
+        return $order->getId();
     }
 }
