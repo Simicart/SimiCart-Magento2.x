@@ -118,12 +118,12 @@ class Server
         $resources_string = $cache[1];
         $resources = explode('/', $resources_string);
         $resource = isset($resources[0]) ? $resources[0] : null;
-        if ($this->simiObjectManager
+        if ($resource && $this->simiObjectManager
                 ->get('Simi\Simiconnector\Helper\Data')->countArray($newResources = explode('?', $resource)) > 0) {
             $resource = $newResources[0];
         }
         $resourceid = isset($resources[1]) ? $resources[1] : null;
-        if ($this->simiObjectManager
+        if ($resourceid && $this->simiObjectManager
                 ->get('Simi\Simiconnector\Helper\Data')
                 ->countArray($newResourceIds = explode('?', $resourceid)) > 0) {
             $resourceid = $newResourceIds[0];
