@@ -6,17 +6,15 @@
 
 namespace Simi\Simiconnector\Helper;
 
-use Magento\Framework\App\Filesystem\DirectoryList;
 use Magento\Bundle\Model\ResourceModel\Selection as BundleSelection;
 use Magento\GroupedProduct\Model\ResourceModel\Product\Link as GroupedProductLink;
-use Magento\Framework\EntityManager\MetadataPool;
-use Magento\Catalog\Api\Data\ProductInterface;
 use \Magento\GroupedProduct\Model\Product\Type\Grouped as GroupedType;
 use \Magento\Bundle\Model\Product\Type as BundleType;
+use Magento\Framework\EntityManager\MetadataPool;
+use Magento\Catalog\Api\Data\ProductInterface;
 
 class Products extends \Magento\Framework\App\Helper\AbstractHelper
 {
-
     public $simiObjectManager;
     public $storeManager;
     public $builderQuery;
@@ -27,6 +25,14 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     public $productVisibility;
     public $filteredAttributes = [];
     public $is_search = 0;
+    public $productCollectionFactory;
+    public $attributeCollectionFactory;
+    public $searchCollection;
+    public $priceHelper;
+    public $imageHelper;
+    public $stockHelper;
+    public $categoryModelFactory;
+    public $productModelFactory;
     public $bundleSelection;
     public $groupedProductLink;
     public $metadataPool;
@@ -63,6 +69,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         \Simi\Simiconnector\Helper\Data $connectorHelper,
         \Magento\Directory\Model\CurrencyFactory $currencyFactory
     ) {
+
         $this->simiObjectManager = $simiObjectManager;
         $this->scopeConfig = $scopeConfigInterface;
         $this->storeManager = $storeManager;
@@ -109,9 +116,9 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function getProduct($product_id)
     {
-        $this->builderQuery = $this->simiObjectManager->create('Magento\Catalog\Model\Product')->load($product_id);
+        $this->builderQuery = $this->productModelFactory->create()->load($product_id);
         if (!$this->builderQuery->getId()) {
-            throw new \Simi\Simiconnector\Helper\SimiException(__('Resource cannot callable.'), 6);
+            throw new \Exception(__('Resource cannot callable.'), 6);
         }
         return $this->builderQuery;
     }
@@ -128,15 +135,13 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function loadCategoryWithId($id)
     {
-        $categoryModel = $this->simiObjectManager
-            ->create('\Magento\Catalog\Model\Category')->load($id);
+        $categoryModel = $this->categoryModelFactory->create()->load($id);
         return $categoryModel;
     }
 
     public function loadAttributeByKey($key)
     {
-        return $this->simiObjectManager
-            ->create('Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection')
+        return $this->attributeCollectionFactory->create()
             ->getItemByColumnValue('attribute_code', $key);
     }
 
@@ -296,16 +301,14 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                     try {
                         foreach ($collectionChid as $product) {
                             // check for group products
-                            if (
-                                $this->groupType->getParentIdsByChild($product->getId())
+                            if ($this->groupType->getParentIdsByChild($product->getId())
                                 && is_array($this->groupType->getParentIdsByChild($product->getId()))
                                 && count($this->groupType->getParentIdsByChild($product->getId()))
                             ) {
                                 $productIds = array_merge($productIds, $this->groupType->getParentIdsByChild($product->getId()));
                             }
                             // check for bundle products
-                            if (
-                                $this->bundleType->getParentIdsByChild($product->getId())
+                            if ($this->bundleType->getParentIdsByChild($product->getId())
                                 && is_array($this->bundleType->getParentIdsByChild($product->getId()))
                                 && count($this->bundleType->getParentIdsByChild($product->getId()))
                             ) {
@@ -361,21 +364,21 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         }
         if (!$params) {
             $data = $this->getData();
-            $params = isset($data['params']) ? $data['params'] : array();
+            $params = isset($data['params']) ? $data['params'] : [];
         }
-        $attributeCollection = $this->simiObjectManager
-            ->create('Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection');
+        $attributeCollection = $this->attributeCollectionFactory->create();
         $attributeCollection
             ->addIsFilterableFilter()
             //->addVisibleFilter() //cody comment out jun152019
             //->addFieldToFilter('used_in_product_listing', 1) //cody comment out jun152019
             //->addFieldToFilter('is_visible_on_front', 1) //cody comment out jun152019
         ;
-        if ($this->is_search)
-            $attributeCollection->addFieldToFilter('is_filterable_in_search', 1);
-
-        $attributeCollection->addFieldToFilter('attribute_code', ['nin' => ['price']]);
-
+        //$attributeCollection->addFieldToFilter('attribute_code', ['nin' => ['price']]);
+        if ($this->is_search) {
+            //there's an error on Magento 2.4.3 that make all attribute not visible in search, uncomment this on earlier version
+            //or on later version that fixed the issue
+            //$attributeCollection->addFieldToFilter('is_filterable_in_search', 1);
+        }
 
         $allProductIds = $collection->getAllIds();
         $arrayIDs = [];
@@ -383,15 +386,17 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             $arrayIDs[$allProductId] = '1';
         }
         $layerFilters = [];
+        $this->_filterByAtribute($collection, $attributeCollection, $layerFilters, $arrayIDs);
 
-        $titleFilters = [];
-        $this->_filterByAtribute($collection, $attributeCollection, $titleFilters, $layerFilters, $arrayIDs);
-
-        if ($this->simiObjectManager
-            ->get('Magento\Framework\App\ProductMetadataInterface')
-            ->getEdition() != 'Enterprise'
-        )
-            $this->_filterByPriceRange($layerFilters, $collection, $params);
+        /**
+         * Uncomment the lines below to bring back the price filter
+         * */
+        if ($this->afterFilterChildAndParentIds) {
+            $priceProductCollection = $this->createCollectionFromIds($allProductIds);
+            if (!$this->showOutOfStock)
+                $this->stockHelper->addInStockFilterToCollection($priceProductCollection);
+            $this->_filterByPriceRange($layerFilters, $priceProductCollection, $params);
+        }
 
         // category
         if ($this->category) {
@@ -419,13 +424,12 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         $selectedFilters = $this->_getSelectedFilters();
         $selectableFilters = count($allProductIds) ?
             $this->_getSelectableFilters($collection, $paramArray, $selectedFilters, $layerFilters) :
-            array();
+            [];
 
         $layerArray = ['layer_filter' => $selectableFilters];
-        if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($selectedFilters) > 0) {
+        if (count($selectedFilters) > 0) {
             $layerArray['layer_state'] = $selectedFilters;
         }
-
         return $layerArray;
     }
 
@@ -434,7 +438,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         $selectedFilters = [];
         foreach ($this->filteredAttributes as $key => $value) {
             if (($key == 'category_id') && is_array($value) &&
-                ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($value) >= 2)
+                (count($value) >= 2)
             ) {
                 $value = $value[1];
                 $category = $this->loadCategoryWithId($value);
@@ -447,7 +451,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 continue;
             }
             if (($key == 'price') && is_array($value) &&
-                ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($value) >= 2)
+                (count($value) >= 2)
             ) {
                 $selectedFilters[] = [
                     'value' => implode('-', $value),
@@ -462,7 +466,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             if (is_array($value)) {
                 $value = $value[0];
             }
-            if ($attribute)
+            if ($attribute) {
                 foreach ($attribute->getSource()->getAllOptions() as $layerFilter) {
                     if ($layerFilter['value'] == $value) {
                         $layerFilter['attribute'] = $key;
@@ -470,12 +474,17 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                         $selectedFilters[] = $layerFilter;
                     }
                 }
+            }
         }
         return $selectedFilters;
     }
 
     public function _getSelectableFilters($collection, $paramArray, $selectedFilters, $layerFilters)
     {
+        /**
+         * Comment out the line below when you want to remove filtered option from  available filter options
+         * */
+        return $layerFilters;
         $selectableFilters = [];
         if (is_array($paramArray) && isset($paramArray['filter'])) {
             foreach ($layerFilters as $layerFilter) {
@@ -547,8 +556,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
             $attributeValues = $this->getAllAttributeValues($attributeCode, $collection, $idArrayToFilter);
             foreach ($attributeValues as $productId => $optionIds) {
-                if (
-                    isset($optionIds[0]) &&
+                if (isset($optionIds[0]) &&
                     (
                         (isset($this->beforeApplyFilterArrayIds[$productId]) &&
                             ($this->beforeApplyFilterArrayIds[$productId] != null)) ||
@@ -569,8 +577,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             $options = $attribute->getSource()->getAllOptions();
             $filters = [];
             foreach ($options as $option) {
-                if (
-                    isset($option['value']) && isset($attributeOptions[$option['value']])
+                if (isset($option['value']) && isset($attributeOptions[$option['value']])
                     && $attributeOptions[$option['value']]
                 ) {
                     $option['count'] = $attributeOptions[$option['value']];
@@ -590,13 +597,11 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     public function _filterByPriceRange(&$layerFilters, $collection, $params)
     {
         $priceRanges = $this->_getPriceRanges($collection);
-        $filters = [];
-        $totalCount = 0;
-        $maxIndex = 0;
-        if ($this->simiObjectManager->get('Simi\Simiconnector\Helper\Data')->countArray($priceRanges['counts']) > 0) {
-            $maxIndex = max(array_keys($priceRanges['counts']));
-        }
-        foreach ($priceRanges['counts'] as $index => $count) {
+        $filters     = [];
+        $totalCount  = 0;
+        $countArr = $priceRanges['counts'];
+        ksort($countArr);
+        foreach ($countArr as $index => $count) {
             if ($index === '' || $index == 1) {
                 $index = 1;
                 $totalCount += $count;
@@ -604,35 +609,32 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 $totalCount = $count;
             }
             if (isset($params['layer']['price'])) {
-                $prices = explode('-', $params['layer']['price']);
+                $prices    = explode('-', $params['layer']['price']);
                 $fromPrice = $prices[0];
-                $toPrice = $prices[1];
+                $toPrice   = $prices[1];
             } else {
                 $fromPrice = $priceRanges['range'] * ($index - 1);
-                $toPrice = $index == $maxIndex ? '' : $priceRanges['range'] * ($index);
+                $toPrice   = $priceRanges['range'] * ($index);
             }
 
             if ($index >= 1) {
                 $filters[$index] = [
                     'value' => $fromPrice . '-' . $toPrice,
                     'label' => $this->_renderRangeLabel($fromPrice, $toPrice),
-                    'count' => (int)($totalCount)
+                    'count' => (int) ($totalCount)
                 ];
             }
         }
-        if ($this->simiObjectManager
-            ->get('Simi\Simiconnector\Helper\Data')
-            ->countArray($filters) >= 1
-        ) {
+        if (count($filters) >= 1) {
+            $priceAttributes = $this->simiObjectManager->get('\Magento\Eav\Model\Config')->getAttribute('catalog_product', 'price');
             $layerFilters[] = [
                 'attribute' => 'price',
-                'title' => __('Price'),
-                'filter' => array_values($filters),
+                'title'     => __('Price'),
+                'filter'    => array_values($filters),
+                'position'  => $priceAttributes->getPosition()
             ];
         }
     }
-
-
     /*
      * Get price range filter
      *
@@ -678,7 +680,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function _renderRangeLabel($fromPrice, $toPrice)
     {
-        $helper = $this->simiObjectManager->create('Magento\Framework\Pricing\Helper\Data');
+        $helper = $this->priceHelper;
         $formattedFromPrice = $helper->currency($fromPrice, true, false);
         if ($toPrice === '') {
             return __('%1 and above', $formattedFromPrice);
@@ -840,13 +842,13 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         //$select->group('value');
         $data = $collection->getConnection()->fetchAll($select);
         $res = [];
-
         foreach ($data as $row) {
             $res[$row['entity_id']][$row['store_id']] = $row['value'];
         }
 
         return $res;
     }
+
 
     /**
      * Return child ids from parent id
