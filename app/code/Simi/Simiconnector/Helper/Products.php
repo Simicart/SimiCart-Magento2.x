@@ -219,10 +219,10 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
             $collection->setVisibility($this->productVisibility->getVisibleInCatalogIds()); // fix bug visibility
         }
 
-
-        if (isset($params['filter']['layer'])) {
-            $this->filterCollectionByAttribute($collection, $params, $cat_filtered);
+        if (!isset($params['filter']['layer'])) {
+            $params['filter'] = ['layer' => []];
         }
+        $this->filterCollectionByAttribute($collection, $params, $cat_filtered);
 
         return $collection;
     }
