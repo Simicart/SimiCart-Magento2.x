@@ -76,7 +76,7 @@
         <column xsi:type="int" name="entity_id" nullable="false" identity="true" comment="Entity Id"/>
         <column xsi:type="int" name="content_type" nullable="true" comment="Content Type"/>
         <column xsi:type="int" name="item_id" nullable="true" comment="Item Id"/>
-        <column xsi:type="varchar" length="254" name="storeview_id" nullable="true" comment="Storeview Id"/>
+        <column xsi:type="varchar" length="254" name="store_view_id" nullable="true" comment="Storeview Id"/>
         <constraint xsi:type="primary" referenceId="PRIMARY">
             <column name="entity_id"/>
         </constraint>
