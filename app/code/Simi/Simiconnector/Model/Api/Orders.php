@@ -5,6 +5,7 @@
  */
 
 namespace Simi\Simiconnector\Model\Api;
+use Magento\Customer\Api\Data\GroupInterface;
 
 class Orders extends Apiabstract
 {
