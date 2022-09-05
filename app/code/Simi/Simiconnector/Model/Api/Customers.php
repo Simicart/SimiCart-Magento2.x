@@ -195,6 +195,9 @@ class Customers extends Apiabstract
                 $resultArray['customer']['social_login'] = false;
             }
         }
+        if (isset($resultArray['customer']['rp_token'])) {
+            unset($resultArray['customer']['rp_token']);
+        }
 
         return $resultArray;
     }
