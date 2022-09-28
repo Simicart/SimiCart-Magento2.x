@@ -23,4 +23,21 @@ class Devices extends Apiabstract
         $this->builderQuery = $device;
         return $this->show();
     }
+
+    public function show() {
+        if (!$this->builderQuery) {
+            return array();
+        }
+        return parent::show();
+    }
+
+    public function index() {
+        $result = array();
+        $result['all_ids'] = [];
+        $result['devices'] = [];
+        $result['total'] = 0;
+        $result['page_size'] = 15;
+        $result['from'] = 0;
+        return $result;
+    }
 }
