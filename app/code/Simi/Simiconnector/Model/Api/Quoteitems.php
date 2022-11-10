@@ -354,9 +354,11 @@ class Quoteitems extends Apiabstract
         $result['quote_id'] = $session->getQuoteId();
         $result['is_can_checkout'] = $is_can_checkout;
         try {
-            $result['masked_id'] = $this->simiObjectManager
-                ->get('Magento\Quote\Model\QuoteIdToMaskedQuoteIdInterface')
-                ->execute($result['quote_id']);
+            if (isset($result['quote_id'])) {
+                $result['masked_id'] = $this->simiObjectManager
+                    ->get('Magento\Quote\Model\QuoteIdToMaskedQuoteIdInterface')
+                    ->execute($result['quote_id']);
+            }
         } catch (\Exception $e) {
 
         }
