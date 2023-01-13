@@ -78,7 +78,7 @@ class Categorytrees extends Apiabstract
                     $category['url_path'] = $category['url_path'].'.html';
                 }
                 if ($image_url = $categoryModel->getImageUrl()) {
-                    $category['image_url'] = $image_url;
+                    $category['image_url'] = $this->storeManager->getStore()->getBaseUrl() . $image_url;
                 }
                 if (isset($category['landing_page']) && $category['landing_page']) {
                     $block = $this->simiObjectManager->get('Magento\Framework\View\LayoutInterface')
