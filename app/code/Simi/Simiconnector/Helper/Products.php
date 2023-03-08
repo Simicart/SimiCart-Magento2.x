@@ -136,13 +136,15 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
 
     public function loadCategoryWithId($id)
     {
-        $categoryModel = $this->categoryModelFactory->create()->load($id);
+        $categoryModel    = $this->simiObjectManager
+            ->create('\Magento\Catalog\Model\Category')->load($id);
         return $categoryModel;
     }
 
     public function loadAttributeByKey($key)
     {
-        return $this->attributeCollectionFactory->create()
+        return $this->simiObjectManager
+            ->create('Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection')
             ->getItemByColumnValue('attribute_code', $key);
     }
 
@@ -251,31 +253,19 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         foreach ($params['filter']['layer'] as $key => $value) {
             $newCollection = $this->createCollectionFromIds($this->beforeApplyFilterChildAndParentIds);
             if ($key == 'price') {
-                $currencyCodeFrom = $this->storeManager->getStore()->getCurrentCurrency()->getCode();
-                $currencyCodeTo = $this->storeManager->getStore()->getBaseCurrency()->getCode();
-                $rate = $this->currencyFactory->create()->load($currencyCodeTo)->getAnyRate($currencyCodeFrom);
-
                 $value = explode('-', $value);
-                if (isset($value[0]) && isset($value[1])) {
-                    $priceFrom = $value[0] / $rate;
-                    $priceTo   = $value[1] / $rate;
-                    $newCollection->addFieldToFilter('entity_id', ['in' => $this->beforeApplyFilterParentIds]);
-                    $newCollection->addPriceData();
-                    $newCollection->getSelect()->where("price_index.min_price >= " . $priceFrom)
-                        ->where("price_index.min_price < " . $priceTo);
-                }
+                $priceFilter = array();
+                if (isset($value[0]))
+                    $priceFilter['from'] = $value[0];
+                if (isset($value[0]))
+                    $priceFilter['to'] = $value[1];
+                $collection->addFieldToFilter('price', $priceFilter);          
+                $this->filteredAttributes[$key] = $value;
             } else {
                 if ($key == 'category_id') {
                     $cat_filtered = true;
-                    if ($this->category) {
-                        if (is_array($value)) {
-                            $value[] = $this->category->getId();
-                        } else {
-                            $value = [$this->category->getId(), $value];
-                        }
-                    }
                     $this->filteredAttributes[$key] = $value;
-                    $newCollection->addCategoriesFilter(['in' => $value]);
+                    $collection->addCategoryFilter($this->loadCategoryWithId($value));
                 } else {
                     $this->filteredAttributes[$key] = $value;
                     # code...
@@ -398,7 +388,6 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 $this->stockHelper->addInStockFilterToCollection($priceProductCollection);
             $this->_filterByPriceRange($layerFilters, $priceProductCollection, $params);
         }
-
         // category
         if ($this->category) {
             $childrenCategories = $this->category->getChildrenCategories();
@@ -413,7 +402,6 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                     ];
                 }
             }
-
             $layerFilters[] = [
                 'attribute' => 'category_id',
                 'title' => __('Categories'),
@@ -438,10 +426,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
     {
         $selectedFilters = [];
         foreach ($this->filteredAttributes as $key => $value) {
-            if (($key == 'category_id') && is_array($value) &&
-                (count($value) >= 2)
-            ) {
-                $value = $value[1];
+            if (($key == 'category_id')) {
                 $category = $this->loadCategoryWithId($value);
                 $selectedFilters[] = [
                     'value' => $value,
@@ -451,6 +436,7 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
                 ];
                 continue;
             }
+
             if (($key == 'price') && is_array($value) &&
                 (count($value) >= 2)
             ) {
@@ -485,7 +471,6 @@ class Products extends \Magento\Framework\App\Helper\AbstractHelper
         /**
          * Comment out the line below when you want to remove filtered option from  available filter options
          * */
-        return $layerFilters;
         $selectableFilters = [];
         if (is_array($paramArray) && isset($paramArray['filter'])) {
             foreach ($layerFilters as $layerFilter) {
