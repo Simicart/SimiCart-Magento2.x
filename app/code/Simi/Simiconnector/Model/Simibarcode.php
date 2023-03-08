@@ -79,7 +79,7 @@ class Simibarcode extends \Magento\Framework\Model\AbstractModel
             // 'c128b' => __('c128b'),
             // 'c128c' => __('c128c'),
             'code39' => __('c39'),
-            'code25IL' => __('i2of5')
+            // 'code25IL' => __('i2of5')
         ];
         return $status;
     }
