@@ -75,11 +75,11 @@ class Simibarcode extends \Magento\Framework\Model\AbstractModel
     public function toOptionBarcodeTypeHash()
     {
         $status = [
-            'c128' => __('c128'),
+            'code128' => __('c128'),
             // 'c128b' => __('c128b'),
             // 'c128c' => __('c128c'),
-            // 'c39' => __('c39'),
-            // 'i2of5' => __('i2of5')
+            'code39' => __('c39'),
+            'code25IL' => __('i2of5')
         ];
         return $status;
     }
